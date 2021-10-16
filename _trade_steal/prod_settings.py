@@ -17,16 +17,14 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-hostname = os.environ['DBHOST']
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ['DBNAME'],
-        'HOST': hostname + ".postgres.database.azure.com",
+        'HOST': os.environ['DBHOST'],
         'USER': os.environ['DBUSER'],
         'PASSWORD': os.environ['DBPASS'],
-        'OPTIONS': {'sslmode': 'require'},
+        'OPTIONS': {'sslmode': 'prefer'},
     },
 }
 
@@ -84,3 +82,10 @@ LOGGING = {
         },
     },
 }
+
+ESI_AUTH_URL = os.environ['ESI_AUTH_URL']
+ESI_AUTH_ACCOUNT_URL = os.environ['ESI_AUTH_ACCOUNT_URL']
+ESI_AUTH_PASSWORD_RESET_URL = os.environ['ESI_AUTH_PASSWORD_RESET_URL']
+ESI_AUTH_USERNAME = os.environ['ESI_AUTH_USERNAME']
+ESI_AUTH_PASS = os.environ['ESI_AUTH_PASS']
+ESI_AUTH_APP = os.environ['ESI_AUTH_APP']

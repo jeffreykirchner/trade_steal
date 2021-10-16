@@ -18,7 +18,8 @@ urlpatterns = [
     path('accounts/logout/', views.logout_view, name='logout'),
 
     #main    
-
+    path('', views.StaffHomeView.as_view(), name='home'),
+    
     #txt
     path('robots.txt', views.RobotsTxt, name='robotsTxt'),
     path('ads.txt', views.AdsTxt, name='adsTxt'),

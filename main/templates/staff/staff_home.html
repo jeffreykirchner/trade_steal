@@ -1,0 +1,21 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+
+{%block head%}
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        {%include "staff/staff_home/staff_home.js"%}
+    });
+
+</script>
+
+{%endblock head%}
+
+{% block content %}
+<div class="row justify-content-lg-center" v-cloak>
+    <div class="col col-md-8">
+        {%include "staff/staff_home/sessions_card.html"%}                   
+    </div>
+</div>
+{% endblock %}
