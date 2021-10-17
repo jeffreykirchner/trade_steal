@@ -19,6 +19,7 @@ urlpatterns = [
 
     #main    
     path('', views.StaffHomeView.as_view(), name='home'),
+    path('staff-session/<int:pk>/', views.StaffSessionView.as_view(), name='staff_session'),
     
     #txt
     path('robots.txt', views.RobotsTxt, name='robotsTxt'),

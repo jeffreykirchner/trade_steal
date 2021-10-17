@@ -1,0 +1,51 @@
+<div class="card" v-show="first_load_done">                  
+    <div class="card-header">                
+        <span class="align-middle">Control</span>       
+            
+        <span class="float-end">
+             
+        </span>
+        
+    </div>
+    <div class="card-body"> 
+        <!-- start button -->
+        <div class="row">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-success"
+                        v-on:click = "start_experiment()"
+                        title="Start experiment"
+                        v-bind:disabled="reconnecting || working || session.started">
+                    Start experiment <i class="far fa-play-circle"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- reset experiment -->
+        <div class="row mt-2">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        v-on:click = "reset_experiment()"
+                        title="Reset experiment"
+                        v-bind:disabled="reconnecting || working || session.started===false || session.locked">
+                    Reset experiment <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- next period -->
+        <div class="row mt-2" v-show="session.started">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "next_period()"
+                        title="Move to next period"
+                        v-bind:disabled="reconnecting || working || session.started===false || session.finished">
+                    <span v-html="move_to_next_period_text"></span>
+                </button>
+            </div>
+        </div>
+        
+    </div>                    
+</div> 

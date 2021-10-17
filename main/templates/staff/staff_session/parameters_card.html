@@ -1,0 +1,367 @@
+<div class="card" v-show="first_load_done">                  
+    <div class="card-header">                
+        <span class="align-middle">Parameters</span>       
+            
+        <span class="float-end">            
+            <button class="btn btn-outline-primary me-1"
+                    type="button"
+                    v-bind:disabled="reconnecting || working" 
+                    v-on:click="sendDownloadParameters()" 
+                    title="Download to a file.">
+                <span v-html = "downloadParametersetButtonText"></span>
+            </button> 
+            <button class="btn btn-outline-primary me-1" 
+                    type="button" 
+                    v-bind:disabled="session.started || reconnecting || working" 
+                    v-on:click="showUploadParameters('parameters')"
+                    title = "Upload from a file.">
+                Upload  <i class="fas fa-upload"></i>
+            </button> 
+            <button class="btn btn-outline-primary me-1"
+                    type="button" 
+                    v-bind:disabled="session.started || reconnecting || working" 
+                    v-on:click="showImportParameters('parameters')"
+                    title="Import parameters from another session.">
+                Import <i class="fas fa-file-import"></i>
+            </button>
+            <button class="btn btn-outline-secondary me-1"
+                    type="button" 
+                    v-bind:disabled="reconnecting || working" 
+                    v-on:click="show_parameters = !show_parameters"
+                    title="Hide or show parameters">
+                <span v-if="show_parameters">
+                    Hide <i class="fas fa-eye-slash"></i>
+                </span>
+                <span v-else>
+                    Show <i class="fas fa-eye"></i>
+                </span>
+            </button> 
+        </span>
+        
+    </div>
+    <div class="card-body" v-show="show_parameters"> 
+
+        <!-- period count -->
+        <div class="row mb-2 border-bottom pb-2">
+            <div class="col-md text-center">
+                <label for="period_count">Number of Periods</label>
+                
+                <div class = "d-flex justify-content-center">
+                    <div class="input-group w-50">
+                        <button class="btn btn-outline-secondary" 
+                                type="button" 
+                                v-bind:disabled="session.started || reconnecting || working || session.parameter_set.number_of_periods <= 1"
+                                v-on:click="sendUpdatePeriodCount(-1)"><i class="fas fa-minus"></i></button>
+                        <input type="number"
+                               id="period_count"  
+                               class="form-control text-center"
+                               disabled=true
+                               style="background-color: white;"
+                               v-model="session.parameter_set.number_of_periods">                    
+                        <button class="btn btn-outline-secondary"
+                                v-bind:disabled="session.started || reconnecting || working"
+                                v-on:click="sendUpdatePeriodCount(1)"
+                                type="button"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- period visible -->
+            <div class="col-md text-center">
+                <label for="period_count">Period Visible</label>
+                <div class = "d-flex justify-content-center">
+                    <div class="input-group w-50">
+                        <button class="btn btn-outline-secondary" 
+                                type="button" 
+                                v-bind:disabled="session.started || reconnecting || working || current_visible_period <= 1"
+                                v-on:click="updateCurrentPeriod(-1)"><i class="fas fa-angle-double-left"></i></button>
+                        <input type="number"
+                               id="period_visible"
+                               class="form-control text-center"
+                               disabled=true
+                               style="background-color: white;"
+                               v-model="current_visible_period">                   
+                        <button class="btn btn-outline-secondary"
+                                v-bind:disabled="session.started || reconnecting || working || current_visible_period == session.parameter_set.number_of_periods"
+                                v-on:click="updateCurrentPeriod(1)"
+                                type="button"><i class="fas fa-angle-double-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>  
+
+        <!-- price cap -->
+        <div class="row">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-light"
+                        v-on:click = "showEditPeriod()"
+                        v-bind:disabled="session.started || reconnecting || working" >
+                    Price Cap 
+                        (<span v-if="session.parameter_set.periods[current_visible_period-1].price_cap_enabled == 'True'">ON</span>
+                        <span v-else>OFF</span>): 
+                    [[session.parameter_set.periods[current_visible_period-1].price_cap]]
+
+                    |
+
+                    Y Scale (Price): [[session.parameter_set.periods[current_visible_period-1].y_scale_max]]
+
+                    |
+
+                    X Scale (Trades): [[session.parameter_set.periods[current_visible_period-1].x_scale_max]]
+                </button>
+            </div>
+        </div>
+
+        <!-- edit values and costs -->
+        <div class="row mb-2 border-bottom pb-4">
+            <div class="col-md text-center">
+                <table class="table table-hover table-condensed table-responsive-lg"> 
+                    <caption class="text-center" style="caption-side:top;">Buyers ([[session.parameter_set.number_of_buyers]])</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" class = "m-1 p-1">
+                                ID
+                            </th> 
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Value 1
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Value 2
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Value 3
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Value 4
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="buyer_list">
+                        <tr v-for="(b, index) in session.parameter_set.periods[current_visible_period-1].buyers" v-bind:key="b.id">
+                            <td>
+                                [[b.id_number]]
+                            </td>
+                            <td v-for="(vc, index) in b.value_costs" v-bind:key="vc.id">
+                                <button type="button"
+                                        class="btn btn-light btn-sm"
+                                        v-bind:disabled="session.started"
+                                        v-on:click="showEditValuecost(vc, 'value')" >
+                                    <span v-if="vc.enabled == 'True'">
+                                        [[vc.value_cost]]
+                                    </span>
+                                    <span v-else>
+                                        OFF
+                                    </span>
+                                </button>                               
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- value buttons -->
+                <div class="row">
+                    <div class="col">
+                        <div class="btn-group" role="group" aria-label="Buyer parameters">
+                            <button class="btn btn-outline-secondary"
+                                    type="button"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    v-on:click="sendUpdateSubjectCount('BUYER', 1)"
+                                    title = "Add a buyer">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary"
+                                    type="button"
+                                    v-bind:disabled="session.started || reconnecting || session.parameter_set.periods[current_visible_period-1].buyers.length <= 1 || working"
+                                    v-on:click="sendUpdateSubjectCount('BUYER', -1)"
+                                    title = "Remove last Buyer">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    v-on:click="shiftValueOrCost('value','up')"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    title = "Rotate values up">
+                                <i class="fas fa-angle-double-up"></i>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    v-on:click="shiftValueOrCost('value','down')"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    title = "Rotate values down">
+                                <i class="fas fa-angle-double-down"></i>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    v-on:click="copyValueOrCost('value')"
+                                    v-bind:disabled="session.started || session.startedreconnecting || working || current_visible_period <= 1"
+                                    title = "Copy values from previous period">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-3 text-center"> 
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary"
+                                    title="Add amount to all values"
+                                    type="button"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    v-on:click="addToValueOrCost('value')"
+                                    id="add_to_all_costs"><i class="far fa-plus-square"></i></button>
+                            <input type="number"
+                                    step="0.01" 
+                                    class="form-control text-center" 
+                                    title="Add amount to all values"
+                                    placeholder="Amount"
+                                    aria-label="Add to all costs"
+                                    v-model="add_to_value_amount"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    aria-describedby="add_to_all_costs">
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="col-md text-center">
+                <table class="table table-hover table-condensed table-responsive-lg"> 
+                    <caption class="text-center" style="caption-side:top;">Sellers ([[session.parameter_set.number_of_sellers]])</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" class = "m-1 p-1">
+                                ID
+                            </th> 
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Cost 1
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Cost 2
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Cost 3
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Cost 4
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="seller_list">
+                        <tr v-for="(s, index) in session.parameter_set.periods[current_visible_period-1].sellers" v-bind:key="s.id">
+                            <td>
+                                [[s.id_number]]
+                            </td>
+                            <td v-for="(vc, index) in s.value_costs" v-bind:key="vc.id">
+                                <button type="button"
+                                        class="btn btn-light btn-sm"
+                                        v-bind:disabled="session.started"
+                                        v-on:click = "showEditValuecost(vc, 'cost')" >
+                                    <span v-if="vc.enabled == 'True'">
+                                        [[vc.value_cost]]
+                                    </span>
+                                    <span v-else>
+                                        OFF
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    
+                </table>
+
+                <!-- cost parameter buttons -->
+                <div class="row">
+                    <div class="col"> 
+                        <div class="btn-group" role="group" aria-label="Seller parameters">
+                            <button class="btn btn-outline-secondary"
+                                    type="button"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    v-on:click="sendUpdateSubjectCount('SELLER', 1)"
+                                    title = "Add a seller">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary"
+                                    type="button"
+                                    v-bind:disabled="session.started || reconnecting || session.parameter_set.periods[current_visible_period-1].sellers.length <= 1 || working"
+                                    v-on:click="sendUpdateSubjectCount('SELLER', -1)"
+                                    title = "Remove last seller">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    v-on:click="shiftValueOrCost('cost','up')"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    title = "Rotate costs up">
+                                <i class="fas fa-angle-double-up"></i>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    v-on:click="shiftValueOrCost('cost','down')"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    title = "Rotate costs down">
+                                <i class="fas fa-angle-double-down"></i>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    v-on:click="copyValueOrCost('cost')"
+                                    v-bind:disabled="session.started || reconnecting || working || current_visible_period <= 1"
+                                    title = "Copy costs from previous period">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-3 text-center"> 
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary"
+                                    title="Add amount to all costs"
+                                    type="button"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    v-on:click="addToValueOrCost('cost')"
+                                    id="add_to_all_costs"><i class="far fa-plus-square"></i></button>
+                            <input type="number"
+                                    step="0.01" 
+                                    class="form-control text-center" 
+                                    title="Add amount to all costs"
+                                    placeholder="Amount"
+                                    aria-label="Add to all costs"
+                                    v-model="add_to_cost_amount"
+                                    v-bind:disabled="session.started || reconnecting || working"
+                                    aria-describedby="add_to_all_costs">
+                        </div>  
+                    </div>
+                </div>
+                
+            </div>
+        </div>                                  
+        
+        <!-- print outs -->
+        <div class="row mt-2 text-muted">
+            <div class="col-md text-center">
+                Printouts
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md text-end">
+                <a href="/staff-session-paddles/{{session.id}}/Seller/"
+                   class="link-primary"
+                   title="Open trade sheet printouts.">
+                    Seller Paddles
+                </a>
+            </div>
+
+            <div class="col-md text-center">
+                <a href="/staff-session-paddles/{{session.id}}/Buyer/"
+                   class="link-primary"
+                   title="Open trade sheet printouts.">
+                    Buyer Paddles
+                </a>
+            </div>
+
+            <div class="col-md text-start">
+                <a href="/staff-session-trade-sheets/{{session.id}}/"
+                   class="link-primary"
+                   title="Open trade sheet printouts.">
+                    Record Sheets
+                </a>
+            </div>
+        </div>
+
+       
+    </div>                    
+</div> 

@@ -1,0 +1,81 @@
+<div class="card">                  
+    <div class="card-header">                
+        <span class="align-middle">Graph</span>       
+            
+        <span class="float-end">
+            <span v-show="reconnecting" class="me-1">
+                Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+            </span>
+        </span>
+        
+    </div>
+    <div class="card-body">
+        
+        <!-- graph -->
+        <div class="row">
+            <div class="col">
+                <canvas key="sd_graph" id="sd_graph" style="border-style: solid;border-width: 1px;"></canvas>
+            </div>
+        </div>
+
+        <!-- control -->
+        <div class="row">
+            <div class="col-md">
+                <div class="form-check form-switch">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="bids_offers_graph"
+                           v-model="show_bids_offers_graph"
+                           v-on:change="graph_options_changed()"
+                           v-bind:disabled="playback_enabled">
+                    <label class="form-check-label" for="equilibrium_price">Bids / Offers</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-check form-switch">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="supply_demand_graph"
+                           v-model="show_supply_demand_graph"
+                           v-on:change="graph_options_changed()"
+                           v-bind:disabled="playback_enabled">
+                    <label class="form-check-label" for="supply_demand_graph">Supply / Demand</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-check form-switch">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="equilibrium_price_graph" 
+                           v-model="show_equilibrium_price_graph" 
+                           v-on:change="graph_options_changed()"
+                           v-bind:disabled="playback_enabled">
+                    <label class="form-check-label" for="equilibrium_price_graph">Equilibrium Price</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-check form-switch">
+                    <input class="form-check-input"
+                           type="checkbox" 
+                           id="trade_line_graph" 
+                           v-model="show_trade_line_graph" 
+                           v-on:change="graph_options_changed()"
+                           v-bind:disabled="playback_enabled">
+                    <label class="form-check-label" for="trade_line_graph">Trade Line</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" 
+                           type="checkbox" 
+                           id="gains_from_trade_graph" 
+                           v-model="show_gains_from_trade_graph" 
+                           v-on:change="graph_options_changed()"
+                           v-bind:disabled="playback_enabled">
+                    <label class="form-check-label" for="trade_line_graph">Efficiency</label>
+                </div>
+            </div>
+        </div>
+        
+    </div>                    
+</div> 

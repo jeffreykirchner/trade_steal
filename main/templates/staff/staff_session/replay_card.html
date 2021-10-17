@@ -1,0 +1,89 @@
+<div class="card" v-show="first_load_done && session.finished">                  
+    <div class="card-header">                
+        <span class="align-middle">Results</span>       
+            
+        <span class="float-end">
+             
+        </span>
+        
+    </div>
+    <div class="card-body"> 
+        <!-- Set period to display -->
+        <div class="row">
+            <div class="col-md text-center">
+                <label for="period_count">Period Visible</label>
+                <div class = "d-flex justify-content-center">
+                    <div class="input-group w-50">
+                        <button class="btn btn-outline-secondary" 
+                                type="button" 
+                                v-bind:disabled="session.finished==false || reconnecting || current_visible_period <= 1"
+                                v-on:click="updateCurrentPeriodReplay(-1)"><i class="fas fa-angle-double-left"></i></button>
+                        <input type="number"
+                               id="period_visible"
+                               class="form-control text-center"
+                               disabled=true
+                               style="background-color: white;"
+                               v-model="current_visible_period">                   
+                        <button class="btn btn-outline-secondary"
+                                v-bind:disabled="session.finished==false || reconnecting || current_visible_period == session.parameter_set.number_of_periods"
+                                v-on:click="updateCurrentPeriodReplay(1)"
+                                type="button"><i class="fas fa-angle-double-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- trade playback -->
+        <div class="row mt-4 mb-0 pb-0">
+            <div class="col-md text-center">
+                <label>Trade Playback</label>
+            </div>
+        </div>
+        <div class="row mt-0 pt-0">
+            <div class="col-md text-center">                
+                <div class="btn-group" role="group" aria-label="trade playback control" id="trade_playback">
+                    <button type="button"
+                            v-bind:disabled="playback_enabled==true"
+                            v-on:click="playback_start()"
+                            class="btn btn-outline-primary"
+                            title="Show trades one at a time">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button type="button"
+                            v-bind:disabled="playback_enabled==false || playback_trade==0"
+                            v-on:click="playback_advance(-1)"
+                            class="btn btn-outline-primary"
+                            title="Next Trade">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button type="button"
+                            v-bind:disabled="playback_enabled==false || playback_trade==session.session_periods[current_visible_period-1].trade_list.length-1"
+                            v-on:click="playback_advance(1)"
+                            class="btn btn-outline-primary"
+                            title="Previous Trade">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                    <button type="button"
+                            v-bind:disabled="playback_enabled==false"
+                            v-on:click="playback_stop()"
+                            class="btn btn-outline-primary"
+                            title="Stop Playback">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- subject earnings -->
+        <div class="row mt-4">
+            <div class="col-md text-center">
+                <a href="/staff-session-subject-earnings/{{session.id}}/"
+                   class="link-primary"
+                   title="Printout of total earnings.">
+                    Earnings Printout
+                </a>
+            </div>
+        </div>
+        
+    </div>                    
+</div> 

@@ -1,0 +1,53 @@
+<div class="card" v-show="first_load_done">                  
+    <div class="card-header">
+        <span class="align-middle">Session</span>      
+        
+        <span class="float-end">                            
+            <button class="btn btn-outline-primary" type="button" v-on:click = "showEditSession()">
+                Edit <i class="far fa-edit"></i>
+            </button>
+        </span>
+
+        {%if user.is_superuser%}
+        <span class="float-end pe-2 ps-2"> 
+            <a href='/admin/main/session/{{session.id}}/change/' class='link-primary'>Lock/Share</a>
+        </span>
+        {%endif%}
+    </div>
+    <div class="card-body">    
+        <div class="row">
+            <div class="col-4" style="text-align: right;">
+                {{session_form.title.label}}:
+            </div>
+            <div class="col-md-8">
+                [[session.title]]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" style="text-align: right;">
+                Run Date:
+            </div>
+            <div class="col-md-8">
+                <span v-if="session.started">
+                    [[session.start_date]]
+                </span>
+                <span v-else>
+                    ---
+                </span>
+            </div>
+        </div>                    
+        <div class="row">
+            <div class="col-md-4" style="text-align: right;">
+                Current Period:
+            </div>
+            <div class="col-md-8">
+                <span v-if="session.finished">
+                    Complete
+                </span>
+                <span v-else>
+                    [[session.current_period]] / [[session.parameter_set.number_of_periods]]
+                </span>
+            </div>
+        </div>
+    </div>                    
+</div>

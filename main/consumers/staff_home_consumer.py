@@ -16,6 +16,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from main.consumers import SocketConsumerMixin
 
 from main.models import Session
+from main.models import parameter_set
+from main.models.parameter_set import ParameterSet
 # from main.globals import create_new_session_parameterset
 
 class StaffHomeConsumer(SocketConsumerMixin):
@@ -123,7 +125,10 @@ def create_new_session(auth_user):
     
     session = Session()
 
-    # session.parameter_set = create_new_session_parameterset()
+    parameter_set = ParameterSet()
+    parameter_set.save()
+
+    session.parameter_set = parameter_set
     session.start_date = datetime.now(pytz.UTC)
     session.creator = auth_user
 
