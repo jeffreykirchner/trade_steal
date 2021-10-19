@@ -17,7 +17,6 @@ from main.consumers import get_session
 from main.views import StaffSessionView
 
 from main.forms import SessionForm
-from main.forms import PeriodForm
 
 class StaffSessionConsumer(SocketConsumerMixin):
     '''
@@ -186,8 +185,7 @@ class StaffSessionConsumer(SocketConsumerMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
-#local sync_to_asyncs
-@sync_to_async
+#local sync functions
 def take_update_session_form(data):
     '''
     take session form data and update session or return errors
@@ -336,7 +334,6 @@ def take_import_parameters(data):
     # return {"value" : "fail" if "Failed" in message else "success",
     #         "message" : message}
 
-@sync_to_async
 def take_download_parameters(data):
     '''
     download parameters to a file
@@ -350,7 +347,6 @@ def take_download_parameters(data):
    
     return {"status" : "success", "parameter_set":session.parameter_set.json()}                      
                                 
-@sync_to_async
 def take_start_experiment(data):
     '''
     start experiment
@@ -369,7 +365,6 @@ def take_start_experiment(data):
     
     return {"status" : status}
 
-@sync_to_async
 def take_reset_experiment(data):
     '''
     reset experiment remove bids and asks

@@ -127,6 +127,7 @@ def create_new_session(auth_user):
 
     parameter_set = ParameterSet()
     parameter_set.save()
+    parameter_set.setup()
 
     session.parameter_set = parameter_set
     session.start_date = datetime.now(pytz.UTC)

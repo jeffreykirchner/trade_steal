@@ -21,6 +21,9 @@ from main.models import Session
 
 from main.forms import SessionForm
 from main.forms import ImportParametersForm
+from main.forms import ParameterSetForm
+from main.forms import ParameterSetTypeForm
+from main.forms import ParameterSetTypePlayerForm
 
 class StaffSessionView(SingleObjectMixin, View):
     '''
@@ -46,6 +49,9 @@ class StaffSessionView(SingleObjectMixin, View):
                       context={"channel_key" : uuid.uuid4(),
                                "id" : session.id,
                                "session_form" : SessionForm(),
+                               "parameter_set_form" : ParameterSetForm(),
+                               "parameter_set_type_form" : ParameterSetTypeForm(),
+                               "parameter_set_type_player_form" : ParameterSetTypePlayerForm(),
                                "import_parameters_form" : ImportParametersForm(user=request.user),                               
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',
