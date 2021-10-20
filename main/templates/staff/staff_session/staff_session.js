@@ -15,54 +15,53 @@ var app = Vue.createApp({
                         current_period : 1,
                         started : false,
                         locked : true,
-                        session_periods : [{trade_list : []},
-                                          ],
+                        start_date : "---",
+                        current_period : 0,
+                        finished : false,                        
                         parameter_set : {
-                            number_of_buyers : 0,
-                            number_of_sellers : 0,
-                            number_of_periods : 1,
-                            periods : [ {
-                                period_number : 1,
-                                price_cap : "0.00",
-                                y_scale_max: "",
-                                x_scale_max: "",
-                                price_cap_enabled : "False",
-                                sellers : [],
-                                buyers : [],
-                                demand : [],
-                                supply : [],
-                             }]
-                         },
-                     },
-                    current_visible_period : 1,                //period visible on screen
+                            id : 0,
+                            period_count : 0,
+                            period_length_production : 0,
+                            period_length_trade : 0,
+                            break_period_frequency : 0,
+                            good_one_label : "",
+                            good_two_label : "",
+                            good_one_rgb_color : '#000000',
+                            good_two_rgb_color : '#000000',
+                            parameter_set_types : [],                               
+                        },
+                        session_periods : [],
+                    },
+                   
                     downloadParametersetButtonText:'Download <i class="fas fa-download"></i>',
                     valuecost_modal_label:'Edit Value or Cost',
-                    current_valuecost:{                       //json attached to value/cost edit modal
+                    current_parameterset_type:{                       //json attached to parameterset type edit modal
                         id:0,
-                        valuecost:0,
-                        enabled:false,
+                        good_one_amount:0,
+                        good_two_amount:0,
+                        good_one_production_1:0,
+                        good_one_production_2:0,
+                        good_one_production_3:0,
+                        good_two_production_1:0,
+                        good_two_production_2:0,
+                        good_two_production_3:0,
                     },
-                    // valuecost_form_ids: {{valuecost_form_ids|safe}},
-                    // period_form_ids: {{period_form_ids|safe}},
+                    current_parameter_set_type_player : {
+                        id:0,
+                        id_label:"",
+                        location:1,                        
+                    },
+                    parameterset_form_ids: {{parameterset_form_ids|safe}},
+                    parameterset_type_form_ids: {{parameterset_type_form_ids|safe}},
+                    parameterset_type_player_form_ids: {{parameterset_type_player_form_ids|safe}},
                     upload_file: null,
                     upload_file_name:'Choose File',
                     uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
                     uploadParametersetMessaage:'',
                     show_parameters:false,
-                    bid_offer_id:"",
-                    bid_offer_amount:"",
-                    bid_offer_message:"",              //message shown in input card under bid/offer input
-                    show_bids_offers_graph : false,     //elements of graph to be shown
-                    show_supply_demand_graph : false,
-                    show_equilibrium_price_graph : false,
-                    show_trade_line_graph : false,
-                    show_gains_from_trade_graph : false,
-                    move_to_next_period_text : '---',
-                    add_to_value_amount : 0,
-                    add_to_cost_amount : 0,
                     import_parameters_message : "",
-                    playback_enabled : false,
-                    playback_trade : 0,
+                    move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
+ 
                 }},
     methods: {
 
@@ -90,12 +89,9 @@ var app = Vue.createApp({
                 case "update_session":
                     app.takeUpdateSession(messageData);
                     break;
-                case "update_valuecost":
-                    app.takeUpdateValuecost(messageData);
-                    break;
-                case "update_period":
-                    app.takeUpdatePeriod(messageData);
-                    break;   
+                case "update_parameterset":
+                    app.takeUpdateSession(messageData);
+                    break;                  
                 case "import_parameters":
                     app.takeImportParameters(messageData);
                     break;
@@ -111,12 +107,6 @@ var app = Vue.createApp({
                 case "next_period":
                     app.takeNextPeriod(messageData);
                     break;   
-                case "submit_bid_offer":
-                    app.take_submit_bid_offer(messageData); 
-                    break;       
-                case "undo_bid_offer":
-                    app.take_undo_bid_offer(messageData);
-                    break;
             }
 
             app.working = false;
@@ -147,31 +137,18 @@ var app = Vue.createApp({
             {
                 app.$data.show_parameters = false;
 
-                app.$data.show_bids_offers_graph = true;
-                app.$data.show_supply_demand_graph = false;
-                app.$data.show_equilibrium_price_graph = false;
-                app.$data.show_trade_line_graph = false;
-                app.$data.show_gains_from_trade_graph = false;
-
                 if(app.$data.session.finished)
                 {
-                    app.$data.current_visible_period = 1;
                     app.$data.session.current_period = 1;
                 }
                 else
                 {
-                    app.$data.current_visible_period = app.$data.session.current_period;
+                    
                 }
             }
             else
             {
                 app.$data.show_parameters = true;
-
-                app.$data.show_bids_offers_graph = false;
-                app.$data.show_supply_demand_graph = true;
-                app.$data.show_equilibrium_price_graph = true;
-                app.$data.show_trade_line_graph = false;
-                app.$data.show_gains_from_trade_graph = false;
             }
 
             app.updateMoveOnButtonText();
@@ -292,10 +269,8 @@ var app = Vue.createApp({
 
     mounted(){
         $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession); 
-        $('#valuecostModal').on("hidden.bs.modal", this.hideEditValuecost); 
-        $('#editPeriodModal').on("hidden.bs.modal", this.hideEditPeriod); 
         $('#importParametersModal').on("hidden.bs.modal", this.hideImportParameters); 
-        $('#parameterSetModal').on("hidden.bs.modal", this.hideUploadParameters);
+        $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
     },
 
 }).mount('#app');
