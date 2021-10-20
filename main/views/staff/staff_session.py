@@ -43,6 +43,17 @@ class StaffSessionView(SingleObjectMixin, View):
         parameters = Parameters.objects.first()
         session = self.get_object()
 
+        parameterset_form_ids=[]
+        for i in ParameterSetForm():
+            parameterset_form_ids.append(i.html_name)
+        
+        parameterset_type_form_ids=[]
+        for i in ParameterSetTypeForm():
+            parameterset_type_form_ids.append(i.html_name)
+
+        parameterset_type_player_form_ids=[]
+        for i in ParameterSetTypePlayerForm():
+            parameterset_type_player_form_ids.append(i.html_name)
 
         return render(request=request,
                       template_name=self.template_name,
@@ -52,6 +63,9 @@ class StaffSessionView(SingleObjectMixin, View):
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_type_form" : ParameterSetTypeForm(),
                                "parameter_set_type_player_form" : ParameterSetTypePlayerForm(),
+                               "parameterset_form_ids" : parameterset_form_ids,
+                               "parameterset_type_form_ids" : parameterset_type_form_ids,
+                               "parameterset_type_player_form_ids" : parameterset_type_player_form_ids,
                                "import_parameters_form" : ImportParametersForm(user=request.user),                               
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',

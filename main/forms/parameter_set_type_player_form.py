@@ -10,10 +10,14 @@ class ParameterSetTypePlayerForm(forms.ModelForm):
     '''
     parameterset type player edit form
     '''
-    title = forms.CharField(label='Title',
-                            widget=forms.TextInput(attrs={"v-model":"session.title",
-                                                           "v-on:keyup.enter":"sendUpdateSession()"}))
+    id_label = forms.CharField(label='Player Label',
+                               widget=forms.TextInput(attrs={"v-model":"current_parameter_set_type_player.id_label",}))
+    
+    location = forms.CharField(label='Screen Location (1-8)',
+                               widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_type_player.location",
+                                                               "step":"1",
+                                                                "min":"1"}))
 
     class Meta:
         model=ParameterSetTypePlayer
-        fields =['title']
+        fields =['id_label', 'location']

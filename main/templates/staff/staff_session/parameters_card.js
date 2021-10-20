@@ -4,7 +4,7 @@ sendImportParameters(){
     
     app.$data.working = true;
     app.sendMessage("import_parameters", {"sessionID" : app.$data.sessionID,
-                                            "formData" : $("#importParametersForm").serializeArray(),});
+                                          "formData" : $("#importParametersForm").serializeArray(),});
 },
 
 /** show parameters copied from another period 
@@ -15,7 +15,6 @@ takeImportParameters(){
 
     if(messageData.status.status == "success")
     {
-        app.$data.current_visible_period = 1;
         app.takeGetSession(messageData);       
         app.$data.import_parameters_message = messageData.status.message;
         //$('#importParametersModal').modal('hide');    
@@ -143,6 +142,48 @@ showImportParameters:function(){
 */
 hideImportParameters:function(){
     
+},
+
+/**show edit paramter set
+ */
+showEditParameterset:function(){
+    
+    var myModal = new bootstrap.Modal(document.getElementById('editParametersetModal'), {
+        keyboard: false
+        })
+
+    myModal.toggle();
+},
+
+/** hide edit session modal
+*/
+hideEditParameterset:function(){
+    
+},
+
+/** copy parameters from another period
+*/
+sendUpdateParameterset(){
+    
+    app.$data.working = true;
+    app.sendMessage("update_parameterset", {"sessionID" : app.$data.sessionID,
+                                            "formData" : $("#parametersetForm").serializeArray(),});
+},
+
+/** show parameters copied from another period 
+*/
+takeUpdateParameterset(){
+    //app.$data.cancelModal=false;
+    //app.clearMainFormErrors();
+
+    if(messageData.status.status == "success")
+    {
+        app.takeGetSession(messageData);                   
+    } 
+    else
+    {
+        app.$data.import_parameters_message = messageData.status.message;
+    } 
 },
         
        

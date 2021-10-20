@@ -18,7 +18,7 @@ class ParameterSetTypePlayer(models.Model):
 
     parameter_set_type = models.ForeignKey(ParameterSetType, on_delete=models.CASCADE,  related_name="parameter_set_type_players")
 
-    id_label = models.CharField(verbose_name='ID Label', max_length = 1, default="1")      #id label shown on screen to subjects
+    id_label = models.CharField(verbose_name='ID Label', max_length = 2, default="1")      #id label shown on screen to subjects
     location = models.IntegerField(verbose_name='Location number (1-8)', default=1)        #location number of 1 to 8
     period_groups = models.JSONField(verbose_name='Group by period', default=dict)         #list of group membershiop by period 
 

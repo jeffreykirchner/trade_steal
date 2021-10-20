@@ -10,12 +10,6 @@ start_experiment(){
 */
 takeStartExperiment(messageData){
     app.takeGetSession(messageData);
-    app.$data.current_visible_period = 1;
-    app.$data.show_bids_offers_graph = true;
-    app.$data.show_supply_demand_graph = false;
-    app.$data.show_equilibrium_price_graph = false;
-    app.$data.show_trade_line_graph = false;
-    app.$data.show_gains_from_trade_graph = false;
 },
 
 /**reset experiment, remove all bids, asks and trades
@@ -34,8 +28,6 @@ reset_experiment(){
 */
 takeResetExperiment(messageData){
     app.takeGetSession(messageData);
-    app.$data.current_visible_period = 1;
-    app.$data.bid_offer_message = "";
 },
 
 /**advance to next period
@@ -65,15 +57,11 @@ takeNextPeriod(messageData){
     
     app.$data.session.current_period = messageData.data.current_period;
     app.$data.session.finished = messageData.data.finished;
-    
-    app.$data.current_visible_period = app.$data.session.current_period;
-    app.$data.bid_offer_message = "";
 
     app.updateMoveOnButtonText();
 
     if(app.$data.session.finished)
     {
-        app.$data.current_visible_period = 1;
         app.$data.session.current_period = 1;
     }
 },

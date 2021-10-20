@@ -7,59 +7,6 @@
         </span>
     </div>
     <div class="card-body">    
-        <table class="table table-hover table-condensed table-responsive-md" v-if="session.session_periods.length > 0">                            
-
-            <thead>
-                <th scope="col">
-                   #
-                </th> 
-                <th scope="col" style="text-align: center;">
-                    Buyer                             
-                </th>
-                <th scope="col" style="text-align: center;">
-                    Seller
-                </th>
-                <th scope="col" style="text-align: center;">
-                    Price
-                </th>                                                      
-            </thead>
-
-            <tbody id="trade_list" style="font-size: large;">                                                  
-                <tr v-for="(t, index) in session.session_periods[session.current_period - 1].trade_list" 
-                       v-bind:key="t.id" 
-                       v-bind:style="playback_enabled && playback_trade==index && {'background-color':'lightyellow'}">                                                                          
-                    <td class="pt-1 pb-1"> 
-                        [[index + 1]]                                        
-                    </td>
-                    <td style="text-align: center;" class="pt-1 pb-1"> 
-                       B[[t.buyer__session_subject__id_number]]                                 
-                    </td>
-                    <td style="text-align: center;" class="pt-1 pb-1">    
-                        S[[t.seller__session_subject__id_number]]                                                              
-                    </td>
-                    <td style="text-align: center;" class="pt-1 pb-1">
-                        $[[t.trade_price]]   
-                    </td>
-                </tr>                                                    
-            </tbody>
-
-            <tfoot v-show="session.session_periods[session.current_period - 1].trade_list.length == 0">
-                <tr>
-                    <td>
-                        No Trades
-                    </td>
-                    <td>
-
-                    </td>
-                    <td> 
-
-                    </td>
-                    <td>
-
-                    </td>
-                </tr>
-            </tfoot>
-            
-        </table>
+        
     </div>                    
 </div>

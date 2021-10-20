@@ -11,48 +11,6 @@
     </div>
     <div class="card-body"> 
         
-        <div class="row justify-content-center">
-            <div class = "col-md-4 mt-2 ps-1 pe-1">
-                <input type="text"
-                       ref="bid_offer_id" 
-                       class="form-control"
-                       placeholder="ID"
-                       title="Example: s1, b10"
-                       v-on:keyup.enter="submit_bid_offer()"
-                       v-model="bid_offer_id">
-            </div>
-            <div class = "col-md-4 mt-2 ps-0 pe-0">
-                <input type="text"
-                       class="form-control"
-                       placeholder="Amount"
-                       title="Example: 2, 3.25, 10.5"
-                       v-on:keyup.enter="submit_bid_offer()"
-                       v-model="bid_offer_amount">
-            </div>
-            <div class = "col-md-2 mt-2 ps-1 pe-0">
-                <button type="button"
-                        class="btn btn-outline-success"
-                        title="Submit bid or offer"
-                        v-on:click="submit_bid_offer()"
-                        v-bind:disabled="session.started == false || reconnecting || working">
-                    <i class="fas fa-sign-in-alt"></i>
-                </button>
-            </div>
-            <div class = "col-md-2 mt-2 ps-0 pe-0 text-end">
-                <button type="button"
-                        class="btn btn-outline-danger"
-                        title="Undo bid or offer"
-                        v-on:click="undo_bid_offer()"
-                        v-bind:disabled="session.started == false || reconnecting || working">
-                    <i class="fas fa-undo"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class = "col col-md-10 offset-md-1 mt-2 text-center">
-                [[bid_offer_message]]
-            </div>
-        </div>    
+                
     </div>                    
 </div> 

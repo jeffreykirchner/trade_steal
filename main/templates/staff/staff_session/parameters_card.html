@@ -24,27 +24,55 @@
                     title="Import parameters from another session.">
                 Import <i class="fas fa-file-import"></i>
             </button>
-            <button class="btn btn-outline-secondary me-1"
-                    type="button" 
-                    v-bind:disabled="reconnecting || working" 
-                    v-on:click="show_parameters = !show_parameters"
-                    title="Hide or show parameters">
-                <span v-if="show_parameters">
-                    Hide <i class="fas fa-eye-slash"></i>
-                </span>
-                <span v-else>
-                    Show <i class="fas fa-eye"></i>
-                </span>
-            </button> 
+             
         </span>
         
     </div>
-    <div class="card-body" v-show="show_parameters"> 
-
-        <!-- period count -->
-        <div class="row mb-2 border-bottom pb-2">
-                       
+    <div class="card-body" v-show="show_parameters">        
+        
+        <div class="row justify-content-center">
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.period_count.label}}: [[session.parameter_set.period_count]]
+            </div>
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.period_length_production.label}}: [[session.parameter_set.period_length_production]]
+            </div>
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.period_length_trade.label}}: [[session.parameter_set.period_length_trade]]
+            </div>
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.break_period_frequency.label}}: [[session.parameter_set.break_period_frequency]]
+            </div>
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.allow_stealing.label}}: <span v-if="session.parameter_set.allow_stealing">Yes</span><span v-else>No</span>                
+            </div>            
         </div>  
-       
+        <div class="row justify-content-center">
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.good_one_label.label}}: [[session.parameter_set.good_one_label]]
+            </div>
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.good_two_label.label}}: [[session.parameter_set.good_two_label]]
+            </div>
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.good_one_rgb_color.label}}: <span v-bind:style = "{color : session.parameter_set.good_one_rgb_color}">
+                                                                    [[session.parameter_set.good_one_rgb_color]]
+                                                                </span>
+            </div>
+            <div class="col-md-auto text-center">
+                {{parameter_set_form.good_two_rgb_color.label}}: <span v-bind:style = "{color : session.parameter_set.good_two_rgb_color}">
+                                                                    [[session.parameter_set.good_two_rgb_color]]
+                                                                </span>
+            </div>            
+        </div>
+        <div class="row justify-content-center border-bottom">
+            <div class="col-md-auto text-center mb-2 mt-2">
+                <button class="btn btn-outline-primary"
+                        type="button"
+                        v-on:click="showEditParameterset()">
+                    Edit <i class="far fa-edit"></i>
+                </button>
+            </div>
+        </div>
     </div>                    
 </div> 

@@ -92,8 +92,6 @@ class ParameterSet(models.Model):
             player.save()
             player.update_group_period_count(self.period_count)
 
-
-
     def json(self):
         '''
         return json object of model
@@ -104,11 +102,10 @@ class ParameterSet(models.Model):
             "period_length_production" : self.period_length_production,
             "period_length_trade" : self.period_length_trade,
             "break_period_frequency" : self.break_period_frequency,
+            "allow_stealing" : "True" if self.allow_stealing else "False",
             "good_one_label" : self.good_one_label,
             "good_two_label" : self.good_two_label,
             "good_one_rgb_color" : self.good_one_rgb_color,
             "good_two_rgb_color" : self.good_two_rgb_color,
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
         }
-    
-
