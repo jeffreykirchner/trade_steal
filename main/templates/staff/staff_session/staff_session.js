@@ -90,7 +90,7 @@ var app = Vue.createApp({
                     app.takeUpdateSession(messageData);
                     break;
                 case "update_parameterset":
-                    app.takeUpdateSession(messageData);
+                    app.takeUpdateParameterset(messageData);
                     break;                  
                 case "import_parameters":
                     app.takeImportParameters(messageData);
@@ -228,14 +228,21 @@ var app = Vue.createApp({
                 $("#id_errors_" + item).remove();
             }
 
-            s = app.$data.valuecost_form_ids;
+            s = app.$data.parameterset_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
                 $("#id_errors_" + s[i]).remove();
             }
 
-            s = app.$data.period_form_ids;
+            s = app.$data.parameterset_type_form_ids;
+            for(var i in s)
+            {
+                $("#id_" + s[i]).attr("class","form-control");
+                $("#id_errors_" + s[i]).remove();
+            }
+
+            s = app.$data.parameterset_type_player_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");

@@ -22,7 +22,7 @@ class ParameterSet(models.Model):
 
     period_count = models.IntegerField(verbose_name='Number of periods', default=20)                          #number of periods in the experiment
     period_length_production = models.IntegerField(verbose_name='Period Length, Production', default=10)      #production phase length in seconds
-    period_length_trade = models.IntegerField(verbose_name='Period Length, Trade', default=10)                #trade phase length in seconds
+    period_length_trade = models.IntegerField(verbose_name='Period Length, Trade', default=90)                #trade phase length in seconds
     break_period_frequency = models.IntegerField(verbose_name='Break Period Fequency (Periods)', default=7)   #every x periods only allow chat, no production or trading
     allow_stealing = models.BooleanField(default=True, verbose_name = 'Allow Stealing')                       #if true subjects can take from other users
 

@@ -17,6 +17,9 @@ from main.consumers import get_session
 from main.views import StaffSessionView
 
 from main.forms import SessionForm
+from main.forms import ParameterSetForm
+
+from main.models import Session
 
 class StaffSessionConsumer(SocketConsumerMixin):
     '''
@@ -59,51 +62,17 @@ class StaffSessionConsumer(SocketConsumerMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
-    async def update_subject_count(self, event):
+    async def update_parameterset(self, event):
         '''
-        add or remove a buyer or seller
-        '''                
-        #update subject count
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_update_subject_count)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
-
-        message = {}
-        message["messageType"] = "update_session"
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-    
-    async def update_period_count(self, event):
-        '''
-        change the number of periods in a session
+        update a parameterset
         '''
         #update subject count
         message_data = {}
-        message_data["status"] = await sync_to_async(take_update_period_count)(event["message_text"])
-
+        message_data["status"] = await sync_to_async(take_update_parameterset)(event["message_text"])
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_session"
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-    
-    async def update_period(self, event):
-        '''
-        update a period parameters
-        '''
-        #update subject count
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_update_period)(event["message_text"])
-
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
-
-        message = {}
-        message["messageType"] = "update_period"
+        message["messageType"] = "update_parameterset"
         message["messageData"] = message_data
 
         # Send message to WebSocket
@@ -219,88 +188,29 @@ def take_update_session_form(data):
     logger.info("Invalid session form")
     return {"status":"fail", "errors":dict(form.errors.items())}
 
-def take_update_subject_count(data):
+def take_update_parameterset(data):
     '''
-    take update to buyer or seller count for sessio
-    param: data {"type":"buyer or seller","adjustment":"-1 or 1"} update to buyer or seller count
-    '''
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Update Buyer or Seller count: {data}")
-
-    subject_type = data["type"]
-    adjustment = data["adjustment"]
-    session_id = data["sessionID"]
-
-    session = Session.objects.get(id=session_id)
-
-    parameter_set = session.parameter_set
-
-    if parameter_set == None:
-        return "fail"
-
-    if subject_type == "SELLER":
-        if adjustment == 1:
-           parameter_set.number_of_sellers += 1
-        elif parameter_set.number_of_sellers > 1 :
-            parameter_set.number_of_sellers -= 1
-        else:
-            return "fail"
-    else:
-        if adjustment == 1:
-           parameter_set.number_of_buyers += 1
-        elif parameter_set.number_of_buyers > 1 :
-            parameter_set.number_of_buyers -= 1
-        else:
-            return "fail"    
-
-    parameter_set.save()
-    
-    return parameter_set.update_subject_counts()
-
-def take_update_period_count(data):
-    '''
-    update the number of periods
+    update parameterset
     '''   
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Update period count: {data}")
-
-    adjustment = data["adjustment"]
-    session_id = data["sessionID"]
-
-    session = Session.objects.get(id=session_id)
-
-    parameter_set = session.parameter_set
-
-    if adjustment == 1:
-        return parameter_set.add_session_period()
-    else:
-        return parameter_set.remove_session_period()
-
-def take_update_period(data):
-    '''
-    update period parameters
-    '''   
-
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Update period parameters: {data}")
+    logger.info(f"Update parameters: {data}")
 
     session_id = data["sessionID"]
-    period_id = data["periodID"]
-
     form_data = data["formData"]
 
     try:        
-        session_period = ParameterSetPeriod.objects.get(id=period_id)
+        session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
-        logger.warning(f"take_update_period session period, not found ID: {period_id}")
+        logger.warning(f"take_update_take_update_parameterset session, not found ID: {session_id}")
+        return
     
     form_data_dict = {}
 
     for field in form_data:            
         form_data_dict[field["name"]] = field["value"]
 
-    form = PeriodForm(form_data_dict, instance=session_period)
+    form = ParameterSetForm(form_data_dict, instance=session.parameter_set)
 
     if form.is_valid():
         #print("valid form")                
@@ -412,33 +322,3 @@ def take_next_period(data):
     return {"status" : status,
             "current_period" : session.current_period,
             "finished" : session.finished}
-
-
-    '''
-    take add to all values or costs
-    '''   
-
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Take add to all values or costs: {data}")
-
-    session_id = data["sessionID"]
-    period = data["currentPeriod"]
-    values_or_costs = data["valueOrCost"]
-    amount = data["amount"]
-
-    session = Session.objects.get(id=session_id)
-    parameter_set = session.parameter_set
-
-    #check amount is a valid deciamal amount
-    try:
-        amount = Decimal(amount)
-    except DecimalException: 
-              
-        message = f"Error: Invalid amount, not a decimal."
-        logger.warning(f'take_submit_bid_offer: {message}')
-
-        return "fail"
-
-    status = parameter_set.add_to_values_or_costs(values_or_costs, period, amount)
-
-    return status
