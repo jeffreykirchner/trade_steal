@@ -19,7 +19,7 @@ class ParameterSetType(models.Model):
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE,  related_name="parameter_set_types")
 
-    subject_type = models.CharField(max_length=100, choices=SubjectType.choices, default=SubjectType.BLUE)         #type of subject
+    subject_type = models.CharField(max_length=100, choices=SubjectType.choices, default=SubjectType.ONE)         #type of subject
      
     good_one_amount =  models.IntegerField(verbose_name='Good One Amount', default=1)         #amount of good one needed to earn 1 cent
     good_two_amount =  models.IntegerField(verbose_name='Good Two Amount', default=1)         #amount of good two needed to earn 1 cent
@@ -44,6 +44,8 @@ class ParameterSetType(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['parameter_set', 'subject_type'], name='unique_player_type'),
         ]
+        ordering = ['subject_type']
+
 
     def from_dict(self, source):
         '''

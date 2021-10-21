@@ -53,7 +53,7 @@ class StaffSessionConsumer(SocketConsumerMixin):
 
         #build response
         message_data = {}
-        message_data = await take_update_session_form(event["message_text"])
+        message_data =  await sync_to_async(take_update_session_form)(event["message_text"])
 
         message = {}
         message["messageType"] = event["type"]

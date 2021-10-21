@@ -26,11 +26,11 @@ class ParameterSet(models.Model):
     break_period_frequency = models.IntegerField(verbose_name='Break Period Fequency (Periods)', default=7)   #every x periods only allow chat, no production or trading
     allow_stealing = models.BooleanField(default=True, verbose_name = 'Allow Stealing')                       #if true subjects can take from other users
 
-    good_one_label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Blue")      #label for good one
-    good_two_label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Red")       #label for good two
+    good_one_label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Red")        #label for good one
+    good_two_label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Blue")       #label for good two
 
-    good_one_rgb_color =  models.CharField(verbose_name='Good One RGB Color', max_length = 10, default="#6495ED")      #rgb color of good one
-    good_two_rgb_color =  models.CharField(verbose_name='Good Two RGB Color', max_length = 10, default="#DC143C")      #rgb color of good two
+    good_one_rgb_color =  models.CharField(verbose_name='Good One RGB Color', max_length = 10, default="#DC143C")      #rgb color of good one
+    good_two_rgb_color =  models.CharField(verbose_name='Good Two RGB Color', max_length = 10, default="#6495ED")      #rgb color of good two
 
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -47,44 +47,44 @@ class ParameterSet(models.Model):
         default setup
         '''
 
-        #blue type parameters
-        parameter_set_type_blue = main.models.ParameterSetType()
-        parameter_set_type_blue.parameter_set = self
-        parameter_set_type_blue.subject_type = globals.SubjectType.BLUE
+        #one type parameters
+        parameter_set_type_one = main.models.ParameterSetType()
+        parameter_set_type_one.parameter_set = self
+        parameter_set_type_one.subject_type = globals.SubjectType.ONE
 
-        parameter_set_type_blue.good_one_production_1 = Decimal('0')
-        parameter_set_type_blue.good_one_production_2 = Decimal('2.530')
-        parameter_set_type_blue.good_one_production_3 = Decimal('1')
+        parameter_set_type_one.good_one_production_1 = Decimal('0')
+        parameter_set_type_one.good_one_production_2 = Decimal('0.411096')
+        parameter_set_type_one.good_one_production_3 = Decimal('2.5')
 
-        parameter_set_type_blue.good_two_production_1 = Decimal('0')
-        parameter_set_type_blue.good_two_production_2 = Decimal('1.1')
-        parameter_set_type_blue.good_two_production_3 = Decimal('2')
+        parameter_set_type_one.good_two_production_1 = Decimal('0')
+        parameter_set_type_one.good_two_production_2 = Decimal('2.254')
+        parameter_set_type_one.good_two_production_3 = Decimal('1')
 
-        parameter_set_type_blue.save()
+        parameter_set_type_one.save()
 
-        #red type parameters
-        parameter_set_type_red = main.models.ParameterSetType()
-        parameter_set_type_red.parameter_set = self
-        parameter_set_type_red.subject_type = globals.SubjectType.RED
+        #two type parameters
+        parameter_set_type_two = main.models.ParameterSetType()
+        parameter_set_type_two.parameter_set = self
+        parameter_set_type_two.subject_type = globals.SubjectType.TWO
 
-        parameter_set_type_red.good_one_production_1 = Decimal('0')
-        parameter_set_type_red.good_one_production_2 = Decimal('0.411096')
-        parameter_set_type_red.good_one_production_3 = Decimal('2.5')
+        parameter_set_type_two.good_one_production_1 = Decimal('0')
+        parameter_set_type_two.good_one_production_2 = Decimal('2.530')
+        parameter_set_type_two.good_one_production_3 = Decimal('1')
 
-        parameter_set_type_red.good_two_production_1 = Decimal('0')
-        parameter_set_type_red.good_two_production_2 = Decimal('2.254')
-        parameter_set_type_red.good_two_production_3 = Decimal('1')
+        parameter_set_type_two.good_two_production_1 = Decimal('0')
+        parameter_set_type_two.good_two_production_2 = Decimal('1.1')
+        parameter_set_type_two.good_two_production_3 = Decimal('2')
 
-        parameter_set_type_red.save()
+        parameter_set_type_two.save()
 
         #player setup
         for i in range(8):
             player = main.models.ParameterSetTypePlayer()
 
             if i % 2 == 0:
-                player.parameter_set_type = parameter_set_type_red
+                player.parameter_set_type = parameter_set_type_one
             else:
-                player.parameter_set_type = parameter_set_type_blue
+                player.parameter_set_type = parameter_set_type_two
 
             player.id_label = str(i+1)
             player.location = i+1

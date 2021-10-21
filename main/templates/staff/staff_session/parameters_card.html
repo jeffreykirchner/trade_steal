@@ -28,8 +28,13 @@
         </span>
         
     </div>
-    <div class="card-body" v-show="show_parameters">        
-        
+    <div class="card-body" v-if="show_parameters">        
+        <div class="row mt-2 fw-bold">
+            <div class="col-md text-center">
+                General Settings
+            </div>
+        </div>
+        <!-- parameterset settings -->
         <div class="row justify-content-center">
             <div class="col-md-auto text-center">
                 {{parameter_set_form.period_count.label}}: [[session.parameter_set.period_count]]
@@ -69,10 +74,67 @@
             <div class="col-md-auto text-center mb-2 mt-2">
                 <button class="btn btn-outline-primary"
                         type="button"
+                        title="General Settings"
                         v-on:click="showEditParameterset()">
                     Edit <i class="far fa-edit"></i>
                 </button>
             </div>
         </div>
+
+        <!-- parameterset type settings -->
+        <div class="row mt-4 fw-bold">
+            <div class="col-md text-center">
+                Player Type [[session.parameter_set.parameter_set_types[0].subject_type]] Settings
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-auto text-center">
+                [[session.parameter_set.good_one_label]] good(s) need to earn 1¢: [[session.parameter_set.parameter_set_types[0].good_one_amount]]
+            </div>
+            <div class="col-md-auto text-center">
+                [[session.parameter_set.good_two_label]] good(s) needed to earn 1¢: [[session.parameter_set.parameter_set_types[0].good_two_amount]]
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md text-center">
+                [[session.parameter_set.good_one_label]] and [[session.parameter_set.good_two_label]] Production = P1 + P2 x Time <sup>P3</sup>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <!-- good one production parameters -->
+            <div class="col-md-auto text-center">
+                [[session.parameter_set.good_one_label]] P1: [[parseFloat(session.parameter_set.parameter_set_types[0].good_one_production_1)]]  
+            </div>
+            <div class="col-md-auto text-center">
+                [[session.parameter_set.good_one_label]] P2: [[parseFloat(session.parameter_set.parameter_set_types[0].good_one_production_2)]]
+            </div>
+            <div class="col-md-auto text-center">
+                [[session.parameter_set.good_one_label]] P3: [[parseFloat(session.parameter_set.parameter_set_types[0].good_one_production_3)]]
+            </div>
+
+            <!-- good two production parameters -->
+            <div class="col-md-auto text-center">
+                [[session.parameter_set.good_two_label]] P1: [[parseFloat(session.parameter_set.parameter_set_types[0].good_two_production_1)]]
+            </div>
+            <div class="col-md-auto text-center">
+                [[session.parameter_set.good_two_label]] P2: [[parseFloat(session.parameter_set.parameter_set_types[0].good_two_production_2)]]
+            </div>
+            <div class="col-md-auto text-center">
+                [[session.parameter_set.good_two_label]] P3: [[parseFloat(session.parameter_set.parameter_set_types[0].good_two_production_3)]]
+            </div>
+        </div>
+
+        <div class="row justify-content-center border-bottom">
+            <div class="col-md-auto text-center mb-2 mt-2">
+                <button class="btn btn-outline-primary"
+                        type="button"
+                        title="Player Type One Settings"
+                        v-on:click="">
+                    Edit <i class="far fa-edit"></i>
+                </button>
+            </div>
+        </div>
+        
     </div>                    
 </div> 

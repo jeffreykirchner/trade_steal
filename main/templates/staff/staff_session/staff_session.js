@@ -28,7 +28,8 @@ var app = Vue.createApp({
                             good_two_label : "",
                             good_one_rgb_color : '#000000',
                             good_two_rgb_color : '#000000',
-                            parameter_set_types : [],                               
+                            parameter_set_types : [{good_one_amount:""},
+                                                   {good_one_amount:""}],                               
                         },
                         session_periods : [],
                     },
@@ -215,8 +216,8 @@ var app = Vue.createApp({
         {%include "staff/staff_session/parameters_card.js"%}
         {%include "staff/staff_session/graph_card.js"%}
         {%include "staff/staff_session/control_card.js"%}
-        {%include "staff/staff_session/input_card.js"%}
-        {%include "staff/staff_session/replay_card.js"%}
+        {%include "staff/staff_session/session_card.js"%}
+    
         
         /** clear form error messages
         */

@@ -11,5 +11,5 @@ class SubjectType(models.TextChoices):
     '''
     subject types
     '''
-    BLUE = 'Blue', _('Blue')
-    RED = 'Red', _('Red')
+    ONE = 'One', _('One')
+    TWO = 'Two', _('Two')
