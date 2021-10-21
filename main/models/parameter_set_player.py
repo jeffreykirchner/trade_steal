@@ -33,8 +33,8 @@ class ParameterSetPlayer(models.Model):
         return str(self.id)
 
     class Meta:
-        verbose_name = 'Parameter Set Type Player'
-        verbose_name_plural = 'Parameter Set Type Players'
+        verbose_name = 'Parameter Set Player'
+        verbose_name_plural = 'Parameter Set Players'
         ordering = ['id_label']
 
     def from_dict(self, source):

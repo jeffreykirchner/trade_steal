@@ -83,9 +83,9 @@ class ParameterSet(models.Model):
             player.parameter_set = self
 
             if i % 2 == 0:
-                player.parameter_set_type = parameter_set_type_one
+                player.subject_type = main.globals.SubjectType.ONE
             else:
-                player.parameter_set_type = parameter_set_type_two
+                player.subject_type = main.globals.SubjectType.TWO
 
             player.id_label = str(i+1)
             player.location = i+1
