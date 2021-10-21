@@ -6,17 +6,21 @@ from decimal import Decimal
 from django.db import models
 from django.db.utils import IntegrityError
 
-from main.models import ParameterSetType
+from main.models import ParameterSet
+
+from main.globals import SubjectType
 
 import main
 
 #experiment session parameters
-class ParameterSetTypePlayer(models.Model):
+class ParameterSetPlayer(models.Model):
     '''
     session player parameters 
     '''
 
-    parameter_set_type = models.ForeignKey(ParameterSetType, on_delete=models.CASCADE,  related_name="parameter_set_type_players")
+    parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
+
+    subject_type = models.CharField(max_length=100, choices=SubjectType.choices, default=SubjectType.ONE)         #type of subject
 
     id_label = models.CharField(verbose_name='ID Label', max_length = 2, default="1")      #id label shown on screen to subjects
     location = models.IntegerField(verbose_name='Location number (1-8)', default=1)        #location number of 1 to 8

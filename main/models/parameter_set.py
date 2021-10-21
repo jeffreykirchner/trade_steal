@@ -79,7 +79,8 @@ class ParameterSet(models.Model):
 
         #player setup
         for i in range(8):
-            player = main.models.ParameterSetTypePlayer()
+            player = main.models.ParameterSetPlayer()
+            player.parameter_set = self
 
             if i % 2 == 0:
                 player.parameter_set_type = parameter_set_type_one
@@ -108,4 +109,5 @@ class ParameterSet(models.Model):
             "good_one_rgb_color" : self.good_one_rgb_color,
             "good_two_rgb_color" : self.good_two_rgb_color,
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
+            "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
         }

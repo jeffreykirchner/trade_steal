@@ -77,6 +77,4 @@ class ParameterSetType(models.Model):
             "good_two_production_1" : self.good_two_production_1.normalize(),
             "good_two_production_2" : self.good_two_production_2.normalize(),
             "good_two_production_3" : self.good_two_production_3.normalize(),
-
-            "parameter_set_type_players" : [p.json() for p in self.parameter_set_type_players.all()],
         }

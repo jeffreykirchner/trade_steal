@@ -4,7 +4,7 @@ parameterset type player edit form
 
 from django import forms
 
-from main.models import ParameterSetTypePlayer
+from main.models import ParameterSetPlayer
 
 class ParameterSetTypePlayerForm(forms.ModelForm):
     '''
@@ -19,5 +19,5 @@ class ParameterSetTypePlayerForm(forms.ModelForm):
                                                                 "min":"1"}))
 
     class Meta:
-        model=ParameterSetTypePlayer
+        model=ParameterSetPlayer
         fields =['id_label', 'location']

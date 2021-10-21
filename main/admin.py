@@ -8,7 +8,7 @@ from main.forms import ParametersForm
 from main.models import Parameters
 from main.models import ParameterSet
 from main.models import ParameterSetType
-from main.models import ParameterSetTypePlayer
+from main.models import ParameterSetPlayer
 
 class ParametersAdmin(admin.ModelAdmin):
     '''
@@ -28,4 +28,4 @@ admin.site.register(Parameters, ParametersAdmin)
 
 admin.site.register(ParameterSet)
 admin.site.register(ParameterSetType)
-admin.site.register(ParameterSetTypePlayer)
+admin.site.register(ParameterSetPlayer)
