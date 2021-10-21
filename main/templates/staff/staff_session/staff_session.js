@@ -92,7 +92,10 @@ var app = Vue.createApp({
                     break;
                 case "update_parameterset":
                     app.takeUpdateParameterset(messageData);
-                    break;                  
+                    break;         
+                case "update_parameterset_type":
+                    app.takeUpdateParametersetType(messageData);
+                    break;     
                 case "import_parameters":
                     app.takeImportParameters(messageData);
                     break;
@@ -279,6 +282,7 @@ var app = Vue.createApp({
         $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession); 
         $('#importParametersModal').on("hidden.bs.modal", this.hideImportParameters); 
         $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
+        $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);
     },
 
 }).mount('#app');

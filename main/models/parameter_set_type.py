@@ -70,13 +70,13 @@ class ParameterSetType(models.Model):
             "good_one_amount" : self.good_one_amount,
             "good_two_amount" : self.good_two_amount,
 
-            "good_one_production_1" : self.good_one_production_1,
-            "good_one_production_2" : self.good_one_production_2,
-            "good_one_production_3" : self.good_one_production_3,
+            "good_one_production_1" : self.good_one_production_1.normalize(),
+            "good_one_production_2" : self.good_one_production_2.normalize(),
+            "good_one_production_3" : self.good_one_production_3.normalize(),
 
-            "good_two_production_1" : self.good_two_production_1,
-            "good_two_production_2" : self.good_two_production_2,
-            "good_two_production_3" : self.good_two_production_3,
+            "good_two_production_1" : self.good_two_production_1.normalize(),
+            "good_two_production_2" : self.good_two_production_2.normalize(),
+            "good_two_production_3" : self.good_two_production_3.normalize(),
 
             "parameter_set_type_players" : [p.json() for p in self.parameter_set_type_players.all()],
         }

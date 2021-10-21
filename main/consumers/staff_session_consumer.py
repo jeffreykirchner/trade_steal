@@ -14,12 +14,12 @@ from django.core.serializers.json import DjangoJSONEncoder
 from main.consumers import SocketConsumerMixin
 from main.consumers import get_session
 
-from main.views import StaffSessionView
-
 from main.forms import SessionForm
 from main.forms import ParameterSetForm
+from main.forms import ParameterSetTypeForm
 
 from main.models import Session
+from main.models import ParameterSetType
 
 class StaffSessionConsumer(SocketConsumerMixin):
     '''
@@ -66,13 +66,29 @@ class StaffSessionConsumer(SocketConsumerMixin):
         '''
         update a parameterset
         '''
-        #update subject count
+        #build response
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset)(event["message_text"])
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
         message["messageType"] = "update_parameterset"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def update_parameterset_type(self, event):
+        '''
+        update a parameterset type
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_type)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_type"
         message["messageData"] = message_data
 
         # Send message to WebSocket
@@ -214,6 +230,44 @@ def take_update_parameterset(data):
 
     if form.is_valid():
         #print("valid form")                
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid session form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_update_parameterset_type(data):
+    '''
+    update parameterset type
+    '''   
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset type: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_type_id = data["paramterset_type_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_type = ParameterSetType.objects.get(id=paramterset_type_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_type paramterset_type, not found ID: {paramterset_type_id}")
+        return
+    
+    form_data_dict = {}
+
+    for field in form_data:            
+        form_data_dict[field["name"]] = field["value"]
+    
+    form_data_dict["parameter_set_id"] = parameter_set_type.parameter_set.id
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetTypeForm(form_data_dict, instance=parameter_set_type)
+
+    if form.is_valid():
+        #print("valid form")             
         form.save()              
 
         return {"value" : "success"}                      
