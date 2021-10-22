@@ -47,14 +47,15 @@ var app = Vue.createApp({
                         good_two_production_2:0,
                         good_two_production_3:0,
                     },
-                    current_parameter_set_type_player : {
+                    current_parameter_set_player : {
                         id:0,
                         id_label:"",
-                        location:1,                        
+                        location:1,      
+                        subject_type:"",                  
                     },
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
                     parameterset_type_form_ids: {{parameterset_type_form_ids|safe}},
-                    parameterset_type_player_form_ids: {{parameterset_type_player_form_ids|safe}},
+                    parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
                     upload_file: null,
                     upload_file_name:'Choose File',
                     uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
@@ -95,6 +96,9 @@ var app = Vue.createApp({
                     break;         
                 case "update_parameterset_type":
                     app.takeUpdateParametersetType(messageData);
+                    break;     
+                case "update_parameterset_player":
+                    app.takeUpdateParametersetPlayer(messageData);
                     break;     
                 case "import_parameters":
                     app.takeImportParameters(messageData);
@@ -246,7 +250,7 @@ var app = Vue.createApp({
                 $("#id_errors_" + s[i]).remove();
             }
 
-            s = app.$data.parameterset_type_player_form_ids;
+            s = app.$data.parameterset_player_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
@@ -283,6 +287,7 @@ var app = Vue.createApp({
         $('#importParametersModal').on("hidden.bs.modal", this.hideImportParameters); 
         $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
         $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);
+        $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
     },
 
 }).mount('#app');

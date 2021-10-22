@@ -35,7 +35,7 @@ class ParameterSetPlayer(models.Model):
     class Meta:
         verbose_name = 'Parameter Set Player'
         verbose_name_plural = 'Parameter Set Players'
-        ordering = ['id_label']
+        ordering = ['location']
 
     def from_dict(self, source):
         '''
@@ -73,5 +73,6 @@ class ParameterSetPlayer(models.Model):
             "id" : self.id,
             "id_label" : self.id_label,
             "location" : self.location,
+            "subject_type" : self.subject_type,
             "period_groups" : self.period_groups,
         }

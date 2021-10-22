@@ -17,9 +17,11 @@ from main.consumers import get_session
 from main.forms import SessionForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetTypeForm
+from main.forms import ParameterSetPlayerForm
 
 from main.models import Session
 from main.models import ParameterSetType
+from main.models import ParameterSetPlayer
 
 class StaffSessionConsumer(SocketConsumerMixin):
     '''
@@ -93,6 +95,22 @@ class StaffSessionConsumer(SocketConsumerMixin):
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def update_parameterset_player(self, event):
+        '''
+        update a parameterset player
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_player)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_player"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))    
     
     async def import_parameters(self, event):
         '''
@@ -246,7 +264,7 @@ def take_update_parameterset_type(data):
     logger.info(f"Update parameterset type: {data}")
 
     session_id = data["sessionID"]
-    paramterset_type_id = data["paramterset_type_id"]
+    paramterset_type_id = data["parameterset_type_id"]
     form_data = data["formData"]
 
     try:        
@@ -259,12 +277,43 @@ def take_update_parameterset_type(data):
 
     for field in form_data:            
         form_data_dict[field["name"]] = field["value"]
+
+    form = ParameterSetTypeForm(form_data_dict, instance=parameter_set_type)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid session form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_update_parameterset_player(data):
+    '''
+    update parameterset player
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset player: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_player_id = data["paramterset_player_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_player = ParameterSetPlayer.objects.get(id=paramterset_player_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_type paramterset_type, not found ID: {paramterset_player_id}")
+        return
     
-    form_data_dict["parameter_set_id"] = parameter_set_type.parameter_set.id
+    form_data_dict = {}
+
+    for field in form_data:            
+        form_data_dict[field["name"]] = field["value"]
 
     logger.info(f'form_data_dict : {form_data_dict}')
 
-    form = ParameterSetTypeForm(form_data_dict, instance=parameter_set_type)
+    form = ParameterSetPlayerForm(form_data_dict, instance=parameter_set_player)
 
     if form.is_valid():
         #print("valid form")             
