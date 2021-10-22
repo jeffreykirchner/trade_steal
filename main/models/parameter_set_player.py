@@ -1,10 +1,8 @@
 '''
-session's period parameters
+session player parameters 
 '''
-from decimal import Decimal
 
 from django.db import models
-from django.db.utils import IntegrityError
 
 from main.models import ParameterSet
 
@@ -24,8 +22,7 @@ class ParameterSetPlayer(models.Model):
 
     id_label = models.CharField(verbose_name='ID Label', max_length = 2, default="1")      #id label shown on screen to subjects
     location = models.IntegerField(verbose_name='Location number (1-8)', default=1)        #location number of 1 to 8
-    period_groups = models.JSONField(verbose_name='Group by period', default=dict)         #list of group membershiop by period 
-
+    
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
 
@@ -45,8 +42,6 @@ class ParameterSetPlayer(models.Model):
         
         message = "Parameters loaded successfully."
 
-        
-
         return message
 
     def update_group_period_count(self, count):
@@ -54,14 +49,26 @@ class ParameterSetPlayer(models.Model):
         when period count changes update group with default 1 if needed
         '''
 
-        for i in range(count):
-            result = self.period_groups.get(i+1,-1)
+        current_groups = self.parameter_set_player_groups.all()
 
-            if result == -1:
-                self.period_groups[i+1] = {"group" : 1}
 
-        self.save()
+        if len(current_groups)<count:
+            # add more player groups
 
+            for i in range(len(current_groups)+1, count):
+                new_group = main.models.ParameterSetPlayerGroup()
+
+                new_group.parameter_set_player = self
+                new_group.group = 1
+                new_group.period_number = i+1
+
+                new_group.save()
+
+        elif len(current_groups)>count:
+            #remove excess groups
+            main.models.ParameterSetPlayerGroup.objects.filter(parameter_set_player=self,
+                                                   period_number__gt=count) \
+                                            .delete() 
 
     def json(self):
         '''
@@ -74,5 +81,5 @@ class ParameterSetPlayer(models.Model):
             "id_label" : self.id_label,
             "location" : self.location,
             "subject_type" : self.subject_type,
-            "period_groups" : self.period_groups,
+            "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
         }
