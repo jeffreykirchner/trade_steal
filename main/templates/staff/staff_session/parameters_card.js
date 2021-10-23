@@ -311,6 +311,65 @@ takeUpdateParametersetPlayer(messageData){
         app.displayErrors(messageData.status.errors);
     } 
 },
+
+/**show edit parameter set player group
+ */
+ showEditParametersetPlayerGroup:function(player_id, period_id){
+    app.clearMainFormErrors();
+    app.$data.cancelModal=true;
+    app.$data.parametersetPlayerGroupBeforeEdit = Object.assign({}, app.$data.session.parameter_set.parameter_set_players[player_id].period_groups[period_id]);
+    app.$data.parametersetPlayerBeforeEditIndex = player_id;
+    app.$data.parametersetPlayerGroupBeforeEditIndex = period_id;
+    app.$data.current_parameter_set_player_group = app.$data.session.parameter_set.parameter_set_players[player_id].period_groups[period_id];
+
+    var myModal = new bootstrap.Modal(document.getElementById('editParametersetPlayerGroupModal'), {
+        keyboard: false
+        })
+
+    myModal.toggle();
+},
+
+/** hide edit parmeter set player group
+*/
+hideEditParametersetPlayerGroup:function(){
+    if(app.$data.cancelModal)
+    {
+        Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex].period_groups[app.$data.parametersetPlayerGroupBeforeEditIndex],
+                      app.$data.parametersetPlayerGroupBeforeEdit);
+        app.$data.parametersetPlayerBeforeEdit=null;
+    }
+},
+
+/** update parameterset player group settings
+*/
+sendUpdateParametersetPlayerGroup(){
+    
+    app.$data.working = true;
+    app.sendMessage("update_parameterset_player", {"sessionID" : app.$data.sessionID,
+                                                   "paramterset_player_id" : app.$data.current_parameter_set_player.id,
+                                                   "formData" : $("#parametersetPlayerForm").serializeArray(),});
+},
+
+/** handle result of updating parameter set player group
+*/
+takeUpdateParametersetPlayerGroup(messageData){
+    //app.$data.cancelModal=false;
+    //app.clearMainFormErrors();
+
+    app.$data.cancelModal=false;
+    app.clearMainFormErrors();
+
+    if(messageData.status.value == "success")
+    {
+        app.takeGetSession(messageData);       
+        $('#editParametersetPlayerModal').modal('hide');            
+    } 
+    else
+    {
+        app.$data.cancelModal=true;                           
+        app.displayErrors(messageData.status.errors);
+    } 
+},
         
        
 

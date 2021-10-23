@@ -55,7 +55,7 @@ class ParameterSetPlayer(models.Model):
         if len(current_groups)<count:
             # add more player groups
 
-            for i in range(len(current_groups)+1, count):
+            for i in range(len(current_groups)+1, count+1):
                 new_group = main.models.ParameterSetPlayerGroup()
 
                 new_group.parameter_set_player = self

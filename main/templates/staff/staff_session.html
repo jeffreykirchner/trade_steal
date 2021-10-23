@@ -20,6 +20,14 @@
     .player_table_row {
         cursor: pointer;
     }
+
+    .player_table_cell{
+        cursor: pointer;
+    }
+
+    .player_table_cell:hover {
+        background-color:#ececec;
+    }
 </style>
 
 {%endblock head%}
@@ -31,6 +39,7 @@
 {%include "staff/staff_session/edit_parameterset_modal.html"%}
 {%include "staff/staff_session/edit_parameterset_type_modal.html"%}
 {%include "staff/staff_session/edit_parameterset_player_modal.html"%}
+{%include "staff/staff_session/edit_parameterset_player_group_modal.html"%}
 {%include "staff/staff_session/upload_parameters_modal.html"%}
 {%include "staff/staff_session/import_parameters_modal.html"%}
 

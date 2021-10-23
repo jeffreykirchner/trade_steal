@@ -9,3 +9,4 @@ from .import_parameters_form import ImportParametersForm
 from .parameter_set_form import ParameterSetForm
 from .parameter_set_type_form import ParameterSetTypeForm
 from .parameter_set_player_form import ParameterSetPlayerForm
+from .parameter_set_player_group_form import ParameterSetPlayerGroupForm

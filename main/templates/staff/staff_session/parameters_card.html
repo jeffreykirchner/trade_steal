@@ -200,6 +200,7 @@
         <div class="row justify-content-center">
             <!-- player settings -->
             <div class="col-md-auto text-center">
+                <caption style="caption-side:top;text-align: center;">Settings</caption>
                 <table class="table table-hover table-condensed table-responsive-lg"> 
                     <thead>
                         <tr>
@@ -233,17 +234,18 @@
             
             <!-- group settings -->
             <div class="col-md-auto text-center">
-                <table class="table table-hover table-condensed table-responsive-lg"> 
+                <caption style="caption-side:top;text-align: center;">Groups</caption>
+                <table class="table table-condensed table-responsive-lg"> 
                     <thead>
                         <tr>                             
-                            <th v-for="index in  session.parameter_set.period_count" :key="index" class = "m-1 p-1">
+                            <th v-for="index in session.parameter_set.period_count" :key="index" class = "m-1 p-1">
                                 P[[index]]
                             </th>                      
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_players" v-bind:key="p.id" v-on:click="showEditParametersetPlayer(index)" class="player_table_row">
-                            <td v-for="(g, index2) in p.period_groups" v-on:click="showEditParametersetPlayerGroup(index)" >
+                        <tr v-for="(p, index) in session.parameter_set.parameter_set_players" v-bind:key="p.id">
+                            <td v-for="(g, index2) in p.period_groups" v-on:click="showEditParametersetPlayerGroup(index, index2)" class="player_table_cell">
                                 G[[g.group_number]]
                             </td>          
                         </tr>

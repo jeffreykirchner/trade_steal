@@ -53,9 +53,15 @@ var app = Vue.createApp({
                         location:1,      
                         subject_type:"",                  
                     },
+                    current_parameter_set_player_group : {
+                        id : 0,
+                        group_number : 0,
+                        period :0,
+                    },
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
                     parameterset_type_form_ids: {{parameterset_type_form_ids|safe}},
                     parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
+                    parameterset_player_group_form_ids: {{parameterset_player_group_form_ids|safe}},
                     upload_file: null,
                     upload_file_name:'Choose File',
                     uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
@@ -288,6 +294,7 @@ var app = Vue.createApp({
         $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
         $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);
         $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
+        $('#editParametersetPlayerGroupModal').on("hidden.bs.modal", this.hideEditParametersetPlayerGroup);
     },
 
 }).mount('#app');

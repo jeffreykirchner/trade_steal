@@ -24,6 +24,7 @@ from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetTypeForm
 from main.forms import ParameterSetPlayerForm
+from main.forms import ParameterSetPlayerGroupForm
 
 class StaffSessionView(SingleObjectMixin, View):
     '''
@@ -54,6 +55,10 @@ class StaffSessionView(SingleObjectMixin, View):
         parameterset_player_form_ids=[]
         for i in ParameterSetPlayerForm():
             parameterset_player_form_ids.append(i.html_name)
+        
+        parameterset_player_group_form_ids=[]
+        for i in ParameterSetPlayerGroupForm():
+            parameterset_player_group_form_ids.append(i.html_name)
 
         return render(request=request,
                       template_name=self.template_name,
@@ -63,9 +68,11 @@ class StaffSessionView(SingleObjectMixin, View):
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_type_form" : ParameterSetTypeForm(),
                                "parameter_set_player_form" : ParameterSetPlayerForm(),
+                               "parameter_set_player_group_form" : ParameterSetPlayerGroupForm(),
                                "parameterset_form_ids" : parameterset_form_ids,
                                "parameterset_type_form_ids" : parameterset_type_form_ids,
                                "parameterset_player_form_ids" : parameterset_player_form_ids,
+                               "parameterset_player_group_form_ids" : parameterset_player_group_form_ids,
                                "import_parameters_form" : ImportParametersForm(user=request.user),                               
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',

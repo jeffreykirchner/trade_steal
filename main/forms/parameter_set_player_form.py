@@ -1,5 +1,5 @@
 '''
-parameterset type player edit form
+parameterset player edit form
 '''
 
 from django import forms
