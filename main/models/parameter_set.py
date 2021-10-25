@@ -93,6 +93,14 @@ class ParameterSet(models.Model):
             player.save()
             player.update_group_period_count(self.period_count)
 
+    def copy_groups_forward(self, period_number):
+        '''
+        copy the specifed period's group forward for all players
+        '''
+
+        for p in self.parameter_set_players.all():
+            p.copy_group_foward(period_number)
+
     def json(self):
         '''
         return json object of model

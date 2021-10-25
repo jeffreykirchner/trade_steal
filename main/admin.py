@@ -9,6 +9,7 @@ from main.models import Parameters
 from main.models import ParameterSet
 from main.models import ParameterSetType
 from main.models import ParameterSetPlayer
+from main.models import ParameterSetPlayerGroup
 
 class ParametersAdmin(admin.ModelAdmin):
     '''
@@ -29,3 +30,10 @@ admin.site.register(Parameters, ParametersAdmin)
 admin.site.register(ParameterSet)
 admin.site.register(ParameterSetType)
 admin.site.register(ParameterSetPlayer)
+
+class ParameterSetPlayerGroupAdmin(admin.ModelAdmin):
+
+    list_display = ['parameter_set_player', 'group_number', 'period']
+    ordering=['parameter_set_player', 'period']
+
+admin.site.register(ParameterSetPlayerGroup, ParameterSetPlayerGroupAdmin)

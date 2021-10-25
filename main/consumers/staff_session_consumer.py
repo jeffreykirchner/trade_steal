@@ -18,10 +18,12 @@ from main.forms import SessionForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetTypeForm
 from main.forms import ParameterSetPlayerForm
+from main.forms import ParameterSetPlayerGroupForm
 
 from main.models import Session
 from main.models import ParameterSetType
 from main.models import ParameterSetPlayer
+from main.models import ParameterSetPlayerGroup
 
 class StaffSessionConsumer(SocketConsumerMixin):
     '''
@@ -112,6 +114,37 @@ class StaffSessionConsumer(SocketConsumerMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))    
     
+    async def update_parameterset_player_group(self, event):
+        '''
+        update a parameterset group
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_player_group)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_player_group"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
+    
+    async def copy_group_forward(self, event):
+        '''
+        copy groupds forward from the specified period
+        '''
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_copy_groups_forward)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "copy_group_forward"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
+
     async def import_parameters(self, event):
         '''
         import parameters from another session
@@ -324,6 +357,59 @@ def take_update_parameterset_player(data):
     logger.info("Invalid session form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
+def take_update_parameterset_player_group(data):
+    '''
+    update parameterset player group
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset player group: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_player_group_id = data["paramterset_player_group_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_player_group = ParameterSetPlayerGroup.objects.get(id=paramterset_player_group_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_type paramterset_type, not found ID: {paramterset_player_group_id}")
+        return
+    
+    form_data_dict = {}
+
+    for field in form_data:            
+        form_data_dict[field["name"]] = field["value"]
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetPlayerGroupForm(form_data_dict, instance=parameter_set_player_group)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid session form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_copy_groups_forward(data):
+    '''
+    copy groups forward from the specified period
+    '''   
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Copy groups forward: {data}")
+
+    session_id = data["sessionID"]
+    period_number = data["period_number"]
+
+    try:        
+        session = Session.objects.get(id=session_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_copy_groups_forward, session not found ID: {session_id}")
+        return
+
+    session.parameter_set.copy_groups_forward(period_number)
+    
 def take_import_parameters(data):
     '''
     import parameters from another session

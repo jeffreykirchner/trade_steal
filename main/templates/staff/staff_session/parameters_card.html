@@ -75,6 +75,7 @@
                 <button class="btn btn-outline-primary"
                         type="button"
                         title="General Settings"
+                        v-bind:disabled="session.started || reconnecting || working"
                         v-on:click="showEditParameterset()">
                     Edit <i class="far fa-edit"></i>
                 </button>
@@ -130,6 +131,7 @@
                 <button class="btn btn-outline-primary"
                         type="button"
                         title="Player Type One Settings"
+                        v-bind:disabled="session.started || reconnecting || working"
                         v-on:click="showEditParametersetType(0)">
                     Edit <i class="far fa-edit"></i>
                 </button>
@@ -185,6 +187,7 @@
                 <button class="btn btn-outline-primary"
                         type="button"
                         title="Player Type One Settings"
+                        v-bind:disabled="session.started || reconnecting || working"
                         v-on:click="showEditParametersetType(1)">
                     Edit <i class="far fa-edit"></i>
                 </button>
@@ -199,9 +202,9 @@
         </div>
         <div class="row justify-content-center">
             <!-- player settings -->
-            <div class="col-md-auto text-center">
-                <caption style="caption-side:top;text-align: center;">Settings</caption>
-                <table class="table table-hover table-condensed table-responsive-lg"> 
+            <div class="col-md-auto text-center">                
+                <div class="table-responsive">
+                <table class="table table-condensed"> 
                     <thead>
                         <tr>
                             <th scope="col" class = "m-1 p-1">
@@ -213,44 +216,58 @@
                             <th scope="col" class = "text-center m-1 p-1">
                                 Type
                             </th>
+                            <th class = "text-center m-1 p-1">
+                                Groups:
+                            </th>
+                            <th v-for="index in session.parameter_set.period_count" :key="index" class = "m-1 p-1">
+                                P[[index]]
+                            </th>
                             
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_players" v-bind:key="p.id" v-on:click="showEditParametersetPlayer(index)" class="player_table_row">
-                            <td>
+                        <tr v-for="(p, index) in session.parameter_set.parameter_set_players" v-bind:key="p.id">
+                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
                                 [[p.id_label]]
                             </td>
-                            <td>
+                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
                                 [[p.location]]
                             </td>
-                            <td>
+                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
                                 [[p.subject_type]]
+                            </td>
+                            <td>
+                                
+                            </td>
+                            <td v-for="(g, index2) in p.period_groups" v-on:click="showEditParametersetPlayerGroup(index, index2)" class="player_table_cell">
+                                G[[g.group_number]]
                             </td>
                         </tr>
                     </tbody>
-                </table>
-            </div>
-            
-            <!-- group settings -->
-            <div class="col-md-auto text-center">
-                <caption style="caption-side:top;text-align: center;">Groups</caption>
-                <table class="table table-condensed table-responsive-lg"> 
-                    <thead>
-                        <tr>                             
-                            <th v-for="index in session.parameter_set.period_count" :key="index" class = "m-1 p-1">
-                                P[[index]]
-                            </th>                      
+                    <tfoot>
+                        <!-- copy groups forward -->
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td v-for="(g, index) in session.parameter_set.parameter_set_players[0].period_groups">
+                                <button class="btn btn-outline-primary btn-sm"
+                                        type="button"
+                                        title="Copy groups forward"
+                                        v-bind:disabled="session.started || reconnecting || working"
+                                        v-on:click="sendCopyGroupForward(index+1)">
+                                        <i class="fas fa-angle-double-right"></i>
+                                </button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody id="player_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_players" v-bind:key="p.id">
-                            <td v-for="(g, index2) in p.period_groups" v-on:click="showEditParametersetPlayerGroup(index, index2)" class="player_table_cell">
-                                G[[g.group_number]]
-                            </td>          
-                        </tr>
-                    </tbody>
+                    </tfoot>
                 </table>
+                </div>
             </div>
         </div>  
         

@@ -106,6 +106,12 @@ var app = Vue.createApp({
                 case "update_parameterset_player":
                     app.takeUpdateParametersetPlayer(messageData);
                     break;     
+                case "update_parameterset_player_group":
+                    app.takeUpdateParametersetPlayerGroup(messageData);
+                    break;
+                case "copy_group_forward":
+                    app.takeCopyGroupForward(messageData);
+                    break;
                 case "import_parameters":
                     app.takeImportParameters(messageData);
                     break;
@@ -257,6 +263,13 @@ var app = Vue.createApp({
             }
 
             s = app.$data.parameterset_player_form_ids;
+            for(var i in s)
+            {
+                $("#id_" + s[i]).attr("class","form-control");
+                $("#id_errors_" + s[i]).remove();
+            }
+
+            s = app.$data.parameterset_player_group_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");

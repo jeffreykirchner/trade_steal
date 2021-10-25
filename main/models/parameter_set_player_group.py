@@ -27,6 +27,9 @@ class ParameterSetPlayerGroup(models.Model):
         verbose_name = 'Parameter Set Player Group'
         verbose_name_plural = 'Parameter Set Player Groups'
         ordering = ['period']
+        constraints = [
+            models.UniqueConstraint(fields=['parameter_set_player', 'period'], name='unique_player_period_group'),
+        ]
 
     def from_dict(self, source):
         '''

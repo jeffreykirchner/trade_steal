@@ -59,8 +59,8 @@ class ParameterSetPlayer(models.Model):
                 new_group = main.models.ParameterSetPlayerGroup()
 
                 new_group.parameter_set_player = self
-                new_group.group = 1
-                new_group.period_number = i+1
+                new_group.group_number = 1
+                new_group.period = i
 
                 new_group.save()
 
@@ -70,6 +70,14 @@ class ParameterSetPlayer(models.Model):
                                                    period_number__gt=count) \
                                             .delete() 
 
+    def copy_group_foward(self, period_number):
+        '''
+        copy group from the specified period to future periods
+        '''
+
+        source_group_number = self.parameter_set_player_groups.get(period=period_number).group_number
+        self.parameter_set_player_groups.filter(period__gt=period_number).update(group_number=source_group_number)
+    
     def json(self):
         '''
         return json object of model

@@ -345,9 +345,9 @@ hideEditParametersetPlayerGroup:function(){
 sendUpdateParametersetPlayerGroup(){
     
     app.$data.working = true;
-    app.sendMessage("update_parameterset_player", {"sessionID" : app.$data.sessionID,
-                                                   "paramterset_player_id" : app.$data.current_parameter_set_player.id,
-                                                   "formData" : $("#parametersetPlayerForm").serializeArray(),});
+    app.sendMessage("update_parameterset_player_group", {"sessionID" : app.$data.sessionID,
+                                                   "paramterset_player_group_id" : app.$data.current_parameter_set_player_group.id,
+                                                   "formData" : $("#parametersetPlayerGroupForm").serializeArray(),});
 },
 
 /** handle result of updating parameter set player group
@@ -362,13 +362,30 @@ takeUpdateParametersetPlayerGroup(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editParametersetPlayerModal').modal('hide');            
+        $('#editParametersetPlayerGroupModal').modal('hide');            
     } 
     else
     {
         app.$data.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
+},
+
+sendCopyGroupForward(period_number){
+    
+    app.$data.working = true;
+    app.sendMessage("copy_group_forward", {"sessionID" : app.$data.sessionID,
+                                           "period_number" : period_number,});
+                                                   
+},
+
+/** handle result of updating parameter set player group
+*/
+takeCopyGroupForward(messageData){
+    //app.$data.cancelModal=false;
+    //app.clearMainFormErrors();
+
+    app.takeGetSession(messageData);   
 },
         
        
