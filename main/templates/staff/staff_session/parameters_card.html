@@ -24,7 +24,18 @@
                     title="Import parameters from another session.">
                 Import <i class="fas fa-file-import"></i>
             </button>
-             
+            <button class="btn btn-outline-secondary me-1"
+                    type="button" 
+                    v-bind:disabled="reconnecting || working" 
+                    v-on:click="show_parameters = !show_parameters"
+                    title="Hide or show parameters">
+                <span v-if="show_parameters">
+                    Hide <i class="fas fa-eye-slash"></i>
+                </span>
+                <span v-else>
+                    Show <i class="fas fa-eye"></i>
+                </span>
+            </button>  
         </span>
         
     </div>
@@ -197,7 +208,7 @@
         <!-- players -->
         <div class="row mt-4 fw-bold">
             <div class="col-md text-center">
-                Players
+                Players ([[session.parameter_set.parameter_set_players.length]])
             </div>
         </div>
         <div class="row justify-content-center">
@@ -239,7 +250,7 @@
                             <td>
                                 
                             </td>
-                            <td v-for="(g, index2) in p.period_groups" v-on:click="showEditParametersetPlayerGroup(index, index2)" class="player_table_cell">
+                            <td v-for="(g, index2) in p.period_groups" v-on:click="showEditParametersetPlayerGroup(index, index2)" class="player_table_cell" v-bind:key="g.id">
                                 G[[g.group_number]]
                             </td>
                         </tr>
@@ -248,6 +259,13 @@
                         <!-- copy groups forward -->
                         <tr>
                             <td>
+                                <button class="btn btn-outline-success btn-sm"
+                                        type="button"
+                                        title="Add player"
+                                        v-bind:disabled="session.started || reconnecting || working || session.parameter_set.parameter_set_players.length >= 8"
+                                        v-on:click="sendAddParameterSetPlayer()">
+                                       Add <i class="fas fa-plus"></i>
+                                </button>
                             </td>
                             <td>
                             </td>
@@ -255,12 +273,12 @@
                             </td>
                             <td>
                             </td>
-                            <td v-for="(g, index) in session.parameter_set.parameter_set_players[0].period_groups">
+                            <td v-for="index in session.parameter_set.period_count-1">
                                 <button class="btn btn-outline-primary btn-sm"
                                         type="button"
                                         title="Copy groups forward"
                                         v-bind:disabled="session.started || reconnecting || working"
-                                        v-on:click="sendCopyGroupForward(index+1)">
+                                        v-on:click="sendCopyGroupForward(index)">
                                         <i class="fas fa-angle-double-right"></i>
                                 </button>
                             </td>

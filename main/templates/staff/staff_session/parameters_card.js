@@ -47,7 +47,7 @@ takeDownloadParameters(messageData){
         var blob = new Blob([jsonse], {type: "application/json"});
         var url = URL.createObjectURL(blob);
         downloadLink.href = url;
-        downloadLink.download = "Double_Auction_Session_" + app.$data.session.id + "_Parameter_Set.json";
+        downloadLink.download = "Trade_Steal_Session_" + app.$data.session.id + "_Parameter_Set.json";
 
         document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -371,6 +371,8 @@ takeUpdateParametersetPlayerGroup(messageData){
     } 
 },
 
+/** copy specified period's groups forward to future groups
+*/
 sendCopyGroupForward(period_number){
     
     app.$data.working = true;
@@ -379,13 +381,49 @@ sendCopyGroupForward(period_number){
                                                    
 },
 
-/** handle result of updating parameter set player group
+/** handle result of copying groups forward
 */
 takeCopyGroupForward(messageData){
     //app.$data.cancelModal=false;
     //app.clearMainFormErrors();
 
     app.takeGetSession(messageData);   
+},
+
+/** copy specified period's groups forward to future groups
+*/
+sendRemoveParameterSetPlayer(){
+    
+    app.$data.working = true;
+    app.sendMessage("remove_parameterset_player", {"sessionID" : app.$data.sessionID,
+                                                   "paramterset_player_id" : app.$data.current_parameter_set_player.id,});
+                                                   
+},
+
+/** handle result of copying groups forward
+*/
+takeRemoveParameterSetPlayer(messageData){
+    app.$data.cancelModal=false;
+    //app.clearMainFormErrors();
+    app.takeGetSession(messageData);   
+    $('#editParametersetPlayerModal').modal('hide');
+},
+
+/** copy specified period's groups forward to future groups
+*/
+sendAddParameterSetPlayer(player_id){
+    
+    app.$data.working = true;
+    app.sendMessage("add_parameterset_player", {"sessionID" : app.$data.sessionID});
+                                                   
+},
+
+/** handle result of copying groups forward
+*/
+takeAddParameterSetPlayer(messageData){
+    //app.$data.cancelModal=false;
+    //app.clearMainFormErrors();
+    app.takeGetSession(messageData);       
 },
         
        

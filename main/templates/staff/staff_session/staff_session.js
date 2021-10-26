@@ -106,6 +106,12 @@ var app = Vue.createApp({
                 case "update_parameterset_player":
                     app.takeUpdateParametersetPlayer(messageData);
                     break;     
+                case "remove_parameterset_player":
+                    app.takeRemoveParameterSetPlayer(messageData);
+                    break;
+                case "add_parameterset_player":
+                    app.takeAddParameterSetPlayer(messageData);
+                    break;
                 case "update_parameterset_player_group":
                     app.takeUpdateParametersetPlayerGroup(messageData);
                     break;

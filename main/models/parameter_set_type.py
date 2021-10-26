@@ -55,6 +55,21 @@ class ParameterSetType(models.Model):
         
         message = "Parameters loaded successfully."
 
+        self.subject_type = source.get("subject_type")
+
+        self.good_one_amount = source.get("good_one_amount")
+        self.good_two_amount = source.get("good_two_amount")
+
+        self.good_one_production_1 = source.get("good_one_production_1")
+        self.good_one_production_2 = source.get("good_one_production_2")
+        self.good_one_production_3 = source.get("good_one_production_3")
+        
+        self.good_two_production_1 = source.get("good_two_production_1")
+        self.good_two_production_2 = source.get("good_two_production_2")
+        self.good_two_production_3 = source.get("good_two_production_3")
+
+        self.save()
+
         return message
 
 

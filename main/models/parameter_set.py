@@ -42,6 +42,67 @@ class ParameterSet(models.Model):
         verbose_name = 'Parameter Set'
         verbose_name_plural = 'Parameter Sets'
     
+    def from_dict(self, new_ps):
+        '''
+        load values from dict
+        '''
+        logger = logging.getLogger(__name__) 
+
+        message = "Parameters loaded successfully."
+        status = "success"
+
+        try:
+            self.period_count = new_ps.get("period_count")
+            self.period_length_production = new_ps.get("period_length_production")
+            self.period_length_trade = new_ps.get("period_length_trade")
+            self.break_period_frequency = new_ps.get("break_period_frequency")
+            self.allow_stealing = new_ps.get("allow_stealing")
+            self.good_one_label = new_ps.get("good_one_label")
+            self.good_two_label = new_ps.get("good_two_label")
+            self.good_one_rgb_color = new_ps.get("good_one_rgb_color")
+            self.good_two_rgb_color = new_ps.get("good_two_rgb_color")
+
+            self.save()
+
+            #paramter set types
+            new_parameter_set_types = new_ps.get("parameter_set_types")
+            for new_p in new_parameter_set_types:
+                p = self.parameter_set_types.get(subject_type=new_p.get("subject_type"))
+                p.from_dict(new_p)
+            
+            #parameter set players
+            new_parameter_set_players = new_ps.get("parameter_set_players")
+
+            if len(new_parameter_set_players) > self.parameter_set_players.count():
+                #add more players
+                new_player_count = len(new_parameter_set_players) - self.parameter_set_players.count()
+
+                for i in range(new_player_count):
+                    self.add_new_player(main.globals.SubjectType.ONE, i)
+
+            elif len(new_parameter_set_players) < self.parameter_set_players.count():
+                #remove excess players
+
+                extra_player_count = self.parameter_set_players.count() - len(new_parameter_set_players)
+
+                for i in range(extra_player_count):
+                    self.parameter_set_players.last().delete()
+            
+            self.update_group_counts()
+
+            new_parameter_set_players = new_ps.get("parameter_set_players")
+            counter=0
+            for p in self.parameter_set_players.all():                
+                p.from_dict(new_parameter_set_players[counter])
+                counter+=1
+
+        except IntegrityError as exp:
+            message = f"Failed to load parameter set: {exp}"
+            status = "fail"
+            logger.warning(message)
+
+        return {"status" : status, "message" :  message}
+
     def setup(self):
         '''
         default setup
@@ -79,19 +140,37 @@ class ParameterSet(models.Model):
 
         #player setup
         for i in range(8):
-            player = main.models.ParameterSetPlayer()
-            player.parameter_set = self
-
             if i % 2 == 0:
-                player.subject_type = main.globals.SubjectType.ONE
+                self.add_new_player(main.globals.SubjectType.ONE, i)
             else:
-                player.subject_type = main.globals.SubjectType.TWO
+                self.add_new_player(main.globals.SubjectType.TWO, i)
+            
+        self.update_group_counts()
 
-            player.id_label = str(i+1)
-            player.location = i+1
+    def add_new_player(self, subject_type, location):
+        '''
+        add a new player of type subject_type
+        '''
 
-            player.save()
-            player.update_group_period_count(self.period_count)
+        #8 players max
+        if self.parameter_set_players.all().count() >= 8:
+            return
+
+        player = main.models.ParameterSetPlayer()
+        player.parameter_set = self
+        player.subject_type = subject_type
+        player.id_label = str(location+1)
+        player.location = location+1
+
+        player.save()
+
+    def update_group_counts(self):
+        '''
+        update player group counts
+        '''
+
+        for p in self.parameter_set_players.all():
+            p.update_group_period_count(self.period_count)
 
     def copy_groups_forward(self, period_number):
         '''

@@ -42,6 +42,18 @@ class ParameterSetPlayer(models.Model):
         
         message = "Parameters loaded successfully."
 
+        self.subject_type = source.get("subject_type")
+        self.id_label = source.get("id_label")
+        self.location = source.get("location")
+
+        self.save()
+
+        new_period_groups = source.get("period_groups")
+        for g in new_period_groups:
+            parameter_set_player_group = self.parameter_set_player_groups.get(period=g["period"])
+            parameter_set_player_group.group_number = g["group_number"]
+            parameter_set_player_group.save()
+
         return message
 
     def update_group_period_count(self, count):
@@ -67,8 +79,8 @@ class ParameterSetPlayer(models.Model):
         elif len(current_groups)>count:
             #remove excess groups
             main.models.ParameterSetPlayerGroup.objects.filter(parameter_set_player=self,
-                                                   period_number__gt=count) \
-                                            .delete() 
+                                                               period__gt=count) \
+                                                        .delete() 
 
     def copy_group_foward(self, period_number):
         '''
