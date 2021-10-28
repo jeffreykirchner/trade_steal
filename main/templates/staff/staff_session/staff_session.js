@@ -161,23 +161,14 @@ var app = Vue.createApp({
 
             if(app.$data.session.started)
             {
-                app.$data.show_parameters = false;
-
-                if(app.$data.session.finished)
-                {
-                    app.$data.session.current_period = 1;
-                }
-                else
-                {
-                    
-                }
+                
             }
             else
             {
-                app.$data.show_parameters = true;
+                
             }
 
-            app.updateMoveOnButtonText();
+            app.setupPixiPlayers();
         },
 
         /**update text of move on button based on current state
@@ -325,9 +316,5 @@ app.$data.pixi_app = new PIXI.Application({resizeTo : document.getElementById('s
                                      autoResize: true,
                                      resolution: devicePixelRatio,
                                      view: document.getElementById('sd_graph_id') });
-
-// Create the sprite and add it to the stage
-app.$data.sprite = PIXI.Sprite.from('/static/houseYou.bmp');
-app.$data.pixi_app.stage.addChild(app.$data.sprite);
 
   

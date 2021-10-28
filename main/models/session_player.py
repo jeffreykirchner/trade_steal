@@ -52,5 +52,7 @@ class SessionPlayer(models.Model):
             "good_two_field" : self.good_two_field,
 
             "parameter_set_player" : self.parameter_set_player.json(),
+
+            "pixi" : None,
         }
         

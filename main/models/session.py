@@ -83,7 +83,7 @@ class Session(models.Model):
 
         self.session_players.all().delete()
     
-        for i in self.parameter_set__parameter_set_players.all():
+        for i in self.parameter_set.parameter_set_players.all():
             new_session_player = main.models.SessionPlayer()
 
             new_session_player.session = self
@@ -104,7 +104,8 @@ class Session(models.Model):
             "current_period":self.current_period,
             "finished":self.finished,
             "parameter_set":self.parameter_set.json(),
-            "session_periods":[i.json() for i in self.session_periods.all()]
+            "session_periods":[i.json() for i in self.session_periods.all()],
+            "session_players":[i.json() for i in self.session_players.all()]
         }
 
 

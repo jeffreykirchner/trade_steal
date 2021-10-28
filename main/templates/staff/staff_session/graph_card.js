@@ -1,10 +1,27 @@
 
-// Create the application helper and add its render target to the page
+/**
+ * update the pixi players with new info
+ */
+updatePixiPlayers(){
+   
+},
+
+/**
+ * setup pixi players
+ */
+setupPixiPlayers(){
+
+    PIXI.utils.destroyTextureCache();
 
 
-// Add a ticker callback to move the sprite back and forth
-// let elapsed = 0.0;
-// pixi_app.ticker.add((delta) => {
-// elapsed += delta;
-// app.$data.sprite.x = 100.0 + Math.cos(elapsed/50.0) * 100.0;
-// });
+    // Create the sprite and add it to the stage
+    app.$data.sprite = PIXI.Sprite.from('/static/houseYou.bmp');
+    app.$data.pixi_app.stage.addChild(app.$data.sprite);
+   
+},
+
+getLocationCordinates(index){
+
+    
+
+};
