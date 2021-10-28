@@ -136,7 +136,7 @@ var app = Vue.createApp({
             }
 
             app.working = false;
-            Vue.nextTick(app.update_sdgraph_canvas());
+            //Vue.nextTick(app.update_sdgraph_canvas());
         },
 
         /** send websocket message to server
@@ -239,7 +239,6 @@ var app = Vue.createApp({
         },
 
         {%include "staff/staff_session/parameters_card.js"%}
-        {%include "staff/staff_session/graph_card.js"%}
         {%include "staff/staff_session/control_card.js"%}
         {%include "staff/staff_session/session_card.js"%}
     
@@ -319,5 +318,16 @@ var app = Vue.createApp({
 }).mount('#app');
 
 {%include "js/web_sockets.js"%}
+
+//setup pixi app
+app.$data.pixi_app = new PIXI.Application({resizeTo : document.getElementById('sd_graph_id'),
+                                     backgroundColor : 0xFFFFFF,
+                                     autoResize: true,
+                                     resolution: devicePixelRatio,
+                                     view: document.getElementById('sd_graph_id') });
+
+// Create the sprite and add it to the stage
+app.$data.sprite = PIXI.Sprite.from('/static/houseYou.bmp');
+app.$data.pixi_app.stage.addChild(app.$data.sprite);
 
   

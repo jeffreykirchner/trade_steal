@@ -1,27 +1,10 @@
-/**refresh the supply and demand canvas
-*/
-update_sdgraph_canvas:function(){
 
-    var el = $('#sd_graph');
-    el.attr('width', parseInt(el.css('width')));
-    el.attr('height', parseInt(el.css('height')));
+// Create the application helper and add its render target to the page
 
-    //clear canvas
-    app.clear_canvas();
 
-    
-},
-
-/** clear canvas of current image to be re-drawn
- */
-clear_canvas: function(chartID){
-    if(document.getElementById(chartID) == null)
-    {
-        return;
-    }
-
-    var canvas = document.getElementById(chartID),
-        ctx = canvas.getContext('2d');
-
-    ctx.clearRect(0,0,w,h);
-},
+// Add a ticker callback to move the sprite back and forth
+// let elapsed = 0.0;
+// pixi_app.ticker.add((delta) => {
+// elapsed += delta;
+// app.$data.sprite.x = 100.0 + Math.cos(elapsed/50.0) * 100.0;
+// });
