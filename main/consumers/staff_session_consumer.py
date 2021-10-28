@@ -441,6 +441,7 @@ def take_remove_parameterset_player(data):
     try:        
         session = Session.objects.get(id=session_id)
         session.parameter_set.parameter_set_players.get(id=paramterset_player_id).delete()
+        session.update_player_count()
     except ObjectDoesNotExist:
         logger.warning(f"take_remove_parameterset_player paramterset_player, not found ID: {paramterset_player_id}")
         return
@@ -464,6 +465,7 @@ def take_add_paramterset_player(data):
 
     session.parameter_set.add_new_player(main.globals.SubjectType.ONE, 0)
     session.parameter_set.update_group_counts()
+    session.update_player_count()
 
 def take_copy_groups_forward(data):
     '''
@@ -501,7 +503,10 @@ def take_import_parameters(data):
     source_session = Session.objects.get(id=form_data_dict["session"])
     target_session = Session.objects.get(id=session_id)
 
-    return target_session.parameter_set.from_dict(source_session.parameter_set.json())          
+    status = target_session.parameter_set.from_dict(source_session.parameter_set.json()) 
+    target_session.update_player_count()
+
+    return status      
 
     # return {"value" : "fail" if "Failed" in message else "success",
     #         "message" : message}

@@ -10,5 +10,6 @@ from .parameter_set_player_group import ParameterSetPlayerGroup
 
 from .session import Session
 from .session_period import SessionPeriod
+from .session_player import SessionPlayer
 
 

@@ -11,6 +11,9 @@ from main.models import ParameterSetType
 from main.models import ParameterSetPlayer
 from main.models import ParameterSetPlayerGroup
 
+from main.models import Session
+from main.models import SessionPlayer
+
 class ParametersAdmin(admin.ModelAdmin):
     '''
     parameters model admin
@@ -37,3 +40,6 @@ class ParameterSetPlayerGroupAdmin(admin.ModelAdmin):
     ordering=['parameter_set_player', 'period']
 
 admin.site.register(ParameterSetPlayerGroup, ParameterSetPlayerGroupAdmin)
+
+admin.site.register(Session)
+admin.site.register(SessionPlayer)

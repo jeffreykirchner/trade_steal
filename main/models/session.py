@@ -55,8 +55,8 @@ class Session(models.Model):
     creator_string.short_description = 'Creator'
 
     class Meta:
-        verbose_name = 'Experiment Session'
-        verbose_name_plural = 'Experiment Sessions'
+        verbose_name = 'Session'
+        verbose_name_plural = 'Sessions'
         ordering = ['-start_date']
 
     def get_start_date_string(self):
@@ -75,6 +75,22 @@ class Session(models.Model):
         self.start_date = datetime.now()
 
         self.save()
+    
+    def update_player_count(self):
+        '''
+        update the number of session players based on the number defined in the parameterset
+        '''
+
+        self.session_players.all().delete()
+    
+        for i in self.parameter_set__parameter_set_players.all():
+            new_session_player = main.models.SessionPlayer()
+
+            new_session_player.session = self
+            new_session_player.parameter_set_player = i
+
+            new_session_player.save()
+
     def json(self):
         '''
         return json object of model

@@ -6,7 +6,7 @@ session period model
 
 from django.db import models
 
-from . import Session
+from main.models import Session
 
 import main
 

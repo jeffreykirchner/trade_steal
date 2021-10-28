@@ -134,6 +134,7 @@ def create_new_session(auth_user):
     session.creator = auth_user
 
     session.save()
+    session.update_player_count()
 
     logger = logging.getLogger(__name__) 
     logger.info(f"Create New Session {session}")
