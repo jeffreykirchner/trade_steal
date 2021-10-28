@@ -53,6 +53,6 @@ class SessionPlayer(models.Model):
 
             "parameter_set_player" : self.parameter_set_player.json(),
 
-            "pixi" : None,
+            "sprite" : None,
         }
         
