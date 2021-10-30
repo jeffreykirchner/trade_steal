@@ -1,4 +1,6 @@
 
+{% load static %}
+
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
@@ -69,6 +71,7 @@ var app = Vue.createApp({
                     show_parameters:false,
                     import_parameters_message : "",
                     move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
+                    pixi_loaded : false,
  
                 }},
     methods: {
@@ -83,7 +86,7 @@ var app = Vue.createApp({
         *    @param data {json} incoming data from server, contains message and message type
         */
         takeMessage(data) {
-            app.first_load_done = true;
+            app.$data.first_load_done = true;
 
             console.log(data);
 
@@ -167,8 +170,11 @@ var app = Vue.createApp({
             {
                 
             }
-
-            app.setupPixiPlayers();
+            
+            if(app.$data.pixi_loaded)
+                app.setupPixiPlayers();
+            else
+                app.setupPixi();
         },
 
         /**update text of move on button based on current state
@@ -312,10 +318,18 @@ var app = Vue.createApp({
 {%include "js/web_sockets.js"%}
 
 //setup pixi app
-app.$data.pixi_app = new PIXI.Application({resizeTo : document.getElementById('sd_graph_id'),
-                                     backgroundColor : 0xFFFFFF,
-                                     autoResize: true,
-                                     resolution: devicePixelRatio,
-                                     view: document.getElementById('sd_graph_id') });
+
+
+// PIXI.Loader.shared.add("{% static 'house.json' %}").load(setup);
+
+// let house_sheet;
+// let house_sprite;
+
+// function setup() {
+//     house_sheet = PIXI.Loader.shared.resources["/static/house.json"].spritesheet;
+//     house_sprite = new PIXI.Sprite(house_sheet.textures["house.png"]);
+
+//     app.$data.pixi_app.stage.addChild(house_sprite);
+//  }
 
   
