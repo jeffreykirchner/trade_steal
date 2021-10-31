@@ -86,7 +86,6 @@ var app = Vue.createApp({
         *    @param data {json} incoming data from server, contains message and message type
         */
         takeMessage(data) {
-            app.$data.first_load_done = true;
 
             console.log(data);
 
@@ -138,6 +137,16 @@ var app = Vue.createApp({
                     break;   
             }
 
+            if(!app.$data.first_load_done)
+            {
+                if(!app.$data.session.started)
+                {
+                    app.$data.show_parameters = true;
+                }
+            }
+
+            app.$data.first_load_done = true;
+
             app.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
         },
@@ -171,10 +180,7 @@ var app = Vue.createApp({
                 
             }
             
-            if(app.$data.pixi_loaded)
-                app.setupPixiPlayers();
-            else
-                app.setupPixi();
+            if(!app.$data.pixi_loaded) app.setupPixi();                            
         },
 
         /**update text of move on button based on current state

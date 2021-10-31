@@ -3,7 +3,8 @@
 /**
  * update the pixi players with new info
  */
-setupPixi(){
+setupPixi(){    
+
     let canvas = document.getElementById('sd_graph_id');
     //     ctx = canvas.getContext('2d');
 
@@ -67,6 +68,13 @@ setupPixiPlayers(){
 
     }
     
+},
+
+destroyPixiPlayers(){
+    for(let i=0;i<session_players.length;i++)
+    {
+        session_players[i].sprite.destroy();
+    }
 },
 
 getLocationCordinates(index){

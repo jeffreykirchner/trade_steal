@@ -302,8 +302,10 @@ takeUpdateParametersetPlayer(messageData){
 
     if(messageData.status.value == "success")
     {
+        app.destroyPixiPlayers();
         app.takeGetSession(messageData);       
-        $('#editParametersetPlayerModal').modal('hide');            
+        $('#editParametersetPlayerModal').modal('hide');        
+        app.setupPixiPlayers();
     } 
     else
     {
@@ -392,7 +394,7 @@ takeCopyGroupForward(messageData){
 /** copy specified period's groups forward to future groups
 */
 sendRemoveParameterSetPlayer(){
-    
+
     app.$data.working = true;
     app.sendMessage("remove_parameterset_player", {"sessionID" : app.$data.sessionID,
                                                    "paramterset_player_id" : app.$data.current_parameter_set_player.id,});
@@ -404,14 +406,15 @@ sendRemoveParameterSetPlayer(){
 takeRemoveParameterSetPlayer(messageData){
     app.$data.cancelModal=false;
     //app.clearMainFormErrors();
+    app.destroyPixiPlayers();
     app.takeGetSession(messageData);   
     $('#editParametersetPlayerModal').modal('hide');
+    app.setupPixiPlayers();
 },
 
 /** copy specified period's groups forward to future groups
 */
 sendAddParameterSetPlayer(player_id){
-    
     app.$data.working = true;
     app.sendMessage("add_parameterset_player", {"sessionID" : app.$data.sessionID});
                                                    
@@ -422,7 +425,9 @@ sendAddParameterSetPlayer(player_id){
 takeAddParameterSetPlayer(messageData){
     //app.$data.cancelModal=false;
     //app.clearMainFormErrors();
-    app.takeGetSession(messageData);       
+    app.destroyPixiPlayers();
+    app.takeGetSession(messageData); 
+    app.setupPixiPlayers();
 },
         
        

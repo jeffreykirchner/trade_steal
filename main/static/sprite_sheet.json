@@ -2,7 +2,7 @@
 
 "Field0000":
 {
-	"frame": {"x":0,"y":0,"w":236,"h":392},
+	"frame": {"x":308,"y":5,"w":236,"h":392},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":236,"h":392},
@@ -10,7 +10,7 @@
 },
 "House0000":
 {
-	"frame": {"x":236,"y":0,"w":298,"h":391},
+	"frame": {"x":5,"y":5,"w":298,"h":391},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":298,"h":391},
