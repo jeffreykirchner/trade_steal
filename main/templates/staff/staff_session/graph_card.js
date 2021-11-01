@@ -28,15 +28,22 @@ setupPixiSheets()
     app.$data.house_sheet = PIXI.Loader.shared.resources["{% static 'sprite_sheet.json' %}"].spritesheet;
     app.$data.house_sprite = new PIXI.Sprite(app.$data.house_sheet.textures["House0000"]);
 
-    app.$data.canvas_scale_height = app.$data.canvas_height / 5;
+    app.$data.grid_x = 11;
+    app.$data.grid_y = 5;
+
+    app.$data.canvas_scale_height = app.$data.canvas_height / app.$data.grid_y;
+    app.$data.canvas_scale_width = app.$data.canvas_width / app.$data.grid_x;
     app.$data.canvas_scale = app.$data.canvas_scale_height /  app.$data.house_sprite.height;
 
     app.$data.pixi_loaded = true;
     app.setupPixiPlayers();
+
+    //layout for testing
+    app.setupGrid();
 },
 
 updatePixiPlayers(){
-   
+
 },
 
 /**
@@ -54,7 +61,7 @@ setupPixiPlayers(){
 
     for(let i=0;i<session_players.length;i++)
     {
-        session_players[i].houseContainer = new PIXI.Container();
+        let houseContainer = new PIXI.Container();
 
         pt = app.getLocationCordinates(session_players[i].parameter_set_player.location);
 
@@ -65,7 +72,7 @@ setupPixiPlayers(){
         sprite.y = 0;
         sprite.tint = 0xD3D3D3;
 
-        session_players[i].houseContainer.addChild(sprite)
+        houseContainer.addChild(sprite)
 
         //house label texture
         let houseLabel = new PIXI.Text(session_players[i].parameter_set_player.id_label,{fontFamily : 'Arial',
@@ -76,16 +83,48 @@ setupPixiPlayers(){
         houseLabel.x = sprite.width / 2;
         houseLabel.y = 50;
 
-        session_players[i].houseContainer.addChild(houseLabel)
+        houseContainer.addChild(houseLabel)
 
-        session_players[i].houseContainer.x = pt.x;
-        session_players[i].houseContainer.y = pt.y;
-        session_players[i].houseContainer.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
+        houseContainer.x = pt.x;
+        houseContainer.y = pt.y;
+        houseContainer.pivot.set(houseContainer.width/2, houseContainer.height/2);
+        houseContainer.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
     
+        session_players[i].houseContainer = houseContainer;
         app.$data.pixi_app.stage.addChild(session_players[i].houseContainer);
 
     }
     
+},
+
+/**
+ * location grid for layout
+ */
+setupGrid(){
+    x = app.$data.canvas_scale_width;
+    y = app.$data.canvas_scale_height;
+
+    for(let i=0;i<app.$data.grid_x-1; i++)
+    {
+        for(let i=0;i<app.$data.grid_y-1; i++)
+        {
+            const gr  = new PIXI.Graphics();
+            gr.beginFill(0x000000);
+            gr.drawCircle(x, y, 6);
+            gr.endFill();
+            gr.pivot.set(3,3);
+            
+            app.$data.pixi_app.stage.addChild(gr);
+
+            y+=app.$data.canvas_scale_height;
+        }
+
+        x += app.$data.canvas_scale_width;
+        y = app.$data.canvas_scale_height;
+
+    }
+
+   
 },
 
 destroyPixiPlayers(){
@@ -97,19 +136,19 @@ destroyPixiPlayers(){
 
 getLocationCordinates(index){
 
+    let y=0;
     let x=0;
-    let y=20;
 
     if(index<=4)
     {
-        x = 20;
-        y += index * (app.$data.canvas_scale_height+10);
+        x = app.$data.canvas_scale_width*5;
+        y += index * (app.$data.canvas_scale_height);
     }
     else
     {
-        x = 400;
-        y += (index-4) * (app.$data.canvas_scale_height+10);
+        x = app.$data.canvas_scale_width*6;
+        y += (index-4) * (app.$data.canvas_scale_height);
     }    
-    
-    return {x:x, y:y-100};
+
+    return {x:x, y:y};
 },
