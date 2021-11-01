@@ -54,17 +54,35 @@ setupPixiPlayers(){
 
     for(let i=0;i<session_players.length;i++)
     {
+        session_players[i].houseContainer = new PIXI.Container();
+
         pt = app.getLocationCordinates(session_players[i].parameter_set_player.location);
 
-        session_players[i].sprite = PIXI.Sprite.from(app.$data.house_sheet.textures["House0000"]);
-        //session_players[i].sprite = app.$data.house_sprite;
+        //house texture
+        let sprite = PIXI.Sprite.from(app.$data.house_sheet.textures["House0000"]);
 
-        session_players[i].sprite.x = pt.x;
-        session_players[i].sprite.y = pt.y;
-        session_players[i].sprite.tint = 0xD3D3D3;
-        session_players[i].sprite.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
+        sprite.x = 0;
+        sprite.y = 0;
+        sprite.tint = 0xD3D3D3;
 
-        app.$data.pixi_app.stage.addChild(session_players[i].sprite);
+        session_players[i].houseContainer.addChild(sprite)
+
+        //house label texture
+        let houseLabel = new PIXI.Text(session_players[i].parameter_set_player.id_label,{fontFamily : 'Arial',
+                                                                                         fontWeight:'bold',
+                                                                                         fontSize: 48,
+                                                                                         align : 'center'});
+        houseLabel.anchor.set(0.5);
+        houseLabel.x = sprite.width / 2;
+        houseLabel.y = 50;
+
+        session_players[i].houseContainer.addChild(houseLabel)
+
+        session_players[i].houseContainer.x = pt.x;
+        session_players[i].houseContainer.y = pt.y;
+        session_players[i].houseContainer.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
+    
+        app.$data.pixi_app.stage.addChild(session_players[i].houseContainer);
 
     }
     
@@ -73,7 +91,7 @@ setupPixiPlayers(){
 destroyPixiPlayers(){
     for(let i=0;i<session_players.length;i++)
     {
-        session_players[i].sprite.destroy();
+        session_players[i].houseContainer.destroy();
     }
 },
 
