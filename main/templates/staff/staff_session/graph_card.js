@@ -17,9 +17,29 @@ setupPixi(){
                                                resolution: devicePixelRatio,
                                                view: canvas });
 
+    
+   
     app.$data.canvas_width = canvas.width;
     app.$data.canvas_height = canvas.height;
-    
+
+    //add background rectangle
+    let background = new PIXI.Graphics();
+    background.beginFill(0xffffff);
+    background.drawRect(0, 0, canvas.width, canvas.height);
+    background.endFill();
+
+    background.interactive = true;
+    background.on("pointerup", (event) => { app.handleStagePointerUp() })
+    background.on("pointermove", (event) => { app.handleStagePointerMove() })
+    app.$data.pixi_app.stage.addChild(background);
+
+    //transfer line
+    let transfer_line = new PIXI.Graphics();
+    transfer_line.visible = false;
+    app.$data.pixi_transfer_line = transfer_line;
+    app.$data.pixi_app.stage.addChild(app.$data.pixi_transfer_line);
+
+    //sprite sheet
     PIXI.Loader.shared.add("{% static 'sprite_sheet.json' %}").load(app.setupPixiSheets);
 },
 
@@ -80,7 +100,8 @@ setupPixiPlayers(){
         sprite.interactive = true;
         sprite.buttonMode = true;
         sprite.tint = 0xD3D3D3;
-        sprite.on('pointerdown', (event) => { app.handleHouseClick(i) });
+        sprite.on('pointerdown', (event) => { app.handleHousePointerDown(i) });
+        sprite.on('pointerup', (event) => { app.handleHousePointerUp(i) });
 
         container.addChild(sprite)
 
@@ -150,7 +171,8 @@ setupPixiPlayers(){
         sprite.tint = 0xD3D3D3;
         sprite.interactive = true;
         sprite.buttonMode = true;
-        sprite.on('pointerdown', (event) => { app.handleFieldClick(i) });
+        sprite.on('pointerdown', (event) => { app.handleFieldPointerDown(i) });
+        sprite.on('pointerup', (event) => { app.handleFieldPointerUp(i) });
 
         container.addChild(sprite)
 
@@ -263,10 +285,63 @@ getLocationCordinates(index, field_or_house){
     return {x:x, y:y};
 },
 
-handleFieldClick(index){
-    alert('Field ' + (index+1).toString() + ' clicked');
+/**
+ *pointer down on field
+ */
+handleFieldPointerDown(index){
+    console.log('Field ' + (index+1).toString() + ' down');
 },
 
-handleHouseClick(index){
-    alert('House ' + (index+1).toString() + ' clicked');
+/**
+ *pointer up on field
+ */
+ handleFieldPointerUp(index){
+    console.log('Field ' + (index+1).toString() + ' up');
+},
+
+/**
+ *pointer down on house
+ */
+handleHousePointerDown(index){
+    console.log('House ' + (index+1).toString() + ' down');
+    app.$data.pixi_transfer_source = session_players[index].houseContainer;
+    app.updatePixiTransfer(event.x, event.y)
+    
+},
+
+/**
+ *pointer up on house
+ */
+ handleHousePointerUp(index){
+    console.log('House ' + (index+1).toString() + ' up');
+},
+
+/**
+ *pointer up on stage
+ */
+ handleStagePointerUp(){
+    console.log('Stage up: ' + event);
+    app.$data.pixi_transfer_line.visible=false;
+},
+
+/**
+ * pointer move over stage
+ */
+handleStagePointerMove(){
+    if(app.$data.pixi_transfer_line.visible)
+    {
+        app.updatePixiTransfer(event.x, event.offsetY);
+    }
+},
+
+updatePixiTransfer(target_x, target_y){
+    transfer_line = app.$data.pixi_transfer_line;
+    source = app.$data.pixi_transfer_source;
+
+    transfer_line.clear();
+
+    transfer_line.lineStyle(10, 0xD5402B, 1);
+    transfer_line.visible=true;
+    transfer_line.moveTo(source.x, source.y);
+    transfer_line.lineTo(target_x, target_y);
 },

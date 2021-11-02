@@ -72,7 +72,9 @@ var app = Vue.createApp({
                     import_parameters_message : "",
                     move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
                     pixi_loaded : false,
- 
+                    pixi_transfer_line : null,
+                    pixi_transfer_source : null,  
+                    pixi_transfer_target : null,                    
                 }},
     methods: {
 
@@ -87,7 +89,9 @@ var app = Vue.createApp({
         */
         takeMessage(data) {
 
+            {%if DEBUG%}
             console.log(data);
+            {%endif%}
 
             messageType = data.message.messageType;
             messageData = data.message.messageData;
