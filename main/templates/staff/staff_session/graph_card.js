@@ -97,6 +97,7 @@ setupPixiPlayers(){
 
         sprite.x = 0;
         sprite.y = 0;
+        sprite.name = "house_texture"
         sprite.interactive = true;
         sprite.buttonMode = true;
         sprite.tint = 0xD3D3D3;
@@ -104,6 +105,15 @@ setupPixiPlayers(){
         sprite.on('pointerup', (event) => { app.handleHousePointerUp(i) });
 
         container.addChild(sprite)
+
+        //highlight
+        let highlight = new PIXI.Graphics();
+        highlight.beginFill(0xD5402B);
+        highlight.drawRoundedRect(-sprite.width * 0.01, -sprite.height * 0.01, sprite.width + sprite.width * 0.02, sprite.height + sprite.height * 0.02, 20);
+        highlight.name = "highlight";
+        highlight.endFill();
+        highlight.visible=false;
+        container.addChildAt(highlight, 0)
 
         //house label texture
         let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
@@ -113,6 +123,7 @@ setupPixiPlayers(){
         label.anchor.set(0.5);
         label.x = sprite.width / 2;
         label.y = 50;
+        label.name = "id_label"
 
         container.addChild(label);
 
@@ -126,6 +137,7 @@ setupPixiPlayers(){
         goodOneLabel.anchor.set(0.5);
         goodOneLabel.x = sprite.width / 2;
         goodOneLabel.y = 185;
+        goodOneLabel.name = "good_one_label"
 
         container.addChild(goodOneLabel)
 
@@ -139,6 +151,7 @@ setupPixiPlayers(){
         goodTwoLabel.anchor.set(0.5);
         goodTwoLabel.x = sprite.width / 2;
         goodTwoLabel.y = 300;
+        goodTwoLabel.name = "good_two_label"
 
         container.addChild(goodTwoLabel)
 
@@ -173,7 +186,7 @@ setupPixiPlayers(){
         sprite.buttonMode = true;
         sprite.on('pointerdown', (event) => { app.handleFieldPointerDown(i) });
         sprite.on('pointerup', (event) => { app.handleFieldPointerUp(i) });
-
+        
         container.addChild(sprite)
 
         //house label texture
@@ -216,11 +229,20 @@ setupPixiPlayers(){
         container.x = pt.x;
         container.y = pt.y;
         container.pivot.set(container.width/2, container.height/2);
-        container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
-    
+        container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);    
+        
+        // container.interactive=true
+        // container.on('pointerenter', (event) => { app.handleFieldPointerEnter(i) });
+        // container.on('pointerleave', (event) => { app.handleFieldPointerLeave(i) });
+        // container.hitArea = new PIXI.Rectangle(0, 0, container.width, container.height);
+
         session_players[i].fieldContainer = container;
         app.$data.pixi_app.stage.addChild(session_players[i].fieldContainer);
     }
+},
+
+setupSingleHoue(){
+
 },
 
 /**
@@ -299,13 +321,22 @@ handleFieldPointerDown(index){
     console.log('Field ' + (index+1).toString() + ' up');
 },
 
+handleFieldPointerEnter(index){
+    console.log('Field ' + (index+1).toString() + ' Enter');
+},
+
+handleFieldPointerLeave(index){
+    console.log('Field ' + (index+1).toString() + ' Leave');
+},
+
 /**
  *pointer down on house
  */
 handleHousePointerDown(index){
     console.log('House ' + (index+1).toString() + ' down');
+    session_players[index].houseContainer.getChildByName("highlight").visible=true;
     app.$data.pixi_transfer_source = session_players[index].houseContainer;
-    app.updatePixiTransfer(event.x, event.y)
+    app.updatePixiTransfer(event.offsetX , event.offsetY)
     
 },
 
@@ -322,6 +353,10 @@ handleHousePointerDown(index){
  handleStagePointerUp(){
     console.log('Stage up: ' + event);
     app.$data.pixi_transfer_line.visible=false;
+    for(let i=0;i<session_players.length;i++)
+    {
+        session_players[i].houseContainer.getChildByName("highlight").visible=false;
+    }
 },
 
 /**
@@ -330,7 +365,7 @@ handleHousePointerDown(index){
 handleStagePointerMove(){
     if(app.$data.pixi_transfer_line.visible)
     {
-        app.updatePixiTransfer(event.x, event.offsetY);
+        app.updatePixiTransfer(event.offsetX, event.offsetY);
     }
 },
 
@@ -340,8 +375,8 @@ updatePixiTransfer(target_x, target_y){
 
     transfer_line.clear();
 
-    transfer_line.lineStyle(10, 0xD5402B, 1);
+    transfer_line.lineStyle({width:10, color:0xD5402B, alpha:1, alignment:0.5, cap:PIXI.LINE_CAP.ROUND});
     transfer_line.visible=true;
-    transfer_line.moveTo(source.x, source.y);
-    transfer_line.lineTo(target_x, target_y);
+    transfer_line.moveTo(target_x, target_y);
+    transfer_line.lineTo(source.x, source.y);
 },
