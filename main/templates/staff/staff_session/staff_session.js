@@ -248,7 +248,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/parameters_card.js"%}
         {%include "staff/staff_session/control_card.js"%}
         {%include "staff/staff_session/session_card.js"%}
-        {%include "staff/staff_session/graph_card.js"%}
+        {%include "staff/staff_session/graph_card.vue"%}
     
         
         /** clear form error messages

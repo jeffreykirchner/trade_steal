@@ -198,7 +198,7 @@ setupSingleField(index){
     highlight.drawRoundedRect(-sprite.width * 0.05, -sprite.height * 0.05, sprite.width + sprite.width * 0.1, sprite.height + sprite.height * 0.1, 20);
     highlight.name = "highlight";
     highlight.endFill();
-    //highlight.visible=false;
+    highlight.visible=false;
     container.addChildAt(highlight, 0)
 
     //house label texture
@@ -245,8 +245,10 @@ setupSingleField(index){
     
     container.interactive=true
     container.buttonMode = true;
-    container.on('pointerdown', (event) => { app.handleFieldPointerDown(index) });
-    container.on('pointerup', (event) => { app.handleFieldPointerUp(index) });
+    container.on('pointerdown', (event) => { app.handleFieldPointerDown(index) })
+             .on('pointerup', (event) => { app.handleFieldPointerUp(index) })
+             .on('pointerover', (event) => { app.handleFieldPointerOver(index) })
+             .on('pointerout', (event) => { app.handleFieldPointerOut(index) });
     //container.on('pointermove', (event) => { app.handleFieldPointerEnter(i) });
     
     container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
@@ -323,6 +325,10 @@ getLocationCordinates(index, field_or_house){
 handleFieldPointerDown(index){
     console.log('Field ' + (index+1).toString() + ' down');
     app.turnOffHighlights();
+
+    session_players[index].fieldContainer.getChildByName("highlight").visible=true;
+    app.$data.pixi_transfer_source = session_players[index].fieldContainer;
+    app.updatePixiTransfer(event.offsetX , event.offsetY); 
 },
 
 /**
@@ -332,12 +338,27 @@ handleFieldPointerDown(index){
     console.log('Field ' + (index+1).toString() + ' up');
 },
 
-handleFieldPointerEnter(index){
-    console.log('Field ' + (index+1).toString() + ' Enter');
+handleFieldPointerOver(index){
+    console.log('Field ' + (index+1).toString() + ' Over');
+
+    if(app.$data.pixi_transfer_line.visible)
+    {
+        if(session_players[index].fieldContainer !=  app.$data.pixi_transfer_source)
+        {
+            app.$data.pixi_transfer_target = session_players[index].fieldContainer;
+            session_players[index].fieldContainer.getChildByName("highlight").visible=true;
+        }        
+    }
 },
 
-handleFieldPointerLeave(index){
-    console.log('Field ' + (index+1).toString() + ' Leave');
+handleFieldPointerOut(index){
+    console.log('Field ' + (index+1).toString() + ' Out');
+
+    if(session_players[index].fieldContainer ==  app.$data.pixi_transfer_target)
+    {
+        app.$data.pixi_transfer_target = null;
+        session_players[index].fieldContainer.getChildByName("highlight").visible=false;
+    }
 },
 
 /**
@@ -371,6 +392,7 @@ turnOffHighlights(){
     for(let i=0;i<session_players.length;i++)
     {
         session_players[i].houseContainer.getChildByName("highlight").visible=false;
+        session_players[i].fieldContainer.getChildByName("highlight").visible=false;
     }
 
     app.$data.pixi_transfer_line.visible=false;
@@ -392,8 +414,8 @@ updatePixiTransfer(target_x, target_y){
 
     transfer_line.clear();
 
-    transfer_line.lineStyle({width:10, color:0xD5402B, alpha:1, alignment:0.5, cap:PIXI.LINE_CAP.SQUARE});
     transfer_line.visible=true;
+    transfer_line.lineStyle({width:10, color:0xD5402B, alpha:1, alignment:0.5, cap:PIXI.LINE_CAP.SQUARE});
     transfer_line.moveTo(target_x, target_y);
     transfer_line.lineTo(source.x, source.y);
 },
