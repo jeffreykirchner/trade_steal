@@ -189,14 +189,17 @@ setupSingleField(index){
 
     sprite.x = 0;
     sprite.y = 0;
-    sprite.tint = 0xD3D3D3;
-    //sprite.interactive = true;
-    //sprite.buttonMode = true;
-    //sprite.on('pointerdown', (event) => { app.handleFieldPointerDown(i) });
-    //sprite.on('pointerup', (event) => { app.handleFieldPointerUp(i) });
-    //sprite.on('pointerup', (event) => { app.handleFieldPointerUp(i) });
-    
+    sprite.tint = 0xD3D3D3;    
     container.addChild(sprite)
+
+    //highlight
+    let highlight = new PIXI.Graphics();
+    highlight.beginFill(0xD5402B);
+    highlight.drawRoundedRect(-sprite.width * 0.05, -sprite.height * 0.05, sprite.width + sprite.width * 0.1, sprite.height + sprite.height * 0.1, 20);
+    highlight.name = "highlight";
+    highlight.endFill();
+    //highlight.visible=false;
+    container.addChildAt(highlight, 0)
 
     //house label texture
     let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
