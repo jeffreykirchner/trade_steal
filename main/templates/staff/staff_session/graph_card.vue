@@ -109,17 +109,13 @@ setupSingleHoue(index){
     sprite.x = 0;
     sprite.y = 0;
     sprite.name = "house_texture"
-    sprite.interactive = true;
-    sprite.buttonMode = true;
     sprite.tint = 0xD3D3D3;
-    sprite.on('pointerdown', (event) => { app.handleHousePointerDown(index) });
-    sprite.on('pointerup', (event) => { app.handleHousePointerUp(index) });
 
     container.addChild(sprite)
 
     //highlight
     let highlight = new PIXI.Graphics();
-    highlight.beginFill(0xD5402B);
+    highlight.beginFill(0xF7DC6F);
     highlight.drawRoundedRect(-sprite.width * 0.01, -sprite.height * 0.01, sprite.width + sprite.width * 0.02, sprite.height + sprite.height * 0.02, 20);
     highlight.name = "highlight";
     highlight.endFill();
@@ -169,6 +165,13 @@ setupSingleHoue(index){
     container.x = pt.x;
     container.y = pt.y;
     container.pivot.set(container.width/2, container.height/2);
+    container.interactive=true
+    container.buttonMode = true;
+    container.on('pointerdown', (event) => { app.handleHousePointerDown(index) })
+             .on('pointerup', (event) => { app.handleHousePointerUp(index) })
+             .on('pointerover', (event) => { app.handleHousePointerOver(index) })
+             .on('pointerout', (event) => { app.handleHousePointerOut(index) });
+
     container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
 
     session_players[index].houseContainer = container;
@@ -194,7 +197,7 @@ setupSingleField(index){
 
     //highlight
     let highlight = new PIXI.Graphics();
-    highlight.beginFill(0xD5402B);
+    highlight.beginFill(0xF7DC6F);
     highlight.drawRoundedRect(-sprite.width * 0.05, -sprite.height * 0.05, sprite.width + sprite.width * 0.1, sprite.height + sprite.height * 0.1, 20);
     highlight.name = "highlight";
     highlight.endFill();
@@ -283,7 +286,7 @@ setupGrid(){
         y = app.$data.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale);
     }
 },
-
+ 
 destroyPixiPlayers(){
     for(let i=0;i<session_players.length;i++)
     {
@@ -334,21 +337,15 @@ handleFieldPointerDown(index){
 /**
  *pointer up on field
  */
- handleFieldPointerUp(index){
+handleFieldPointerUp(index){
     console.log('Field ' + (index+1).toString() + ' up');
+    app.setContainerAsTarget(session_players[index].fieldContainer);
+    app.showTransferModal(session_players[index].fieldContainer);
 },
 
 handleFieldPointerOver(index){
     console.log('Field ' + (index+1).toString() + ' Over');
-
-    if(app.$data.pixi_transfer_line.visible)
-    {
-        if(session_players[index].fieldContainer !=  app.$data.pixi_transfer_source)
-        {
-            app.$data.pixi_transfer_target = session_players[index].fieldContainer;
-            session_players[index].fieldContainer.getChildByName("highlight").visible=true;
-        }        
-    }
+    app.setContainerAsTarget(session_players[index].fieldContainer);
 },
 
 handleFieldPointerOut(index){
@@ -376,8 +373,53 @@ handleHousePointerDown(index){
 /**
  *pointer up on house
  */
- handleHousePointerUp(index){
+handleHousePointerUp(index){
     console.log('House ' + (index+1).toString() + ' up');
+    app.setContainerAsTarget(session_players[index].houseContainer);
+    app.showTransferModal(session_players[index].houseContainer);
+},
+
+handleHousePointerOver(index){
+    console.log('House ' + (index+1).toString() + ' Over');
+    app.setContainerAsTarget(session_players[index].houseContainer);
+},
+
+/**set specified container as trasnfer target target
+*/
+setContainerAsTarget(container)
+{
+    if(app.$data.pixi_transfer_line.visible)
+    {
+        if(container !=  app.$data.pixi_transfer_source)
+        {
+            app.$data.pixi_transfer_target = container;
+            container.getChildByName("highlight").visible=true;
+        }       
+    }
+},
+
+/** show transfer modal when mouse up on valid target
+*/
+showTransferModal(container){
+    if(!app.$data.pixi_transfer_line.visible ||
+       container ==  app.$data.pixi_transfer_source ||
+       app.$data.pixi_transfer_source == null ||
+       app.$data.pixi_transfer_target == null)
+    {
+        app.turnOffHighlights();
+        return;
+    } 
+},
+
+
+handleHousePointerOut(index){
+    console.log('House ' + (index+1).toString() + ' Out');
+
+    if(session_players[index].houseContainer ==  app.$data.pixi_transfer_target)
+    {
+        app.$data.pixi_transfer_target = null;
+        session_players[index].houseContainer.getChildByName("highlight").visible=false;
+    }
 },
 
 /**
@@ -415,7 +457,7 @@ updatePixiTransfer(target_x, target_y){
     transfer_line.clear();
 
     transfer_line.visible=true;
-    transfer_line.lineStyle({width:10, color:0xD5402B, alpha:1, alignment:0.5, cap:PIXI.LINE_CAP.SQUARE});
+    transfer_line.lineStyle({width:10, color:0xF7DC6F, alpha:1, alignment:0.5, cap:PIXI.LINE_CAP.SQUARE});
     transfer_line.moveTo(target_x, target_y);
     transfer_line.lineTo(source.x, source.y);
 },
