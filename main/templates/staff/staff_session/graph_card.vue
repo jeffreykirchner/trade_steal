@@ -14,11 +14,10 @@ setupPixi(){
     app.$data.pixi_app = new PIXI.Application({resizeTo : canvas,
                                                backgroundColor : 0xFFFFFF,
                                                autoResize: true,
+                                               antialias: true,
                                                resolution: devicePixelRatio,
                                                view: canvas });
 
-    
-   
     app.$data.canvas_width = canvas.width;
     app.$data.canvas_height = canvas.height;
 
