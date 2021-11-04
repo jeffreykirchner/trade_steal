@@ -43,6 +43,8 @@ setupPixi(){
     PIXI.Loader.shared.add("{% static 'sprite_sheet.json' %}").load(app.setupPixiSheets);
 },
 
+/** load pixi sprite sheets
+*/
 setupPixiSheets()
 {
     app.$data.house_sheet = PIXI.Loader.shared.resources["{% static 'sprite_sheet.json' %}"].spritesheet;
@@ -75,11 +77,7 @@ setupPixiPlayers(){
 
     if(!app.$data.pixi_loaded) return;
 
-    //PIXI.utils.destroyTextureCache();
-
     session_players = app.$data.session.session_players;
-
-    //sheet = PIXI.Loader.shared.resources["/static/house.json"].spritesheet;;
 
     //setup pixi houses
     for(let i=0;i<session_players.length;i++)
@@ -94,6 +92,9 @@ setupPixiPlayers(){
     }
 },
 
+/**setup house container for player
+ * @param index : int
+ */
 setupSingleHoue(index){
     let container = new PIXI.Container();
 
@@ -116,7 +117,7 @@ setupSingleHoue(index){
     //highlight
     let highlight = new PIXI.Graphics();
     highlight.beginFill(0xF7DC6F);
-    highlight.drawRoundedRect(-sprite.width * 0.01, -sprite.height * 0.01, sprite.width + sprite.width * 0.02, sprite.height + sprite.height * 0.02, 20);
+    highlight.drawRoundedRect(-sprite.width * 0.05, -sprite.height * 0.05, sprite.width + sprite.width * 0.1, sprite.height + sprite.height * 0.1, 20);
     highlight.name = "highlight";
     highlight.endFill();
     highlight.visible=false;
@@ -178,6 +179,9 @@ setupSingleHoue(index){
     app.$data.pixi_app.stage.addChild(session_players[index].houseContainer);
 },
 
+/**setup field container for player
+ * @param index : int
+ */
 setupSingleField(index){
     let container = new PIXI.Container();
 
@@ -287,6 +291,8 @@ setupGrid(){
     }
 },
  
+/**destroy house and field containers
+ */
 destroyPixiPlayers(){
     for(let i=0;i<session_players.length;i++)
     {
@@ -295,6 +301,8 @@ destroyPixiPlayers(){
     }
 },
 
+/** location of house and fields
+ */
 getLocationCordinates(index, field_or_house){
 
     let y=0;
