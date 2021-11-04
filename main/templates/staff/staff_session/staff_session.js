@@ -138,7 +138,10 @@ var app = Vue.createApp({
                     break;
                 case "next_period":
                     app.takeNextPeriod(messageData);
-                    break;   
+                    break; 
+                case "move_goods":
+                    app.takeMoveGoods(messageData);
+                    break;  
             }
 
             if(!app.$data.first_load_done)
@@ -248,7 +251,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/parameters_card.js"%}
         {%include "staff/staff_session/control_card.js"%}
         {%include "staff/staff_session/session_card.js"%}
-        {%include "staff/staff_session/graph_card.vue"%}
+        {%include "staff/staff_session/graph_card.js"%}
     
         
         /** clear form error messages

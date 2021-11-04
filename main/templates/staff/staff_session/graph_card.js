@@ -495,7 +495,7 @@ takeMoveGoods(){
 
     if(messageData.status.value == "success")
     {
-        app.takeGetSession(messageData);       
+        app.takeUpdateGoods(messageData);       
         $('#moveGoodsModal').modal('hide');            
     } 
     else
@@ -510,4 +510,4 @@ takeMoveGoods(){
  */
 takeUpdateGoods(){
 
-}
+},

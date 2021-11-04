@@ -255,6 +255,22 @@ class StaffSessionConsumer(SocketConsumerMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
+    async def move_goods(self, event):
+        '''
+        advance to next period in experiment
+        '''
+        #update subject count
+        message_data = {}
+        message_data["data"] = await sync_to_async(take_move_goods)(event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+
 #local sync functions
 def take_update_session_form(data):
     '''
@@ -589,3 +605,34 @@ def take_next_period(data):
     return {"status" : status,
             "current_period" : session.current_period,
             "finished" : session.finished}
+
+def take_move_goods(data):
+    '''
+    move goods between locations (house or field)
+    '''
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Move goods: {data}")
+
+    session_id = data["sessionID"]
+    session = Session.objects.get(id=session_id)
+
+    form_data = data["formData"]
+    
+    form_data_dict = {}
+
+    for field in form_data:            
+        form_data_dict[field["name"]] = field["value"]
+
+    logger.info(f'form_data_dict : {form_data_dict}')
+
+    form = ParameterSetPlayerForm(form_data_dict, instance=parameter_set_player)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid session form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
