@@ -1,0 +1,25 @@
+{% load crispy_forms_tags %}
+<!--Edit Period Modal -->
+<div class="modal fade" id="moveGoodsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="moveGoodsModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">                
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="moveGoodsForm" v-on:submit.prevent="onSubmit">
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "sendMoveGoods()"
+                        v-bind:disabled="reconnecting || working">
+                    Move <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

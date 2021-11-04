@@ -1,6 +1,10 @@
 
 {% load static %}
 /**
+ * Actions
+ */
+
+/**
  * update the pixi players with new info
  */
 setupPixi(){    
@@ -468,3 +472,42 @@ updatePixiTransfer(target_x, target_y){
     transfer_line.moveTo(target_x, target_y);
     transfer_line.lineTo(source.x, source.y);
 },
+
+
+/**
+ * Actions
+ */
+
+/** show the move goods modal
+*/
+sendMoveGoods(){
+    
+    app.$data.working = true;
+    app.sendMessage("move_goods", {"sessionID" : app.$data.sessionID,
+                                   "formData" : $("#moveGoodsForm").serializeArray(),});
+},
+
+/** take result of moving goods
+*/
+takeMoveGoods(){
+    //app.$data.cancelModal=false;
+    //app.clearMainFormErrors();
+
+    if(messageData.status.value == "success")
+    {
+        app.takeGetSession(messageData);       
+        $('#moveGoodsModal').modal('hide');            
+    } 
+    else
+    {
+        app.$data.cancelModal=true;                           
+        app.displayErrors(messageData.status.errors);
+    }
+},
+
+/**
+ * take update to good counts
+ */
+takeUpdateGoods(){
+
+}
