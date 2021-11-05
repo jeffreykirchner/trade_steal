@@ -71,10 +71,11 @@ var app = Vue.createApp({
                     show_parameters:false,
                     import_parameters_message : "",
                     move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
-                    pixi_loaded : false,
-                    pixi_transfer_line : null,
-                    pixi_transfer_source : null,  
-                    pixi_transfer_target : null,                    
+                    pixi_loaded : false,             //true when pixi is loaded
+                    pixi_transfer_line : null,       //transfer line between two pixi containers  
+                    pixi_transfer_source : null,     //source of transfer
+                    pixi_transfer_target : null,     //target of transfer
+                    pixi_modal_open : false,         //true whe pixi modal is open
                 }},
     methods: {
 
@@ -324,6 +325,7 @@ var app = Vue.createApp({
         $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);
         $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
         $('#editParametersetPlayerGroupModal').on("hidden.bs.modal", this.hideEditParametersetPlayerGroup);
+        $('#moveGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
     },
 
 }).mount('#app');

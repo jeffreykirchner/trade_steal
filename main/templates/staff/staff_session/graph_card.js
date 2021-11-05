@@ -338,11 +338,7 @@ getLocationCordinates(index, field_or_house){
  */
 handleFieldPointerDown(index){
     console.log('Field ' + (index+1).toString() + ' down');
-    app.turnOffHighlights();
-
-    session_players[index].fieldContainer.getChildByName("highlight").visible=true;
-    app.$data.pixi_transfer_source = session_players[index].fieldContainer;
-    app.updatePixiTransfer(event.offsetX , event.offsetY); 
+    app.handleContainerDown(session_players[index].fieldContainer);
 },
 
 /**
@@ -350,23 +346,23 @@ handleFieldPointerDown(index){
  */
 handleFieldPointerUp(index){
     console.log('Field ' + (index+1).toString() + ' up');
-    app.setContainerAsTarget(session_players[index].fieldContainer);
-    app.showTransferModal(session_players[index].fieldContainer);
+    app.handleContainerUp(session_players[index].fieldContainer);
 },
 
+/**
+ *pointer move over field
+ */
 handleFieldPointerOver(index){
     console.log('Field ' + (index+1).toString() + ' Over');
     app.setContainerAsTarget(session_players[index].fieldContainer);
 },
 
+/**
+ *pointer move off field
+ */
 handleFieldPointerOut(index){
     console.log('Field ' + (index+1).toString() + ' Out');
-
-    if(session_players[index].fieldContainer ==  app.$data.pixi_transfer_target)
-    {
-        app.$data.pixi_transfer_target = null;
-        session_players[index].fieldContainer.getChildByName("highlight").visible=false;
-    }
+    app.removeContainerTarget(session_players[index].fieldContainer);
 },
 
 /**
@@ -374,11 +370,7 @@ handleFieldPointerOut(index){
  */
 handleHousePointerDown(index){
     console.log('House ' + (index+1).toString() + ' down');
-    app.turnOffHighlights();
-
-    session_players[index].houseContainer.getChildByName("highlight").visible=true;
-    app.$data.pixi_transfer_source = session_players[index].houseContainer;
-    app.updatePixiTransfer(event.offsetX , event.offsetY);    
+    app.handleContainerDown(session_players[index].houseContainer);
 },
 
 /**
@@ -386,20 +378,49 @@ handleHousePointerDown(index){
  */
 handleHousePointerUp(index){
     console.log('House ' + (index+1).toString() + ' up');
-    app.setContainerAsTarget(session_players[index].houseContainer);
-    app.showTransferModal(session_players[index].houseContainer);
+    app.handleContainerUp(session_players[index].houseContainer);
 },
 
+/**
+ *pointer over house
+ */
 handleHousePointerOver(index){
     console.log('House ' + (index+1).toString() + ' Over');
     app.setContainerAsTarget(session_players[index].houseContainer);
+},
+
+/**
+ *pointer move off house
+ */
+handleHousePointerOut(index){
+    console.log('House ' + (index+1).toString() + ' Out');
+    app.removeContainerTarget(session_players[index].houseContainer);
+},
+
+/**
+ * handle container mouse down
+ */
+handleContainerDown(container){
+    app.turnOffHighlights();
+
+    container.getChildByName("highlight").visible=true;
+    app.$data.pixi_transfer_source = container;
+    app.updatePixiTransfer(event.offsetX , event.offsetY);
+},
+
+/**
+ * handle container mouse up
+ */
+handleContainerUp(container){
+    app.setContainerAsTarget(container);
+    app.showTransferModal(container);
 },
 
 /**set specified container as trasnfer target target
 */
 setContainerAsTarget(container)
 {
-    if(app.$data.pixi_transfer_line.visible)
+    if(app.$data.pixi_transfer_line.visible && !app.pixi_modal_open)
     {
         if(container !=  app.$data.pixi_transfer_source)
         {
@@ -409,9 +430,22 @@ setContainerAsTarget(container)
     }
 },
 
+/**remove container target when pointer moves off of it
+*/
+removeContainerTarget(container){
+    if(container ==  app.$data.pixi_transfer_target && !app.pixi_modal_open)
+    {
+        app.$data.pixi_transfer_target = null;
+        container.getChildByName("highlight").visible=false;
+    }
+},
+
 /** show transfer modal when mouse up on valid target
 */
 showTransferModal(container){
+
+    if(app.pixi_modal_open) return;
+
     if(!app.$data.pixi_transfer_line.visible ||
        container ==  app.$data.pixi_transfer_source ||
        app.$data.pixi_transfer_source == null ||
@@ -420,17 +454,15 @@ showTransferModal(container){
         app.turnOffHighlights();
         return;
     } 
-},
 
+    app.$data.pixi_modal_open = true;
+    app.$data.cancelModal=true;
 
-handleHousePointerOut(index){
-    console.log('House ' + (index+1).toString() + ' Out');
+    var myModal = new bootstrap.Modal(document.getElementById('moveGoodsModal'), {
+        keyboard: false
+        })
 
-    if(session_players[index].houseContainer ==  app.$data.pixi_transfer_target)
-    {
-        app.$data.pixi_transfer_target = null;
-        session_players[index].houseContainer.getChildByName("highlight").visible=false;
-    }
+    myModal.toggle();
 },
 
 /**
@@ -441,7 +473,31 @@ handleHousePointerOut(index){
     app.turnOffHighlights();
 },
 
+/**
+ * pointer move over stage
+ */
+ handleStagePointerMove(){
+    if(app.$data.pixi_transfer_line.visible && !app.pixi_modal_open)
+    {
+        app.updatePixiTransfer(event.offsetX, event.offsetY);
+    }
+},
+
+/** show transfer modal
+*/
+hideTransferModal:function(){
+    if(app.$data.cancelModal)
+    {
+       
+    }
+
+    app.$data.pixi_modal_open = false;
+    app.turnOffHighlights();
+},
+
 turnOffHighlights(){
+    if(app.pixi_modal_open) return;
+    
     for(let i=0;i<session_players.length;i++)
     {
         session_players[i].houseContainer.getChildByName("highlight").visible=false;
@@ -449,16 +505,6 @@ turnOffHighlights(){
     }
 
     app.$data.pixi_transfer_line.visible=false;
-},
-
-/**
- * pointer move over stage
- */
-handleStagePointerMove(){
-    if(app.$data.pixi_transfer_line.visible)
-    {
-        app.updatePixiTransfer(event.offsetX, event.offsetY);
-    }
 },
 
 updatePixiTransfer(target_x, target_y){
