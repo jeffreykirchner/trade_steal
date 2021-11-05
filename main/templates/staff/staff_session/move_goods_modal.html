@@ -8,7 +8,13 @@
             </div>
             <div class="modal-body">
                 <form id="moveGoodsForm" v-on:submit.prevent="onSubmit">
-
+                    {% for i in session_player_move_form %}
+                    <div class="row">
+                        <div class = "col col-md-10 offset-md-1">  
+                            {{ i|as_crispy_field }}         
+                        </div>            
+                    </div> 
+                    {% endfor %}
                 </form>
             </div>
             <div class="modal-footer">
