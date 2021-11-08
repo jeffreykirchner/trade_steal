@@ -171,6 +171,7 @@ setupSingleHoue(index){
     container.pivot.set(container.width/2, container.height/2);
     container.interactive=true
     container.buttonMode = true;
+    container.name = {type : 'house', user_id: session_players[index], modal_label: "House " + parameter_set_player.id_label};
     container.on('pointerdown', (event) => { app.handleHousePointerDown(index) })
              .on('pointerup', (event) => { app.handleHousePointerUp(index) })
              .on('pointerover', (event) => { app.handleHousePointerOver(index) })
@@ -250,6 +251,7 @@ setupSingleField(index){
 
     container.x = pt.x;
     container.y = pt.y;
+    container.name = {type : 'field', user_id: session_players[index], modal_label: "Field " + parameter_set_player.id_label};
     container.pivot.set(container.width/2, container.height/2);
     container.hitArea = new PIXI.Rectangle(0, 0, container.width, container.height);    
     
@@ -440,31 +442,6 @@ removeContainerTarget(container){
     }
 },
 
-/** show transfer modal when mouse up on valid target
-*/
-showTransferModal(container){
-
-    if(app.pixi_modal_open) return;
-
-    if(!app.$data.pixi_transfer_line.visible ||
-       container ==  app.$data.pixi_transfer_source ||
-       app.$data.pixi_transfer_source == null ||
-       app.$data.pixi_transfer_target == null)
-    {
-        app.turnOffHighlights();
-        return;
-    } 
-
-    app.$data.pixi_modal_open = true;
-    app.$data.cancelModal=true;
-
-    var myModal = new bootstrap.Modal(document.getElementById('moveGoodsModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
-},
-
 /**
  *pointer up on stage
  */
@@ -481,6 +458,34 @@ showTransferModal(container){
     {
         app.updatePixiTransfer(event.offsetX, event.offsetY);
     }
+},
+
+/** show transfer modal when mouse up on valid target
+*/
+showTransferModal(container){
+
+    if(app.pixi_modal_open) return;
+
+    if(!app.$data.pixi_transfer_line.visible ||
+       container ==  app.$data.pixi_transfer_source ||
+       app.$data.pixi_transfer_source == null ||
+       app.$data.pixi_transfer_target == null)
+    {
+        app.turnOffHighlights();
+        return;
+    } 
+
+    app.$data.pixi_transfer_source_modal_string = app.$data.pixi_transfer_source.name.modal_label;
+    app.$data.pixi_transfer_target_modal_string = app.$data.pixi_transfer_target.name.modal_label;
+
+    app.$data.pixi_modal_open = true;
+    app.$data.cancelModal=true;
+
+    var myModal = new bootstrap.Modal(document.getElementById('moveGoodsModal'), {
+        keyboard: false
+        })
+
+    myModal.toggle();
 },
 
 /** show transfer modal
