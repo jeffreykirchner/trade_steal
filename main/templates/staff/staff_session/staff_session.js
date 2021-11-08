@@ -60,10 +60,13 @@ var app = Vue.createApp({
                         group_number : 0,
                         period :0,
                     },
+
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
                     parameterset_type_form_ids: {{parameterset_type_form_ids|safe}},
                     parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
                     parameterset_player_group_form_ids: {{parameterset_player_group_form_ids|safe}},
+                    session_player_move_form_ids: {{session_player_move_form_ids|safe}},
+
                     upload_file: null,
                     upload_file_name:'Choose File',
                     uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
@@ -79,6 +82,13 @@ var app = Vue.createApp({
                     pixi_modal_open : false,         //true whe pixi modal is open
                     pixi_transfer_source_modal_string : "",   //source string shown on transfer modal
                     pixi_transfer_target_modal_string : "" ,  //target string shown on transfer modal
+
+                    transfer_source_modal_string : "",   //source string shown on transfer modal
+                    transfer_target_modal_string : "" ,  //target string shown on transfer modal
+                    transfer_modal_good_one_rgb : 0x000000,   //good one color shown on transfer modal
+                    transfer_modal_good_two_rgb : 0x000000 ,  //good two color shown on transfer modal
+                    transfer_modal_good_one_name : "",   //good one name shown on transfer modal
+                    transfer_modal_good_two_name : "" ,  //good two name shown on transfer modal
                 }},
     methods: {
 
@@ -290,6 +300,13 @@ var app = Vue.createApp({
             }
 
             s = app.$data.parameterset_player_group_form_ids;
+            for(var i in s)
+            {
+                $("#id_" + s[i]).attr("class","form-control");
+                $("#id_errors_" + s[i]).remove();
+            }
+
+            s = app.$data.session_player_move_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");

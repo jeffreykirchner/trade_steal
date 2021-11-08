@@ -1,10 +1,10 @@
 {% load crispy_forms_tags %}
 <!--Edit Period Modal -->
 <div class="modal fade " id="moveGoodsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="moveGoodsModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                Move Goods: &nbsp;<span class = "fw-bold">[[pixi_transfer_source_modal_string]] &nbsp;<i class="fas fa-long-arrow-alt-right"></i> &nbsp;[[pixi_transfer_target_modal_string]]</span>           
+                <span class = "fw-bold">[[transfer_source_modal_string]] &nbsp;<i class="fas fa-arrow-right"></i> &nbsp;[[transfer_target_modal_string]]</span>           
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -25,7 +25,7 @@
                         v-on:click = "sendMoveGoods()"
                         title="Move Goods"
                         v-bind:disabled="reconnecting || working">
-                    Move <i class="fas fa-sign-in-alt"></i>
+                    Move Goods <i class="fas fa-sign-in-alt"></i>
                 </button>
             </div>
         </div>

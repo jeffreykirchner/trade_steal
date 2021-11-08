@@ -171,7 +171,13 @@ setupSingleHoue(index){
     container.pivot.set(container.width/2, container.height/2);
     container.interactive=true
     container.buttonMode = true;
-    container.name = {type : 'house', user_id: session_players[index], modal_label: "House " + parameter_set_player.id_label};
+    container.name = {type : 'house',
+                      user_id: session_players[index],
+                      modal_label: "House " + parameter_set_player.id_label,
+                      good_one_color: parameter_set.good_one_rgb_color,
+                      good_two_color: parameter_set.good_two_rgb_color, 
+                      good_one_label : parameter_set.good_one_label,
+                      good_two_label : parameter_set.good_two_label};
     container.on('pointerdown', (event) => { app.handleHousePointerDown(index) })
              .on('pointerup', (event) => { app.handleHousePointerUp(index) })
              .on('pointerover', (event) => { app.handleHousePointerOver(index) })
@@ -236,7 +242,7 @@ setupSingleField(index){
 
     container.addChild(goodOneLabel)
 
-    //good one label
+    //good two label
     let goodTwoLabel = new PIXI.Text(session_player.good_two_field.toString(),{fontFamily : 'Arial',
                                                                                     fontWeight:'bold',
                                                                                     fontSize: 100,
@@ -251,7 +257,14 @@ setupSingleField(index){
 
     container.x = pt.x;
     container.y = pt.y;
-    container.name = {type : 'field', user_id: session_players[index], modal_label: "Field " + parameter_set_player.id_label};
+    container.name = {type : 'field',
+                      user_id: session_players[index],
+                      modal_label: "Field " + parameter_set_player.id_label,
+                      good_one_color: parameter_set.good_one_rgb_color,
+                      good_two_color: parameter_set.good_two_rgb_color, 
+                      good_one_label : parameter_set.good_one_label,
+                      good_two_label : parameter_set.good_two_label};
+
     container.pivot.set(container.width/2, container.height/2);
     container.hitArea = new PIXI.Rectangle(0, 0, container.width, container.height);    
     
@@ -475,8 +488,14 @@ showTransferModal(container){
         return;
     } 
 
-    app.$data.pixi_transfer_source_modal_string = app.$data.pixi_transfer_source.name.modal_label;
-    app.$data.pixi_transfer_target_modal_string = app.$data.pixi_transfer_target.name.modal_label;
+    app.$data.transfer_source_modal_string = app.$data.pixi_transfer_source.name.modal_label;
+    app.$data.transfer_target_modal_string = app.$data.pixi_transfer_target.name.modal_label;
+
+    app.$data.transfer_modal_good_one_rgb = app.$data.pixi_transfer_source.name.good_one_color;
+    app.$data.transfer_modal_good_two_rgb = app.$data.pixi_transfer_source.name.good_two_color;
+
+    app.$data.transfer_modal_good_one_name = app.$data.pixi_transfer_source.name.good_one_label;
+    app.$data.transfer_modal_good_two_name = app.$data.pixi_transfer_source.name.good_two_label;
 
     app.$data.pixi_modal_open = true;
     app.$data.cancelModal=true;
@@ -533,6 +552,8 @@ updatePixiTransfer(target_x, target_y){
 */
 sendMoveGoods(){
     
+    if(app.$data.working == true) return;
+
     app.$data.working = true;
     app.sendMessage("move_goods", {"sessionID" : app.$data.sessionID,
                                    "formData" : $("#moveGoodsForm").serializeArray(),});
@@ -540,7 +561,7 @@ sendMoveGoods(){
 
 /** take result of moving goods
 */
-takeMoveGoods(){
+takeMoveGoods(messageData){
     //app.$data.cancelModal=false;
     //app.clearMainFormErrors();
 

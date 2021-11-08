@@ -19,6 +19,7 @@ from main.forms import ParameterSetForm
 from main.forms import ParameterSetTypeForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPlayerGroupForm
+from main.forms import SessionPlayerMoveForm
 
 from main.models import Session
 from main.models import ParameterSetType
@@ -626,11 +627,11 @@ def take_move_goods(data):
 
     logger.info(f'form_data_dict : {form_data_dict}')
 
-    form = ParameterSetPlayerForm(form_data_dict, instance=parameter_set_player)
+    form = SessionPlayerMoveForm(form_data_dict)
 
     if form.is_valid():
         #print("valid form")             
-        form.save()              
+                      
 
         return {"value" : "success"}                      
                                 
