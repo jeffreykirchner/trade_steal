@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                Transfer Goods: [[pixi_transfer_source_modal_string]] -> [[pixi_transfer_target_modal_string]]                
+                Move Goods: &nbsp;<span class = "fw-bold">[[pixi_transfer_source_modal_string]] &nbsp;<i class="fas fa-long-arrow-alt-right"></i> &nbsp;[[pixi_transfer_target_modal_string]]</span>           
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -23,6 +23,7 @@
                 <button type="button"
                         class="btn btn-outline-primary"
                         v-on:click = "sendMoveGoods()"
+                        title="Move Goods"
                         v-bind:disabled="reconnecting || working">
                     Move <i class="fas fa-sign-in-alt"></i>
                 </button>
