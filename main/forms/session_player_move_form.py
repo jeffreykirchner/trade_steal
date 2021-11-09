@@ -17,7 +17,6 @@ class SessionPlayerMoveForm(forms.Form):
                                                 max_value=9999,
                                                 widget=forms.NumberInput(attrs={"step" : "1",
                                                                                 "min" : "0",
-                                                                                "value" : "0",
                                                                                 "v-model" : "transfer_good_one_amount",
                                                                                 "v-on:keyup.enter":"sendMoveGoods()"}))
     
@@ -26,6 +25,5 @@ class SessionPlayerMoveForm(forms.Form):
                                                     max_value=9999,
                                                     widget=forms.NumberInput(attrs={"step" : "1",
                                                                                     "min" : "0",
-                                                                                    "value" : "0",
                                                                                     "v-model" : "transfer_good_two_amount",
                                                                                     "v-on:keyup.enter":"sendMoveGoods()"}))

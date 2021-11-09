@@ -10,6 +10,7 @@ import logging
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 
 from main.consumers import SocketConsumerMixin
 from main.consumers import get_session
@@ -632,16 +633,60 @@ def take_move_goods(data):
         #print("valid form") 
 
         try:        
-            session = Session.objects.get(id=session_id)
-            source_type = data["sourceType"]
-            source_id = data["sourceID"]
-            target_type = data["targetType"]
-            target_id = data["targetID"]
+            with transaction.atomic():
+                session = Session.objects.get(id=session_id)
+                source_type = data["sourceType"]
+                source_id = data["sourceID"]
+                target_type = data["targetType"]
+                target_id = data["targetID"]
+
+                source_session_player = session.session_players.get(id=source_id)
+                target_session_player = session.session_players.get(id=target_id)
+
+                good_one_amount = form.cleaned_data["transfer_good_one_amount"]
+                good_two_amount = form.cleaned_data["transfer_good_two_amount"]
+
+                #handle source
+                if source_type == "house":
+                    #check enough good one
+                    if source_session_player.good_one_house < good_one_amount:
+                        return {"value" : "fail", "errors" : {}, "message" : "Source Error Good One"}
+                    
+                    #check enough good two
+                    if source_session_player.good_two_house < good_two_amount:
+                        return {"value" : "fail", "errors" : {}, "message" : "Source Error Good Two"}
+
+                    source_session_player.good_one_house -= good_one_amount
+                    source_session_player.good_two_house -= good_two_amount
+                else:
+                     #check enough good one
+                    if source_session_player.good_one_field < good_one_amount:
+                        return {"value" : "fail", "errors" : {}, "message" : "Source Error Good One"}
+                    
+                    #check enough good two
+                    if source_session_player.good_two_field < good_two_amount:
+                        return {"value" : "fail", "errors" : {}, "message" : "Source Error Good Two"}
+                    
+                    source_session_player.good_one_field -= good_one_amount
+                    source_session_player.good_two_field -= good_two_amount
+
+                #handle target
+                if target_type == "house":
+                    target_session_player.good_one_house += good_one_amount
+                    target_session_player.good_two_house += good_two_amount
+                else:
+                    target_session_player.good_one_field += good_one_amount
+                    target_session_player.good_two_field += good_two_amount
+                
+                source_session_player.save()
+                target_session_player.save()
+                
         except ObjectDoesNotExist:
             logger.warning(f"take_move_goods session, not found ID: {session_id}")
-            return {"status" : "fail", "errors" : {}}       
-                      
-        return {"status" : "success"}                      
+            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+        
+        
+        return {"value" : "success"}                      
                                 
     logger.info("Invalid session form")
-    return {"status" : "fail", "errors" : dict(form.errors.items())}
+    return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}

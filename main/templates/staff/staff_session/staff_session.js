@@ -89,6 +89,8 @@ var app = Vue.createApp({
                     transfer_modal_good_two_rgb : 0x000000 ,  //good two color shown on transfer modal
                     transfer_modal_good_one_name : "",   //good one name shown on transfer modal
                     transfer_modal_good_two_name : "" ,  //good two name shown on transfer modal
+                    transfer_good_one_amount : 0, //good one amount to be transfered
+                    transfer_good_two_amount : 0, //good two amount to be transfered
                 }},
     methods: {
 
