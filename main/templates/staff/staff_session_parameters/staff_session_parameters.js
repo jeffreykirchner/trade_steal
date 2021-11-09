@@ -35,27 +35,44 @@ var app = Vue.createApp({
                         },
                         session_periods : [],
                     },
+                   
+                    downloadParametersetButtonText:'Download <i class="fas fa-download"></i>',
+                    valuecost_modal_label:'Edit Value or Cost',
+                    current_parameterset_type:{                       //json attached to parameterset type edit modal
+                        id:0,
+                        good_one_amount:0,
+                        good_two_amount:0,
+                        good_one_production_1:0,
+                        good_one_production_2:0,
+                        good_one_production_3:0,
+                        good_two_production_1:0,
+                        good_two_production_2:0,
+                        good_two_production_3:0,
+                    },
+                    current_parameter_set_player : {
+                        id:0,
+                        id_label:"",
+                        location:1,      
+                        subject_type:"",                  
+                    },
+                    current_parameter_set_player_group : {
+                        id : 0,
+                        group_number : 0,
+                        period :0,
+                    },
 
-                    session_player_move_form_ids: {{session_player_move_form_ids|safe}},
+                    parameterset_form_ids: {{parameterset_form_ids|safe}},
+                    parameterset_type_form_ids: {{parameterset_type_form_ids|safe}},
+                    parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
+                    parameterset_player_group_form_ids: {{parameterset_player_group_form_ids|safe}},
 
-                    move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
+                    upload_file: null,
+                    upload_file_name:'Choose File',
+                    uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
+                    uploadParametersetMessaage:'',
+                    show_parameters:false,
+                    import_parameters_message : "",
 
-                    pixi_loaded : false,             //true when pixi is loaded
-                    pixi_transfer_line : null,       //transfer line between two pixi containers  
-                    pixi_transfer_source : null,     //source of transfer
-                    pixi_transfer_target : null,     //target of transfer
-                    pixi_modal_open : false,         //true whe pixi modal is open
-                    pixi_transfer_source_modal_string : "",   //source string shown on transfer modal
-                    pixi_transfer_target_modal_string : "" ,  //target string shown on transfer modal
-
-                    transfer_source_modal_string : "",   //source string shown on transfer modal
-                    transfer_target_modal_string : "" ,  //target string shown on transfer modal
-                    transfer_modal_good_one_rgb : 0x000000,   //good one color shown on transfer modal
-                    transfer_modal_good_two_rgb : 0x000000 ,  //good two color shown on transfer modal
-                    transfer_modal_good_one_name : "",   //good one name shown on transfer modal
-                    transfer_modal_good_two_name : "" ,  //good two name shown on transfer modal
-                    transfer_good_one_amount : 0, //good one amount to be transfered
-                    transfer_good_two_amount : 0, //good two amount to be transfered
                 }},
     methods: {
 
@@ -81,18 +98,36 @@ var app = Vue.createApp({
                 case "get_session":
                     app.takeGetSession(messageData);
                     break;
-                case "start_experiment":
-                    app.takeStartExperiment(messageData);
+                case "update_session":
+                    app.takeUpdateSession(messageData);
                     break;
-                case "reset_experiment":
-                    app.takeResetExperiment(messageData);
+                case "update_parameterset":
+                    app.takeUpdateParameterset(messageData);
+                    break;         
+                case "update_parameterset_type":
+                    app.takeUpdateParametersetType(messageData);
+                    break;     
+                case "update_parameterset_player":
+                    app.takeUpdateParametersetPlayer(messageData);
+                    break;     
+                case "remove_parameterset_player":
+                    app.takeRemoveParameterSetPlayer(messageData);
                     break;
-                case "next_period":
-                    app.takeNextPeriod(messageData);
-                    break; 
-                case "move_goods":
-                    app.takeMoveGoods(messageData);
-                    break;  
+                case "add_parameterset_player":
+                    app.takeAddParameterSetPlayer(messageData);
+                    break;
+                case "update_parameterset_player_group":
+                    app.takeUpdateParametersetPlayerGroup(messageData);
+                    break;
+                case "copy_group_forward":
+                    app.takeCopyGroupForward(messageData);
+                    break;
+                case "import_parameters":
+                    app.takeImportParameters(messageData);
+                    break;
+                case "download_parameters":
+                    app.takeDownloadParameters(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -136,29 +171,7 @@ var app = Vue.createApp({
             else
             {
                 
-            }
-            
-            if(!app.$data.pixi_loaded) app.setupPixi();                            
-        },
-
-        /**update text of move on button based on current state
-         */
-        updateMoveOnButtonText(){
-            if(app.$data.session.finished)
-            {
-                app.$data.move_to_next_period_text = '** Experiment complete **';
-            }
-            else if(app.$data.session.started)
-            {
-                if(app.$data.session.current_period == app.$data.session.parameter_set.number_of_periods)
-                {
-                    app.$data.move_to_next_period_text = 'Complete experiment <i class="fas fa-flag-checkered"></i>';
-                }
-                else
-                {
-                    app.$data.move_to_next_period_text = 'Move to next period <i class="fas fa-fast-forward"></i>';
-                }
-            }
+            }                     
         },
 
         /** send winsock request to get session info
@@ -167,14 +180,39 @@ var app = Vue.createApp({
             app.sendMessage("get_session",{"sessionID" : app.$data.sessionID});
         },
 
+        /** send session update form   
+        */
+        sendUpdateSession(){
+            app.$data.cancelModal = false;
+            app.$data.working = true;
+            app.sendMessage("update_session",{"formData" : $("#sessionForm").serializeArray(),
+                                              "sessionID" : app.$data.sessionID});
+        },
+
+        /** take update session reponse
+         * @param messageData {json} result of update, either sucess or fail with errors
+        */
+        takeUpdateSession(messageData){
+            app.clearMainFormErrors();
+
+            if(messageData.status == "success")
+            {
+                app.takeGetSession(messageData);       
+                $('#editSessionModal').modal('hide');    
+            } 
+            else
+            {
+                app.$data.cancelModal=true;                           
+                app.displayErrors(messageData.errors);
+            } 
+        },
+
         //do nothing on when enter pressed for post
         onSubmit(){
             //do nothing
         },
-        
-        {%include "staff/staff_session/control_card.js"%}
-        {%include "staff/staff_session/session_card.js"%}
-        {%include "staff/staff_session/graph_card.js"%}
+
+        {%include "staff/staff_session_parameters/parameters_card.js"%}
     
         /** clear form error messages
         */
@@ -213,13 +251,6 @@ var app = Vue.createApp({
                 $("#id_" + s[i]).attr("class","form-control");
                 $("#id_errors_" + s[i]).remove();
             }
-
-            s = app.$data.session_player_move_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
         },
 
         /** display form error messages
@@ -246,8 +277,12 @@ var app = Vue.createApp({
     },
 
     mounted(){
-
-        $('#moveGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
+        $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession); 
+        $('#importParametersModal').on("hidden.bs.modal", this.hideImportParameters); 
+        $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
+        $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);
+        $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
+        $('#editParametersetPlayerGroupModal').on("hidden.bs.modal", this.hideEditParametersetPlayerGroup);
     },
 
 }).mount('#app');

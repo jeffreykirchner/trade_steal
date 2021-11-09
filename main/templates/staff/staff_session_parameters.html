@@ -1,0 +1,52 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+
+{%block head%}
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        {%include "staff/staff_session_parameters/staff_session_parameters.js"%}
+    });
+
+</script>
+<style>
+
+    canvas {
+        background-color: white; 
+        width: 100%;
+        height: 600px;
+    }
+
+    .player_table_row {
+        cursor: pointer;
+    }
+
+    .player_table_cell{
+        cursor: pointer;
+    }
+
+    .player_table_cell:hover {
+        background-color:#ececec;
+    }
+</style>
+
+{%endblock head%}
+
+{% block content %}
+
+<!-- modals -->
+{%include "staff/staff_session_parameters/edit_session_modal.html"%}
+{%include "staff/staff_session_parameters/edit_parameterset_modal.html"%}
+{%include "staff/staff_session_parameters/edit_parameterset_type_modal.html"%}
+{%include "staff/staff_session_parameters/edit_parameterset_player_modal.html"%}
+{%include "staff/staff_session_parameters/edit_parameterset_player_group_modal.html"%}
+{%include "staff/staff_session_parameters/upload_parameters_modal.html"%}
+{%include "staff/staff_session_parameters/import_parameters_modal.html"%}
+
+<!-- cards -->
+<div class="row justify-content-lg-center" v-cloak>
+    <div class="col">
+        {%include "staff/staff_session_parameters/parameters_card.html"%}                 
+    </div>
+</div>
+{% endblock %}

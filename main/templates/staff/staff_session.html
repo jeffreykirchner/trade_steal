@@ -35,19 +35,12 @@
 {% block content %}
 
 <!-- modals -->
-{%include "staff/staff_session/edit_session_modal.html"%}
-{%include "staff/staff_session/edit_parameterset_modal.html"%}
-{%include "staff/staff_session/edit_parameterset_type_modal.html"%}
-{%include "staff/staff_session/edit_parameterset_player_modal.html"%}
-{%include "staff/staff_session/edit_parameterset_player_group_modal.html"%}
-{%include "staff/staff_session/upload_parameters_modal.html"%}
-{%include "staff/staff_session/import_parameters_modal.html"%}
 {%include "staff/staff_session/move_goods_modal.html"%}
 
 <!-- cards -->
 <div class="row justify-content-lg-center" v-cloak>
     <div class="col-md-9">
-        {%include "staff/staff_session/parameters_card.html"%}                 
+        {%include "staff/staff_session/graph_card.html"%}                
     </div>
     <div class="col-md-3">
         <div class="row">
@@ -55,19 +48,13 @@
                 {%include "staff/staff_session/session_card.html"%}
             </div>
         </div>
-                        
-    </div>
-</div>
-<div class="row justify-content-lg-center mt-4" v-cloak>
-    <div class="col-md-9">
-        {%include "staff/staff_session/graph_card.html"%}                 
-    </div>
-    <div class="col-md-3">
+
         <div class="row">
             <div class="col">
                 {%include "staff/staff_session/control_card.html"%} 
             </div>
-        </div>          
+        </div>
+                        
     </div>
 </div>
 

@@ -16,15 +16,8 @@ from django.http import JsonResponse
 
 from main.decorators import user_is_owner
 
-from main.models import Parameters
 from main.models import Session
 
-from main.forms import SessionForm
-from main.forms import ImportParametersForm
-from main.forms import ParameterSetForm
-from main.forms import ParameterSetTypeForm
-from main.forms import ParameterSetPlayerForm
-from main.forms import ParameterSetPlayerGroupForm
 from main.forms import SessionPlayerMoveForm
 
 class StaffSessionView(SingleObjectMixin, View):
@@ -42,44 +35,17 @@ class StaffSessionView(SingleObjectMixin, View):
         handle get requests
         '''
 
-        parameters = Parameters.objects.first()
         session = self.get_object()
-
-        parameterset_form_ids=[]
-        for i in ParameterSetForm():
-            parameterset_form_ids.append(i.html_name)
-        
-        parameterset_type_form_ids=[]
-        for i in ParameterSetTypeForm():
-            parameterset_type_form_ids.append(i.html_name)
-
-        parameterset_player_form_ids=[]
-        for i in ParameterSetPlayerForm():
-            parameterset_player_form_ids.append(i.html_name)
-        
-        parameterset_player_group_form_ids=[]
-        for i in ParameterSetPlayerGroupForm():
-            parameterset_player_group_form_ids.append(i.html_name)
 
         session_player_move_form_ids=[]
         for i in SessionPlayerMoveForm():
-            parameterset_player_group_form_ids.append(i.html_name)
+            session_player_move_form_ids.append(i.html_name)
 
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
                                "id" : session.id,
-                               "session_form" : SessionForm(),
-                               "parameter_set_form" : ParameterSetForm(),
-                               "parameter_set_type_form" : ParameterSetTypeForm(),
-                               "parameter_set_player_form" : ParameterSetPlayerForm(),
-                               "parameter_set_player_group_form" : ParameterSetPlayerGroupForm(),
                                "session_player_move_form" : SessionPlayerMoveForm(),
-                               "parameterset_form_ids" : parameterset_form_ids,
-                               "parameterset_type_form_ids" : parameterset_type_form_ids,
-                               "parameterset_player_form_ids" : parameterset_player_form_ids,
-                               "parameterset_player_group_form_ids" : parameterset_player_group_form_ids,
-                               "import_parameters_form" : ImportParametersForm(user=request.user),     
                                "session_player_move_form_ids" : session_player_move_form_ids,
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',
@@ -92,66 +58,6 @@ class StaffSessionView(SingleObjectMixin, View):
         '''
 
         logger = logging.getLogger(__name__) 
-        session = self.get_object()
-
-        #check for file upload
-        try:
-            f = request.FILES['file']
-        except Exception  as e: 
-            logger.info(f'Staff_Session no file upload: {e}')
-            f = -1
-        
-         #check for file upload
-        if f != -1:
-            return takeFileUpload(f, session)
-        else:
-            data = json.loads(request.body.decode('utf-8'))
-        
+        session = self.get_object()        
 
         return JsonResponse({"response" :  "fail"},safe=False)
-
-#take parameter file upload
-def takeFileUpload(f, session):
-    logger = logging.getLogger(__name__) 
-    logger.info("Upload file")
-
-    #format incoming data
-    v=""
-
-    for chunk in f.chunks():
-        v += str(chunk.decode("utf-8-sig"))
-
-    message = ""
-
-    # try:
-    if v[0]=="{":
-        return upload_parameter_set(v, session)
-    else:
-        message = "Invalid file format."
-    # except Exception as e:
-    #     message = f"Failed to load file: {e}"
-    #     logger.info(message)       
-
-    return JsonResponse({"session" : session.json(),
-                         "message" : message,
-                                },safe=False)
-
-#take parameter set to upload
-def upload_parameter_set(v, session):
-    logger = logging.getLogger(__name__) 
-    logger.info("Upload parameter set")
-    
-
-    ps = session.parameter_set
-
-    logger.info(v)
-    v = eval(v)
-    #logger.info(v)       
-
-    message = ps.from_dict(v)
-
-    session.update_player_count()
-
-    return JsonResponse({"session" : session.json(),
-                         "message" : message,
-                                },safe=False)

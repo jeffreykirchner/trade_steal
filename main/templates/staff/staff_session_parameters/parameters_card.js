@@ -302,10 +302,8 @@ takeUpdateParametersetPlayer(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.destroyPixiPlayers();
         app.takeGetSession(messageData);       
         $('#editParametersetPlayerModal').modal('hide');        
-        app.setupPixiPlayers();
     } 
     else
     {
@@ -406,10 +404,8 @@ sendRemoveParameterSetPlayer(){
 takeRemoveParameterSetPlayer(messageData){
     app.$data.cancelModal=false;
     //app.clearMainFormErrors();
-    app.destroyPixiPlayers();
     app.takeGetSession(messageData);   
     $('#editParametersetPlayerModal').modal('hide');
-    app.setupPixiPlayers();
 },
 
 /** copy specified period's groups forward to future groups
@@ -425,11 +421,5 @@ sendAddParameterSetPlayer(player_id){
 takeAddParameterSetPlayer(messageData){
     //app.$data.cancelModal=false;
     //app.clearMainFormErrors();
-    app.destroyPixiPlayers();
     app.takeGetSession(messageData); 
-    app.setupPixiPlayers();
 },
-        
-       
-
-  
