@@ -262,7 +262,7 @@ class StaffSessionConsumer(SocketConsumerMixin):
         '''
         #update subject count
         message_data = {}
-        message_data["data"] = await sync_to_async(take_move_goods)(event["message_text"])
+        message_data["status"] = await sync_to_async(take_move_goods)(event["message_text"])
 
         message = {}
         message["messageType"] = event["type"]
@@ -338,7 +338,7 @@ def take_update_parameterset(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid session form")
+    logger.info("Invalid paramterset form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 def take_update_parameterset_type(data):
@@ -372,7 +372,7 @@ def take_update_parameterset_type(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid session form")
+    logger.info("Invalid parameterset type form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 def take_update_parameterset_player(data):
@@ -407,7 +407,7 @@ def take_update_parameterset_player(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid session form")
+    logger.info("Invalid parameterset player form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 def take_update_parameterset_player_group(data):
@@ -442,7 +442,7 @@ def take_update_parameterset_player_group(data):
 
         return {"value" : "success"}                      
                                 
-    logger.info("Invalid session form")
+    logger.info("Invalid parameterset player group form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 def take_remove_parameterset_player(data):

@@ -571,7 +571,7 @@ sendMoveGoods(){
 */
 takeMoveGoods(messageData){
     //app.$data.cancelModal=false;
-    //app.clearMainFormErrors();
+    app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
     {
