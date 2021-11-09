@@ -55,4 +55,20 @@ class SessionPlayer(models.Model):
 
             "sprite" : None,
         }
+    
+    def json_min(self):
+        '''
+        minimal json objcet of model
+        '''
+
+        return{
+            "id" : self.id,         
+
+            "good_one_house" : self.good_one_house,
+            "good_two_house" : self.good_two_house,
+
+            "good_one_field" : self.good_one_field,
+            "good_two_field" : self.good_two_field,
+        }
+
         

@@ -641,7 +641,6 @@ def take_move_goods(data):
                 target_id = data["targetID"]
 
                 source_session_player = session.session_players.get(id=source_id)
-                target_session_player = session.session_players.get(id=target_id)
 
                 good_one_amount = form.cleaned_data["transfer_good_one_amount"]
                 good_two_amount = form.cleaned_data["transfer_good_two_amount"]
@@ -670,7 +669,10 @@ def take_move_goods(data):
                     source_session_player.good_one_field -= good_one_amount
                     source_session_player.good_two_field -= good_two_amount
 
+                source_session_player.save()
+
                 #handle target
+                target_session_player = session.session_players.get(id=target_id)
                 if target_type == "house":
                     target_session_player.good_one_house += good_one_amount
                     target_session_player.good_two_house += good_two_amount
@@ -678,15 +680,17 @@ def take_move_goods(data):
                     target_session_player.good_one_field += good_one_amount
                     target_session_player.good_two_field += good_two_amount
                 
-                source_session_player.save()
                 target_session_player.save()
                 
         except ObjectDoesNotExist:
             logger.warning(f"take_move_goods session, not found ID: {session_id}")
             return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
         
+        result = []
+        result.append(source_session_player.json_min())
+        result.append(target_session_player.json_min())
         
-        return {"value" : "success"}                      
+        return {"value" : "success", "result" : result}                      
                                 
     logger.info("Invalid session form")
     return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}

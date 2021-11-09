@@ -314,8 +314,8 @@ setupGrid(){
 destroyPixiPlayers(){
     for(let i=0;i<session_players.length;i++)
     {
-        session_players[i].houseContainer.destroy();
-        session_players[i].fieldContainer.destroy();
+        app.$data.session.session_players[i].houseContainer.destroy();
+        app.$data.session.session_players[i].fieldContainer.destroy();
     }
 },
 
@@ -576,7 +576,10 @@ takeMoveGoods(messageData){
     if(messageData.status.value == "success")
     {
         app.takeUpdateGoods(messageData);       
-        $('#moveGoodsModal').modal('hide');            
+        $('#moveGoodsModal').modal('hide');
+
+        app.$data.transfer_good_one_amount = 0;  
+        app.$data.transfer_good_two_amount = 0;            
     } 
     else
     {
@@ -589,5 +592,31 @@ takeMoveGoods(messageData){
  * take update to good counts
  */
 takeUpdateGoods(){
+    results = messageData.status.result;
 
+    for(let r=0; r<results.length; r++){
+        player_id = results[r].id;
+
+        for(let p=0; p<app.$data.session.session_players.length; p++)
+        {
+            player = app.$data.session.session_players[p];
+
+            if(player.id == player_id)
+            {
+                player.good_one_house = results[r].good_one_house;
+                player.good_two_house = results[r].good_two_house;
+
+                player.good_one_field = results[r].good_one_field;
+                player.good_two_field = results[r].good_two_field;
+
+                player.houseContainer.destroy();
+                player.fieldContainer.destroy();
+
+                app.setupSingleHoue(p);
+                app.setupSingleField(p);
+
+                break;
+            }
+        }
+    }
 },
