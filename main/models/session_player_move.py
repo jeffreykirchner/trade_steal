@@ -28,8 +28,8 @@ class SessionPlayerMove(models.Model):
     source_container = models.CharField(max_length=100, choices=ContainerTypes.choices)         #source container
     target_container = models.CharField(max_length=100, choices=ContainerTypes.choices)         #target container
 
-    timestamp = models.DateTimeField(auto_now_add= True)
-    updated= models.DateTimeField(auto_now= True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.id}"

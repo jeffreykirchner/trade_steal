@@ -267,7 +267,6 @@ var app = Vue.createApp({
         {%include "staff/staff_session/session_card.js"%}
         {%include "staff/staff_session/graph_card.js"%}
     
-        
         /** clear form error messages
         */
         clearMainFormErrors(){
@@ -335,7 +334,6 @@ var app = Vue.createApp({
 
             }
         }, 
-
     },
 
     mounted(){
