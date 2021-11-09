@@ -50,24 +50,6 @@ class StaffSessionParametersConsumer(SocketConsumerMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
     
-    async def update_session(self, event):
-        '''
-        return a list of sessions
-        '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f"Update Session: {event}")
-
-        #build response
-        message_data = {}
-        message_data =  await sync_to_async(take_update_session_form)(event["message_text"])
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-    
     async def update_parameterset(self, event):
         '''
         update a parameterset
@@ -210,39 +192,6 @@ class StaffSessionParametersConsumer(SocketConsumerMixin):
 
 
 #local sync functions
-def take_update_session_form(data):
-    '''
-    take session form data and update session or return errors
-    param: data {json} incoming form and session data
-    '''
-
-    logger = logging.getLogger(__name__)
-    logger.info(f'take_update_session_form: {data}')
-
-    session_id = data["sessionID"]
-    form_data = data["formData"]
-
-    try:        
-        session = Session.objects.get(id=session_id)
-    except ObjectDoesNotExist:
-        logger.warning(f"take_update_session_form session, not found: {session_id}")
-    
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
-
-    form = SessionForm(form_data_dict, instance=session)
-
-    if form.is_valid():
-        #print("valid form")                
-        form.save()              
-
-        return {"status":"success", "session" : session.json()}                      
-                                
-    logger.info("Invalid session form")
-    return {"status":"fail", "errors":dict(form.errors.items())}
-
 def take_update_parameterset(data):
     '''
     update parameterset

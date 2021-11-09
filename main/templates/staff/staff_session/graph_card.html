@@ -1,13 +1,17 @@
 <div class="card">                  
     <div class="card-header">                
-        <span class="align-middle">Graph</span>       
-            
+        <span class="align-middle">Town</span>       
+
+        <span class="float-end pe-2 ps-2"> 
+            <a href='{%url "staff_session_parameters" session.id %}' class='link-primary'>Edit Parameters</a>
+        </span>     
+        
         <span class="float-end">
             <span v-show="reconnecting" class="me-1">
                 Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
             </span>
         </span>
-        
+
     </div>
     <div class="card-body">
         

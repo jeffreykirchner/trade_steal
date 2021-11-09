@@ -104,6 +104,7 @@ uploadAction:function(){
 
 },
 
+//file upload
 handleFileUpload:function(){
     app.$data.upload_file = this.$refs.file.files[0];
     app.$data.upload_file_name = app.$data.upload_file.name;

@@ -14,10 +14,8 @@ from django.http import JsonResponse
 
 from main.decorators import user_is_owner
 
-from main.models import Parameters
 from main.models import Session
 
-from main.forms import SessionForm
 from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetTypeForm
@@ -60,7 +58,6 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
                                "id" : session.id,
-                               "session_form" : SessionForm(),
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_type_form" : ParameterSetTypeForm(),
                                "parameter_set_player_form" : ParameterSetPlayerForm(),

@@ -81,6 +81,9 @@ var app = Vue.createApp({
                 case "get_session":
                     app.takeGetSession(messageData);
                     break;
+                case "update_session":
+                    app.takeUpdateSession(messageData);
+                    break;
                 case "start_experiment":
                     app.takeStartExperiment(messageData);
                     break;

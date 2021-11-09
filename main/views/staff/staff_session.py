@@ -2,13 +2,10 @@
 staff view
 '''
 import logging
-import json
 import uuid
 
 from django.views import View
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -18,6 +15,7 @@ from main.decorators import user_is_owner
 
 from main.models import Session
 
+from main.forms import SessionForm
 from main.forms import SessionPlayerMoveForm
 
 class StaffSessionView(SingleObjectMixin, View):
@@ -45,6 +43,7 @@ class StaffSessionView(SingleObjectMixin, View):
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
                                "id" : session.id,
+                               "session_form" : SessionForm(),
                                "session_player_move_form" : SessionPlayerMoveForm(),
                                "session_player_move_form_ids" : session_player_move_form_ids,
                                "websocket_path" : self.websocket_path,
