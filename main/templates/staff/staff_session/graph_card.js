@@ -172,7 +172,7 @@ setupSingleHoue(index){
     container.interactive=true
     container.buttonMode = true;
     container.name = {type : 'house',
-                      user_id: session_players[index],
+                      user_id: session_players[index].id,
                       modal_label: "House " + parameter_set_player.id_label,
                       good_one_color: parameter_set.good_one_rgb_color,
                       good_two_color: parameter_set.good_two_rgb_color, 
@@ -258,7 +258,7 @@ setupSingleField(index){
     container.x = pt.x;
     container.y = pt.y;
     container.name = {type : 'field',
-                      user_id: session_players[index],
+                      user_id: session_players[index].id,
                       modal_label: "Field " + parameter_set_player.id_label,
                       good_one_color: parameter_set.good_one_rgb_color,
                       good_two_color: parameter_set.good_two_rgb_color, 
@@ -553,9 +553,17 @@ updatePixiTransfer(target_x, target_y){
 sendMoveGoods(){
     
     if(app.$data.working == true) return;
+    if(!app.$data.pixi_transfer_source) return;
+    if(!app.$data.pixi_transfer_target) return; 
+
+
 
     app.$data.working = true;
     app.sendMessage("move_goods", {"sessionID" : app.$data.sessionID,
+                                   "sourceType" : app.$data.pixi_transfer_source.name.type.toString(),
+                                   "sourceID" : app.$data.pixi_transfer_source.name.user_id.toString(),
+                                   "targetType" : app.$data.pixi_transfer_target.name.type.toString(),
+                                   "targetID" : app.$data.pixi_transfer_target.name.user_id.toString(),
                                    "formData" : $("#moveGoodsForm").serializeArray(),});
 },
 

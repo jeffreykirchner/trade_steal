@@ -616,7 +616,6 @@ def take_move_goods(data):
     logger.info(f"Move goods: {data}")
 
     session_id = data["sessionID"]
-    session = Session.objects.get(id=session_id)
 
     form_data = data["formData"]
     
@@ -630,10 +629,19 @@ def take_move_goods(data):
     form = SessionPlayerMoveForm(form_data_dict)
 
     if form.is_valid():
-        #print("valid form")             
-                      
+        #print("valid form") 
 
-        return {"value" : "success"}                      
+        try:        
+            session = Session.objects.get(id=session_id)
+            source_type = data["sourceType"]
+            source_id = data["sourceID"]
+            target_type = data["targetType"]
+            target_id = data["targetID"]
+        except ObjectDoesNotExist:
+            logger.warning(f"take_move_goods session, not found ID: {session_id}")
+            return {"status" : "fail", "errors" : {}}       
+                      
+        return {"status" : "success"}                      
                                 
     logger.info("Invalid session form")
-    return {"value" : "fail", "errors" : dict(form.errors.items())}
+    return {"status" : "fail", "errors" : dict(form.errors.items())}
