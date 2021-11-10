@@ -25,6 +25,7 @@ class ParameterSet(models.Model):
     period_length_trade = models.IntegerField(verbose_name='Period Length, Trade', default=90)                #trade phase length in seconds
     break_period_frequency = models.IntegerField(verbose_name='Break Period Fequency (Periods)', default=7)   #every x periods only allow chat, no production or trading
     allow_stealing = models.BooleanField(default=True, verbose_name = 'Allow Stealing')                       #if true subjects can take from other users
+    town_count = models.IntegerField(verbose_name='Town Count', default=1)                                    #number of different towns
 
     good_one_label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Red")        #label for good one
     good_two_label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Blue")       #label for good two
@@ -61,6 +62,7 @@ class ParameterSet(models.Model):
             self.good_two_label = new_ps.get("good_two_label")
             self.good_one_rgb_color = new_ps.get("good_one_rgb_color")
             self.good_two_rgb_color = new_ps.get("good_two_rgb_color")
+            self.town_count = new_ps.get("town_count")
 
             self.save()
 
@@ -186,6 +188,7 @@ class ParameterSet(models.Model):
         '''
         return{
             "id" : self.id,
+            "town_count" : self.town_count,
             "period_count" : self.period_count,
             "period_length_production" : self.period_length_production,
             "period_length_trade" : self.period_length_trade,
