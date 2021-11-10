@@ -66,29 +66,11 @@
             </div>
             <div class="col-md-auto text-center">
                 {{parameter_set_form.allow_stealing.label}}: <span v-if="session.parameter_set.allow_stealing">Yes</span><span v-else>No</span>                
-            </div>            
-        </div>  
-        <div class="row justify-content-center">
+            </div>   
             <div class="col-md-auto text-center">
                 {{parameter_set_form.town_count.label}}: [[session.parameter_set.town_count]]
-            </div>
-            <div class="col-md-auto text-center">
-                {{parameter_set_form.good_one_label.label}}: [[session.parameter_set.good_one_label]]
-            </div>
-            <div class="col-md-auto text-center">
-                {{parameter_set_form.good_two_label.label}}: [[session.parameter_set.good_two_label]]
-            </div>
-            <div class="col-md-auto text-center">
-                {{parameter_set_form.good_one_rgb_color.label}}: <span v-bind:style = "{color : session.parameter_set.good_one_rgb_color}">
-                                                                    [[session.parameter_set.good_one_rgb_color]]
-                                                                </span>
-            </div>
-            <div class="col-md-auto text-center">
-                {{parameter_set_form.good_two_rgb_color.label}}: <span v-bind:style = "{color : session.parameter_set.good_two_rgb_color}">
-                                                                    [[session.parameter_set.good_two_rgb_color]]
-                                                                </span>
-            </div>            
-        </div>
+            </div>          
+        </div>  
         <div class="row justify-content-center border-bottom">
             <div class="col-md-auto text-center mb-2 mt-2">
                 <button class="btn btn-outline-primary"
@@ -101,6 +83,60 @@
             </div>
         </div>
 
+        <!-- parameterset good settings -->
+        <div class="row mt-4 fw-bold">
+            <div class="col-md text-center">
+                Good Settings
+            </div>
+        </div>
+        <!-- good one -->
+        <div v-for="(g, index) in session.parameter_set.parameter_set_goods"
+             v-bind:key="g.id">
+
+            <div class = "row justify-content-center">            
+                <div class="col-md-auto">
+                    Label: <span v-bind:style = "{color : g.rgb_color}">[[g.label]]</span> 
+                </div>
+                <div class="col-md-auto">
+                    Color: <span v-bind:style = "{color : g.rgb_color}">[[g.rgb_color]]</span> 
+                </div>
+            </div>
+            <div class = "row justify-content-center mt-1 mb-2">
+                <div class="col-md-auto">
+                    <button class="btn btn-outline-primary"
+                            type="button"
+                            title = "Edit good settings."
+                            v-bind:disabled="session.started || reconnecting || working"
+                            v-on:click="showEditParametersetGood(g.id, index)">
+                        Edit <i class="far fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- <div class="row justify-content-center mb-2"
+             v-for="(g, index) in session.parameter_set.parameter_set_goods"
+             v-bind:key="g.id">
+            <div class="col-md-auto text-start">
+                Label: <span v-bind:style = "{color : g.rgb_color}">[[g.label]]</span> 
+            </div>
+            <div class="col-md-auto">
+                Color: <span v-bind:style = "{color : g.rgb_color}">[[g.rgb_color]]</span> 
+            </div>
+            <div class="col-md-auto">
+                <button class="btn btn-outline-primary btn-sm"
+                        type="button"
+                        title="Good Settings"
+                        v-bind:disabled="session.started || reconnecting || working"
+                        v-on:click="showEditParametersetGood(g.id)">
+                    <i class="far fa-edit"></i>
+                </button>
+            </div>
+        </div> -->
+        <div class="row justify-content-center border-bottom">
+        </div>
+        
         <!-- parameterset type one settings -->
         <div class="row mt-4 fw-bold">
             <div class="col-md text-center">
@@ -109,39 +145,39 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_one_label]] good(s) need to earn 1¢: [[session.parameter_set.parameter_set_types[0].good_one_amount]]
+                First goods needed to earn [[Math.max(session.parameter_set.parameter_set_types[0].good_one_amount, session.parameter_set.parameter_set_types[0].good_two_amount)]]¢: [[session.parameter_set.parameter_set_types[0].good_one_amount]]
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_two_label]] good(s) needed to earn 1¢: [[session.parameter_set.parameter_set_types[0].good_two_amount]]
+                Second goods needed to earn [[Math.max(session.parameter_set.parameter_set_types[0].good_one_amount, session.parameter_set.parameter_set_types[0].good_two_amount)]]¢: [[session.parameter_set.parameter_set_types[0].good_two_amount]]
             </div>
         </div>
 
         <div class="row mt-2">
             <div class="col-md text-center">
-                [[session.parameter_set.good_one_label]] and [[session.parameter_set.good_two_label]] Production = P1 + P2 x Time <sup>P3</sup>
+                Good Production = P1 + P2 x Time <sup>P3</sup>
             </div>
         </div>
         <div class="row justify-content-center">
             <!-- good one production parameters -->
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_one_label]] P1: [[session.parameter_set.parameter_set_types[0].good_one_production_1]]  
+                First Good P1: [[session.parameter_set.parameter_set_types[0].good_one_production_1]]  
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_one_label]] P2: [[session.parameter_set.parameter_set_types[0].good_one_production_2]]
+                First Good P2: [[session.parameter_set.parameter_set_types[0].good_one_production_2]]
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_one_label]] P3: [[session.parameter_set.parameter_set_types[0].good_one_production_3]]
+                First Good P3: [[session.parameter_set.parameter_set_types[0].good_one_production_3]]
             </div>
 
             <!-- good two production parameters -->
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_two_label]] P1: [[session.parameter_set.parameter_set_types[0].good_two_production_1]]
+                Second Good P1: [[session.parameter_set.parameter_set_types[0].good_two_production_1]]
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_two_label]] P2: [[session.parameter_set.parameter_set_types[0].good_two_production_2]]
+                Second Good P2: [[session.parameter_set.parameter_set_types[0].good_two_production_2]]
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_two_label]] P3: [[session.parameter_set.parameter_set_types[0].good_two_production_3]]
+                Second Good P3: [[session.parameter_set.parameter_set_types[0].good_two_production_3]]
             </div>
         </div>
 
@@ -165,39 +201,39 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_one_label]] good(s) need to earn 1¢: [[session.parameter_set.parameter_set_types[1].good_one_amount]]
+                First goods need to earn [[Math.max(session.parameter_set.parameter_set_types[1].good_one_amount, session.parameter_set.parameter_set_types[1].good_two_amount)]]¢: [[session.parameter_set.parameter_set_types[1].good_one_amount]]
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_two_label]] good(s) needed to earn 1¢: [[session.parameter_set.parameter_set_types[1].good_two_amount]]
+                Second goods needed to earn [[Math.max(session.parameter_set.parameter_set_types[1].good_one_amount, session.parameter_set.parameter_set_types[1].good_two_amount)]]¢: [[session.parameter_set.parameter_set_types[1].good_two_amount]]
             </div>
         </div>
 
         <div class="row mt-2">
             <div class="col-md text-center">
-                [[session.parameter_set.good_one_label]] and [[session.parameter_set.good_two_label]] Production = P1 + P2 x Time <sup>P3</sup>
+                [[session.parameter_set.good_a_label]] and [[session.parameter_set.good_b_label]] Production = P1 + P2 x Time <sup>P3</sup>
             </div>
         </div>
         <div class="row justify-content-center">
             <!-- good one production parameters -->
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_one_label]] P1: [[session.parameter_set.parameter_set_types[1].good_one_production_1]]  
+                First good P1: [[session.parameter_set.parameter_set_types[1].good_one_production_1]]  
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_one_label]] P2: [[session.parameter_set.parameter_set_types[1].good_one_production_2]]
+                First good P2: [[session.parameter_set.parameter_set_types[1].good_one_production_2]]
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_one_label]] P3: [[session.parameter_set.parameter_set_types[1].good_one_production_3]]
+                First good P3: [[session.parameter_set.parameter_set_types[1].good_one_production_3]]
             </div>
 
             <!-- good two production parameters -->
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_two_label]] P1: [[session.parameter_set.parameter_set_types[1].good_two_production_1]]
+                Second good P1: [[session.parameter_set.parameter_set_types[1].good_two_production_1]]
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_two_label]] P2: [[session.parameter_set.parameter_set_types[1].good_two_production_2]]
+                Second good P2: [[session.parameter_set.parameter_set_types[1].good_two_production_2]]
             </div>
             <div class="col-md-auto text-center">
-                [[session.parameter_set.good_two_label]] P3: [[session.parameter_set.parameter_set_types[1].good_two_production_3]]
+                Second good P3: [[session.parameter_set.parameter_set_types[1].good_two_production_3]]
             </div>
         </div>
 

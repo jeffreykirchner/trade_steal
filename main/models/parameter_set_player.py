@@ -10,7 +10,6 @@ from main.globals import SubjectType
 
 import main
 
-#experiment session parameters
 class ParameterSetPlayer(models.Model):
     '''
     session player parameters 

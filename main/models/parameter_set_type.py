@@ -11,7 +11,6 @@ from main.globals import SubjectType
 
 import main
 
-#experiment session parameters
 class ParameterSetType(models.Model):
     '''
     parameter set type
@@ -40,7 +39,7 @@ class ParameterSetType(models.Model):
 
     class Meta:
         verbose_name = 'Parameter Set Type'
-        verbose_name_plural = 'Parameter Set Type'
+        verbose_name_plural = 'Parameter Set Types'
         constraints = [
             models.UniqueConstraint(fields=['parameter_set', 'subject_type'], name='unique_player_type'),
         ]

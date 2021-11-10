@@ -142,13 +142,13 @@ setupSingleHoue(index){
     let goodOneLabel = new PIXI.Text(session_player.good_one_house.toString(),{fontFamily : 'Arial',
                                                                             fontWeight:'bold',
                                                                             fontSize: 100,
-                                                                            fill: parameter_set.good_one_rgb_color,
+                                                                            fill: parameter_set.good_a_rgb_color,
                                                                             align : 'center'});
 
     goodOneLabel.anchor.set(0.5);
     goodOneLabel.x = sprite.width / 2;
     goodOneLabel.y = 185;
-    goodOneLabel.name = "good_one_label"
+    goodOneLabel.name = "good_a_label"
 
     container.addChild(goodOneLabel)
 
@@ -156,13 +156,13 @@ setupSingleHoue(index){
     let goodTwoLabel = new PIXI.Text(session_player.good_two_house.toString(),{fontFamily : 'Arial',
                                                                                     fontWeight:'bold',
                                                                                     fontSize: 100,
-                                                                                    fill: parameter_set.good_two_rgb_color,
+                                                                                    fill: parameter_set.good_b_rgb_color,
                                                                                     align : 'center'});
 
     goodTwoLabel.anchor.set(0.5);
     goodTwoLabel.x = sprite.width / 2;
     goodTwoLabel.y = 300;
-    goodTwoLabel.name = "good_two_label"
+    goodTwoLabel.name = "good_b_label"
 
     container.addChild(goodTwoLabel)
 
@@ -174,10 +174,10 @@ setupSingleHoue(index){
     container.name = {type : 'house',
                       user_id: session_players[index].id,
                       modal_label: "House " + parameter_set_player.id_label,
-                      good_one_color: parameter_set.good_one_rgb_color,
-                      good_two_color: parameter_set.good_two_rgb_color, 
-                      good_one_label : parameter_set.good_one_label,
-                      good_two_label : parameter_set.good_two_label};
+                      good_one_color: parameter_set.good_a_rgb_color,
+                      good_two_color: parameter_set.good_b_rgb_color, 
+                      good_a_label : parameter_set.good_a_label,
+                      good_b_label : parameter_set.good_b_label};
     container.on('pointerdown', (event) => { app.handleHousePointerDown(index) })
              .on('pointerup', (event) => { app.handleHousePointerUp(index) })
              .on('pointerover', (event) => { app.handleHousePointerOver(index) })
@@ -233,7 +233,7 @@ setupSingleField(index){
     let goodOneLabel = new PIXI.Text(session_player.good_one_field.toString(),{fontFamily : 'Arial',
                                                                             fontWeight:'bold',
                                                                             fontSize: 100,
-                                                                            fill: parameter_set.good_one_rgb_color,
+                                                                            fill: parameter_set.good_a_rgb_color,
                                                                             align : 'center'});
 
     goodOneLabel.anchor.set(0.5);
@@ -246,7 +246,7 @@ setupSingleField(index){
     let goodTwoLabel = new PIXI.Text(session_player.good_two_field.toString(),{fontFamily : 'Arial',
                                                                                     fontWeight:'bold',
                                                                                     fontSize: 100,
-                                                                                    fill: parameter_set.good_two_rgb_color,
+                                                                                    fill: parameter_set.good_b_rgb_color,
                                                                                     align : 'center'});
 
     goodTwoLabel.anchor.set(0.5);
@@ -260,10 +260,10 @@ setupSingleField(index){
     container.name = {type : 'field',
                       user_id: session_players[index].id,
                       modal_label: "Field " + parameter_set_player.id_label,
-                      good_one_color: parameter_set.good_one_rgb_color,
-                      good_two_color: parameter_set.good_two_rgb_color, 
-                      good_one_label : parameter_set.good_one_label,
-                      good_two_label : parameter_set.good_two_label};
+                      good_one_color: parameter_set.good_a_rgb_color,
+                      good_two_color: parameter_set.good_b_rgb_color, 
+                      good_a_label : parameter_set.good_a_label,
+                      good_b_label : parameter_set.good_b_label};
 
     container.pivot.set(container.width/2, container.height/2);
     container.hitArea = new PIXI.Rectangle(0, 0, container.width, container.height);    
@@ -494,8 +494,8 @@ showTransferModal(container){
     app.$data.transfer_modal_good_one_rgb = app.$data.pixi_transfer_source.name.good_one_color;
     app.$data.transfer_modal_good_two_rgb = app.$data.pixi_transfer_source.name.good_two_color;
 
-    app.$data.transfer_modal_good_one_name = app.$data.pixi_transfer_source.name.good_one_label;
-    app.$data.transfer_modal_good_two_name = app.$data.pixi_transfer_source.name.good_two_label;
+    app.$data.transfer_modal_good_one_name = app.$data.pixi_transfer_source.name.good_a_label;
+    app.$data.transfer_modal_good_two_name = app.$data.pixi_transfer_source.name.good_b_label;
 
     app.$data.pixi_modal_open = true;
     app.$data.cancelModal=true;

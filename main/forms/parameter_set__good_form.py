@@ -45,7 +45,32 @@ class ParameterSetForm(forms.ModelForm):
     allow_stealing = forms.ChoiceField(label='Allow Stealing',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.allow_stealing",}))
+    
+    good_a_label = forms.CharField(label='Good A Label',
+                                     widget=forms.TextInput(attrs={"v-model":"session.parameter_set.good_a_label",
+                                                                   "maxlength": "10"}))
+
+    good_b_label = forms.CharField(label='Good B Label',
+                                     widget=forms.TextInput(attrs={"v-model":"session.parameter_set.good_b_label",
+                                                                   "maxlength": "10"}))
+    
+    good_c_label = forms.CharField(label='Good B Label',
+                                     widget=forms.TextInput(attrs={"v-model":"session.parameter_set.good_b_label",
+                                                                   "maxlength": "10"}))
+
+    good_a_rgb_color = forms.CharField(label='Good A RGB Color',
+                                         widget=forms.TextInput(attrs={"v-model":"session.parameter_set.good_a_rgb_color",
+                                                                       "maxlength": "10"}))
+
+    good_b_rgb_color = forms.CharField(label='Good B RGB Color',
+                                         widget=forms.TextInput(attrs={"v-model":"session.parameter_set.good_b_rgb_color",
+                                                                       "maxlength": "10"}))
+    
+    good_c_rgb_color = forms.CharField(label='Good C RGB Color',
+                                         widget=forms.TextInput(attrs={"v-model":"session.parameter_set.good_b_rgb_color",
+                                                                       "maxlength": "10"}))
 
     class Meta:
         model=ParameterSet
-        fields =['town_count', 'period_count', 'period_length_production' , 'period_length_trade', 'break_period_frequency', 'allow_stealing']
+        fields =['town_count', 'period_count', 'period_length_production' , 'period_length_trade', 'break_period_frequency', 'allow_stealing',
+                 'good_a_label', 'good_b_label', 'good_c_label', 'good_a_rgb_color', 'good_b_rgb_color', 'good_c_rgb_color']

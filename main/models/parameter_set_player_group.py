@@ -6,7 +6,6 @@ from django.db import models
 
 from main.models import ParameterSetPlayer
 
-#experiment session parameters
 class ParameterSetPlayerGroup(models.Model):
     '''
     session player group parameters 

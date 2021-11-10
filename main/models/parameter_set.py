@@ -1,5 +1,5 @@
 '''
-sessions parameters
+parameter set
 '''
 import logging
 
@@ -17,7 +17,7 @@ import main
 #experiment session parameters
 class ParameterSet(models.Model):
     '''
-    session parameters
+    parameter set
     '''
 
     period_count = models.IntegerField(verbose_name='Number of periods', default=20)                          #number of periods in the experiment
@@ -26,12 +26,6 @@ class ParameterSet(models.Model):
     break_period_frequency = models.IntegerField(verbose_name='Break Period Fequency (Periods)', default=7)   #every x periods only allow chat, no production or trading
     allow_stealing = models.BooleanField(default=True, verbose_name = 'Allow Stealing')                       #if true subjects can take from other users
     town_count = models.IntegerField(verbose_name='Town Count', default=1)                                    #number of different towns
-
-    good_one_label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Red")        #label for good one
-    good_two_label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Blue")       #label for good two
-
-    good_one_rgb_color =  models.CharField(verbose_name='Good One RGB Color', max_length = 10, default="#DC143C")      #rgb color of good one
-    good_two_rgb_color =  models.CharField(verbose_name='Good Two RGB Color', max_length = 10, default="#6495ED")      #rgb color of good two
 
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -58,15 +52,15 @@ class ParameterSet(models.Model):
             self.period_length_trade = new_ps.get("period_length_trade")
             self.break_period_frequency = new_ps.get("break_period_frequency")
             self.allow_stealing = new_ps.get("allow_stealing")
-            self.good_one_label = new_ps.get("good_one_label")
-            self.good_two_label = new_ps.get("good_two_label")
-            self.good_one_rgb_color = new_ps.get("good_one_rgb_color")
-            self.good_two_rgb_color = new_ps.get("good_two_rgb_color")
+            self.good_a_label = new_ps.get("good_a_label")
+            self.good_b_label = new_ps.get("good_b_label")
+            self.good_a_rgb_color = new_ps.get("good_a_rgb_color")
+            self.good_b_rgb_color = new_ps.get("good_b_rgb_color")
             self.town_count = new_ps.get("town_count")
 
             self.save()
 
-            #paramter set types
+            #parameter set types
             new_parameter_set_types = new_ps.get("parameter_set_types")
             for new_p in new_parameter_set_types:
                 p = self.parameter_set_types.get(subject_type=new_p.get("subject_type"))
@@ -97,6 +91,13 @@ class ParameterSet(models.Model):
             for p in self.parameter_set_players.all():                
                 p.from_dict(new_parameter_set_players[counter])
                 counter+=1
+
+            #parameter set goods
+            new_parameter_set_goods = new_ps.get("parameter_set_goods")
+            counter=0
+            for g in self.parameter_set_goods.all():                
+                g.from_dict(new_parameter_set_goods[counter])
+                counter+=1            
 
         except IntegrityError as exp:
             message = f"Failed to load parameter set: {exp}"
@@ -148,6 +149,15 @@ class ParameterSet(models.Model):
                 self.add_new_player(main.globals.SubjectType.TWO, i)
             
         self.update_group_counts()
+    
+        parameter_set_good_one = main.models.ParameterSetGood(parameter_set=self, label="Orange", rgb_color="#FF5733")
+        parameter_set_good_one.save()
+
+        parameter_set_good_two = main.models.ParameterSetGood(parameter_set=self, label="Blue", rgb_color="#6495ED")
+        parameter_set_good_two.save()
+
+        parameter_set_good_three = main.models.ParameterSetGood(parameter_set=self, label="Pink", rgb_color="#FF1493")
+        parameter_set_good_three.save()
 
     def add_new_player(self, subject_type, location):
         '''
@@ -194,10 +204,7 @@ class ParameterSet(models.Model):
             "period_length_trade" : self.period_length_trade,
             "break_period_frequency" : self.break_period_frequency,
             "allow_stealing" : "True" if self.allow_stealing else "False",
-            "good_one_label" : self.good_one_label,
-            "good_two_label" : self.good_two_label,
-            "good_one_rgb_color" : self.good_one_rgb_color,
-            "good_two_rgb_color" : self.good_two_rgb_color,
+            "parameter_set_goods" : [p.json() for p in self.parameter_set_goods.all()],
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
         }
