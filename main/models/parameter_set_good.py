@@ -24,11 +24,11 @@ class ParameterSetGood(models.Model):
     class Meta:
         verbose_name = 'Parameter Set Good'
         verbose_name_plural = 'Parameter Set Goods'
+        ordering = ['id']
         constraints = [
             models.UniqueConstraint(fields=['label'], name='unique_good_label'),
             models.UniqueConstraint(fields=['rgb_color'], name='unique_good_color'),
         ]
-
 
     def from_dict(self, source):
         '''

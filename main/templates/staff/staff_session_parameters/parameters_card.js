@@ -460,7 +460,7 @@ sendUpdateParametersetGood(){
     
     app.$data.working = true;
     app.sendMessage("update_parameterset_good", {"sessionID" : app.$data.sessionID,
-                                                 "paramterset_good_id" : app.$data.current_parameter_set_good.id,
+                                                 "parameterset_good_id" : app.$data.current_parameter_set_good.id,
                                                  "formData" : $("#parametersetGoodForm").serializeArray(),});
 },
 

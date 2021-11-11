@@ -285,16 +285,16 @@ def take_update_parameterset_good(data):
     '''   
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Update parameterset type: {data}")
+    logger.info(f"Update parameterset good: {data}")
 
     session_id = data["sessionID"]
-    paramterset_good_id = data["parameterset_good_id"]
+    parameterset_good_id = data["parameterset_good_id"]
     form_data = data["formData"]
 
     try:        
-        parameter_set_good = ParameterSetGood.objects.get(id=paramterset_good_id)
+        parameter_set_good = ParameterSetGood.objects.get(id=parameterset_good_id)
     except ObjectDoesNotExist:
-        logger.warning(f"take_update_parameterset_good paramterset_good, not found ID: {paramterset_good_id}")
+        logger.warning(f"take_update_parameterset_good paramterset_good, not found ID: {parameterset_good_id}")
         return
     
     form_data_dict = {}

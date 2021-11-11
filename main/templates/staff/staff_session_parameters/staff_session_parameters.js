@@ -112,7 +112,10 @@ var app = Vue.createApp({
                     break;         
                 case "update_parameterset_type":
                     app.takeUpdateParametersetType(messageData);
-                    break;     
+                    break;    
+                case "update_parameterset_good":
+                    app.takeUpdateParametersetGood(messageData);
+                    break; 
                 case "update_parameterset_player":
                     app.takeUpdateParametersetPlayer(messageData);
                     break;     
@@ -252,6 +255,13 @@ var app = Vue.createApp({
             }
 
             s = app.$data.parameterset_player_group_form_ids;
+            for(var i in s)
+            {
+                $("#id_" + s[i]).attr("class","form-control");
+                $("#id_errors_" + s[i]).remove();
+            }
+
+            s = app.$data.parameterset_good_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
