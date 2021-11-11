@@ -60,11 +60,17 @@ var app = Vue.createApp({
                         group_number : 0,
                         period :0,
                     },
+                    current_parameter_set_good:{
+                        id : 0,
+                        label : 0,
+                        rgb_color :0,
+                    },
 
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
                     parameterset_type_form_ids: {{parameterset_type_form_ids|safe}},
                     parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
                     parameterset_player_group_form_ids: {{parameterset_player_group_form_ids|safe}},
+                    parameterset_good_form_ids: {{parameterset_good_form_ids|safe}},
 
                     upload_file: null,
                     upload_file_name:'Choose File',
@@ -283,6 +289,7 @@ var app = Vue.createApp({
         $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);
         $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
         $('#editParametersetPlayerGroupModal').on("hidden.bs.modal", this.hideEditParametersetPlayerGroup);
+        $('#editParametersetGoodModal').on("hidden.bs.modal", this.hideEditParametersetGood);
     },
 
 }).mount('#app');

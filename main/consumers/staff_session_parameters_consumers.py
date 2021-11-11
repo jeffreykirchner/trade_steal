@@ -17,11 +17,13 @@ from main.consumers import get_session
 from main.forms import SessionForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetTypeForm
+from main.forms import ParameterSetGoodForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPlayerGroupForm
 
 from main.models import Session
 from main.models import ParameterSetType
+from main.models import ParameterSetGood
 from main.models import ParameterSetPlayer
 from main.models import ParameterSetPlayerGroup
 
@@ -77,6 +79,22 @@ class StaffSessionParametersConsumer(SocketConsumerMixin):
 
         message = {}
         message["messageType"] = "update_parameterset_type"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_parameterset_good(self, event):
+        '''
+        update a parameterset good
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_good)(event["message_text"])
+        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_good"
         message["messageData"] = message_data
 
         # Send message to WebSocket
@@ -259,6 +277,40 @@ def take_update_parameterset_type(data):
         return {"value" : "success"}                      
                                 
     logger.info("Invalid parameterset type form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}
+
+def take_update_parameterset_good(data):
+    '''
+    update parameterset good
+    '''   
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset type: {data}")
+
+    session_id = data["sessionID"]
+    paramterset_good_id = data["parameterset_good_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_good = ParameterSetGood.objects.get(id=paramterset_good_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_good paramterset_good, not found ID: {paramterset_good_id}")
+        return
+    
+    form_data_dict = {}
+
+    for field in form_data:            
+        form_data_dict[field["name"]] = field["value"]
+
+    form = ParameterSetGoodForm(form_data_dict, instance=parameter_set_good)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success"}                      
+                                
+    logger.info("Invalid parameterset good form")
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 def take_update_parameterset_player(data):
