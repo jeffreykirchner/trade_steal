@@ -26,8 +26,8 @@ class ParameterSetGood(models.Model):
         verbose_name_plural = 'Parameter Set Goods'
         ordering = ['id']
         constraints = [
-            models.UniqueConstraint(fields=['label'], name='unique_good_label'),
-            models.UniqueConstraint(fields=['rgb_color'], name='unique_good_color'),
+            models.UniqueConstraint(fields=['parameter_set', 'label'], name='unique_parameter_set_good_label'),
+            models.UniqueConstraint(fields=['parameter_set', 'rgb_color'], name='unique_parameter_set_good_rgb'),
         ]
 
     def from_dict(self, source):

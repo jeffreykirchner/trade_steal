@@ -19,9 +19,9 @@ class ParameterSetPlayer(models.Model):
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
 
-    good_one = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_players_a", null=True, blank=True)
-    good_two = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_players_b", null=True, blank=True)
-    good_three = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_player_c", null=True, blank=True)
+    good_one = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_players_a")
+    good_two = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_players_b")
+    good_three = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_player_c")
 
     subject_type = models.CharField(max_length=100, choices=SubjectType.choices, default=SubjectType.ONE)         #type of subject
 

@@ -338,6 +338,9 @@ def take_update_parameterset_player(data):
     logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetPlayerForm(form_data_dict, instance=parameter_set_player)
+    form.fields['good_one'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
+    form.fields['good_two'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
+    form.fields['good_three'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
 
     if form.is_valid():
         #print("valid form")             

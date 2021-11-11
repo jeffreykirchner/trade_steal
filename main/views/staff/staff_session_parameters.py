@@ -39,6 +39,11 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         '''
         session = self.get_object()
 
+        parameterset_player_form = ParameterSetPlayerForm()
+        parameterset_player_form.fields['good_one'].queryset = session.parameter_set.parameter_set_goods.all()
+        parameterset_player_form.fields['good_two'].queryset = session.parameter_set.parameter_set_goods.all()
+        parameterset_player_form.fields['good_three'].queryset = session.parameter_set.parameter_set_goods.all()
+
         parameterset_form_ids=[]
         for i in ParameterSetForm():
             parameterset_form_ids.append(i.html_name)
@@ -48,7 +53,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
             parameterset_type_form_ids.append(i.html_name)
 
         parameterset_player_form_ids=[]
-        for i in ParameterSetPlayerForm():
+        for i in parameterset_player_form:
             parameterset_player_form_ids.append(i.html_name)
         
         parameterset_player_group_form_ids=[]
@@ -69,7 +74,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "id" : session.id,
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_type_form" : ParameterSetTypeForm(),
-                               "parameter_set_player_form" : ParameterSetPlayerForm(),
+                               "parameter_set_player_form" : parameterset_player_form,
                                "parameter_set_good_form" : ParameterSetGoodForm(),
                                "parameter_set_player_group_form" : ParameterSetPlayerGroupForm(),
                                "parameterset_form_ids" : parameterset_form_ids,
