@@ -19,7 +19,7 @@ class ParameterSetGood(models.Model):
     updated= models.DateTimeField(auto_now= True)
 
     def __str__(self):
-        return str(self.id)
+        return self.label
 
     class Meta:
         verbose_name = 'Parameter Set Good'

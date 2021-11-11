@@ -24,18 +24,18 @@ class ParameterSetPlayerForm(forms.ModelForm):
                                      choices=SubjectType.choices,
                                      widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
 
-    good_one = forms.ChoiceField(label='First Good',
-                                 queryset=ParameterSetGood.objects.all(),
-                                 widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
+    good_one = forms.ModelChoiceField(label='First Good',
+                                    queryset=ParameterSetGood.objects.all(),
+                                    widget=forms.Select(attrs={"v-model":"current_parameter_set_player.good_one.id"}))
     
-    good_two = forms.ChoiceField(label='Second Good',
-                                 queryset=ParameterSetGood.objects.all(),
-                                 widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
+    good_two = forms.ModelChoiceField(label='Second Good',
+                                    queryset=ParameterSetGood.objects.all(),
+                                    widget=forms.Select(attrs={"v-model":"current_parameter_set_player.good_two.id"}))
 
-    good_three = forms.ChoiceField(label='Third Good',
-                                  queryset=ParameterSetGood.objects.all(),
-                                  widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
+    good_three = forms.ModelChoiceField(label='Third Good',
+                                        queryset=ParameterSetGood.objects.all(),
+                                        widget=forms.Select(attrs={"v-model":"current_parameter_set_player.good_three.id"}))
 
     class Meta:
         model=ParameterSetPlayer
-        fields =['id_label', 'location', 'subject_type']
+        fields =['id_label', 'location', 'subject_type', 'good_one', 'good_two', 'good_three']

@@ -53,7 +53,10 @@ var app = Vue.createApp({
                         id:0,
                         id_label:"",
                         location:1,      
-                        subject_type:"",                  
+                        subject_type:"",            
+                        good_one:{id:0},
+                        good_two:{id:0},
+                        good_three:{id:0},      
                     },
                     current_parameter_set_player_group : {
                         id : 0,
