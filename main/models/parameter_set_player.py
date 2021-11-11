@@ -3,6 +3,8 @@ session player parameters
 '''
 
 from django.db import models
+from django.db.models import Q
+from django.db.models import F
 
 from main.models import ParameterSet
 
@@ -16,6 +18,10 @@ class ParameterSetPlayer(models.Model):
     '''
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
+
+    good_one = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_players_a", null=True, blank=True)
+    good_two = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_players_b", null=True, blank=True)
+    good_three = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_player_c", null=True, blank=True)
 
     subject_type = models.CharField(max_length=100, choices=SubjectType.choices, default=SubjectType.ONE)         #type of subject
 
@@ -32,6 +38,11 @@ class ParameterSetPlayer(models.Model):
         verbose_name = 'Parameter Set Player'
         verbose_name_plural = 'Parameter Set Players'
         ordering = ['location']
+        constraints = [
+            models.CheckConstraint(check=~Q(good_one=F('good_two')), name='good_one_unique'),
+            models.CheckConstraint(check=~Q(good_one=F('good_three')) , name='good_two_unique'),
+            models.CheckConstraint(check=~Q(good_two=F('good_three')) , name='good_thee_unique')
+        ]
 
     def from_dict(self, source):
         '''
@@ -100,5 +111,8 @@ class ParameterSetPlayer(models.Model):
             "id_label" : self.id_label,
             "location" : self.location,
             "subject_type" : self.subject_type,
+            "good_one" : self.good_one.json(),
+            "good_two" : self.good_two.json(),
+            "good_three" : self.good_three.json(),
             "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
         }

@@ -251,6 +251,15 @@
                             <th scope="col" class = "text-center m-1 p-1">
                                 Type
                             </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                First Good
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Second Good
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Third Good
+                            </th>
                             <th class = "text-center m-1 p-1">
                                 Groups:
                             </th>
@@ -271,6 +280,15 @@
                             <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
                                 [[p.subject_type]]
                             </td>
+                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
+                                [[p.good_one.label]]
+                            </td>
+                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
+                                [[p.good_two.label]]
+                            </td>
+                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
+                                [[p.good_three.label]]
+                            </td>
                             <td>
                                 
                             </td>
@@ -290,6 +308,12 @@
                                         v-on:click="sendAddParameterSetPlayer()">
                                        Add <i class="fas fa-plus"></i>
                                 </button>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
                             </td>
                             <td>
                             </td>

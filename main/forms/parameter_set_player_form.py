@@ -5,6 +5,7 @@ parameterset player edit form
 from django import forms
 
 from main.models import ParameterSetPlayer
+from main.models import ParameterSetGood
 from main.globals import SubjectType
 
 class ParameterSetPlayerForm(forms.ModelForm):
@@ -22,6 +23,18 @@ class ParameterSetPlayerForm(forms.ModelForm):
     subject_type = forms.ChoiceField(label='Subject Type',
                                      choices=SubjectType.choices,
                                      widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
+
+    good_one = forms.ChoiceField(label='First Good',
+                                 queryset=ParameterSetGood.objects.all(),
+                                 widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
+    
+    good_two = forms.ChoiceField(label='Second Good',
+                                 queryset=ParameterSetGood.objects.all(),
+                                 widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
+
+    good_three = forms.ChoiceField(label='Third Good',
+                                  queryset=ParameterSetGood.objects.all(),
+                                  widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
 
     class Meta:
         model=ParameterSetPlayer

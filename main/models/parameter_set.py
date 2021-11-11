@@ -140,16 +140,8 @@ class ParameterSet(models.Model):
         parameter_set_type_two.good_two_production_3 = Decimal('2')
 
         parameter_set_type_two.save()
-
-        #player setup
-        for i in range(8):
-            if i % 2 == 0:
-                self.add_new_player(main.globals.SubjectType.ONE, i)
-            else:
-                self.add_new_player(main.globals.SubjectType.TWO, i)
-            
-        self.update_group_counts()
     
+        # good setup
         parameter_set_good_one = main.models.ParameterSetGood(parameter_set=self, label="Orange", rgb_color="#FF5733")
         parameter_set_good_one.save()
 
@@ -159,7 +151,16 @@ class ParameterSet(models.Model):
         parameter_set_good_three = main.models.ParameterSetGood(parameter_set=self, label="Pink", rgb_color="#FF1493")
         parameter_set_good_three.save()
 
-    def add_new_player(self, subject_type, location):
+        #player setup
+        for i in range(8):
+            if i % 2 == 0:
+                self.add_new_player(main.globals.SubjectType.ONE, i, parameter_set_good_one, parameter_set_good_two, parameter_set_good_three)
+            else:
+                self.add_new_player(main.globals.SubjectType.TWO, i, parameter_set_good_one, parameter_set_good_two, parameter_set_good_three)
+            
+        self.update_group_counts()
+
+    def add_new_player(self, subject_type, location, good_one, good_two, good_three):
         '''
         add a new player of type subject_type
         '''
@@ -169,7 +170,12 @@ class ParameterSet(models.Model):
             return
 
         player = main.models.ParameterSetPlayer()
+
         player.parameter_set = self
+        player.good_one = good_one
+        player.good_two = good_two
+        player.good_three = good_three
+
         player.subject_type = subject_type
         player.id_label = str(location+1)
         player.location = location+1
