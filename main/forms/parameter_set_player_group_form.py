@@ -11,9 +11,9 @@ class ParameterSetPlayerGroupForm(forms.ModelForm):
     parameterset player group edit form
     '''
     
-    group_number = forms.IntegerField(label='Group Number (1-8)',
+    group_number = forms.IntegerField(label='Group Number (1-24)',
                                    min_value=1,
-                                   max_value=8,
+                                   max_value=24,
                                    widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_player_group.group_number",
                                                                    "step":"1",
                                                                    "min":"1"}))

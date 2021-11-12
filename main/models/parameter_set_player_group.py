@@ -13,7 +13,7 @@ class ParameterSetPlayerGroup(models.Model):
 
     parameter_set_player = models.ForeignKey(ParameterSetPlayer, on_delete=models.CASCADE, related_name="parameter_set_player_groups")
 
-    group_number = models.IntegerField(verbose_name='Group Number', default=1)        #group number 1 - N
+    group_number = models.IntegerField(verbose_name='Group Number (1-24)', default=1)        #group number 1 - N
     period = models.IntegerField(verbose_name='Period', default=1)                    #period number 1 - N
 
     timestamp = models.DateTimeField(auto_now_add= True)

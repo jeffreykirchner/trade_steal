@@ -17,6 +17,14 @@ class ParameterSetForm(forms.ModelForm):
                                                                     "step":"1",
                                                                     "max":"3",
                                                                     "min":"1"}))
+    
+    number_of_goods = forms.IntegerField(label='Number of Goods (2 or 3)',
+                                    min_value=2,
+                                    max_value=3,
+                                    widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.number_of_goods",
+                                                                    "step":"1",
+                                                                    "max":"3",
+                                                                    "min":"2"}))
 
     period_count = forms.IntegerField(label='Number of Periods',
                                       min_value=1,
@@ -48,4 +56,4 @@ class ParameterSetForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSet
-        fields =['town_count', 'period_count', 'period_length_production' , 'period_length_trade', 'break_period_frequency', 'allow_stealing']
+        fields =['town_count','number_of_goods', 'period_count', 'period_length_production' , 'period_length_trade', 'break_period_frequency', 'allow_stealing']

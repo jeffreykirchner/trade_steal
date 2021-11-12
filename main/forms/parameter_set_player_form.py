@@ -13,14 +13,24 @@ class ParameterSetPlayerForm(forms.ModelForm):
     '''
     parameterset player edit form
     '''
+    town = forms.IntegerField(label='Town (1-3)',
+                              min_value=1,
+                              max_value=3,
+                              widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_player.town",
+                                                              "step":"1",
+                                                              "min":"1",
+                                                              "max":"3"}))
 
     id_label = forms.CharField(label='Player Label',
                                widget=forms.TextInput(attrs={"v-model":"current_parameter_set_player.id_label",}))
     
-    location = forms.CharField(label='Screen Location (1-8)',
-                               widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_player.location",
-                                                               "step":"1",
-                                                               "min":"1"}))
+    location = forms.IntegerField(label='Location in Town (1-8)',
+                                  min_value=1,
+                                  max_value=8,
+                                  widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_player.location",
+                                                                  "step":"1",
+                                                                  "min":"1",
+                                                                  "max":"8"}))
     
     subject_type = forms.ChoiceField(label='Subject Type',
                                      choices=SubjectType.choices,
@@ -43,7 +53,7 @@ class ParameterSetPlayerForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSetPlayer
-        fields =['id_label', 'location', 'subject_type', 'good_one', 'good_two', 'good_three']
+        fields =['town','location', 'id_label', 'subject_type', 'good_one', 'good_two', 'good_three']
     
     def clean(self):
         cleaned_data = super().clean()

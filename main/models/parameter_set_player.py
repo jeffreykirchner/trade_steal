@@ -26,8 +26,9 @@ class ParameterSetPlayer(models.Model):
     subject_type = models.CharField(max_length=100, choices=SubjectType.choices, default=SubjectType.ONE)         #type of subject
 
     id_label = models.CharField(verbose_name='ID Label', max_length = 2, default="1")      #id label shown on screen to subjects
-    location = models.IntegerField(verbose_name='Location number (1-8)', default=1)        #location number of 1 to 8
-    
+    location = models.IntegerField(verbose_name='Location number (1-24)', default=1)       #location number of 1 to 8
+    town = models.IntegerField(verbose_name='Town number (1-3)', default=1)                #town number of 1 to 3
+
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
 
@@ -37,7 +38,7 @@ class ParameterSetPlayer(models.Model):
     class Meta:
         verbose_name = 'Parameter Set Player'
         verbose_name_plural = 'Parameter Set Players'
-        ordering = ['location']
+        ordering = ['town', 'location', 'id_label']
         constraints = [
             models.CheckConstraint(check=~Q(good_one=F('good_two')), name='good_one_unique'),
             models.CheckConstraint(check=~Q(good_one=F('good_three')) , name='good_two_unique'),
@@ -55,6 +56,7 @@ class ParameterSetPlayer(models.Model):
         self.subject_type = source.get("subject_type")
         self.id_label = source.get("id_label")
         self.location = source.get("location")
+        self.town = source.get("town")
 
         self.save()
 
@@ -110,6 +112,7 @@ class ParameterSetPlayer(models.Model):
             "id" : self.id,
             "id_label" : self.id_label,
             "location" : self.location,
+            "town" : self.town,
             "subject_type" : self.subject_type,
             "good_one" : self.good_one.json(),
             "good_two" : self.good_two.json(),

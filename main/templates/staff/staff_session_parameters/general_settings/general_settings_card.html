@@ -7,6 +7,22 @@
     <div class="card-body">        
        
         <!-- parameterset settings -->
+        <div class="row"> 
+            <div class="col-7 text-end">
+                {{parameter_set_form.town_count.label}}:
+            </div>
+            <div class="col text-start">
+                [[session.parameter_set.town_count]]
+            </div>          
+        </div>
+        <div class="row"> 
+            <div class="col-7 text-end">
+                {{parameter_set_form.number_of_goods.label}}:
+            </div>
+            <div class="col text-start">
+                [[session.parameter_set.number_of_goods]]
+            </div>          
+        </div>
         <div class="row">
             <div class="col-7 text-end">
                 {{parameter_set_form.period_count.label}}:
@@ -44,17 +60,9 @@
                 {{parameter_set_form.allow_stealing.label}}:                
             </div>
             <div class="col text-start">
-                <span v-if="session.parameter_set.allow_stealing">Yes</span><span v-else>No</span>                
+                <span v-if="session.parameter_set.allow_stealing=='True'">Yes</span><span v-else>No</span>                
             </div>  
-        </div>
-        <div class="row"> 
-            <div class="col-7 text-end">
-                {{parameter_set_form.town_count.label}}:
-            </div>
-            <div class="col text-start">
-                [[session.parameter_set.town_count]]
-            </div>          
-        </div>  
+        </div>          
         <div class="row justify-content-center">
             <div class="col-md text-center mb-2 mt-2">
                 <button class="btn btn-outline-primary"

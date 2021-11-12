@@ -421,7 +421,23 @@ def take_add_paramterset_player(data):
         logger.warning(f"take_update_take_update_parameterset session, not found ID: {session_id}")
         return
 
-    session.parameter_set.add_new_player(main.globals.SubjectType.ONE, 0)
+    last_parameter_set_player = session.parameter_set.parameter_set_players.last()
+
+    if last_parameter_set_player:
+        session.parameter_set.add_new_player(main.globals.SubjectType.ONE,
+                                             0,
+                                             last_parameter_set_player.good_one,
+                                             last_parameter_set_player.good_two,
+                                             last_parameter_set_player.good_three)
+    else:
+        parameters = []
+        parameters.append(main.globals.SubjectType.ONE)
+        parameters.append(0)
+        for i in session.parameter_set.parameter_set_goods.all():
+            parameters.append(i)
+
+        session.parameter_set.add_new_player(*parameters)
+
     session.parameter_set.update_group_counts()
     session.update_player_count()
 

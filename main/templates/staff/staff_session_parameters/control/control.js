@@ -17,12 +17,29 @@ takeImportParameters(){
     {
         app.takeGetSession(messageData);       
         app.$data.import_parameters_message = messageData.status.message;
-        //$('#importParametersModal').modal('hide');    
+        location.reload();    
     } 
     else
     {
         app.$data.import_parameters_message = messageData.status.message;
     } 
+},
+
+/** show edit session modal
+*/
+showImportParameters:function(){
+    
+    var myModal = new bootstrap.Modal(document.getElementById('importParametersModal'), {
+        keyboard: false
+        })
+
+    myModal.toggle();
+},
+
+/** hide edit session modal
+*/
+hideImportParameters:function(){
+    
 },
 
 /** send request to download parameters to a file 
@@ -64,7 +81,7 @@ uploadParameterset:function(){
     let formData = new FormData();
     formData.append('file', app.$data.upload_file);
 
-    axios.post('/staff-session/{{id}}/', formData,
+    axios.post('/staff-session/{{id}}/parameters', formData,
             {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -76,7 +93,7 @@ uploadParameterset:function(){
                 app.$data.uploadParametersetMessaage = response.data.message.message;
                 app.$data.session = response.data.session;
                 app.$data.uploadParametersetButtonText= 'Upload <i class="fas fa-upload"></i>';
-                //Vue.nextTick(app.update_sdgraph_canvas());
+                location.reload();
 
             })
             .catch(function (error) {
@@ -126,21 +143,4 @@ showUploadParameters:function(upload_mode){
 /**hide upload parameters modal
 */
 hideUploadParameters:function(){
-},
-
-/** show edit session modal
-*/
-showImportParameters:function(){
-    
-    var myModal = new bootstrap.Modal(document.getElementById('importParametersModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
-},
-
-/** hide edit session modal
-*/
-hideImportParameters:function(){
-    
 },
