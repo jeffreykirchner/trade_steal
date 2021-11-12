@@ -22,7 +22,7 @@ var app = Vue.createApp({
                         finished : false,                        
                         parameter_set : {
                             id : 0,
-                            period_count : 0,
+                            period_count : 1,
                             period_length_production : 0,
                             period_length_trade : 0,
                             break_period_frequency : 0,
@@ -30,13 +30,13 @@ var app = Vue.createApp({
                             good_b_label : "",
                             good_a_rgb_color : '#000000',
                             good_b_rgb_color : '#000000',
+                            parameter_set_players : [],
                             parameter_set_types : [{good_one_amount:""},
                                                    {good_one_amount:""}],                               
                         },
                         session_periods : [],
                     },
                    
-                    downloadParametersetButtonText:'Download <i class="fas fa-download"></i>',
                     valuecost_modal_label:'Edit Value or Cost',
                     current_parameterset_type:{                       //json attached to parameterset type edit modal
                         id:0,
@@ -224,7 +224,12 @@ var app = Vue.createApp({
             //do nothing
         },
 
-        {%include "staff/staff_session_parameters/parameters_card.js"%}
+        {%include "staff/staff_session_parameters/general_settings/general_settings.js"%}
+        {%include "staff/staff_session_parameters/good_settings/good_settings.js"%}
+        {%include "staff/staff_session_parameters/control/control.js"%}
+        {%include "staff/staff_session_parameters/player_type_one/player_type_one.js"%}
+        {%include "staff/staff_session_parameters/player_type_two/player_type_two.js"%}
+        {%include "staff/staff_session_parameters/players/players.js"%}
     
         /** clear form error messages
         */

@@ -35,18 +35,42 @@
 {% block content %}
 
 <!-- modals -->
-{%include "staff/staff_session_parameters/edit_parameterset_modal.html"%}
-{%include "staff/staff_session_parameters/edit_parameterset_type_modal.html"%}
-{%include "staff/staff_session_parameters/edit_parameterset_good_modal.html"%}
-{%include "staff/staff_session_parameters/edit_parameterset_player_modal.html"%}
-{%include "staff/staff_session_parameters/edit_parameterset_player_group_modal.html"%}
-{%include "staff/staff_session_parameters/upload_parameters_modal.html"%}
-{%include "staff/staff_session_parameters/import_parameters_modal.html"%}
+{%include "staff/staff_session_parameters/general_settings/edit_parameterset_modal.html"%}
+{%include "staff/staff_session_parameters/good_settings/edit_parameterset_good_modal.html"%}
+{%include "staff/staff_session_parameters/player_type_one/edit_parameterset_type_modal.html"%}
+{%include "staff/staff_session_parameters/players/edit_parameterset_player_modal.html"%}
+{%include "staff/staff_session_parameters/players/edit_parameterset_player_group_modal.html"%}
+{%include "staff/staff_session_parameters/control/upload_parameters_modal.html"%}
+{%include "staff/staff_session_parameters/control/import_parameters_modal.html"%}
 
 <!-- cards -->
 <div class="row justify-content-lg-center" v-cloak>
-    <div class="col">
-        {%include "staff/staff_session_parameters/parameters_card.html"%}                 
+    <div class="col-md">
+        {%include "staff/staff_session_parameters/general_settings/general_settings_card.html"%}  
+    </div>
+    <div class="col-md">
+        {%include "staff/staff_session_parameters/good_settings/good_settings_card.html"%}  
+    </div>
+    <div class="col-md">
+        {%include "staff/staff_session_parameters/control/control_card.html"%}  
+    </div>                       
+</div>
+    
+<div class="row justify-content-lg-center mt-4" v-cloak>
+    <div class="col-md">
+        {%include "staff/staff_session_parameters/player_type_one/player_type_one_card.html"%}  
+    </div>
+    <div class="col-md">
+        {%include "staff/staff_session_parameters/player_type_two/player_type_two_card.html"%}  
     </div>
 </div>
+
+                           
+<div class="row justify-content-lg-center mt-4" v-cloak>
+    <div class="col">   
+        {%include "staff/staff_session_parameters/players/players_card.html"%}                  
+    </div>
+</div>
+
+
 {% endblock %}
