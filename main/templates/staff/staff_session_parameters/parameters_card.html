@@ -281,15 +281,15 @@
                                 [[p.subject_type]]
                             </td>
                             <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.good_one.label]]
+                                <span v-bind:style = "{color : p.good_one.rgb_color}">[[p.good_one.label]]</span>
                             </td>
                             <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.good_two.label]]
+                                <span v-bind:style = "{color : p.good_two.rgb_color}">[[p.good_two.label]]</span>
                             </td>
                             <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.good_three.label]]
+                                <span v-bind:style = "{color : p.good_three.rgb_color}">[[p.good_three.label]]</span>
                             </td>
-                            <td>
+                            <td style="background-color:rgb(240, 240, 240);">
                                 
                             </td>
                             <td v-for="(g, index2) in p.period_groups" v-on:click="showEditParametersetPlayerGroup(index, index2)" class="player_table_cell" v-bind:key="g.id">

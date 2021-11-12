@@ -44,3 +44,21 @@ class ParameterSetPlayerForm(forms.ModelForm):
     class Meta:
         model=ParameterSetPlayer
         fields =['id_label', 'location', 'subject_type', 'good_one', 'good_two', 'good_three']
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        good_one = cleaned_data.get("good_one")
+        good_two = cleaned_data.get("good_two")
+        good_three = cleaned_data.get("good_three")
+
+        if good_one == good_two:
+            self.add_error('good_one', "Must be unique.")
+            self.add_error('good_two', "Must be unique.")
+        
+        if good_one == good_three:
+            self.add_error('good_one', "Must be unique.")
+            self.add_error('good_three', "Must be unique.")
+        
+        if good_two == good_three:
+            self.add_error('good_two', "Must be unique.")
+            self.add_error('good_three', "Must be unique.")

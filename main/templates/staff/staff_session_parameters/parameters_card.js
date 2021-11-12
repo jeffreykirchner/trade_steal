@@ -262,8 +262,13 @@ takeUpdateParametersetType(messageData){
     app.clearMainFormErrors();
     app.$data.cancelModal=true;
     app.$data.parametersetPlayerBeforeEdit = Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index]);
+    app.$data.parametersetPlayerBeforeEdit.good_one =  Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index].good_one);
+    app.$data.parametersetPlayerBeforeEdit.good_two =  Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index].good_two);
+    app.$data.parametersetPlayerBeforeEdit.good_three =  Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index].good_three);
+
     app.$data.parametersetPlayerBeforeEditIndex = index;
     app.$data.current_parameter_set_player = app.$data.session.parameter_set.parameter_set_players[index];
+    
 
     var myModal = new bootstrap.Modal(document.getElementById('editParametersetPlayerModal'), {
         keyboard: false
@@ -278,6 +283,11 @@ hideEditParametersetPlayer:function(){
     if(app.$data.cancelModal)
     {
         Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex], app.$data.parametersetPlayerBeforeEdit);
+
+        Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex].good_one, app.$data.parametersetPlayerBeforeEdit.good_one);
+        Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex].good_two, app.$data.parametersetPlayerBeforeEdit.good_two);
+        Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex].good_three, app.$data.parametersetPlayerBeforeEdit.good_three);
+
         app.$data.parametersetPlayerBeforeEdit=null;
     }
 },
@@ -474,7 +484,8 @@ takeUpdateParametersetGood(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editParametersetGoodModal').modal('hide');            
+        $('#editParametersetGoodModal').modal('hide');        
+        location.reload();    
     } 
     else
     {
