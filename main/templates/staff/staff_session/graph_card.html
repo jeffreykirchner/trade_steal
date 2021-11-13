@@ -24,7 +24,7 @@
 
         <div class="row justify-content-end mt-2">
             <div class="col-auto">                 
-                <select class="form-select" aria-label="Default select example" v-model="current_town">                    
+                <select class="form-select" aria-label="Default select example" v-model="current_town" v-on:change="change_town_view()">                    
                     {% for i in town_count_range %}
                         <option value="{{forloop.counter}}">Town {{forloop.counter}}</option>
                     {% endfor %}

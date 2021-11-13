@@ -48,8 +48,7 @@ setupPixi(){
 
 /** load pixi sprite sheets
 */
-setupPixiSheets()
-{
+setupPixiSheets(){
     app.$data.house_sheet = PIXI.Loader.shared.resources["{% static 'sprite_sheet.json' %}"].spritesheet;
     app.$data.house_sprite = new PIXI.Sprite(app.$data.house_sheet.textures["House0000"]);
 
@@ -85,13 +84,17 @@ setupPixiPlayers(){
     //setup pixi houses
     for(let i=0;i<session_players.length;i++)
     {
-        app.setupSingleHoue(i);
+        if(session_players[i].parameter_set_player.town.toString() == app.$data.current_town){
+            app.setupSingleHoue(i);
+        } 
     }
 
     //setup pixi fields
     for(let i=0;i<session_players.length;i++)
     {
-        app.setupSingleField(i);
+        if(session_players[i].parameter_set_player.town.toString() == app.$data.current_town){
+             app.setupSingleField(i);
+        }
     }
 },
 
@@ -312,10 +315,20 @@ setupGrid(){
 /**destroy house and field containers
  */
 destroyPixiPlayers(){
+    session_players = app.$data.session.session_players;
     for(let i=0;i<session_players.length;i++)
     {
-        app.$data.session.session_players[i].houseContainer.destroy();
-        app.$data.session.session_players[i].fieldContainer.destroy();
+        if(session_players[i].houseContainer)
+        {
+            session_players[i].houseContainer.destroy();
+            session_players[i].houseContainer = null;
+        }
+
+        if(session_players[i].fieldContainer)
+        {
+            session_players[i].fieldContainer.destroy();
+            session_players[i].fieldContainer = null;
+        }
     }
 },
 
@@ -521,11 +534,18 @@ hideTransferModal:function(){
 
 turnOffHighlights(){
     if(app.pixi_modal_open) return;
+
+    session_players = app.$data.session.session_players;
     
     for(let i=0;i<session_players.length;i++)
     {
-        session_players[i].houseContainer.getChildByName("highlight").visible=false;
-        session_players[i].fieldContainer.getChildByName("highlight").visible=false;
+        if(session_players[i].houseContainer)
+            if(session_players[i].houseContainer.getChildByName("highlight"))
+                session_players[i].houseContainer.getChildByName("highlight").visible=false;
+
+        if(session_players[i].fieldContainer)
+            if(session_players[i].fieldContainer.getChildByName("highlight"))
+                session_players[i].fieldContainer.getChildByName("highlight").visible=false;
     }
 
     app.$data.pixi_transfer_line.visible=false;
@@ -619,4 +639,12 @@ takeUpdateGoods(){
             }
         }
     }
+},
+
+/**
+ * change the town shown
+ */
+change_town_view(){
+    app.destroyPixiPlayers();
+    app.setupPixiPlayers();
 },
