@@ -38,6 +38,7 @@ var app = Vue.createApp({
 
                     session_player_move_form_ids: {{session_player_move_form_ids|safe}},
 
+
                     move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
 
                     pixi_loaded : false,             //true when pixi is loaded
@@ -56,6 +57,8 @@ var app = Vue.createApp({
                     transfer_modal_good_two_name : "" ,  //good two name shown on transfer modal
                     transfer_good_one_amount : 0, //good one amount to be transfered
                     transfer_good_two_amount : 0, //good two amount to be transfered
+
+                    current_town : "1",
                 }},
     methods: {
 

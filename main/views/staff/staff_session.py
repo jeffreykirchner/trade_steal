@@ -47,6 +47,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "session_player_move_form" : SessionPlayerMoveForm(),
                                "session_player_move_form_ids" : session_player_move_form_ids,
                                "websocket_path" : self.websocket_path,
+                               "town_count_range" : range(session.parameter_set.town_count),
                                "page_key" : f'{self.websocket_path}-{session.id}',
                                "session" : session})
     
