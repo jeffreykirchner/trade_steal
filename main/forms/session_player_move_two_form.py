@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 
 from main.models import SessionPlayerMove
 
-class SessionPlayerMoveForm(forms.Form):
+class SessionPlayerMoveTwoForm(forms.Form):
     '''
     session player move form
     '''

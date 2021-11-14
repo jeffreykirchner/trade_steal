@@ -20,6 +20,7 @@ class SessionPlayer(models.Model):
 
     good_one_house = models.IntegerField(verbose_name='Good one in house', default=0)        #amount of good one currently in house
     good_two_house = models.IntegerField(verbose_name='Good two in house', default=0)        #amount of good two currently in house
+    good_three_house = models.IntegerField(verbose_name='Good three in house', default=0)    #amount of good three currently in house
 
     good_one_field = models.IntegerField(verbose_name='Good one in field', default=0)        #amount of good one currently in field
     good_two_field = models.IntegerField(verbose_name='Good two in field', default=0)        #amount of good two currently in field
@@ -47,6 +48,7 @@ class SessionPlayer(models.Model):
 
             "good_one_house" : self.good_one_house,
             "good_two_house" : self.good_two_house,
+            "good_three_house" : self.good_three_house,
 
             "good_one_field" : self.good_one_field,
             "good_two_field" : self.good_two_field,
@@ -66,6 +68,7 @@ class SessionPlayer(models.Model):
 
             "good_one_house" : self.good_one_house,
             "good_two_house" : self.good_two_house,
+            "good_three_house" : self.good_three_house,
 
             "good_one_field" : self.good_one_field,
             "good_two_field" : self.good_two_field,

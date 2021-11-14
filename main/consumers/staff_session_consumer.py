@@ -14,7 +14,7 @@ from main.consumers import SocketConsumerMixin
 from main.consumers import get_session
 
 from main.forms import SessionForm
-from main.forms import SessionPlayerMoveForm
+from main.forms import SessionPlayerMoveTwoForm
 
 from main.models import Session
 
@@ -242,7 +242,7 @@ def take_move_goods(data):
 
     logger.info(f'form_data_dict : {form_data_dict}')
 
-    form = SessionPlayerMoveForm(form_data_dict)
+    form = SessionPlayerMoveTwoForm(form_data_dict)
 
     if form.is_valid():
         #print("valid form") 

@@ -145,7 +145,7 @@ setupSingleHoue(index){
     let goodOneLabel = new PIXI.Text(session_player.good_one_house.toString(),{fontFamily : 'Arial',
                                                                             fontWeight:'bold',
                                                                             fontSize: 100,
-                                                                            fill: parameter_set.good_a_rgb_color,
+                                                                            fill: parameter_set_player.good_one.rgb_color,
                                                                             align : 'center'});
 
     goodOneLabel.anchor.set(0.5);
@@ -159,7 +159,7 @@ setupSingleHoue(index){
     let goodTwoLabel = new PIXI.Text(session_player.good_two_house.toString(),{fontFamily : 'Arial',
                                                                                     fontWeight:'bold',
                                                                                     fontSize: 100,
-                                                                                    fill: parameter_set.good_b_rgb_color,
+                                                                                    fill: parameter_set_player.good_two.rgb_color,
                                                                                     align : 'center'});
 
     goodTwoLabel.anchor.set(0.5);
@@ -236,7 +236,7 @@ setupSingleField(index){
     let goodOneLabel = new PIXI.Text(session_player.good_one_field.toString(),{fontFamily : 'Arial',
                                                                             fontWeight:'bold',
                                                                             fontSize: 100,
-                                                                            fill: parameter_set.good_a_rgb_color,
+                                                                            fill:parameter_set_player.good_one.rgb_color,
                                                                             align : 'center'});
 
     goodOneLabel.anchor.set(0.5);
@@ -247,10 +247,10 @@ setupSingleField(index){
 
     //good two label
     let goodTwoLabel = new PIXI.Text(session_player.good_two_field.toString(),{fontFamily : 'Arial',
-                                                                                    fontWeight:'bold',
-                                                                                    fontSize: 100,
-                                                                                    fill: parameter_set.good_b_rgb_color,
-                                                                                    align : 'center'});
+                                                                               fontWeight:'bold',
+                                                                               fontSize: 100,
+                                                                               fill: parameter_set_player.good_two.rgb_color,
+                                                                               align : 'center'});
 
     goodTwoLabel.anchor.set(0.5);
     goodTwoLabel.x = sprite.width / 2;
@@ -263,10 +263,10 @@ setupSingleField(index){
     container.name = {type : 'field',
                       user_id: session_players[index].id,
                       modal_label: "Field " + parameter_set_player.id_label,
-                      good_one_color: parameter_set.good_a_rgb_color,
-                      good_two_color: parameter_set.good_b_rgb_color, 
-                      good_a_label : parameter_set.good_a_label,
-                      good_b_label : parameter_set.good_b_label};
+                      good_one_color: parameter_set_player.good_one.rgb_color,
+                      good_two_color: parameter_set_player.good_two.rgb_color, 
+                      good_a_label : parameter_set_player.good_one.label,
+                      good_b_label : parameter_set_player.good_two.label};
 
     container.pivot.set(container.width/2, container.height/2);
     container.hitArea = new PIXI.Rectangle(0, 0, container.width, container.height);    
