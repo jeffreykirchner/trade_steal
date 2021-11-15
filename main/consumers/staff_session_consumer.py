@@ -156,7 +156,6 @@ def take_update_session_form(data):
     logger.info("Invalid session form")
     return {"status":"fail", "errors":dict(form.errors.items())}
 
-
 def take_start_experiment(data):
     '''
     start experiment
