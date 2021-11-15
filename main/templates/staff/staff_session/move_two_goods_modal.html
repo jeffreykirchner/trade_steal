@@ -1,6 +1,13 @@
 {% load crispy_forms_tags %}
 <!--Edit Period Modal -->
-<div class="modal fade " id="moveGoodsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="moveGoodsModal" aria-hidden="true">
+<div class="modal fade"
+     id="moveTwoGoodsModal"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1" 
+     aria-labelledby="moveTwoGoodsModal" 
+     aria-hidden="true">
+     
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,7 +16,7 @@
             </div>
             <div class="modal-body">
                 <form id="moveGoodsForm" v-on:submit.prevent="onSubmit">
-                    {% for i in session_player_move_form %}
+                    {% for i in session_player_move_two_form %}
                     <div class="row">
                         <div class = "col col-md-10 offset-md-1">  
                             {{ i|as_crispy_field }}         

@@ -17,6 +17,7 @@ from main.models import Session
 
 from main.forms import SessionForm
 from main.forms import SessionPlayerMoveTwoForm
+from main.forms import SessionPlayerMoveThreeForm
 
 class StaffSessionView(SingleObjectMixin, View):
     '''
@@ -35,17 +36,23 @@ class StaffSessionView(SingleObjectMixin, View):
 
         session = self.get_object()
 
-        session_player_move_form_ids=[]
+        session_player_move_two_form_ids=[]
         for i in SessionPlayerMoveTwoForm():
-            session_player_move_form_ids.append(i.html_name)
+            session_player_move_two_form_ids.append(i.html_name)
+
+        session_player_move_three_form_ids=[]
+        for i in SessionPlayerMoveThreeForm():
+            session_player_move_three_form_ids.append(i.html_name)
 
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
                                "id" : session.id,
                                "session_form" : SessionForm(),
-                               "session_player_move_form" : SessionPlayerMoveTwoForm(),
-                               "session_player_move_form_ids" : session_player_move_form_ids,
+                               "session_player_move_two_form" : SessionPlayerMoveTwoForm(),
+                               "session_player_move_two_form_ids" : session_player_move_two_form_ids,
+                               "session_player_move_three_form" : SessionPlayerMoveThreeForm(),
+                               "session_player_move_three_form_ids" : session_player_move_three_form_ids,
                                "websocket_path" : self.websocket_path,
                                "town_count_range" : range(session.parameter_set.town_count),
                                "page_key" : f'{self.websocket_path}-{session.id}',

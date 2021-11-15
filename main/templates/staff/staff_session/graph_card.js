@@ -513,14 +513,14 @@ showTransferModal(container){
     app.$data.pixi_modal_open = true;
     app.$data.cancelModal=true;
 
-    var myModal = new bootstrap.Modal(document.getElementById('moveGoodsModal'), {
+    var myModal = new bootstrap.Modal(document.getElementById('moveTwoGoodsModal'), {
         keyboard: false
         })
 
     myModal.toggle();
 },
 
-/** show transfer modal
+/** hide transfer modal
 */
 hideTransferModal:function(){
     if(app.$data.cancelModal)
@@ -596,10 +596,13 @@ takeMoveGoods(messageData){
     if(messageData.status.value == "success")
     {
         app.takeUpdateGoods(messageData);       
-        $('#moveGoodsModal').modal('hide');
+        $('#moveTwoGoodsModal').modal('hide');
+        $('#moveThreeGoodsModal').modal('hide');
+
 
         app.$data.transfer_good_one_amount = 0;  
-        app.$data.transfer_good_two_amount = 0;            
+        app.$data.transfer_good_two_amount = 0;  
+        app.$data.transfer_good_three_amount = 0;            
     } 
     else
     {

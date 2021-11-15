@@ -36,7 +36,8 @@ var app = Vue.createApp({
                         session_periods : [],
                     },
 
-                    session_player_move_form_ids: {{session_player_move_form_ids|safe}},
+                    session_player_move_two_form_ids: {{session_player_move_two_form_ids|safe}},
+                    session_player_move_three_form_ids: {{session_player_move_three_form_ids|safe}},
 
 
                     move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
@@ -200,35 +201,14 @@ var app = Vue.createApp({
                 $("#id_errors_" + item).remove();
             }
 
-            s = app.$data.parameterset_form_ids;
+            s = app.$data.session_player_move_two_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
                 $("#id_errors_" + s[i]).remove();
             }
 
-            s = app.$data.parameterset_type_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
-
-            s = app.$data.parameterset_player_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
-
-            s = app.$data.parameterset_player_group_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
-
-            s = app.$data.session_player_move_form_ids;
+            s = app.$data.session_player_move_three_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
@@ -261,7 +241,8 @@ var app = Vue.createApp({
 
     mounted(){
 
-        $('#moveGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
+        $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
+        $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
     },
 
 }).mount('#app');
