@@ -177,10 +177,14 @@ setupSingleHoue(index){
     container.name = {type : 'house',
                       user_id: session_players[index].id,
                       modal_label: "House " + parameter_set_player.id_label,
-                      good_one_color: parameter_set.good_a_rgb_color,
-                      good_two_color: parameter_set.good_b_rgb_color, 
-                      good_a_label : parameter_set.good_a_label,
-                      good_b_label : parameter_set.good_b_label};
+
+                      good_one_color: parameter_set_player.good_one.rgb_color,
+                      good_two_color: parameter_set_player.good_two.rgb_color,
+                      good_three_color: parameter_set_player.good_three.rgb_color,
+
+                      good_a_label : parameter_set_player.good_one.label,
+                      good_b_label : parameter_set_player.good_two.label,
+                      good_c_label : parameter_set_player.good_three.label,};
     container.on('pointerdown', (event) => { app.handleHousePointerDown(index) })
              .on('pointerup', (event) => { app.handleHousePointerUp(index) })
              .on('pointerover', (event) => { app.handleHousePointerOver(index) })

@@ -1,10 +1,10 @@
 /** send session update form   
 */
-    sendUpdateSession(){
+sendUpdateSession(){
     app.$data.cancelModal = false;
     app.$data.working = true;
     app.sendMessage("update_session",{"formData" : $("#sessionForm").serializeArray(),
-                                        "sessionID" : app.$data.sessionID});
+                                      "sessionID" : app.$data.sessionID});
 },
 
 /** take update session reponse

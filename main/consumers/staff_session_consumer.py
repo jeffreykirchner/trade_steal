@@ -239,25 +239,44 @@ def take_move_goods(data):
     for field in form_data:            
         form_data_dict[field["name"]] = field["value"]
 
-    logger.info(f'form_data_dict : {form_data_dict}')
+    try:
+        logger.info(f'form_data_dict : {form_data_dict}')
+        form = SessionPlayerMoveTwoForm(form_data_dict)
 
-    form = SessionPlayerMoveTwoForm(form_data_dict)
+        source_type = data["sourceType"]
+        source_id = data["sourceID"]
+
+        target_type = data["targetType"]
+        target_id = data["targetID"]
+
+        session = Session.objects.get(id=session_id)
+        
+    except KeyError:
+            logger.warning(f"take_move_goods session, setup form: {session_id}")
+            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}
 
     if form.is_valid():
         #print("valid form") 
 
         try:        
             with transaction.atomic():
-                session = Session.objects.get(id=session_id)
-                source_type = data["sourceType"]
-                source_id = data["sourceID"]
-                target_type = data["targetType"]
-                target_id = data["targetID"]
 
-                source_session_player = session.session_players.get(id=source_id)
+                source_session_player = session.session_players.get(id=source_id)              
+                target_session_player = session.session_players.get(id=target_id)
 
                 good_one_amount = form.cleaned_data["transfer_good_one_amount"]
                 good_two_amount = form.cleaned_data["transfer_good_two_amount"]
+
+                #check that target can accept goods
+                if good_one_amount>0:
+                    if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_one):
+                        return {"value" : "fail", "errors" : {"transfer_good_one_amount":[f"Target cannot accept {source_session_player.parameter_set_player.good_one.label}."]},
+                                "message" : "Move Error"}
+                
+                if good_two_amount>0:
+                    if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_two):
+                        return {"value" : "fail", "errors" : {"transfer_good_two_amount":[f"Target cannot accept {source_session_player.parameter_set_player.good_two.label}."]},
+                                "message" : "Move Error"}
 
                 #handle source
                 if source_type == "house":
@@ -272,7 +291,7 @@ def take_move_goods(data):
                     source_session_player.good_one_house -= good_one_amount
                     source_session_player.good_two_house -= good_two_amount
                 else:
-                     #check enough good one
+                    #check enough good one
                     if source_session_player.good_one_field < good_one_amount:
                         return {"value" : "fail", "errors" : {}, "message" : "Source Error Good One"}
                     
@@ -287,14 +306,9 @@ def take_move_goods(data):
 
                 #handle target
                 target_session_player = session.session_players.get(id=target_id)
-                if target_type == "house":
-                    target_session_player.good_one_house += good_one_amount
-                    target_session_player.good_two_house += good_two_amount
-                else:
-                    target_session_player.good_one_field += good_one_amount
-                    target_session_player.good_two_field += good_two_amount
-                
-                target_session_player.save()
+
+                target_session_player.add_good_by_type(good_one_amount, target_type, source_session_player.parameter_set_player.good_one)
+                target_session_player.add_good_by_type(good_two_amount, target_type, source_session_player.parameter_set_player.good_two)
                 
         except ObjectDoesNotExist:
             logger.warning(f"take_move_goods session, not found ID: {session_id}")
