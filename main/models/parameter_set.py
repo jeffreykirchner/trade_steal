@@ -113,50 +113,11 @@ class ParameterSet(models.Model):
         default setup
         '''
 
-        #one type parameters
-        parameter_set_type_one = main.models.ParameterSetType()
-        parameter_set_type_one.parameter_set = self
-        parameter_set_type_one.subject_type = globals.SubjectType.ONE
-
-        parameter_set_type_one.good_one_production_1 = Decimal('0')
-        parameter_set_type_one.good_one_production_2 = Decimal('0.411096')
-        parameter_set_type_one.good_one_production_3 = Decimal('2.5')
-
-        parameter_set_type_one.good_two_production_1 = Decimal('0')
-        parameter_set_type_one.good_two_production_2 = Decimal('2.254')
-        parameter_set_type_one.good_two_production_3 = Decimal('1')
-
-        parameter_set_type_one.save()
-
-        #two type parameters
-        parameter_set_type_two = main.models.ParameterSetType()
-        parameter_set_type_two.parameter_set = self
-        parameter_set_type_two.subject_type = globals.SubjectType.TWO
-
-        parameter_set_type_two.good_one_production_1 = Decimal('0')
-        parameter_set_type_two.good_one_production_2 = Decimal('2.530')
-        parameter_set_type_two.good_one_production_3 = Decimal('1')
-
-        parameter_set_type_two.good_two_production_1 = Decimal('0')
-        parameter_set_type_two.good_two_production_2 = Decimal('1.1')
-        parameter_set_type_two.good_two_production_3 = Decimal('2')
-
-        parameter_set_type_two.save()
-
         #three type parameters
-        parameter_set_type_two = main.models.ParameterSetType()
-        parameter_set_type_two.parameter_set = self
-        parameter_set_type_two.subject_type = globals.SubjectType.TWO
-
-        parameter_set_type_two.good_one_production_1 = Decimal('0')
-        parameter_set_type_two.good_one_production_2 = Decimal('2.530')
-        parameter_set_type_two.good_one_production_3 = Decimal('1')
-
-        parameter_set_type_two.good_two_production_1 = Decimal('0')
-        parameter_set_type_two.good_two_production_2 = Decimal('1.1')
-        parameter_set_type_two.good_two_production_3 = Decimal('2')
-
-        parameter_set_type_two.save()
+        self.add_parameter_set_type(globals.SubjectType.ONE, Decimal('0'), Decimal('0.411096'), Decimal('2.5'), Decimal('0'), Decimal('2.254'),  Decimal('1'))
+        self.add_parameter_set_type(globals.SubjectType.TWO, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'))
+        self.add_parameter_set_type(globals.SubjectType.THREE, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'))
+        self.add_parameter_set_type(globals.SubjectType.FOUR, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'))
     
         # good setup
         parameter_set_good_one = main.models.ParameterSetGood(parameter_set=self, label="Orange", rgb_color="#FF5733")
@@ -176,6 +137,32 @@ class ParameterSet(models.Model):
                 self.add_new_player(main.globals.SubjectType.TWO, i, parameter_set_good_one, parameter_set_good_two, parameter_set_good_three)
             
         self.update_group_counts()
+
+    def add_parameter_set_type(self, subject_type, g_1_1, g_1_2, g_1_3,g_2_1 ,g_2_2, g_2_3):
+        '''
+        add new parameter set good
+        subject_type :  SubjectType()
+        g_1_1 : decimal
+        g_1_2 : decimal
+        g_1_3 : decimal
+        g_2_1 : decimal
+        g_2_2 : decimal
+        g_2_3 : decimal
+        '''
+
+        parameter_set_type = main.models.ParameterSetType()
+        parameter_set_type.parameter_set = self
+        parameter_set_type.subject_type = subject_type
+
+        parameter_set_type.good_one_production_1 = g_1_1
+        parameter_set_type.good_one_production_2 = g_1_2
+        parameter_set_type.good_one_production_3 = g_1_3
+
+        parameter_set_type.good_two_production_1 = g_2_1
+        parameter_set_type.good_two_production_2 = g_2_1
+        parameter_set_type.good_two_production_3 = g_2_3
+
+        parameter_set_type.save()
 
     def add_new_player(self, subject_type, location, good_one, good_two, good_three):
         '''

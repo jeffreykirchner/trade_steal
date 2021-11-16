@@ -21,7 +21,7 @@ class ParameterSetPlayerForm(forms.ModelForm):
                                                               "min":"1",
                                                               "max":"3"}))
 
-    id_label = forms.CharField(label='Player Label',
+    id_label = forms.CharField(label='House / Field Label',
                                widget=forms.TextInput(attrs={"v-model":"current_parameter_set_player.id_label",}))
     
     location = forms.IntegerField(label='Location in Town (1-8)',
@@ -32,7 +32,7 @@ class ParameterSetPlayerForm(forms.ModelForm):
                                                                   "min":"1",
                                                                   "max":"8"}))
     
-    subject_type = forms.ChoiceField(label='Subject Type',
+    subject_type = forms.ChoiceField(label='Player Type',
                                      choices=SubjectType.choices,
                                      widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
 

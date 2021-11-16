@@ -31,8 +31,7 @@ var app = Vue.createApp({
                             good_a_rgb_color : '#000000',
                             good_b_rgb_color : '#000000',
                             parameter_set_players : [],
-                            parameter_set_types : [{good_one_amount:""},
-                                                   {good_one_amount:""}],                               
+                            parameter_set_types : [],                               
                         },
                         session_periods : [],
                     },
@@ -227,8 +226,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session_parameters/general_settings/general_settings.js"%}
         {%include "staff/staff_session_parameters/good_settings/good_settings.js"%}
         {%include "staff/staff_session_parameters/control/control.js"%}
-        {%include "staff/staff_session_parameters/player_type_one/player_type_one.js"%}
-        {%include "staff/staff_session_parameters/player_type_two/player_type_two.js"%}
+        {%include "staff/staff_session_parameters/player_types/player_type.js"%}
         {%include "staff/staff_session_parameters/players/players.js"%}
     
         /** clear form error messages

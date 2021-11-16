@@ -13,3 +13,5 @@ class SubjectType(models.TextChoices):
     '''
     ONE = 'One', _('One')
     TWO = 'Two', _('Two')
+    THREE = 'Three', _('Three')
+    FOUR = 'Four', _('Four')

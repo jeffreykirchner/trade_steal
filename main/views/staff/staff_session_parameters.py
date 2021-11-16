@@ -85,6 +85,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "import_parameters_form" : ImportParametersForm(user=request.user),     
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',
+                               "number_of_player_types" : range(4),
                                "session" : session})
     
     @method_decorator(login_required)

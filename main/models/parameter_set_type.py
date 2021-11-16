@@ -43,7 +43,7 @@ class ParameterSetType(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['parameter_set', 'subject_type'], name='unique_player_type'),
         ]
-        ordering = ['subject_type']
+        ordering = ['id']
 
 
     def from_dict(self, source):
