@@ -24,9 +24,10 @@ takeUpdateGoods(){
             {
                 player.good_one_house = results[r].good_one_house;
                 player.good_two_house = results[r].good_two_house;
+                player.good_three_house = results[r].good_three_house;
 
                 player.good_one_field = results[r].good_one_field;
-                player.good_two_field = results[r].good_two_field;
+                player.good_two_field = results[r].good_two_field;               
 
                 player.houseContainer.destroy();
                 player.fieldContainer.destroy();

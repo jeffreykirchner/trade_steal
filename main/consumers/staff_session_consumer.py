@@ -15,6 +15,7 @@ from main.consumers import get_session
 
 from main.forms import SessionForm
 from main.forms import SessionPlayerMoveTwoForm
+from main.forms import SessionPlayerMoveThreeForm
 
 from main.models import Session
 
@@ -240,8 +241,7 @@ def take_move_goods(data):
         form_data_dict[field["name"]] = field["value"]
 
     try:
-        logger.info(f'form_data_dict : {form_data_dict}')
-        form = SessionPlayerMoveTwoForm(form_data_dict)
+        logger.info(f'form_data_dict : {form_data_dict}')       
 
         source_type = data["sourceType"]
         source_id = data["sourceID"]
@@ -250,6 +250,15 @@ def take_move_goods(data):
         target_id = data["targetID"]
 
         session = Session.objects.get(id=session_id)
+
+       
+        form_type = ""       #form suffix for 2 or three goods        
+        if source_type == "house" and session.parameter_set.good_count == 3:
+            form = SessionPlayerMoveThreeForm(form_data_dict)
+            form_type = "3g"
+        else:
+            form = SessionPlayerMoveTwoForm(form_data_dict)
+            form_type = "2g"
         
     except KeyError:
             logger.warning(f"take_move_goods session, setup form: {session_id}")
@@ -264,25 +273,25 @@ def take_move_goods(data):
                 source_session_player = session.session_players.get(id=source_id)              
                 target_session_player = session.session_players.get(id=target_id)
 
-                good_one_amount = form.cleaned_data["transfer_good_one_amount"]
-                good_two_amount = form.cleaned_data["transfer_good_two_amount"]
+                good_one_amount = form.cleaned_data[f"transfer_good_one_amount_{form_type}"]
+                good_two_amount = form.cleaned_data[f"transfer_good_two_amount_{form_type}"]
 
                 #check that target can accept goods
                 if good_one_amount > 0:
                     if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_one):
-                        return {"value" : "fail", "errors" : {"transfer_good_one_amount":[f"Target cannot accept {source_session_player.parameter_set_player.good_one.label}."]},
+                        return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                 
                 if good_two_amount > 0:
                     if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_two):
-                        return {"value" : "fail", "errors" : {"transfer_good_two_amount":[f"Target cannot accept {source_session_player.parameter_set_player.good_two.label}."]},
+                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
 
                 if session.parameter_set.good_count == 3 and source_type == "house":
-                    good_three_amount = form.cleaned_data["transfer_good_three_amount"]
+                    good_three_amount = form.cleaned_data[f"transfer_good_three_amount_{form_type}"]
                     if good_three_amount > 0:
                         if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_three):
-                            return {"value" : "fail", "errors" : {"transfer_good_two_amount":[f"Target cannot accept {source_session_player.parameter_set_player.good_three.label}."]},
+                            return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_three.label}."]},
                                     "message" : "Move Error"}
 
                 #handle source
@@ -299,7 +308,7 @@ def take_move_goods(data):
                     source_session_player.good_two_house -= good_two_amount
 
                     if session.parameter_set.good_count == 3:
-                        source_session_player.good_two_house -= good_three_amount
+                        source_session_player.good_three_house -= good_three_amount
 
                 else:
                     #check enough good one
