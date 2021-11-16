@@ -33,5 +33,5 @@ class SessionPlayerMoveThreeForm(forms.Form):
                                                     max_value=9999,
                                                     widget=forms.NumberInput(attrs={"step" : "1",
                                                                                     "min" : "0",
-                                                                                    "v-show" : "transfer_modal_show_third_good",
+                                                                                    "v-model" : "transfer_good_three_amount",
                                                                                     "v-on:keyup.enter":"sendMoveGoods()"}))
