@@ -142,6 +142,21 @@ class ParameterSet(models.Model):
         parameter_set_type_two.good_two_production_3 = Decimal('2')
 
         parameter_set_type_two.save()
+
+        #three type parameters
+        parameter_set_type_two = main.models.ParameterSetType()
+        parameter_set_type_two.parameter_set = self
+        parameter_set_type_two.subject_type = globals.SubjectType.TWO
+
+        parameter_set_type_two.good_one_production_1 = Decimal('0')
+        parameter_set_type_two.good_one_production_2 = Decimal('2.530')
+        parameter_set_type_two.good_one_production_3 = Decimal('1')
+
+        parameter_set_type_two.good_two_production_1 = Decimal('0')
+        parameter_set_type_two.good_two_production_2 = Decimal('1.1')
+        parameter_set_type_two.good_two_production_3 = Decimal('2')
+
+        parameter_set_type_two.save()
     
         # good setup
         parameter_set_good_one = main.models.ParameterSetGood(parameter_set=self, label="Orange", rgb_color="#FF5733")
