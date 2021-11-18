@@ -28,8 +28,8 @@
     background.endFill();
 
     background.interactive = true;
-    background.on("pointerup", (event) => { app.handleStagePointerUp() })
-    background.on("pointermove", (event) => { app.handleStagePointerMove() })
+    background.on("pointerup", app.handleStagePointerUp)
+              .on("pointermove", app.handleStagePointerMove);
     app.$data.pixi_app.stage.addChild(background);
 
     //transfer line
@@ -96,7 +96,7 @@ setupPixiPlayers(){
 setupSingleHoue(index){
     let container = new PIXI.Container();
 
-    pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'house');
+    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'house');
 
     let session_player = session_players[index];
     let parameter_set_player = session_player.parameter_set_player;
@@ -117,7 +117,6 @@ setupSingleHoue(index){
         y_location_good_three = 330;
     }
     
-
     //house texture
     let sprite = PIXI.Sprite.from(app.$data.house_sheet.textures["House0000"]);
 
@@ -179,6 +178,7 @@ setupSingleHoue(index){
     container.interactive=true
     container.buttonMode = true;
     container.name = {type : 'house',
+                      index : index, 
                       user_id: session_players[index].id,
                       modal_label: "House " + parameter_set_player.id_label,
 
@@ -189,10 +189,11 @@ setupSingleHoue(index){
                       good_a_label : parameter_set_player.good_one.label,
                       good_b_label : parameter_set_player.good_two.label,
                       good_c_label : parameter_set_player.good_three.label,};
-    container.on('pointerdown', (event) => { app.handleHousePointerDown(index) })
-             .on('pointerup', (event) => { app.handleHousePointerUp(index) })
-             .on('pointerover', (event) => { app.handleHousePointerOver(index) })
-             .on('pointerout', (event) => { app.handleHousePointerOut(index) });
+
+     container.on('pointerdown', app.handleHousePointerDown.bind(this, index))
+             .on('pointerup', app.handleHousePointerUp.bind(this, index))
+             .on('pointerover', app.handleHousePointerOver.bind(this, index))
+             .on('pointerout', app.handleHousePointerOut.bind(this, index));
 
     container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
 
@@ -230,11 +231,11 @@ createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
 setupSingleField(index){
     let container = new PIXI.Container();
 
-    pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'field');
+    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'field');
 
-    session_player = session_players[index];
-    parameter_set_player = session_player.parameter_set_player;
-    parameter_set = app.$data.session.parameter_set;
+    let session_player = session_players[index];
+    let parameter_set_player = session_player.parameter_set_player;
+    let parameter_set = app.$data.session.parameter_set;
 
     //house texture
     let sprite = PIXI.Sprite.from(app.$data.house_sheet.textures["Field0000"]);
@@ -281,22 +282,25 @@ setupSingleField(index){
     container.x = pt.x;
     container.y = pt.y;
     container.name = {type : 'field',
+                      index:index,
                       user_id: session_players[index].id,
                       modal_label: "Field " + parameter_set_player.id_label,
+                      
                       good_one_color: parameter_set_player.good_one.rgb_color,
                       good_two_color: parameter_set_player.good_two.rgb_color, 
+
                       good_a_label : parameter_set_player.good_one.label,
                       good_b_label : parameter_set_player.good_two.label};
 
     container.pivot.set(container.width/2, container.height/2);
     container.hitArea = new PIXI.Rectangle(0, 0, container.width, container.height);    
     
-    container.interactive=true
+    container.interactive = true;
     container.buttonMode = true;
-    container.on('pointerdown', (event) => { app.handleFieldPointerDown(index) })
-             .on('pointerup', (event) => { app.handleFieldPointerUp(index) })
-             .on('pointerover', (event) => { app.handleFieldPointerOver(index) })
-             .on('pointerout', (event) => { app.handleFieldPointerOut(index) });
+    container.on('pointerdown', app.handleFieldPointerDown.bind(this, index))
+             .on('pointerup', app.handleFieldPointerUp.bind(this, index))
+             .on('pointerover', app.handleFieldPointerOver.bind(this, index))
+             .on('pointerout', app.handleFieldPointerOut.bind(this, index));
     //container.on('pointermove', (event) => { app.handleFieldPointerEnter(i) });
     
     container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);

@@ -1,89 +1,89 @@
 /**
  *pointer down on field
  */
- handleFieldPointerDown(index){
+ handleFieldPointerDown(index, event){
     //console.log('Field ' + (index+1).toString() + ' down');
-    app.handleContainerDown(session_players[index].fieldContainer);
+    app.handleContainerDown(session_players[index].fieldContainer, event);
 },
 
 /**
  *pointer up on field
  */
-handleFieldPointerUp(index){
+handleFieldPointerUp(index, event){
     //console.log('Field ' + (index+1).toString() + ' up');
-    app.handleContainerUp(session_players[index].fieldContainer);
+    app.handleContainerUp(session_players[index].fieldContainer, event);
 },
 
 /**
  *pointer move over field
  */
-handleFieldPointerOver(index){
+handleFieldPointerOver(index, event){
     //console.log('Field ' + (index+1).toString() + ' Over');
-    app.setContainerAsTarget(session_players[index].fieldContainer);
+    app.setContainerAsTarget(session_players[index].fieldContainer, event);
 },
 
 /**
  *pointer move off field
  */
-handleFieldPointerOut(index){
+handleFieldPointerOut(index, event){
     //console.log('Field ' + (index+1).toString() + ' Out');
-    app.removeContainerTarget(session_players[index].fieldContainer);
+    app.removeContainerTarget(session_players[index].fieldContainer, event);
 },
 
 /**
  *pointer down on house
  */
-handleHousePointerDown(index){
+handleHousePointerDown(index, event){
     //console.log('House ' + (index+1).toString() + ' down');
-    app.handleContainerDown(session_players[index].houseContainer);
+    app.handleContainerDown(session_players[index].houseContainer, event);
 },
 
 /**
  *pointer up on house
  */
-handleHousePointerUp(index){
+handleHousePointerUp(index, event){
    //console.log('House ' + (index+1).toString() + ' up');
-    app.handleContainerUp(session_players[index].houseContainer);
+    app.handleContainerUp(session_players[index].houseContainer, event);
 },
 
 /**
  *pointer over house
  */
-handleHousePointerOver(index){
+handleHousePointerOver(index, event){
     //console.log('House ' + (index+1).toString() + ' Over');
-    app.setContainerAsTarget(session_players[index].houseContainer);
+    app.setContainerAsTarget(session_players[index].houseContainer, event);
 },
 
 /**
  *pointer move off house
  */
-handleHousePointerOut(index){
+handleHousePointerOut(index, event){
     //console.log('House ' + (index+1).toString() + ' Out');
-    app.removeContainerTarget(session_players[index].houseContainer);
+    app.removeContainerTarget(session_players[index].houseContainer, event);
 },
 
 /**
  * handle container mouse down
  */
-handleContainerDown(container){
+handleContainerDown(container, event){
     app.turnOffHighlights();
 
     container.getChildByName("highlight").visible=true;
     app.$data.pixi_transfer_source = container;
-    app.updatePixiTransfer(event.offsetX , event.offsetY);
+    app.updatePixiTransfer(event.data.global.x , event.data.global.y);
 },
 
 /**
  * handle container mouse up
  */
-handleContainerUp(container){
-    app.setContainerAsTarget(container);
-    app.showTransferModal(container);
+handleContainerUp(container, event){
+    app.setContainerAsTarget(container, event);
+    app.showTransferModal(container, event);
 },
 
 /**set specified container as trasnfer target target
 */
-setContainerAsTarget(container)
+setContainerAsTarget(container, event)
 {
     if(app.$data.pixi_transfer_line.visible && !app.pixi_modal_open)
     {
@@ -97,7 +97,7 @@ setContainerAsTarget(container)
 
 /**remove container target when pointer moves off of it
 */
-removeContainerTarget(container){
+removeContainerTarget(container, event){
     if(container ==  app.$data.pixi_transfer_target && !app.pixi_modal_open)
     {
         app.$data.pixi_transfer_target = null;
@@ -116,10 +116,10 @@ removeContainerTarget(container){
 /**
  * pointer move over stage
  */
- handleStagePointerMove(){
+ handleStagePointerMove(event){
     if(app.$data.pixi_transfer_line.visible && !app.pixi_modal_open)
     {
-        app.updatePixiTransfer(event.offsetX, event.offsetY);
+        app.updatePixiTransfer(event.data.global.x, event.data.global.y);
     }
 },
 
