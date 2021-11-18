@@ -3,6 +3,7 @@ session player model
 '''
 
 #import logging
+import uuid
 
 from django.db import models
 from django.forms.utils import to_current_timezone
@@ -25,6 +26,9 @@ class SessionPlayer(models.Model):
 
     good_one_field = models.IntegerField(verbose_name='Good one in field', default=0)        #amount of good one currently in field
     good_two_field = models.IntegerField(verbose_name='Good two in field', default=0)        #amount of good two currently in field
+
+    player_number = models.IntegerField(verbose_name='Player number', default=0)               #player number, from 1 to N
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')   #login and channel key
 
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -124,6 +128,9 @@ class SessionPlayer(models.Model):
 
             "good_one_field" : self.good_one_field,
             "good_two_field" : self.good_two_field,
+
+            "player_number" : self.player_number,
+            "uuid" : self.uuid,
 
             "parameter_set_player" : self.parameter_set_player.json(),
 

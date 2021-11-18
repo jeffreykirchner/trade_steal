@@ -296,28 +296,35 @@ def take_move_goods(data):
 
                 #handle source
                 if source_type == "house":
-                    #check enough good one
                     if source_session_player.good_one_house < good_one_amount:
-                        return {"value" : "fail", "errors" : {}, "message" : "Source Error Good One"}
+                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
+                                "message" : "Move Error"}
                     
                     #check enough good two
                     if source_session_player.good_two_house < good_two_amount:
-                        return {"value" : "fail", "errors" : {}, "message" : "Source Error Good Two"}
-
-                    source_session_player.good_one_house -= good_one_amount
-                    source_session_player.good_two_house -= good_two_amount
+                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
+                                "message" : "Move Error"}
 
                     if session.parameter_set.good_count == 3:
+                        if source_session_player.good_three_house < good_three_amount:
+                            return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_three.label}."]},
+                                    "message" : "Move Error"}
+
                         source_session_player.good_three_house -= good_three_amount
+
+                    source_session_player.good_one_house -= good_one_amount
+                    source_session_player.good_two_house -= good_two_amount 
 
                 else:
                     #check enough good one
                     if source_session_player.good_one_field < good_one_amount:
-                        return {"value" : "fail", "errors" : {}, "message" : "Source Error Good One"}
+                        return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
+                                "message" : "Move Error"}
                     
                     #check enough good two
                     if source_session_player.good_two_field < good_two_amount:
-                        return {"value" : "fail", "errors" : {}, "message" : "Source Error Good Two"}
+                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
+                                "message" : "Move Error"}
                     
                     source_session_player.good_one_field -= good_one_amount
                     source_session_player.good_two_field -= good_two_amount
