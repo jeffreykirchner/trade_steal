@@ -153,7 +153,10 @@ var app = Vue.createApp({
                 
             }
             
-            if(!app.$data.pixi_loaded) app.setupPixi();                            
+            if(!app.$data.pixi_loaded)
+                app.setupPixi();       
+            else
+                app.setupPixiPlayers();
         },
 
         /**update text of move on button based on current state

@@ -22,6 +22,8 @@ urlpatterns = [
     path('staff-home/', views.StaffHomeView.as_view(), name='staff-home'),
     path('staff-session/<int:pk>/', views.StaffSessionView.as_view(), name='staff_session'),
     path('staff-session/<int:pk>/parameters', views.StaffSessionParametersView.as_view(), name='staff_session_parameters'),
+
+    path('subject-home/<uuid:subject_uuid>', views.SubjectHomeView.as_view(), name='staff_session_parameters'),
     
     #txt
     path('robots.txt', views.RobotsTxt, name='robotsTxt'),
