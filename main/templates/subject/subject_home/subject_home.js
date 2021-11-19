@@ -14,7 +14,9 @@ var app = Vue.createApp({
                     first_load_done : false,          //true after software is loaded for the first time
                     sessionID : {{session.id}},
                     uuid : "{{session_subject.uuid}}",
-                    session_player : {},
+                    owner_color : 0xA9DFBF,
+                    other_color : 0xD3D3D3,
+                    session_player : {player_number : "---"},
                     session : {
                         current_period : 1,
                         started : false,

@@ -27,7 +27,7 @@
     background.drawRect(0, 0, canvas.width, canvas.height);
     background.endFill();
 
-    background.interactive = true;
+    background.interactive = false;
     background.on("pointerup", app.handleStagePointerUp)
               .on("pointermove", app.handleStagePointerMove);
     app.$data.pixi_app.stage.addChild(background);
@@ -175,7 +175,7 @@ setupSingleHoue(index){
     container.x = pt.x;
     container.y = pt.y;
     container.pivot.set(container.width/2, container.height/2);
-    container.interactive=true
+    container.interactive=false
     container.buttonMode = true;
     container.name = {type : 'house',
                       index : index, 
@@ -295,7 +295,7 @@ setupSingleField(index){
     container.pivot.set(container.width/2, container.height/2);
     container.hitArea = new PIXI.Rectangle(0, 0, container.width, container.height);    
     
-    container.interactive = true;
+    container.interactive = false;
     container.buttonMode = true;
     container.on('pointerdown', app.handleFieldPointerDown.bind(this, index))
              .on('pointerup', app.handleFieldPointerUp.bind(this, index))

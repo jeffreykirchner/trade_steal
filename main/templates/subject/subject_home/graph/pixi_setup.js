@@ -123,7 +123,13 @@ setupSingleHoue(index){
     sprite.x = 0;
     sprite.y = 0;
     sprite.name = "house_texture"
-    sprite.tint = 0xD3D3D3;
+
+    if(index == app.$data.session_player.player_number-1){
+        sprite.tint = app.$data.owner_color;
+    }
+    else{
+        sprite.tint = app.$data.other_color;
+    }
 
     container.addChild(sprite)
 
@@ -215,6 +221,8 @@ createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
                                             fontWeight:'bold',
                                             fontSize: 100,
                                             fill: rgb_color,
+                                            dropShadow : true,
+                                            dropShadowBlur : 5,
                                             align : 'center'});
 
     goodOneLabel.anchor.set(0.5);
@@ -242,7 +250,12 @@ setupSingleField(index){
 
     sprite.x = 0;
     sprite.y = 0;
-    sprite.tint = 0xD3D3D3;    
+    if(index == app.$data.session_player.player_number-1){
+        sprite.tint = app.$data.owner_color;
+    }
+    else{
+        sprite.tint = app.$data.other_color;
+    }    
     container.addChild(sprite)
 
     //highlight
@@ -297,8 +310,12 @@ setupSingleField(index){
     
     container.interactive = true;
     container.buttonMode = true;
-    container.on('pointerdown', app.handleFieldPointerDown.bind(this, index))
-             .on('pointerup', app.handleFieldPointerUp.bind(this, index))
+
+    //prevent stealing
+    
+    container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
+
+    container.on('pointerup', app.handleFieldPointerUp.bind(this, index))
              .on('pointerover', app.handleFieldPointerOver.bind(this, index))
              .on('pointerout', app.handleFieldPointerOut.bind(this, index));
     //container.on('pointermove', (event) => { app.handleFieldPointerEnter(i) });
