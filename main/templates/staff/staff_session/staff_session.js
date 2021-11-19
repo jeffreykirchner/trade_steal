@@ -34,6 +34,7 @@ var app = Vue.createApp({
                                                    {good_one_amount:""}],                               
                         },
                         session_periods : [],
+                        session_players : [],
                     },
 
                     session_player_move_two_form_ids: {{session_player_move_two_form_ids|safe}},
@@ -64,8 +65,6 @@ var app = Vue.createApp({
                     transfer_good_one_amount : 0, //good one amount to be transfered
                     transfer_good_two_amount : 0, //good two amount to be transfered
                     transfer_good_three_amount : 0, //good three amount to be transfered
-
-                    transfer_modal_show_third_good : true,
 
                     current_town : "1",
                 }},
@@ -105,8 +104,8 @@ var app = Vue.createApp({
                 case "next_period":
                     app.takeNextPeriod(messageData);
                     break; 
-                case "move_goods":
-                    app.takeMoveGoods(messageData);
+                case "update_move_goods":
+                    app.takeUpdateGoods(messageData);
                     break;  
             }
 
@@ -135,6 +134,12 @@ var app = Vue.createApp({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
+        },
+
+        /** send winsock request to get session info
+        */
+        sendGetSession(){
+            app.sendMessage("get_session",{"sessionID" : app.$data.sessionID});
         },
 
         /** take create new session
@@ -179,20 +184,15 @@ var app = Vue.createApp({
             }
         },
 
-        /** send winsock request to get session info
-        */
-        sendGetSession(){
-            app.sendMessage("get_session",{"sessionID" : app.$data.sessionID});
-        },
-
         //do nothing on when enter pressed for post
         onSubmit(){
             //do nothing
         },
         
-        {%include "staff/staff_session/control_card.js"%}
-        {%include "staff/staff_session/session_card.js"%}
-        {%include "staff/staff_session/graph_card.js"%}
+        {%include "staff/staff_session/control/control_card.js"%}
+        {%include "staff/staff_session/session/session_card.js"%}
+        {%include "staff/staff_session/graph/graph_card.js"%}
+        {%include "staff/staff_session/subjects/subjects_card.js"%}
     
         /** clear form error messages
         */

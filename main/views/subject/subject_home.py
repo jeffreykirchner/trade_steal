@@ -14,26 +14,24 @@ from django.http import JsonResponse
 from main.decorators import user_is_owner
 
 from main.models import Session
-from main.models import SessionSubject
+from main.models import SessionPlayer
 
 from main.forms import SessionForm
 from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
 
-class SubjectHomeView(SingleObjectMixin, View):
+class SubjectHomeView(View):
     '''
     class based staff view
     '''
     template_name = "subject/subject_home.html"
     websocket_path = "subject-home"
-    model = Session
     
     def get(self, request, *args, **kwargs):
         '''
         handle get requests
         '''
-
-        session_subject = SessionSubject.objects.get(uuid=kwargs['subject_uuid'])
+        session_subject = SessionPlayer.objects.get(uuid=kwargs['subject_uuid'])
         session = session_subject.session
 
         session_player_move_two_form_ids=[]
@@ -46,7 +44,7 @@ class SubjectHomeView(SingleObjectMixin, View):
 
         return render(request=request,
                       template_name=self.template_name,
-                      context={"channel_key" : uuid.uuid4(),
+                      context={"channel_key" : session.channel_key,
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "session_player_move_two_form" : SessionPlayerMoveTwoForm(),
@@ -54,8 +52,8 @@ class SubjectHomeView(SingleObjectMixin, View):
                                "session_player_move_three_form" : SessionPlayerMoveThreeForm(),
                                "session_player_move_three_form_ids" : session_player_move_three_form_ids,
                                "websocket_path" : self.websocket_path,
-                               "town_count_range" : range(session.parameter_set.town_count),
-                               "page_key" : f'{self.websocket_path}-{session.id}',
+                               "page_key" : f'session-{session.id}',
+                               "session_subject" : session_subject,
                                "session" : session})
     
     @method_decorator(login_required)

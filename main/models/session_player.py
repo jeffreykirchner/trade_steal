@@ -7,6 +7,7 @@ import uuid
 
 from django.db import models
 from django.forms.utils import to_current_timezone
+from django.urls import reverse
 
 from main.models import Session, parameter_set_player
 from main.models import ParameterSetPlayer
@@ -40,7 +41,7 @@ class SessionPlayer(models.Model):
         
         verbose_name = 'Session Player'
         verbose_name_plural = 'Session Players'
-        ordering = ['parameter_set_player__location']
+        ordering = ['parameter_set_player__town', 'parameter_set_player__location']
 
     def check_good_available_at_location(self, good_location, parameter_set_good):
         '''
@@ -131,6 +132,8 @@ class SessionPlayer(models.Model):
 
             "player_number" : self.player_number,
             "uuid" : self.uuid,
+
+            "login_link" : reverse('subject_home', kwargs={'subject_uuid': self.uuid}),
 
             "parameter_set_player" : self.parameter_set_player.json(),
 

@@ -35,12 +35,12 @@
 {% block content %}
 
 <!-- modals -->
-{%include "staff/staff_session/edit_session_modal.html"%}
+
 
 <!-- cards -->
 <div class="row justify-content-lg-center" v-cloak>
     <div class="col-md-9">
-        {%include "staff/staff_session/graph_card.html"%}                
+        {%include "staff/staff_session/subjects_card.html"%}                
     </div>
     <div class="col-md-3">
         
@@ -55,6 +55,15 @@
                 {%include "staff/staff_session/control_card.html"%} 
             </div>
         </div>
+                        
+    </div>
+</div>
+
+<div class="row justify-content-lg-center mt-4" v-cloak>
+    <div class="col-md-9">
+        {%include "staff/staff_session/graph_card.html"%}                
+    </div>
+    <div class="col-md-3">
                         
     </div>
 </div>

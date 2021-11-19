@@ -3,14 +3,18 @@
 
 {%include "staff/staff_session/graph/pixi_setup.js"%}
 {%include "staff/staff_session/graph/pixi_interface.js"%}
-{%include "staff/staff_session/graph/transfer_goods.js"%}
 
+/** take updated data from goods being moved by another player
+        *    @param messageData {json} session day in json format
+        */
+ takeUpdateMoveGoods(messageData){
+    app.takeUpdateGoods(messageData);
+},
 
-/**
- * Actions
- */
-
-takeUpdateGoods(){
+ /** update good counts of players in list
+*    @param messageData {json} session day in json format
+*/
+takeUpdateGoods(messageData){
     results = messageData.status.result;
 
     for(let r=0; r<results.length; r++){

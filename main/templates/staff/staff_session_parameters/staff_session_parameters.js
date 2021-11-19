@@ -34,6 +34,7 @@ var app = Vue.createApp({
                             parameter_set_types : [],                               
                         },
                         session_periods : [],
+                        session_players : [],
                     },
                    
                     valuecost_modal_label:'Edit Value or Cost',

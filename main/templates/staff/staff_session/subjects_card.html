@@ -1,0 +1,106 @@
+<div class="card" v-show="first_load_done">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">
+            Subjects ([[session.session_players.length]])
+        </span>       
+
+        <span class="float-end pe-2 ps-2"> 
+            <a href='{%url "staff_session_parameters" session.id %}' class='link-primary'>Edit Parameters</a>
+        </span> 
+                
+    </div>
+    <div class="card-body" >        
+
+        <div class="row justify-content-center">
+            <!-- player settings -->
+            <div class="col-md-auto text-center">                
+                <div class="table-responsive">
+                <table class="table table-condensed"> 
+                    <thead>
+                        <tr>
+                            <th scope="col" class = "m-1 p-1">
+                                Town
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Location
+                            </th>
+                            <th scope="col" class = "m-1 p-1">
+                                Client #
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Group
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Label
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Type
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                First Good House
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Second Good House
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Third Good House
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                First Good Field
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Second Good Field
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Login Link
+                            </th>                            
+                        </tr>
+                    </thead>
+                    <tbody id="player_list">
+                        <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                            <td class="player_table_cell">
+                                [[p.parameter_set_player.town]]
+                            </td>
+                            <td class="player_table_cell">
+                                [[p.parameter_set_player.location]]
+                            </td>
+                            <td class="player_table_cell">
+                                [[p.player_number]]
+                            </td>
+                            <td class="player_table_cell">
+                                [[p.parameter_set_player.period_groups[0].group_number]]
+                            </td>
+                            <td class="player_table_cell">
+                                [[p.parameter_set_player.id_label]]
+                            </td>
+                            <td class="player_table_cell">
+                                [[p.parameter_set_player.subject_type]]
+                            </td>
+                            <td class="player_table_cell">
+                                <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_house]]</span>
+                            </td>
+                            <td class="player_table_cell">
+                                <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.good_two_house]]</span>
+                            </td>
+                            <td class="player_table_cell">
+                                <span v-bind:style = "{color : p.parameter_set_player.good_three.rgb_color}">[[p.good_three_house]]</span>
+                            </td>
+                            <td class="player_table_cell">
+                                <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_field]]</span>
+                            </td>
+                            <td class="player_table_cell">
+                                <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.good_two_field]]</span>
+                            </td>                            
+                            <td class="player_table_cell">
+                                <a v-bind:href="p.login_link">Login Link</a>
+                            </td>                           
+                        </tr>
+                    </tbody>
+                    
+                </table>
+                </div>
+            </div>
+        </div>  
+        
+    </div>                    
+</div> 

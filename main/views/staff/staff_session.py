@@ -46,7 +46,7 @@ class StaffSessionView(SingleObjectMixin, View):
 
         return render(request=request,
                       template_name=self.template_name,
-                      context={"channel_key" : uuid.uuid4(),
+                      context={"channel_key" : session.channel_key,
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "session_player_move_two_form" : SessionPlayerMoveTwoForm(),
@@ -55,7 +55,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "session_player_move_three_form_ids" : session_player_move_three_form_ids,
                                "websocket_path" : self.websocket_path,
                                "town_count_range" : range(session.parameter_set.town_count),
-                               "page_key" : f'{self.websocket_path}-{session.id}',
+                               "page_key" : f'session-{session.id}',
                                "session" : session})
     
     @method_decorator(login_required)

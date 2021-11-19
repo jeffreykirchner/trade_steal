@@ -83,11 +83,12 @@ class Session(models.Model):
 
         self.session_players.all().delete()
     
-        for i in self.parameter_set.parameter_set_players.all():
+        for count, i in enumerate(self.parameter_set.parameter_set_players.all()):
             new_session_player = main.models.SessionPlayer()
 
             new_session_player.session = self
             new_session_player.parameter_set_player = i
+            new_session_player.player_number = count + 1
 
             new_session_player.save()
 

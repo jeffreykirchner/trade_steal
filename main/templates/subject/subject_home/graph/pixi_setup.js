@@ -191,9 +191,9 @@ setupSingleHoue(index){
                       good_c_label : parameter_set_player.good_three.label,};
 
      container.on('pointerdown', app.handleHousePointerDown.bind(this, index))
-              .on('pointerup', app.handleHousePointerUp.bind(this, index))
-              .on('pointerover', app.handleHousePointerOver.bind(this, index))
-              .on('pointerout', app.handleHousePointerOut.bind(this, index));
+             .on('pointerup', app.handleHousePointerUp.bind(this, index))
+             .on('pointerover', app.handleHousePointerOver.bind(this, index))
+             .on('pointerout', app.handleHousePointerOut.bind(this, index));
 
     container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
 

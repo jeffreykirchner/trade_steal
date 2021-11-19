@@ -25,7 +25,8 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         room_name =  kwargs.get('room_name')
         page_key =  kwargs.get('page_key',"")
 
-        self.room_group_name = room_name + page_key
+        #self.room_group_name = room_name + page_key
+        self.room_group_name = f'{page_key}-{room_name}'
 
         # Join room group
         await self.channel_layer.group_add(
@@ -34,7 +35,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         )
 
         logger = logging.getLogger(__name__) 
-        logger.info(f"SocketConsumerMixin Connect {self.channel_name}")
+        logger.info(f"SocketConsumerMixin Connect channel name: {self.channel_name}, room group name: {self.room_group_name}")
 
         await self.accept()
 
@@ -57,8 +58,8 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         message_text = text_data_json['messageText']   #data passed to above method
 
         # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
+        await self.channel_layer.send(
+            self.channel_name,
             {
                 'type': message_type,
                 'message_text': message_text
