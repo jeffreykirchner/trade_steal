@@ -76,6 +76,15 @@ class Session(models.Model):
 
         self.save()
     
+    def get_current_session_period(self):
+        '''
+        return the current session period
+        '''
+        if not self.started:
+            return None
+
+        return self.session_periods.get(period_number=self.current_period)
+    
     def update_player_count(self):
         '''
         update the number of session players based on the number defined in the parameterset

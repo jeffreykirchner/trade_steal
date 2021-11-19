@@ -12,9 +12,34 @@
 
 <style>
     canvas {
-        background-color: white; 
-        width: 100%;
+        
+        
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        grid-auto-rows: minmax(100px, auto);
+    }
+
+    .one {
+        grid-column: 1 / 4;
+        grid-row: 1;
         height: 600px;
+        background-color: orange; 
+        width: 100%;
+        z-index: 1;
+        /* border-style: solid; */
+    }
+
+    .two {
+        grid-column: 2;
+        grid-row: 1;
+        border-style: dotted;
+        background-color: chartreuse;
+        height: 600px;
+        z-index: 2;
     }
    
 </style>

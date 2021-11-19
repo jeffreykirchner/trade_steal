@@ -24,12 +24,13 @@ class SessionPlayerMove(models.Model):
 
     good_one_amount = models.IntegerField(verbose_name='Good one amount')        #amount of good one to be moved
     good_two_amount = models.IntegerField(verbose_name='Good two amount')        #amount of good two to be moved
+    good_three_amount = models.IntegerField(verbose_name='Good three amount')        #amount of good two to be moved
     
     source_container = models.CharField(max_length=100, choices=ContainerTypes.choices)         #source container
     target_container = models.CharField(max_length=100, choices=ContainerTypes.choices)         #target container
 
     timestamp = models.DateTimeField(auto_now_add=True)
-    updated= models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.id}"
@@ -42,6 +43,7 @@ class SessionPlayerMove(models.Model):
         constraints = [
             models.CheckConstraint(check=Q(good_one_amount__gte=0), name='good_one_amount__gte_0'),
             models.CheckConstraint(check=Q(good_two_amount__gte=0), name='good_two_amount__gte_0'),
+            models.CheckConstraint(check=Q(good_three_amount__gte=0), name='good_three_amount__gte_0'),
             models.CheckConstraint(check=~Q(session_player_source=F('session_player_target')) &
                                          ~Q(source_container=F('target_container')), name='source_equals_target'),
         ]

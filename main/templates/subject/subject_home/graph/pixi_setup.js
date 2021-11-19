@@ -196,8 +196,10 @@ setupSingleHoue(index){
                       good_b_label : parameter_set_player.good_two.label,
                       good_c_label : parameter_set_player.good_three.label,};
 
-     container.on('pointerdown', app.handleHousePointerDown.bind(this, index))
-             .on('pointerup', app.handleHousePointerUp.bind(this, index))
+    if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
+        container.on('pointerdown', app.handleHousePointerDown.bind(this, index));
+
+    container.on('pointerup', app.handleHousePointerUp.bind(this, index))
              .on('pointerover', app.handleHousePointerOver.bind(this, index))
              .on('pointerout', app.handleHousePointerOut.bind(this, index));
 
@@ -313,7 +315,8 @@ setupSingleField(index){
 
     //prevent stealing
     
-    container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
+    if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
+        container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
 
     container.on('pointerup', app.handleFieldPointerUp.bind(this, index))
              .on('pointerover', app.handleFieldPointerOver.bind(this, index))

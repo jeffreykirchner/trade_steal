@@ -17,6 +17,7 @@ from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
 
 from main.models import Session
+from main.models import SessionPlayerMove
 
 class SubjectHomeConsumer(SocketConsumerMixin):
     '''
@@ -109,6 +110,7 @@ def take_move_goods(data):
     logger.info(f"Move goods: {data}")
 
     session_id = data["sessionID"]
+    uuid = data["uuid"]
 
     form_data = data["formData"]
     
@@ -127,6 +129,7 @@ def take_move_goods(data):
         target_id = data["targetID"]
 
         session = Session.objects.get(id=session_id)
+        session_player = session.session_players.get(uuid=uuid)
 
         form_type = ""       #form suffix for 2 or three goods        
         if source_type == "house" and session.parameter_set.good_count == 3:
@@ -148,6 +151,11 @@ def take_move_goods(data):
 
                 source_session_player = session.session_players.get(id=source_id)              
                 target_session_player = session.session_players.get(id=target_id)
+
+                #check that stealing is allowed
+                if not session.parameter_set.allow_stealing and source_session_player != session_player:
+                    return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Invalid source."]},
+                                "message" : "Move Error"}
 
                 good_one_amount = form.cleaned_data[f"transfer_good_one_amount_{form_type}"]
                 good_two_amount = form.cleaned_data[f"transfer_good_two_amount_{form_type}"]
@@ -215,6 +223,10 @@ def take_move_goods(data):
                 
                 if session.parameter_set.good_count == 3 and source_type == "house":
                     target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three)
+                
+                #record move
+                # session_player_move = SessionPlayerMove()
+                # session_player_move.save()
                 
         except ObjectDoesNotExist:
             logger.warning(f"take_move_goods session, not found ID: {session_id}")
