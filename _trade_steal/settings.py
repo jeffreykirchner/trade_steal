@@ -60,6 +60,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 '_trade_steal.context_processors.get_debug',
+                '_trade_steal.context_processors.get_auth_account_url',
+                '_trade_steal.context_processors.get_auth_password_reset_url',
             ],
         },
     },
