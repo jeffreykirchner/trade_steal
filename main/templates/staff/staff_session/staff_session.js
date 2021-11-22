@@ -99,6 +99,9 @@ var app = Vue.createApp({
                 case "start_experiment":
                     app.takeStartExperiment(messageData);
                     break;
+                case "update_start_experiment":
+                    app.takeUpdateStartExperiment(messageData);
+                    break;
                 case "reset_experiment":
                     app.takeResetExperiment(messageData);
                     break;

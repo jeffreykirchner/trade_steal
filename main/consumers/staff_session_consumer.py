@@ -11,6 +11,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 
 from main.consumers import SocketConsumerMixin
+from main.consumers import StaffSubjectUpdateMixin
 from main.consumers import get_session
 
 from main.forms import SessionForm
@@ -19,7 +20,7 @@ from main.forms import SessionPlayerMoveThreeForm
 
 from main.models import Session
 
-class StaffSessionConsumer(SocketConsumerMixin):
+class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
     '''    
@@ -66,15 +67,24 @@ class StaffSessionConsumer(SocketConsumerMixin):
         '''
         #update subject count
         message_data = {}
-        message_data["status"] = await take_start_experiment(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["status"] = await sync_to_async(take_start_experiment)(event["message_text"])
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        #Send message to staff page
+        if message_data["status"]["value"] == "fail":
+            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        else:
+            #send message to client pages
+            await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_start_experiment",
+                    "data": message_data["status"],
+                    'sender_channel_name': self.channel_name},
+                )
     
     async def reset_experiment(self, event):
         '''
@@ -82,7 +92,7 @@ class StaffSessionConsumer(SocketConsumerMixin):
         '''
         #update subject count
         message_data = {}
-        message_data["status"] = await take_reset_experiment(event["message_text"])
+        message_data["status"] = await sync_to_async(take_reset_experiment)(event["message_text"])
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
@@ -106,23 +116,6 @@ class StaffSessionConsumer(SocketConsumerMixin):
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-    
-    async def update_move_goods(self, event):
-        '''
-        update good count on all 
-        '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f'update_goods{self.channel_name}')
-
-        message_data = {}
-        message_data["status"] = event["data"]
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        if self.channel_name != event['sender_channel_name']:
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
 
 #local sync functions    
@@ -173,9 +166,9 @@ def take_start_experiment(data):
     if not session.started:
         session.start_experiment()
 
-    status = "success"
+    value = "success"
     
-    return {"status" : status}
+    return {"value" : value, "started" : session.started}
 
 def take_reset_experiment(data):
     '''
@@ -195,7 +188,6 @@ def take_reset_experiment(data):
 
         session.save()
         session.session_periods.all().delete()  
-        session.session_subjects.all().delete() 
 
     status = "success"
     

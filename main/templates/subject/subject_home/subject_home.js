@@ -97,7 +97,10 @@ var app = Vue.createApp({
                     app.takeMoveGoods(messageData);
                     break;  
                 case "update_move_goods":
-                    app.takeUpdateMoveGoods(messageData)
+                    app.takeUpdateMoveGoods(messageData);
+                    break;
+                case "update_start_experiment":
+                    app.takeUpdateStartExperiment(messageData);
                     break;
             }
 
@@ -119,8 +122,7 @@ var app = Vue.createApp({
         *    @param messageType {string} type of message sent to server
         *    @param messageText {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {
-            
+        sendMessage(messageType, messageText) {            
 
             app.$data.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
@@ -155,9 +157,9 @@ var app = Vue.createApp({
             }
             
             if(!app.$data.pixi_loaded)
-                app.setupPixi();       
+                setTimeout(app.setupPixi,250);       
             else
-                app.setupPixiPlayers();
+                setTimeout(app.setupPixiPlayers,250);
         },
 
         /** take updated data from goods being moved by another player
@@ -167,7 +169,7 @@ var app = Vue.createApp({
             app.takeUpdateGoods(messageData);
         },
 
-         /** update good counts of players in list
+        /** update good counts of players in list
         *    @param messageData {json} session day in json format
         */
         takeUpdateGoods(messageData){
@@ -199,6 +201,13 @@ var app = Vue.createApp({
                     }
                 }
             }
+        },
+
+        /** update start status
+        *    @param messageData {json} session day in json format
+        */
+        takeUpdateStartExperiment(messageData){
+            app.$data.session.started = messageData.status.started;
         },
 
         //do nothing on when enter pressed for post

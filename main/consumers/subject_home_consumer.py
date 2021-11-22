@@ -11,6 +11,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 
 from main.consumers import SocketConsumerMixin
+from main.consumers import StaffSubjectUpdateMixin
 from main.consumers import get_session
 
 from main.forms import SessionPlayerMoveTwoForm
@@ -19,7 +20,7 @@ from main.forms import SessionPlayerMoveThreeForm
 from main.models import Session
 from main.models import SessionPlayerMove
 
-class SubjectHomeConsumer(SocketConsumerMixin):
+class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
     '''    
@@ -67,23 +68,6 @@ class SubjectHomeConsumer(SocketConsumerMixin):
                  "data": result,
                  'sender_channel_name': self.channel_name},
             )
-    
-    async def update_move_goods(self, event):
-        '''
-        update good count on all 
-        '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f'update_goods{self.channel_name}')
-
-        message_data = {}
-        message_data["status"] = event["data"]
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        if self.channel_name != event['sender_channel_name']:
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
 
 def take_get_session_subject(data):

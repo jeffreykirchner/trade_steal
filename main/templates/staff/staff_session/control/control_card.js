@@ -9,7 +9,14 @@ start_experiment(){
  * @param messageData {json}
 */
 takeStartExperiment(messageData){
-    app.takeGetSession(messageData);
+    //app.takeGetSession(messageData);
+},
+
+/** update start status
+*    @param messageData {json} session day in json format
+*/
+takeUpdateStartExperiment(messageData){
+    app.$data.session.started = messageData.status.started;
 },
 
 /**reset experiment, remove all bids, asks and trades

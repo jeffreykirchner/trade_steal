@@ -11,10 +11,6 @@
 </script>
 
 <style>
-    canvas {
-        
-        
-    }
 
     .container {
         display: grid;
@@ -27,7 +23,7 @@
         grid-column: 1 / 4;
         grid-row: 1;
         height: 600px;
-        background-color: orange; 
+        background-color: white; 
         width: 100%;
         z-index: 1;
         /* border-style: solid; */
@@ -37,7 +33,7 @@
         grid-column: 2;
         grid-row: 1;
         border-style: dotted;
-        background-color: chartreuse;
+        background-color: linen;
         height: 600px;
         z-index: 2;
     }
@@ -52,7 +48,7 @@
 
 
 <!-- cards -->
-<div class="row justify-content-lg-center mt-4" v-cloak>
+<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.started">
     <div class="col-md-9">
         {%include "subject/subject_home/graph_card.html"%}                
     </div>
@@ -60,5 +56,11 @@
         {%include "subject/subject_home/chat_card.html"%}             
     </div>
 </div>
+<div class="row justify-content-lg-center mt-4" v-show="!session.started">
+    <div class="col-auto fs-1">
+        Please Wait
+    </div>
+</div>
+
 
 {% endblock %}
