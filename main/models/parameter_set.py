@@ -219,3 +219,20 @@ class ParameterSet(models.Model):
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
         }
+    
+    def json_for_subject(self):
+        '''
+        return json object for subject
+        '''
+        return{
+            "id" : self.id,
+            "town_count" : self.town_count,
+            "good_count" : self.good_count,
+            
+            "period_length_production" : self.period_length_production,
+            "period_length_trade" : self.period_length_trade,
+
+            "break_period_frequency" : self.break_period_frequency,
+            "allow_stealing" : "True" if self.allow_stealing else "False",
+        }
+

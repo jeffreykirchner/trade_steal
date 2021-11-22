@@ -12,7 +12,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 
 from main.consumers import SocketConsumerMixin
-from main.consumers import get_session
 
 from main.forms import SessionForm
 from main.forms import ParameterSetForm
@@ -210,6 +209,22 @@ class StaffSessionParametersConsumer(SocketConsumerMixin):
 
 
 #local sync functions
+@sync_to_async
+def get_session(id_):
+    '''
+    return session with specified id
+    param: id_ {int} session id
+    '''
+    session = None
+    logger = logging.getLogger(__name__)
+
+    try:        
+        session = Session.objects.get(id=id_)
+        return session.json()
+    except ObjectDoesNotExist:
+        logger.warning(f"get_session session, not found: {id_}")
+        return {}
+        
 def take_update_parameterset(data):
     '''
     update parameterset

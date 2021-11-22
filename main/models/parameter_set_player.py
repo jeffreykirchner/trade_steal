@@ -122,3 +122,23 @@ class ParameterSetPlayer(models.Model):
 
             "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
         }
+    
+    def json_for_subject(self):
+        '''
+        return json object for subject screen
+        '''
+
+        return{
+            
+            "id_label" : self.id_label,
+            "location" : self.location,
+            "town" : self.town,
+
+            "good_one" : self.good_one.json(),
+            "good_two" : self.good_two.json(),
+            "good_three" : self.good_three.json(),
+
+            "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
+        }
+
+

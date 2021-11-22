@@ -2,21 +2,28 @@
 */
 start_experiment(){
     app.$data.working = true;
-    app.sendMessage("start_experiment", {"sessionID" : app.$data.sessionID});
+    app.sendMessage("start_experiment", {});
 },
 
 /** take start experiment response
  * @param messageData {json}
 */
 takeStartExperiment(messageData){
-    //app.takeGetSession(messageData);
+    app.takeGetSession(messageData);
 },
 
 /** update start status
 *    @param messageData {json} session day in json format
 */
 takeUpdateStartExperiment(messageData){
-    app.$data.session.started = messageData.status.started;
+    app.takeGetSession(messageData);
+},
+
+/** update start status
+*    @param messageData {json} session day in json format
+*/
+takeUpdateResetExperiment(messageData){
+    app.takeGetSession(messageData);
 },
 
 /**reset experiment, remove all bids, asks and trades
@@ -27,7 +34,7 @@ reset_experiment(){
     }
 
     app.$data.working = true;
-    app.sendMessage("reset_experiment", {"sessionID" : app.$data.sessionID});
+    app.sendMessage("reset_experiment", {});
 },
 
 /** take reset experiment response
@@ -54,7 +61,7 @@ next_period(){
     }
 
     app.$data.working = true;
-    app.sendMessage("next_period", {"sessionID" : app.$data.sessionID});
+    app.sendMessage("next_period", {});
 },
 
 /** take next period response

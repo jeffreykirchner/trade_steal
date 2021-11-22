@@ -31,7 +31,7 @@ class SubjectHomeView(View):
         '''
         handle get requests
         '''
-        session_subject = SessionPlayer.objects.get(uuid=kwargs['subject_uuid'])
+        session_subject = SessionPlayer.objects.get(player_key=kwargs['player_key'])
         session = session_subject.session
 
         session_player_move_two_form_ids=[]

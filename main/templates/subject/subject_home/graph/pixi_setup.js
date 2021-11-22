@@ -4,7 +4,11 @@
  * update the pixi players with new info
  */
  setupPixi(){    
+    app.resetPixiApp();
+    PIXI.Loader.shared.add("{% static 'sprite_sheet.json' %}").load(app.setupPixiSheets);
+},
 
+resetPixiApp(){
     let canvas = document.getElementById('sd_graph_id');
     //     ctx = canvas.getContext('2d');
 
@@ -37,9 +41,6 @@
     transfer_line.visible = false;
     app.$data.pixi_transfer_line = transfer_line;
     app.$data.pixi_app.stage.addChild(app.$data.pixi_transfer_line);
-
-    //sprite sheet
-    PIXI.Loader.shared.add("{% static 'sprite_sheet.json' %}").load(app.setupPixiSheets);
 },
 
 /** load pixi sprite sheets
@@ -77,7 +78,7 @@ setupPixiPlayers(){
     for(let i=0;i<session_players.length;i++)
     {
         if(session_players[i].parameter_set_player.town.toString() == app.$data.current_town){
-            app.setupSingleHoue(i);
+            app.setupSingleHouse(i);
         } 
     }
 
@@ -88,12 +89,14 @@ setupPixiPlayers(){
              app.setupSingleField(i);
         }
     }
+
+    app.setFieldHouseVisbility(app.$data.session.started);
 },
 
 /**setup house container for player
  * @param index : int
  */
-setupSingleHoue(index){
+setupSingleHouse(index){
     let container = new PIXI.Container();
 
     let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'house');

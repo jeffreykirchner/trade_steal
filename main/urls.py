@@ -23,7 +23,7 @@ urlpatterns = [
     path('staff-session/<int:pk>/', views.StaffSessionView.as_view(), name='staff_session'),
     path('staff-session/<int:pk>/parameters', views.StaffSessionParametersView.as_view(), name='staff_session_parameters'),
 
-    path('subject-home/<uuid:subject_uuid>', views.SubjectHomeView.as_view(), name='subject_home'),
+    path('subject-home/<uuid:player_key>', views.SubjectHomeView.as_view(), name='subject_home'),
     
     #txt
     path('robots.txt', views.RobotsTxt, name='robotsTxt'),

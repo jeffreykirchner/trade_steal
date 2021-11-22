@@ -12,7 +12,6 @@ from django.db import transaction
 
 from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
-from main.consumers import get_session
 
 from main.forms import SessionForm
 from main.forms import SessionPlayerMoveTwoForm
@@ -32,9 +31,14 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         logger = logging.getLogger(__name__) 
         logger.info(f"Get Session {event}")
 
+        self.connection_uuid = event["message_text"]["sessionKey"]
+        self.connection_type = "staff"
+
         #build response
         message_data = {}
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)       
+
+        self.session_id = message_data["session"]["id"]
 
         message = {}
         message["messageType"] = event["type"]
@@ -52,7 +56,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         #build response
         message_data = {}
-        message_data =  await sync_to_async(take_update_session_form)(event["message_text"])
+        message_data =  await sync_to_async(take_update_session_form)(self.session_id, event["message_text"])
 
         message = {}
         message["messageType"] = event["type"]
@@ -67,12 +71,11 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         #update subject count
         message_data = {}
-        message_data["status"] = await sync_to_async(take_start_experiment)(event["message_text"])
+        message_data["status"] = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
-
 
         #Send message to staff page
         if message_data["status"]["value"] == "fail":
@@ -82,8 +85,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             await self.channel_layer.group_send(
                     self.room_group_name,
                     {"type": "update_start_experiment",
-                    "data": message_data["status"],
-                    'sender_channel_name': self.channel_name},
+                    "sender_channel_name": self.channel_name},
                 )
     
     async def reset_experiment(self, event):
@@ -92,15 +94,23 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         #update subject count
         message_data = {}
-        message_data["status"] = await sync_to_async(take_reset_experiment)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["status"] = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
+        #message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        if message_data["status"]["value"] == "fail":
+            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        else:
+            #send message to client pages
+            await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_reset_experiment",
+                     "sender_channel_name": self.channel_name},
+                )
     
     async def next_period(self, event):
         '''
@@ -108,7 +118,44 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         #update subject count
         message_data = {}
-        message_data["data"] = await sync_to_async(take_next_period)(event["message_text"])
+        message_data["data"] = await sync_to_async(take_next_period)(self.session_id, event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    #consumer updates
+    async def update_start_experiment(self, event):
+        '''
+        start experiment on staff
+        '''
+        logger = logging.getLogger(__name__) 
+        logger.info(f'update_goods{self.channel_name}')
+
+        #get session json object
+        result = await sync_to_async(take_get_session)(self.connection_uuid)
+
+        message_data = {}
+        message_data["session"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        #if self.channel_name != event['sender_channel_name']:
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_reset_experiment(self, event):
+        '''
+        update reset experiment
+        '''
+        #update subject count
+        message_data = {}
+        #message_data["status"] = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
+        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
 
         message = {}
         message["messageType"] = event["type"]
@@ -119,7 +166,22 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
 
 #local sync functions    
-def take_update_session_form(data):
+def take_get_session(session_key):
+    '''
+    return session with specified id
+    param: session_key {uuid} session uuid
+    '''
+    session = None
+    logger = logging.getLogger(__name__)
+
+    try:        
+        session = Session.objects.get(session_key=session_key)
+        return session.json()
+    except ObjectDoesNotExist:
+        logger.warning(f"staff get_session session, not found: {session_key}")
+        return {}
+
+def take_update_session_form(session_id, data):
     '''
     take session form data and update session or return errors
     param: data {json} incoming form and session data
@@ -128,7 +190,7 @@ def take_update_session_form(data):
     logger = logging.getLogger(__name__)
     logger.info(f'take_update_session_form: {data}')
 
-    session_id = data["sessionID"]
+    #session_id = data["sessionID"]
     form_data = data["formData"]
 
     try:        
@@ -152,7 +214,7 @@ def take_update_session_form(data):
     logger.info("Invalid session form")
     return {"status":"fail", "errors":dict(form.errors.items())}
 
-def take_start_experiment(data):
+def take_start_experiment(session_id, data):
     '''
     start experiment
     '''   
@@ -160,7 +222,7 @@ def take_start_experiment(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Start Experiment: {data}")
 
-    session_id = data["sessionID"]
+    #session_id = data["sessionID"]
     session = Session.objects.get(id=session_id)
 
     if not session.started:
@@ -170,7 +232,7 @@ def take_start_experiment(data):
     
     return {"value" : value, "started" : session.started}
 
-def take_reset_experiment(data):
+def take_reset_experiment(session_id, data):
     '''
     reset experiment remove bids and asks
     '''   
@@ -178,7 +240,7 @@ def take_reset_experiment(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Reset Experiment: {data}")
 
-    session_id = data["sessionID"]
+    #session_id = data["sessionID"]
     session = Session.objects.get(id=session_id)
 
     if session.started:
@@ -189,11 +251,11 @@ def take_reset_experiment(data):
         session.save()
         session.session_periods.all().delete()  
 
-    status = "success"
+    value = "success"
     
-    return {"status" : status}
+    return {"value" : value, "started" : session.started}
 
-def take_next_period(data):
+def take_next_period(session_id, data):
     '''
     advance to next period in the experiment
     '''   
@@ -201,7 +263,7 @@ def take_next_period(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Advance to Next Period: {data}")
 
-    session_id = data["sessionID"]
+    #session_id = data["sessionID"]
     session = Session.objects.get(id=session_id)
 
     if session.current_period == session.parameter_set.get_number_of_periods():

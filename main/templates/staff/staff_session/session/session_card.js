@@ -3,8 +3,7 @@
 sendUpdateSession(){
     app.$data.cancelModal = false;
     app.$data.working = true;
-    app.sendMessage("update_session",{"formData" : $("#sessionForm").serializeArray(),
-                                      "sessionID" : app.$data.sessionID});
+    app.sendMessage("update_session",{"formData" : $("#sessionForm").serializeArray()});
 },
 
 /** take update session reponse

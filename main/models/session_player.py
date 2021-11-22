@@ -29,7 +29,7 @@ class SessionPlayer(models.Model):
     good_two_field = models.IntegerField(verbose_name='Good two in field', default=0)        #amount of good two currently in field
 
     player_number = models.IntegerField(verbose_name='Player number', default=0)               #player number, from 1 to N
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')   #login and channel key
+    player_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')   #login and channel key
 
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -131,15 +131,34 @@ class SessionPlayer(models.Model):
             "good_two_field" : self.good_two_field,
 
             "player_number" : self.player_number,
-            "uuid" : self.uuid,
+            "player_key" : self.player_key,
 
-            "login_link" : reverse('subject_home', kwargs={'subject_uuid': self.uuid}),
+            "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
 
             "parameter_set_player" : self.parameter_set_player.json(),
 
             "sprite" : None,
         }
     
+    def json_for_subject(self):
+        '''
+        json model for subject screen
+        '''
+        return{
+            "id" : self.id,  
+
+            "good_one_house" : self.good_one_house,
+            "good_two_house" : self.good_two_house,
+            "good_three_house" : self.good_three_house,
+
+            "good_one_field" : self.good_one_field,
+            "good_two_field" : self.good_two_field,
+
+            "player_number" : self.player_number,
+
+            "parameter_set_player" : self.parameter_set_player.json_for_subject(),
+        }
+
     def json_min(self):
         '''
         minimal json objcet of model

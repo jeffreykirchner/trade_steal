@@ -12,8 +12,7 @@ var app = Vue.createApp({
                     reconnecting : true,
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
-                    sessionID : {{session.id}},
-                    uuid : "{{session_subject.uuid}}",
+                    playerKey : "{{session_subject.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
                     session_player : {player_number : "---"},
@@ -102,6 +101,9 @@ var app = Vue.createApp({
                 case "update_start_experiment":
                     app.takeUpdateStartExperiment(messageData);
                     break;
+                case "update_reset_experiment":
+                    app.takeUpdateResetExperiment(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -132,9 +134,8 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-         sendGetSession(){
-            app.sendMessage("get_session",{"sessionID" : app.$data.sessionID,
-                                           "uuid" : app.$data.uuid});
+        sendGetSession(){
+            app.sendMessage("get_session",{"playerKey" : app.$data.playerKey});
         },
         
         /** take create new session
@@ -142,6 +143,8 @@ var app = Vue.createApp({
         */
         takeGetSession(messageData){
             
+            app.destroyPixiPlayers();
+
             app.$data.session = messageData.status.session;
             app.$data.session_player = messageData.status.session_player;
 
@@ -154,12 +157,16 @@ var app = Vue.createApp({
             else
             {
                 
-            }
+            }            
             
+
             if(!app.$data.pixi_loaded)
-                setTimeout(app.setupPixi,250);       
+                setTimeout(app.setupPixi, 250);
             else
-                setTimeout(app.setupPixiPlayers,250);
+            {
+                setTimeout(app.setupPixiPlayers, 250);
+            }
+                
         },
 
         /** take updated data from goods being moved by another player
@@ -194,7 +201,7 @@ var app = Vue.createApp({
                         player.houseContainer.destroy();
                         player.fieldContainer.destroy();
         
-                        app.setupSingleHoue(p);
+                        app.setupSingleHouse(p);
                         app.setupSingleField(p);
         
                         break;
@@ -207,7 +214,14 @@ var app = Vue.createApp({
         *    @param messageData {json} session day in json format
         */
         takeUpdateStartExperiment(messageData){
-            app.$data.session.started = messageData.status.started;
+            app.takeGetSession(messageData);
+        },
+
+        /** update reset status
+        *    @param messageData {json} session day in json format
+        */
+        takeUpdateResetExperiment(messageData){
+            app.takeGetSession(messageData);
         },
 
         //do nothing on when enter pressed for post

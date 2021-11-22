@@ -48,17 +48,12 @@
 
 
 <!-- cards -->
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.started">
+<div class="row justify-content-lg-center mt-4" v-cloak>
     <div class="col-md-9">
         {%include "subject/subject_home/graph_card.html"%}                
     </div>
     <div class="col-md-3">
         {%include "subject/subject_home/chat_card.html"%}             
-    </div>
-</div>
-<div class="row justify-content-lg-center mt-4" v-show="!session.started">
-    <div class="col-auto fs-1">
-        Please Wait
     </div>
 </div>
 

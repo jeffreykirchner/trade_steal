@@ -36,7 +36,7 @@ takeUpdateGoods(messageData){
                 player.houseContainer.destroy();
                 player.fieldContainer.destroy();
 
-                app.setupSingleHoue(p);
+                app.setupSingleHouse(p);
                 app.setupSingleField(p);
 
                 break;

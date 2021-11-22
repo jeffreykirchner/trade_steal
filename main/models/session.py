@@ -117,8 +117,19 @@ class Session(models.Model):
             "session_periods":[i.json() for i in self.session_periods.all()],
             "session_players":[i.json() for i in self.session_players.all()]
         }
-
-
+    
+    def json_for_subject(self):
+        '''
+        json object for subject screen
+        '''
+        return{
+            "started":self.started,
+            "current_period":self.current_period,
+            "finished":self.finished,
+            "parameter_set":self.parameter_set.json_for_subject(),
+            "session_players":[i.json_for_subject() for i in self.session_players.all()]
+        }
+       
 @receiver(post_delete, sender=Session)
 def post_delete_parameterset(sender, instance, *args, **kwargs):
     '''

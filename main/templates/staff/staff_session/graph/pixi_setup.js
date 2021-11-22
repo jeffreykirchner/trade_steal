@@ -77,7 +77,7 @@ setupPixiPlayers(){
     for(let i=0;i<session_players.length;i++)
     {
         if(session_players[i].parameter_set_player.town.toString() == app.$data.current_town){
-            app.setupSingleHoue(i);
+            app.setupSingleHouse(i);
         } 
     }
 
@@ -93,7 +93,7 @@ setupPixiPlayers(){
 /**setup house container for player
  * @param index : int
  */
-setupSingleHoue(index){
+setupSingleHouse(index){
     let container = new PIXI.Container();
 
     let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'house');

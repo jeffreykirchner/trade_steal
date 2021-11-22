@@ -13,6 +13,7 @@ var app = Vue.createApp({
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
                     sessionID : {{session.id}},
+                    sessionKey : "{{session.session_key}}",
                     session : {
                         current_period : 1,
                         started : false,
@@ -111,6 +112,9 @@ var app = Vue.createApp({
                 case "update_move_goods":
                     app.takeUpdateGoods(messageData);
                     break;  
+                case "update_reset_experiment":
+                    app.takeUpdateResetExperiment(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -143,7 +147,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         sendGetSession(){
-            app.sendMessage("get_session",{"sessionID" : app.$data.sessionID});
+            app.sendMessage("get_session",{"sessionKey" : app.$data.sessionKey});
         },
 
         /** take create new session
@@ -163,9 +167,9 @@ var app = Vue.createApp({
             }
             
             if(!app.$data.pixi_loaded)
-                app.setupPixi();       
+                setTimeout(app.setupPixi, 250);       
             else
-                app.setupPixiPlayers();
+                setTimeout(app.setupPixiPlayers, 250);
         },
 
         /**update text of move on button based on current state

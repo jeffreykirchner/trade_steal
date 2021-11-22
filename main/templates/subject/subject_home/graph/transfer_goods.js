@@ -80,10 +80,7 @@ sendMoveGoods(){
     }
 
     app.$data.working = true;
-    app.sendMessage("move_goods", {"sessionID" : app.$data.sessionID,
-                                   "uuid" : app.$data.uuid,
-
-                                   "sourceType" : app.$data.pixi_transfer_source.name.type.toString(),
+    app.sendMessage("move_goods", {"sourceType" : app.$data.pixi_transfer_source.name.type.toString(),
                                    "sourceID" : app.$data.pixi_transfer_source.name.user_id.toString(),
 
                                    "targetType" : app.$data.pixi_transfer_target.name.type.toString(),
