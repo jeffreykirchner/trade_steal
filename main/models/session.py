@@ -39,7 +39,7 @@ class Session(models.Model):
     current_period = models.IntegerField(default=0)                              #current period of the session
     finished = models.BooleanField(default=False)                                #true after all session periods are complete
 
-    shared = models.BooleanField(default=False)                                  #shared models can be imported by other users
+    shared = models.BooleanField(default=False)                                  #shared session parameter sets can be imported by other users
     locked = models.BooleanField(default=False)                                  #locked models cannot be deleted
 
     soft_delete =  models.BooleanField(default=False)                            #hide session if true
@@ -71,6 +71,7 @@ class Session(models.Model):
         '''
 
         self.started = True
+        self.finished = False
         self.current_period = 1
         self.start_date = datetime.now()
 
@@ -90,6 +91,9 @@ class Session(models.Model):
         self.started = False
         self.finished = False
         self.current_period = 1
+
+        for p in self.session_players.all():
+            p.reset()
 
         self.save()
         self.session_periods.all().delete()

@@ -17,17 +17,17 @@ class SessionPlayerMove(models.Model):
     '''
     session player move model
     '''
-    session_period = models.ForeignKey(SessionPeriod, on_delete=models.CASCADE, related_name="session_player_move_a")
+    session_period = models.ForeignKey(SessionPeriod, on_delete=models.CASCADE, related_name="session_player_moves_a")
 
-    session_player_source = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_move_b")
-    session_player_target = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_move_c")
+    session_player_source = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_moves_b")
+    session_player_target = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_moves_c")
 
     good_one_amount = models.IntegerField(verbose_name='Good one amount')        #amount of good one to be moved
     good_two_amount = models.IntegerField(verbose_name='Good two amount')        #amount of good two to be moved
     good_three_amount = models.IntegerField(verbose_name='Good three amount')        #amount of good two to be moved
     
-    source_container = models.CharField(max_length=100, choices=ContainerTypes.choices)         #source container
-    target_container = models.CharField(max_length=100, choices=ContainerTypes.choices)         #target container
+    source_container = models.CharField(max_length=100, choices=ContainerTypes.choices, verbose_name='Source Container')         #source container
+    target_container = models.CharField(max_length=100, choices=ContainerTypes.choices, verbose_name='Target Container')         #target container
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -44,8 +44,8 @@ class SessionPlayerMove(models.Model):
             models.CheckConstraint(check=Q(good_one_amount__gte=0), name='good_one_amount__gte_0'),
             models.CheckConstraint(check=Q(good_two_amount__gte=0), name='good_two_amount__gte_0'),
             models.CheckConstraint(check=Q(good_three_amount__gte=0), name='good_three_amount__gte_0'),
-            models.CheckConstraint(check=~Q(session_player_source=F('session_player_target')) &
-                                         ~Q(source_container=F('target_container')), name='source_equals_target'),
+            models.CheckConstraint(check=~Q(Q(session_player_source=F('session_player_target')) &
+                                            Q(source_container=F('target_container'))), name='source_equals_target'),
         ]
 
     #return json object of class

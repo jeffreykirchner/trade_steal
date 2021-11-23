@@ -21,6 +21,8 @@ from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerMove
 
+from main.globals import ContainerTypes
+
 class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
@@ -200,6 +202,7 @@ def take_move_goods(session_id, player_key, data):
 
                 good_one_amount = form.cleaned_data[f"transfer_good_one_amount_{form_type}"]
                 good_two_amount = form.cleaned_data[f"transfer_good_two_amount_{form_type}"]
+                good_three_amount = 0
 
                 #check that target can accept goods
                 if good_one_amount > 0:
@@ -266,8 +269,27 @@ def take_move_goods(session_id, player_key, data):
                     target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three)
                 
                 #record move
-                # session_player_move = SessionPlayerMove()
-                # session_player_move.save()
+                session_player_move = SessionPlayerMove()
+
+                session_player_move.session_period = session.get_current_session_period()
+                session_player_move.session_player_source = source_session_player
+                session_player_move.session_player_target = target_session_player
+
+                session_player_move.good_one_amount = good_one_amount   
+                session_player_move.good_two_amount = good_two_amount
+                session_player_move.good_three_amount = good_three_amount        
+
+                if source_type == "house":
+                    session_player_move.source_container = ContainerTypes.HOUSE
+                else:
+                    session_player_move.source_container = ContainerTypes.FIELD
+                
+                if target_type == "house":
+                    session_player_move.target_container = ContainerTypes.HOUSE
+                else:
+                    session_player_move.target_container = ContainerTypes.FIELD
+
+                session_player_move.save()
                 
         except ObjectDoesNotExist:
             logger.warning(f"take_move_goods session, not found ID: {session_id}")

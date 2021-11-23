@@ -31,8 +31,8 @@ class SessionPlayer(models.Model):
     player_number = models.IntegerField(verbose_name='Player number', default=0)               #player number, from 1 to N
     player_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')   #login and channel key
 
-    timestamp = models.DateTimeField(auto_now_add= True)
-    updated= models.DateTimeField(auto_now= True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.id}"
@@ -114,6 +114,11 @@ class SessionPlayer(models.Model):
         else:
            return {"status" : "success", "good_number" : good_number}
 
+    def reset(self):
+        '''
+        reset player to starting state
+        '''
+        self.session_player_moves_b.all().delete()
 
     def json(self):
         '''

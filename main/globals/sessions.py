@@ -13,3 +13,10 @@ class ContainerTypes(models.TextChoices):
     '''
     HOUSE = 'House', _('House')
     FIELD = 'Field', _('Field')
+
+class ChatTypes(models.TextChoices):
+    '''
+    subject types
+    '''
+    ALL = 'All', _('All')
+    INDIVIDUAL = 'Individual', _('Individual')
