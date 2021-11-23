@@ -74,7 +74,25 @@ class Session(models.Model):
         self.current_period = 1
         self.start_date = datetime.now()
 
+        session_periods = []
+
+        for i in range(self.parameter_set.period_count):
+            session_periods.append(main.models.SessionPeriod(session=self, period_number=i+1))
+        
+        main.models.SessionPeriod.objects.bulk_create(session_periods)
+
         self.save()
+    
+    def reset_experiment(self):
+        '''
+        reset the experiment
+        '''
+        self.started = False
+        self.finished = False
+        self.current_period = 1
+
+        self.save()
+        self.session_periods.all().delete()
     
     def get_current_session_period(self):
         '''

@@ -44,6 +44,6 @@ class SessionPeriod(models.Model):
 
         return{
             "id" : self.id,
-            "current_trade_number" : self.current_trade_number,
+            "period_number" : self.period_number,
         }
         

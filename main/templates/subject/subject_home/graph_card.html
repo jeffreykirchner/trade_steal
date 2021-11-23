@@ -23,7 +23,12 @@
                     <canvas class="one" key="sd_graph" id="sd_graph_id" style="border-style: solid;border-width: 1px;"></canvas>
                 </div>               
                 <div class="two">
-                    <span v-show="!session.started">Please Wait</span> 
+                    <div class="row justify-content-center mt-2">
+                        <div class="col-md fs-1 text-center" >
+                            <span class="align-middle" v-show="!session.started">Please Wait</span>
+                        </div>
+                    </div>
+                     
                 </div>
                 </div>
             </div>

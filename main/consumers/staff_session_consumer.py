@@ -244,12 +244,7 @@ def take_reset_experiment(session_id, data):
     session = Session.objects.get(id=session_id)
 
     if session.started:
-        session.started = False
-        session.finished = False
-        session.current_period = 1
-
-        session.save()
-        session.session_periods.all().delete()  
+        session.reset_experiment()  
 
     value = "success"
     

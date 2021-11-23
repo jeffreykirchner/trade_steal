@@ -29,7 +29,7 @@ takeUpdateResetExperiment(messageData){
 /**reset experiment, remove all bids, asks and trades
 */
 reset_experiment(){
-    if (!confirm('Reset session? All bids and offers will be removed.')) {
+    if (!confirm('Reset session? All activity will be removed.')) {
         return;
     }
 

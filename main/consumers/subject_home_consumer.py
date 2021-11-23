@@ -175,6 +175,10 @@ def take_move_goods(session_id, player_key, data):
         else:
             form = SessionPlayerMoveTwoForm(form_data_dict)
             form_type = "2g"
+
+        if not session.started:
+            return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session has not started."]},
+                    "message" : "Move Error"}
         
     except KeyError:
             logger.warning(f"take_move_goods session, setup form: {session_id}")
@@ -192,7 +196,7 @@ def take_move_goods(session_id, player_key, data):
                 #check that stealing is allowed
                 if not session.parameter_set.allow_stealing and source_session_player != session_player:
                     return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Invalid source."]},
-                                "message" : "Move Error"}
+                            "message" : "Move Error"}
 
                 good_one_amount = form.cleaned_data[f"transfer_good_one_amount_{form_type}"]
                 good_two_amount = form.cleaned_data[f"transfer_good_two_amount_{form_type}"]
