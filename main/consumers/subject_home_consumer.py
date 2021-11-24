@@ -54,7 +54,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
     async def move_goods(self, event):
         '''
-        advance to next period in experiment
+        move goods between two containers
         '''
         #update subject count
         result = await sync_to_async(take_move_goods)(self.session_id, self.connection_uuid, event["message_text"])
@@ -74,6 +74,34 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_move_goods",
+                 "data": result,
+                 'sender_channel_name': self.channel_name},
+            )
+        
+    async def chat(self, event):
+        '''
+        take chat from client
+        '''
+        #update subject count
+        result = await sync_to_async(take_chat)(self.session_id, self.connection_uuid, event["message_text"])
+
+        message_data = {}
+        message_data["status"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        # Send reply to sending channel
+        
+
+        #if success send to all connected clients
+        if result["value"] == "fail":
+            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        elif result["value"] == "success":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "update_chat",
                  "data": result,
                  'sender_channel_name': self.channel_name},
             )
@@ -117,7 +145,23 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def update_chat(self, event):
+        '''
+        send chat to clients, if clients can view it
+        '''
+        result = event["data"]
 
+        message_data = {}
+        message_data["status"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+
+#local sync functions  
 def take_get_session_subject(player_key):
     '''
     get session info for subject
@@ -138,15 +182,14 @@ def take_get_session_id(player_key):
     session_player = SessionPlayer.objects.get(player_key=player_key)
 
     return session_player.session.id
-
-#local sync functions    
+  
 def take_move_goods(session_id, player_key, data):
     '''
     move goods between locations (house or field)
     '''
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Move goods: {data}")
+    logger.info(f"Move goods: {session_id} {player_key} {data}")
 
     #session_id = data["sessionID"]
     #uuid = data["uuid"]
@@ -303,3 +346,17 @@ def take_move_goods(session_id, player_key, data):
                                 
     logger.info("Invalid session form")
     return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
+
+def take_chat(session_id, player_key, data):
+    '''
+    take chat from client
+    sesson_id : int : id of session
+    player_key : uuid : uuid of session player
+    data : json : incoming json data
+    '''
+    logger = logging.getLogger(__name__) 
+    logger.info(f"take chat: {session_id} {player_key} {data}")
+
+    result = {}
+
+    return {"value" : "success", "result" : result}

@@ -67,6 +67,10 @@ var app = Vue.createApp({
                     transfer_good_three_amount : 0, //good three amount to be transfered
 
                     current_town : "0",
+
+                    chat_text : "",
+                    chat_recipients : "all",
+                    chat_button_label : "Everyone",
                 }},
     methods: {
 
@@ -103,6 +107,12 @@ var app = Vue.createApp({
                     break;
                 case "update_reset_experiment":
                     app.takeUpdateResetExperiment(messageData);
+                    break;
+                case "chat":
+                    app.takeChat(messageData);
+                    break;
+                case "update_chat":
+                    app.takeUpdateChat(messageData);
                     break;
             }
 
@@ -157,8 +167,7 @@ var app = Vue.createApp({
             else
             {
                 
-            }            
-            
+            }                       
 
             if(!app.$data.pixi_loaded)
                 setTimeout(app.setupPixi, 250);
@@ -167,47 +176,6 @@ var app = Vue.createApp({
                 setTimeout(app.setupPixiPlayers, 250);
             }
                 
-        },
-
-        /** take updated data from goods being moved by another player
-        *    @param messageData {json} session day in json format
-        */
-        takeUpdateMoveGoods(messageData){
-            app.takeUpdateGoods(messageData);
-        },
-
-        /** update good counts of players in list
-        *    @param messageData {json} session day in json format
-        */
-        takeUpdateGoods(messageData){
-            results = messageData.status.result;
-        
-            for(let r=0; r<results.length; r++){
-                player_id = results[r].id;
-        
-                for(let p=0; p<app.$data.session.session_players.length; p++)
-                {
-                    player = app.$data.session.session_players[p];
-        
-                    if(player.id == player_id)
-                    {
-                        player.good_one_house = results[r].good_one_house;
-                        player.good_two_house = results[r].good_two_house;
-                        player.good_three_house = results[r].good_three_house;
-        
-                        player.good_one_field = results[r].good_one_field;
-                        player.good_two_field = results[r].good_two_field;               
-        
-                        player.houseContainer.destroy();
-                        player.fieldContainer.destroy();
-        
-                        app.setupSingleHouse(p);
-                        app.setupSingleField(p);
-        
-                        break;
-                    }
-                }
-            }
         },
 
         /** update start status
