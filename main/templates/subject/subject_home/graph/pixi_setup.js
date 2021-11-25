@@ -72,7 +72,9 @@ setupPixiPlayers(){
 
     if(!app.$data.pixi_loaded) return;
 
-    session_players = app.$data.session.session_players;
+    let session_players = app.$data.session.session_players;
+    let session = app.$data.session;
+    let session_player = app.$data.session_player;
 
     //setup pixi houses
     for(let i=0;i<session_players.length;i++)
@@ -99,11 +101,12 @@ setupPixiPlayers(){
 setupSingleHouse(index){
     let container = new PIXI.Container();
 
-    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'house');
-
+    let session_players = app.$data.session.session_players;
     let session_player = session_players[index];
     let parameter_set_player = session_player.parameter_set_player;
     let parameter_set = app.$data.session.parameter_set;
+
+    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'house');
 
     let y_location_good_one = 0;
     let y_location_good_two = 0;
@@ -127,7 +130,7 @@ setupSingleHouse(index){
     sprite.y = 0;
     sprite.name = "house_texture"
 
-    if(index == app.$data.session_player.player_number-1){
+    if(session_players[index].player_number == app.$data.session_player.player_number){
         sprite.tint = app.$data.owner_color;
     }
     else{
@@ -244,18 +247,19 @@ createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
 setupSingleField(index){
     let container = new PIXI.Container();
 
-    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'field');
-
+    let session_players = app.$data.session.session_players;
     let session_player = session_players[index];
     let parameter_set_player = session_player.parameter_set_player;
     let parameter_set = app.$data.session.parameter_set;
+
+    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'field');
 
     //house texture
     let sprite = PIXI.Sprite.from(app.$data.house_sheet.textures["Field0000"]);
 
     sprite.x = 0;
     sprite.y = 0;
-    if(index == app.$data.session_player.player_number-1){
+    if(session_players[index].player_number == app.$data.session_player.player_number){
         sprite.tint = app.$data.owner_color;
     }
     else{

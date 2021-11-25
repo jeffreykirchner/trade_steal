@@ -119,6 +119,28 @@ class SessionPlayer(models.Model):
         reset player to starting state
         '''
         self.session_player_moves_b.all().delete()
+        self.session_player_chats_b.all().delete()
+
+    def get_current_group_list(self):
+        '''
+        return list of session_players in group
+        '''
+
+        parameter_set_player_group_all = self.parameter_set_player.parameter_set.get_group(self.get_current_group_number(), self.session.current_period)
+        
+        return self.session.session_players.filter(parameter_set_player__in=parameter_set_player_group_all)
+
+    def get_current_group_number(self):
+        '''
+        return current group number
+        '''
+        return self.parameter_set_player.parameter_set_player_groups.get(period=self.session.current_period).group_number
+    
+    def get_current_town_number(self):
+        '''
+        return current town number
+        '''
+        return self.parameter_set_player.town
 
     def json(self):
         '''
@@ -141,6 +163,8 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
 
             "parameter_set_player" : self.parameter_set_player.json(),
+
+            "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)],
 
             "sprite" : None,
         }

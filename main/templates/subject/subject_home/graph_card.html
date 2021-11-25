@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mt-2">
+        <div class="row justify-content-center mt-2" v-show="session.started">
             <div class="col-md-4 text-center">       
                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group" id="chat_button_group">
                     <input type="radio"
@@ -44,23 +44,24 @@
                         autocomplete="off" 
                         v-on:click="updateChatRecipients('all', 'Everyone')" 
                         checked>
-                    <label class="btn btn-outline-primary" for="btnradioall">Everyone</label>
+                    <label class="btn btn-outline-secondary" for="btnradioall">Everyone</label>
                     
                     <div v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                        
                         <input type="radio"
                             class="btn-check" 
                             name="btnradio" 
                             v-bind:id="'btnradio' + index" 
                             autocomplete="off" 
                             v-on:click="updateChatRecipients(p.id, 'Person ' + p.parameter_set_player.id_label)">
-                        <label class="btn btn-outline-primary" v-bind:for="'btnradio' + index">[[p.parameter_set_player.id_label]]</label>
+                        <label class="btn btn-outline-secondary" v-bind:for="'btnradio' + index">[[p.parameter_set_player.id_label]]</label>
                     </div>
 
                 </div> 
             </div>
         </div>
 
-        <div class="row justify-content-center mt-2">
+        <div class="row justify-content-center mt-2" v-show="session.started">
             <div class="col-md-4">                 
                 <div class="input-group">
                     <input type="text" 

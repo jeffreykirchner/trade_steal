@@ -179,6 +179,21 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def update_move_goods(self, event):
+        '''
+        update good count staff
+        '''
+        logger = logging.getLogger(__name__) 
+        logger.info(f'update_goods{self.channel_name}')
+
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
 #local sync functions    
 def take_get_session(session_key):

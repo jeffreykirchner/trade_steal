@@ -140,16 +140,19 @@ class Session(models.Model):
             "session_players":[i.json() for i in self.session_players.all()]
         }
     
-    def json_for_subject(self):
+    def json_for_subject(self, session_player):
         '''
         json object for subject screen
+        session_player : SessionPlayer() : session player requesting session object
         '''
+        
         return{
             "started":self.started,
             "current_period":self.current_period,
             "finished":self.finished,
             "parameter_set":self.parameter_set.json_for_subject(),
-            "session_players":[i.json_for_subject() for i in self.session_players.all()]
+
+            "session_players":[i.json_for_subject() for i in session_player.get_current_group_list()]
         }
        
 @receiver(post_delete, sender=Session)

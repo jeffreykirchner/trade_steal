@@ -202,6 +202,19 @@ class ParameterSet(models.Model):
         for p in self.parameter_set_players.all():
             p.copy_group_foward(period_number)
 
+    def get_group(self, group_number, period_number):
+        '''
+        return the group for the specified period and group number
+        group_number : int
+        period_number : int
+        '''
+        
+        return main.models.ParameterSetPlayerGroup.objects.filter(period=period_number) \
+                                                            .filter(group_number=group_number) \
+                                                            .filter(parameter_set_player__in=self.parameter_set_players.all()) \
+                                                            .values('parameter_set_player')
+       # return [p.parameter_set_player for p in parameter_set_player_group]
+
     def json(self):
         '''
         return json object of model
