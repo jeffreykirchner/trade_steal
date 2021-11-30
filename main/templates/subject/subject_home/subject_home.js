@@ -45,7 +45,7 @@ var app = Vue.createApp({
                     session_player_move_three_form_ids: {{session_player_move_three_form_ids|safe}},
 
                     pixi_loaded : false,             //true when pixi is loaded
-                    pixi_transfer_line : null,       //transfer line between two pixi containers  
+                    pixi_transfer_line : {visible : false},       //transfer line between two pixi containers  
                     pixi_transfer_source : null,     //source of transfer
                     pixi_transfer_target : null,     //target of transfer
                     pixi_modal_open : false,         //true whe pixi modal is open
@@ -71,7 +71,9 @@ var app = Vue.createApp({
 
                     chat_text : "",
                     chat_recipients : "all",
+                    chat_recipients_index : 0,
                     chat_button_label : "Everyone",
+                    chat_list_to_display : [],                //list of chats to display on screen
                 }},
     methods: {
 
@@ -176,7 +178,8 @@ var app = Vue.createApp({
             {
                 setTimeout(app.setupPixiPlayers, 250);
             }
-                
+            
+            app.updateChatDisplay();
         },
 
         /** update start status

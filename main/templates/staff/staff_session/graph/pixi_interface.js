@@ -109,7 +109,7 @@ removeContainerTarget(container, event){
  *pointer up on stage
  */
  handleStagePointerUp(){
-    console.log('Stage up: ' + event);
+    //console.log('Stage up: ' + event);
     app.turnOffHighlights();
 },
 

@@ -152,7 +152,7 @@ class Session(models.Model):
             "finished":self.finished,
             "parameter_set":self.parameter_set.json_for_subject(),
 
-            "session_players":[i.json_for_subject() for i in session_player.get_current_group_list()]
+            "session_players":[i.json_for_subject(session_player) for i in session_player.get_current_group_list()]
         }
        
 @receiver(post_delete, sender=Session)

@@ -17,6 +17,8 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
         grid-auto-rows: minmax(100px, auto);
+        align-content: end;
+        row-gap: 20px;
     }
 
     .one {
@@ -32,10 +34,14 @@
     .two {
         grid-column: 2;
         grid-row: 1;
-        border-style: dotted;
-        background-color: linen;
-        height: 600px;
+        height: 580px;
         z-index: 2;
+        width: 100%;
+        word-breaK:break-word;
+        overflow-y:scroll;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background-color: ghostwhite;
     }
    
 </style>

@@ -35,7 +35,7 @@ class SessionPlayerChat(models.Model):
         
         verbose_name = 'Session Player Chat'
         verbose_name_plural = 'Session Player Chats'
-        ordering = ['-timestamp']
+        ordering = ['timestamp']
         constraints = [
              models.CheckConstraint(check=~Q(text=''), name='text_not_empty'),
         ]
@@ -47,7 +47,8 @@ class SessionPlayerChat(models.Model):
 
         return{
             "id" : self.id,    
-            "sender" : self.session_player.parameter_set_player.id_label,    
+            "sender_label" : self.session_player.parameter_set_player.id_label,  
+            "sender_id" : self.session_player.id,    
             "text" : self.text,
         }
 

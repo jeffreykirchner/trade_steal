@@ -19,17 +19,34 @@
             <div class="col">
              
                 <div class="container">
-                <div class="one">
-                    <canvas class="one" key="sd_graph" id="sd_graph_id" style="border-style: solid;border-width: 1px;"></canvas>
-                </div>               
-                <div class="two">
-                    <div class="row justify-content-center mt-2">
-                        <div class="col-md fs-1 text-center" >
-                            <span class="align-middle" v-show="!session.started">Please Wait</span>
+                    <div class="one">
+                        <canvas class="one" key="sd_graph" id="sd_graph_id" style="border-style: solid;border-width: 1px;"></canvas>
+                    </div>               
+                    <div class="two border" v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]">
+                        <div class="row justify-content-center mt-2" v-show="!session.started">
+                            <div class="col-md fs-1 text-center" >
+                                <span class="align-middle" >Please Wait</span>  
+                            </div>
                         </div>
+
+                        <div class="d-flex flex-column">
+                            <div class="p-1" v-for="(c, index) in chat_list_to_display" v-bind:key="c.id">
+
+                                <div v-if="c.sender_id==session_player.id" 
+                                     class="text-end ps-5 pe-2" 
+                                     v-bind:style= "[(c.text=='|') ? {'opacity': '0'}:{}]"
+                                     v-bind:id="'chat_id_' + c.id">
+                                    [[c.text]]
+                                </div>
+
+                                <div v-else class="pe-5 ps-2" v-bind:id="'chat_id_' + c.id">
+                                    <span class="fw-bold">[[c.sender_label]]:</span> [[c.text]]
+                                </div>
+                            </div>
+                        </div>
+                          
+                        
                     </div>
-                     
-                </div>
                 </div>
             </div>
         </div>
@@ -42,7 +59,7 @@
                         name="btnradio" 
                         id="btnradioall" 
                         autocomplete="off" 
-                        v-on:click="updateChatRecipients('all', 'Everyone')" 
+                        v-on:click="updateChatRecipients('all', 'Everyone', -1)" 
                         checked>
                     <label class="btn btn-outline-secondary" for="btnradioall">Everyone</label>
                     
@@ -53,8 +70,11 @@
                             name="btnradio" 
                             v-bind:id="'btnradio' + index" 
                             autocomplete="off" 
-                            v-on:click="updateChatRecipients(p.id, 'Person ' + p.parameter_set_player.id_label)">
-                        <label class="btn btn-outline-secondary" v-bind:for="'btnradio' + index">[[p.parameter_set_player.id_label]]</label>
+                            v-if="p.id != session_player.id"
+                            v-on:click="updateChatRecipients(p.id, 'Person ' + p.parameter_set_player.id_label, index)">
+                        <label class="btn btn-outline-secondary"
+                               v-if="p.id != session_player.id"
+                               v-bind:for="'btnradio' + index">[[p.parameter_set_player.id_label]]</label>
                     </div>
 
                 </div> 
@@ -69,10 +89,12 @@
                            placeholder="Chat Text" 
                            v-model="chat_text"
                            aria-label="Chat Text" 
+                           v-on:keyup.enter="sendChat()"
                            aria-describedby="button-addon2">
                     <button class="btn btn-outline-primary"
                             type="button" 
                             id="button-addon2" 
+                            v-bind:disabled="reconnecting || working || session.started===false || session.finished"
                             v-on:click="sendChat()"> @ [[chat_button_label]]</button>
                   </div>
             </div>

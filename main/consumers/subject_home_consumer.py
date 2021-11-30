@@ -30,8 +30,9 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     websocket session list
     '''    
 
-    group_number = 0      #group number player subject is in
-    town_number = 0       #town number subject is in 
+    group_number = 0        #group number player subject is in
+    town_number = 0         #town number subject is in 
+    session_player_id = 0   #session player id number
 
     async def get_session(self, event):
         '''
@@ -46,7 +47,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.update_local_info(event)
 
-        result = await sync_to_async(take_get_session_subject)(self.connection_uuid)
+        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
 
         #build response
         message_data = {"status":{}}
@@ -104,9 +105,10 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         
 
         #if success send to all connected clients
-        if result["value"] == "fail":
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-        elif result["value"] == "success":
+        #if result["value"] == "fail":
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        if result["value"] == "success":
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_chat",
@@ -123,7 +125,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         #logger.info(f'update start subjects {self.channel_name}')
 
         #get session json object
-        result = await sync_to_async(take_get_session_subject)(self.connection_uuid)
+        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
 
         message_data = {}
         message_data["status"] = result
@@ -143,7 +145,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         #logger.info(f'update start subjects {self.channel_name}')
 
         #get session json object
-        result = await sync_to_async(take_get_session_subject)(self.connection_uuid)
+        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
 
         message_data = {}
         message_data["status"] = result
@@ -170,6 +172,9 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         if self.group_number != event['sender_group']:
             return
 
+        if self.channel_name == event['sender_channel_name']:
+            return
+
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     async def update_local_info(self, event):
@@ -183,6 +188,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         self.group_number = result["group_number"]
         self.town_number = result["town_number"]
+        self.session_player_id = result["session_player_id"]
     
     async def update_move_goods(self, event):
         '''
@@ -207,7 +213,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
 #local sync functions  
-def take_get_session_subject(player_key):
+def take_get_session_subject(session_player_id):
     '''
     get session info for subject
     '''
@@ -215,7 +221,7 @@ def take_get_session_subject(player_key):
     #uuid = data["uuid"]
 
     #session = Session.objects.get(id=session_id)
-    session_player = SessionPlayer.objects.get(player_key=player_key)
+    session_player = SessionPlayer.objects.get(id=session_player_id)
 
     return {"session" : session_player.session.json_for_subject(session_player), 
             "session_player" : session_player.json() }
@@ -406,6 +412,7 @@ def take_chat(session_id, player_key, data):
     chat_text = data["text"]
 
     result = {}
+    #result["recipients"] = []
 
     session = Session.objects.get(id=session_id)
     session_player = session.session_players.get(player_key=player_key)
@@ -420,6 +427,9 @@ def take_chat(session_id, player_key, data):
     else:
         session_player_chat.chat_type = ChatTypes.INDIVIDUAL
 
+    result["chat_type"] = session_player_chat.chat_type
+    result["recipients"] = []
+
     session_player_chat.text = chat_text
 
     session_player_chat.save()
@@ -427,13 +437,23 @@ def take_chat(session_id, player_key, data):
     session_player_group_list = session_player.get_current_group_list()
     if recipients == "all":
         session_player_chat.session_player_recipients.add(*session_player_group_list)
+
+        result["recipients"] = [i.id for i in session_player_group_list]
     else:
         sesson_player_target = SessionPlayer.objects.get(id=recipients)
         if sesson_player_target in session_player_group_list:
             session_player_chat.session_player_recipients.add(sesson_player_target)
         else:
             session_player_chat.delete()
+            logger.warning(f"take chat: chat at none group member : {session_id} {player_key} {data}")
             return {"value" : "fail", "result" : {}}
+
+        result["sesson_player_target"] = sesson_player_target.id
+
+        result["recipients"].append(session_player.id)
+        result["recipients"].append(sesson_player_target.id)
+    
+    result["chat"] = session_player_chat.json_for_subject()
 
     session_player_chat.save()
 
@@ -447,5 +467,6 @@ def take_update_local_info(session_id, player_key, data):
     session_player = SessionPlayer.objects.get(player_key=player_key)
 
     return {"group_number" : session_player.get_current_group_number(), 
+            "session_player_id" : session_player.id,
             "town_number" : session_player.get_current_town_number() }
      

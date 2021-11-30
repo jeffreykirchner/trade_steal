@@ -8,6 +8,7 @@ import uuid
 from django.db import models
 from django.forms.utils import to_current_timezone
 from django.urls import reverse
+from django.db.models import Q
 
 from main.models import Session, parameter_set_player
 from main.models import ParameterSetPlayer
@@ -165,14 +166,14 @@ class SessionPlayer(models.Model):
             "parameter_set_player" : self.parameter_set_player.json(),
 
             "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)],
-
-            "sprite" : None,
         }
     
-    def json_for_subject(self):
+    def json_for_subject(self, session_player):
         '''
         json model for subject screen
+        session_player_id : int : id number of session player for induvidual chat
         '''
+
         return{
             "id" : self.id,  
 
@@ -184,6 +185,11 @@ class SessionPlayer(models.Model):
             "good_two_field" : self.good_two_field,
 
             "player_number" : self.player_number,
+
+            "chat_individual" : [c.json_for_subject() for c in  main.models.SessionPlayerChat.objects \
+                                                                            .filter(chat_type=main.globals.ChatTypes.INDIVIDUAL) \
+                                                                            .filter(Q(Q(session_player_recipients=session_player) & Q(session_player=self)) |
+                                                                                    Q(Q(session_player_recipients=self) & Q(session_player=session_player))                       )],
 
             "parameter_set_player" : self.parameter_set_player.json_for_subject(),
         }

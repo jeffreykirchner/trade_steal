@@ -13,6 +13,8 @@ from main.models import ParameterSetPlayerGroup
 
 from main.models import Session
 from main.models import SessionPlayer
+from main.models import SessionPlayerChat
+from main.models import SessionPlayerMove
 
 class ParametersAdmin(admin.ModelAdmin):
     '''
@@ -43,3 +45,5 @@ admin.site.register(ParameterSetPlayerGroup, ParameterSetPlayerGroupAdmin)
 
 admin.site.register(Session)
 admin.site.register(SessionPlayer)
+admin.site.register(SessionPlayerChat)
+admin.site.register(SessionPlayerMove)
