@@ -42,13 +42,13 @@ takeUpdateChat(messageData){
     }
     else
     {
-        let sesson_player_target =  result.sesson_player_target;
-        let session_players = app.$data.session.session_players;
+        var sesson_player_target =  result.sesson_player_target;
+        var session_players = app.$data.session.session_players;
 
-        let target = -1;
+        var target = -1;
         if(sesson_player_target == session_player.id)
         {
-            target = result.sender_id;
+            target = result.chat.sender_id;
         }
         else
         {
