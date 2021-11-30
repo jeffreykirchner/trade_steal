@@ -84,7 +84,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 {"type": "update_move_goods",
                  "data": result,
                  'sender_channel_name': self.channel_name,
-                 'sender_group' : self.group_number},
+                 'sender_group' : self.group_number,
+                 "sender_town" : self.town_number,},
             )
         
     async def chat(self, event):
@@ -92,29 +93,40 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         take chat from client
         '''
         #update subject count
-        result = await sync_to_async(take_chat)(self.session_id, self.connection_uuid, event["message_text"])
+        result = await sync_to_async(take_chat)(self.session_id, self.session_player_id, event["message_text"])
+
+        event_result = result["result"]
+
+        subject_result = {}
+        subject_result["chat_type"] = event_result["chat_type"]
+        subject_result["sesson_player_target"] = event_result.get("sesson_player_target", -1)
+        subject_result["chat"] = event_result["chat_for_subject"]
+        subject_result["value"] = result["value"]
+
+        staff_result = {}
+        staff_result["town"] = self.town_number
+        staff_result["chat"] = event_result["chat_for_staff"]
 
         message_data = {}
-        message_data["status"] = result
+        message_data["status"] = subject_result
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
         # Send reply to sending channel
-        
-
-        #if success send to all connected clients
-        #if result["value"] == "fail":
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+        #if success send to all connected clients
         if result["value"] == "success":
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_chat",
-                 "data": result,
-                 'sender_group' : self.group_number,
-                 'sender_channel_name': self.channel_name},
+                 "subject_result": subject_result,
+                 "staff_result": staff_result,
+                 "sender_group" : self.group_number,
+                 "sender_town" : self.town_number,
+                 "sender_channel_name": self.channel_name},
             )
     
     async def update_start_experiment(self, event):
@@ -160,16 +172,18 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         send chat to clients, if clients can view it
         '''
-        result = event["data"]
 
         message_data = {}
-        message_data["status"] = result
+        message_data["status"] =  event["subject_result"]
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
         if self.group_number != event['sender_group']:
+            return
+        
+        if self.town_number != event['sender_town']:
             return
 
         if self.channel_name == event['sender_channel_name']:
@@ -208,6 +222,9 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             return
 
         if self.group_number != event['sender_group']:
+            return
+        
+        if self.town_number != event['sender_town']:
             return
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -398,15 +415,15 @@ def take_move_goods(session_id, player_key, data):
     logger.info("Invalid session form")
     return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
 
-def take_chat(session_id, player_key, data):
+def take_chat(session_id, session_player_id, data):
     '''
     take chat from client
     sesson_id : int : id of session
-    player_key : uuid : uuid of session player
+    session_player_id : int : id of session player
     data : json : incoming json data
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"take chat: {session_id} {player_key} {data}")
+    logger.info(f"take chat: {session_id} {session_player_id} {data}")
 
     recipients = data["recipients"] 
     chat_text = data["text"]
@@ -415,7 +432,7 @@ def take_chat(session_id, player_key, data):
     #result["recipients"] = []
 
     session = Session.objects.get(id=session_id)
-    session_player = session.session_players.get(player_key=player_key)
+    session_player = session.session_players.get(id=session_player_id)
     
     session_player_chat = SessionPlayerChat()
 
@@ -453,7 +470,8 @@ def take_chat(session_id, player_key, data):
         result["recipients"].append(session_player.id)
         result["recipients"].append(sesson_player_target.id)
     
-    result["chat"] = session_player_chat.json_for_subject()
+    result["chat_for_subject"] = session_player_chat.json_for_subject()
+    result["chat_for_staff"] = session_player_chat.json_for_staff()
 
     session_player_chat.save()
 

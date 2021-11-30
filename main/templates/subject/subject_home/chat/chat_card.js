@@ -32,7 +32,7 @@ takeChat(messageData){
 */
 takeUpdateChat(messageData){
     
-    let result = messageData.status.result;
+    let result = messageData.status;
     let chat = result.chat;
     let session_player = app.$data.session_player;
 

@@ -45,10 +45,4 @@ takeUpdateGoods(messageData){
     }
 },
 
-/**
- * change the town shown
- */
-change_town_view(){
-    app.destroyPixiPlayers();
-    app.setupPixiPlayers();
-},
+

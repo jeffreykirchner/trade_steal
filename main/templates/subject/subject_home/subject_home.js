@@ -10,8 +10,9 @@ var app = Vue.createApp({
 
     data() {return {chatSocket : "",
                     reconnecting : true,
+                    is_subject : true,
                     working : false,
-                    first_load_done : false,          //true after software is loaded for the first time
+                    first_load_done : false,                       //true after software is loaded for the first time
                     playerKey : "{{session_subject.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,

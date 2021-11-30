@@ -168,7 +168,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         send chat to clients, if clients can view it
         '''
-        result = event["data"]
+        result = event["staff_result"]
 
         message_data = {}
         message_data["status"] = result

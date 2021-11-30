@@ -53,7 +53,7 @@ class SessionPlayerChat(models.Model):
         }
 
     #return json object of class
-    def json(self):
+    def json_for_staff(self):
         '''
         json object of model
         '''
@@ -61,13 +61,11 @@ class SessionPlayerChat(models.Model):
         return{
             "id" : self.id,         
 
-            "session_period" : self.session_period,
-            "session_player" : self.session_player,
+            "sender_label" : self.session_player.parameter_set_player.id_label,
 
-            "session_player_recipients" : [i.id for i in self.session_player_recipients.all()],
+            "session_player_recipients" : [i.parameter_set_player.id_label for i in self.session_player_recipients.all()],
 
             "text" : self.text,
             "chat_type" : self.chat_type,
-
         }
         

@@ -92,7 +92,8 @@ setupPixiPlayers(){
         }
     }
 
-    app.setFieldHouseVisbility(app.$data.session.started);
+    if(app.is_subject)
+        app.setFieldHouseVisbility(app.$data.session.started);
 },
 
 /**setup house container for player
@@ -130,7 +131,8 @@ setupSingleHouse(index){
     sprite.y = 0;
     sprite.name = "house_texture"
 
-    if(session_players[index].player_number == app.$data.session_player.player_number){
+    
+    if(typeof app.$data.session_player != 'undefined' && session_players[index].player_number == app.$data.session_player.player_number){
         sprite.tint = app.$data.owner_color;
     }
     else{
@@ -203,7 +205,8 @@ setupSingleHouse(index){
                       good_c_label : parameter_set_player.good_three.label,};
 
     if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
-        container.on('pointerdown', app.handleHousePointerDown.bind(this, index));
+        if(app.$data.is_subject)  //only subject screen can move items
+            container.on('pointerdown', app.handleHousePointerDown.bind(this, index));
 
     container.on('pointerup', app.handleHousePointerUp.bind(this, index))
              .on('pointerover', app.handleHousePointerOver.bind(this, index))
@@ -259,7 +262,7 @@ setupSingleField(index){
 
     sprite.x = 0;
     sprite.y = 0;
-    if(session_players[index].player_number == app.$data.session_player.player_number){
+    if(typeof app.$data.session_player != 'undefined' && session_players[index].player_number == app.$data.session_player.player_number){
         sprite.tint = app.$data.owner_color;
     }
     else{
@@ -320,10 +323,10 @@ setupSingleField(index){
     container.interactive = true;
     container.buttonMode = true;
 
-    //prevent stealing
-    
+    //prevent stealing    
     if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
-        container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
+        if(app.$data.is_subject)  //only subject screen can move items
+            container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
 
     container.on('pointerup', app.handleFieldPointerUp.bind(this, index))
              .on('pointerover', app.handleFieldPointerOver.bind(this, index))
@@ -366,7 +369,8 @@ setupGrid(){
 /**destroy house and field containers
  */
 destroyPixiPlayers(){
-    session_players = app.$data.session.session_players;
+    let session_players = app.$data.session.session_players;
+    
     for(let i=0;i<session_players.length;i++)
     {
         if(session_players[i].houseContainer)

@@ -3,6 +3,7 @@
  */
  handleFieldPointerDown(index, event){
     //console.log('Field ' + (index+1).toString() + ' down');
+    let session_players = app.$data.session.session_players;
     app.handleContainerDown(session_players[index].fieldContainer, event);
 },
 
@@ -11,6 +12,7 @@
  */
 handleFieldPointerUp(index, event){
     //console.log('Field ' + (index+1).toString() + ' up');
+    let session_players = app.$data.session.session_players;
     app.handleContainerUp(session_players[index].fieldContainer, event);
 },
 
@@ -19,6 +21,7 @@ handleFieldPointerUp(index, event){
  */
 handleFieldPointerOver(index, event){
     //console.log('Field ' + (index+1).toString() + ' Over');
+    let session_players = app.$data.session.session_players;
     app.setContainerAsTarget(session_players[index].fieldContainer, event);
 },
 
@@ -27,6 +30,7 @@ handleFieldPointerOver(index, event){
  */
 handleFieldPointerOut(index, event){
     //console.log('Field ' + (index+1).toString() + ' Out');
+    let session_players = app.$data.session.session_players;
     app.removeContainerTarget(session_players[index].fieldContainer, event);
 },
 
@@ -35,6 +39,7 @@ handleFieldPointerOut(index, event){
  */
 handleHousePointerDown(index, event){
     //console.log('House ' + (index+1).toString() + ' down');
+    let session_players = app.$data.session.session_players;
     app.handleContainerDown(session_players[index].houseContainer, event);
 },
 
@@ -43,7 +48,8 @@ handleHousePointerDown(index, event){
  */
 handleHousePointerUp(index, event){
    //console.log('House ' + (index+1).toString() + ' up');
-    app.handleContainerUp(session_players[index].houseContainer, event);
+   let session_players = app.$data.session.session_players;
+   app.handleContainerUp(session_players[index].houseContainer, event);
 },
 
 /**
@@ -51,6 +57,7 @@ handleHousePointerUp(index, event){
  */
 handleHousePointerOver(index, event){
     //console.log('House ' + (index+1).toString() + ' Over');
+    let session_players = app.$data.session.session_players;
     app.setContainerAsTarget(session_players[index].houseContainer, event);
 },
 
@@ -59,6 +66,7 @@ handleHousePointerOver(index, event){
  */
 handleHousePointerOut(index, event){
     //console.log('House ' + (index+1).toString() + ' Out');
+    let session_players = app.$data.session.session_players;
     app.removeContainerTarget(session_players[index].houseContainer, event);
 },
 
@@ -129,7 +137,7 @@ removeContainerTarget(container, event){
 turnOffHighlights(){
     if(app.pixi_modal_open) return;
 
-    session_players = app.$data.session.session_players;
+    let session_players = app.$data.session.session_players;
     
     for(let i=0;i<session_players.length;i++)
     {

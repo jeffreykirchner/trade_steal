@@ -11,9 +11,11 @@ var app = Vue.createApp({
     data() {return {chatSocket : "",
                     reconnecting : true,
                     working : false,
+                    is_subject : false,
                     first_load_done : false,          //true after software is loaded for the first time
                     sessionID : {{session.id}},
                     sessionKey : "{{session.session_key}}",
+                    other_color : 0xD3D3D3,
                     session : {
                         current_period : 1,
                         started : false,
@@ -69,6 +71,8 @@ var app = Vue.createApp({
                     transfer_good_three_amount : 0, //good three amount to be transfered
 
                     current_town : "1",
+
+                    chat_list_to_display : [],                //list of chats to display on screen
                 }},
     methods: {
 
@@ -115,6 +119,10 @@ var app = Vue.createApp({
                 case "update_reset_experiment":
                     app.takeUpdateResetExperiment(messageData);
                     break;
+                case "update_chat":
+                    app.takeUpdateChat(messageData);
+                    break;
+                
             }
 
             if(!app.$data.first_load_done)
@@ -155,6 +163,8 @@ var app = Vue.createApp({
         */
         takeGetSession(messageData){
             
+            app.destroyPixiPlayers();
+
             app.$data.session = messageData.session;
 
             if(app.$data.session.started)
@@ -170,6 +180,8 @@ var app = Vue.createApp({
                 setTimeout(app.setupPixi, 250);       
             else
                 setTimeout(app.setupPixiPlayers, 250);
+            
+            app.updateChatDisplay();
         },
 
         /**update text of move on button based on current state
@@ -192,6 +204,55 @@ var app = Vue.createApp({
             }
         },
 
+        /** take updated data from goods being moved by another player
+        *    @param messageData {json} session day in json format
+        */
+        takeUpdateChat(messageData){
+            
+            let result = messageData.status;
+            let chat = result.chat;
+            let town = result.town;
+            
+            app.$data.session.chat_all[town].push(chat);
+            app.updateChatDisplay();
+        },
+
+        /**
+         * update chat displayed based on town chosen
+         */
+        updateChatDisplay(){
+            
+            app.$data.chat_list_to_display=Array.from(app.$data.session.chat_all[parseInt(app.$data.current_town)]);
+
+            //add spacers
+            for(let i=app.$data.chat_list_to_display.length;i<18;i++)
+            {
+                app.$data.chat_list_to_display.unshift({id:i*-1,sender_label:"", text:"|", sender_id:0, chat_type:'All'})
+            }
+
+            //scroll to view
+            if(app.$data.chat_list_to_display.length>0)
+            {
+                Vue.nextTick(() => {app.updateChatDisplayScroll()});        
+            }
+        },
+
+        /**
+         * scroll to newest chat element
+         */
+        updateChatDisplayScroll(){
+            var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
+            elmnt.scrollIntoView(); 
+        },
+
+        /**
+         * change the town shown
+         */
+        change_town_view(){
+            app.destroyPixiPlayers();
+            app.setupPixiPlayers();
+            app.updateChatDisplay();
+        },
         //do nothing on when enter pressed for post
         onSubmit(){
             //do nothing
@@ -199,7 +260,7 @@ var app = Vue.createApp({
         
         {%include "staff/staff_session/control/control_card.js"%}
         {%include "staff/staff_session/session/session_card.js"%}
-        {%include "staff/staff_session/graph/graph_card.js"%}
+        {%include "subject/subject_home/graph/graph_card.js"%}
         {%include "staff/staff_session/subjects/subjects_card.js"%}
     
         /** clear form error messages

@@ -127,6 +127,14 @@ class Session(models.Model):
         '''
         return json object of model
         '''
+        
+        chat = {}
+        for i in range(self.parameter_set.town_count):
+            chat[str(i+1)] = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
+                                                       .filter(session_player__in=self.session_players.all())\
+                                                       .filter(session_player__parameter_set_player__town=i+1)                                                       
+                      ]
+
         return{
             "id":self.id,
             "title":self.title,
@@ -137,7 +145,8 @@ class Session(models.Model):
             "finished":self.finished,
             "parameter_set":self.parameter_set.json(),
             "session_periods":[i.json() for i in self.session_periods.all()],
-            "session_players":[i.json() for i in self.session_players.all()]
+            "session_players":[i.json() for i in self.session_players.all()],
+            "chat_all" : chat,
         }
     
     def json_for_subject(self, session_player):
