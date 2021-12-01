@@ -91,9 +91,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     async def chat(self, event):
         '''
         take chat from client
-        '''
-        #update subject count
+        '''        
         result = await sync_to_async(take_chat)(self.session_id, self.session_player_id, event["message_text"])
+
+        if result["value"] == "fail":
+            await self.send(text_data=json.dumps({'message': result}, cls=DjangoJSONEncoder))
+            return
 
         event_result = result["result"]
 
@@ -135,6 +138,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         #logger = logging.getLogger(__name__) 
         #logger.info(f'update start subjects {self.channel_name}')
+
+        await self.update_local_info(event)
 
         #get session json object
         result = await sync_to_async(take_get_session_subject)(self.session_player_id)
@@ -195,7 +200,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         update connection's town and group information
         '''
-        result = await sync_to_async(take_update_local_info)(self.session_id, self.connection_uuid, event["message_text"])
+        result = await sync_to_async(take_update_local_info)(self.session_id, self.connection_uuid, event)
 
         logger = logging.getLogger(__name__) 
         logger.info(f"update_local_info {result}")
@@ -238,10 +243,15 @@ def take_get_session_subject(session_player_id):
     #uuid = data["uuid"]
 
     #session = Session.objects.get(id=session_id)
-    session_player = SessionPlayer.objects.get(id=session_player_id)
+    try:
+        session_player = SessionPlayer.objects.get(id=session_player_id)
 
-    return {"session" : session_player.session.json_for_subject(session_player), 
-            "session_player" : session_player.json() }
+        return {"session" : session_player.session.json_for_subject(session_player), 
+                "session_player" : session_player.json() }
+
+    except ObjectDoesNotExist:
+        return {"session" : None, 
+                "session_player" : None}
 
 def take_get_session_id(player_key):
     '''
@@ -442,6 +452,11 @@ def take_chat(session_id, session_player_id, data):
     if recipients == "all":
         session_player_chat.chat_type = ChatTypes.ALL
     else:
+        if not session.parameter_set.private_chat:
+            logger.warning(f"take chat: private chat not enabled :{session_id} {session_player_id} {data}")
+            return {"value" : "fail",
+                    "result" : {"message" : "Private chat not enabled"}}
+
         session_player_chat.chat_type = ChatTypes.INDIVIDUAL
 
     result["chat_type"] = session_player_chat.chat_type
@@ -462,7 +477,7 @@ def take_chat(session_id, session_player_id, data):
             session_player_chat.session_player_recipients.add(sesson_player_target)
         else:
             session_player_chat.delete()
-            logger.warning(f"take chat: chat at none group member : {session_id} {player_key} {data}")
+            logger.warning(f"take chat: chat at none group member : {session_id} {session_player_id} {data}")
             return {"value" : "fail", "result" : {}}
 
         result["sesson_player_target"] = sesson_player_target.id
@@ -482,9 +497,16 @@ def take_update_local_info(session_id, player_key, data):
     update connection's town and group information
     '''
 
-    session_player = SessionPlayer.objects.get(player_key=player_key)
+    try:
+        session_player = SessionPlayer.objects.get(player_key=player_key)
 
-    return {"group_number" : session_player.get_current_group_number(), 
-            "session_player_id" : session_player.id,
-            "town_number" : session_player.get_current_town_number() }
+        return {"group_number" : session_player.get_current_group_number(), 
+                "session_player_id" : session_player.id,
+                "town_number" : session_player.get_current_town_number() }
+    except ObjectDoesNotExist:      
+        return {"group_number" : None, 
+                "session_player_id" : None,
+                "town_number" : None}
+
+    
      

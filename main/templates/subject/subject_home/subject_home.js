@@ -31,6 +31,8 @@ var app = Vue.createApp({
                             period_length_production : 0,
                             period_length_trade : 0,
                             break_period_frequency : 0,
+                            private_chat : "False",
+                            allow_steal : "False",
                             good_a_label : "",
                             good_b_label : "",
                             good_a_rgb_color : '#000000',

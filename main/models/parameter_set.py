@@ -24,9 +24,10 @@ class ParameterSet(models.Model):
     period_length_production = models.IntegerField(verbose_name='Period Length, Production', default=10)      #production phase length in seconds
     period_length_trade = models.IntegerField(verbose_name='Period Length, Trade', default=90)                #trade phase length in seconds
     break_period_frequency = models.IntegerField(verbose_name='Break Period Fequency (Periods)', default=7)   #every x periods only allow chat, no production or trading
-    allow_stealing = models.BooleanField(default=True, verbose_name = 'Allow Stealing')                       #if true subjects can take from other users
+    allow_stealing = models.BooleanField(default=False, verbose_name = 'Allow Stealing')                      #if true subjects can take from other users
+    private_chat = models.BooleanField(default=True, verbose_name = 'Private Chat')                           #if true subjects can privately chat one on one
     town_count = models.IntegerField(verbose_name='Town Count', default=1)                                    #number of different towns
-    good_count = models.IntegerField(verbose_name='Number of Goods', default=2)                          #number of goods available to all towns
+    good_count = models.IntegerField(verbose_name='Number of Goods', default=2)                               #number of goods available to all towns
 
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -53,6 +54,7 @@ class ParameterSet(models.Model):
             self.period_length_trade = new_ps.get("period_length_trade")
             self.break_period_frequency = new_ps.get("break_period_frequency")
             self.allow_stealing = new_ps.get("allow_stealing")
+            self.private_chat = new_ps.get("private_chat")
             self.good_a_label = new_ps.get("good_a_label")
             self.good_b_label = new_ps.get("good_b_label")
             self.good_a_rgb_color = new_ps.get("good_a_rgb_color")
@@ -228,6 +230,7 @@ class ParameterSet(models.Model):
             "period_length_trade" : self.period_length_trade,
             "break_period_frequency" : self.break_period_frequency,
             "allow_stealing" : "True" if self.allow_stealing else "False",
+            "private_chat" : "True" if self.private_chat else "False",
             "parameter_set_goods" : [p.json() for p in self.parameter_set_goods.all()],
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
@@ -247,5 +250,6 @@ class ParameterSet(models.Model):
 
             "break_period_frequency" : self.break_period_frequency,
             "allow_stealing" : "True" if self.allow_stealing else "False",
+            "private_chat" : "True" if self.private_chat else "False",
         }
 

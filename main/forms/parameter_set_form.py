@@ -53,7 +53,12 @@ class ParameterSetForm(forms.ModelForm):
     allow_stealing = forms.ChoiceField(label='Allow Stealing',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.allow_stealing",}))
+                                       
+    private_chat = forms.ChoiceField(label='Private Chat',
+                                       choices=((True, 'Yes'), (False,'No' )),
+                                       widget=forms.Select(attrs={"v-model":"session.parameter_set.private_chat",}))
 
     class Meta:
         model=ParameterSet
-        fields =['town_count','good_count', 'period_count', 'period_length_production' , 'period_length_trade', 'break_period_frequency', 'allow_stealing']
+        fields =['town_count','good_count', 'period_count', 'period_length_production' ,
+                 'period_length_trade', 'break_period_frequency', 'allow_stealing' , 'private_chat']
