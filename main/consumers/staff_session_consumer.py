@@ -253,12 +253,13 @@ def take_start_experiment(session_id, data):
     logger.info(f"Start Experiment: {data}")
 
     #session_id = data["sessionID"]
-    session = Session.objects.get(id=session_id)
+    with transaction.atomic():
+        session = Session.objects.get(id=session_id)
 
-    if not session.started:
-        session.start_experiment()
+        if not session.started:
+            session.start_experiment()
 
-    value = "success"
+        value = "success"
     
     return {"value" : value, "started" : session.started}
 
