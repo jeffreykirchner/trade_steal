@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 
 import json
 import logging
+import asyncio
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
@@ -114,7 +115,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     
     async def next_period(self, event):
         '''
-        advance to next period in experiment
+        force advance to next period in experiment
         '''
         #update subject count
         message_data = {}
@@ -127,13 +128,52 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def start_timer(self, event):
+        '''
+        start or stop timer 
+        '''
+
+        result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
+
+        message_data = {}
+        message_data["data"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        #Send reply to sending channel
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        #if success send to all connected clients
+        if result["value"] == "success":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "update_time",
+                 "data": result,
+                 'sender_channel_name': self.channel_name,},
+            )
+
+            timer_result = asyncio.create_task(do_period_timer(self.session_id))
+
+            while await timer_result["status"] == "success":
+
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_time",
+                    "data": timer_result,
+                    'sender_channel_name': self.channel_name,},
+                )
+                
+                pass
+
     #consumer updates
     async def update_start_experiment(self, event):
         '''
         start experiment on staff
         '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f'update_goods{self.channel_name}')
+        # logger = logging.getLogger(__name__) 
+        # logger.info(f'update_goods{self.channel_name}')
 
         #get session json object
         result = await sync_to_async(take_get_session)(self.connection_uuid)
@@ -183,8 +223,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         update good count staff
         '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f'update_goods{self.channel_name}')
+        # logger = logging.getLogger(__name__) 
+        # logger.info(f'update_goods{self.channel_name}')
 
         message_data = {}
         message_data["status"] = event["data"]
@@ -194,6 +234,31 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def update_time(self, event):
+        '''
+        update running, phase and time status
+        '''
+
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+
+
+#loca async function
+async def do_period_timer(session_id):
+    '''
+    handle period update timer
+    '''
+
+    return {"status" : "fail"}
+
 
 #local sync functions    
 def take_get_session(session_key):
@@ -304,3 +369,23 @@ def take_next_period(session_id, data):
     return {"status" : status,
             "current_period" : session.current_period,
             "finished" : session.finished}
+
+def take_start_timer(session_id, data):
+    '''
+    start timer
+    '''   
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Start timer {data}")
+
+    #session_id = data["sessionID"]
+    with transaction.atomic():
+        session = Session.objects.get(id=session_id)
+
+        if session.timer_running:
+            return {"status" : "fail", "result" : {"message":"timmer already running"}}
+
+        session.timer_running = True
+        session.save()
+        
+    return {"status" : "success", "result" : session.json_for_timmer()}

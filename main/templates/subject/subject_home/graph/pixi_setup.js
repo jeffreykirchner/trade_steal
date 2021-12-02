@@ -18,7 +18,7 @@ resetPixiApp(){
     app.$data.pixi_app = new PIXI.Application({resizeTo : canvas,
                                                backgroundColor : 0xFFFFFF,
                                                autoResize: true,
-                                               antialias: true,
+                                               antialias: false,
                                                resolution: devicePixelRatio,
                                                view: canvas });
 
@@ -204,8 +204,8 @@ setupSingleHouse(index){
                       good_b_label : parameter_set_player.good_two.label,
                       good_c_label : parameter_set_player.good_three.label,};
 
-    if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
-        if(app.$data.is_subject)  //only subject screen can move items
+    if(app.$data.is_subject)  //only subject screen can move items
+        if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
             container.on('pointerdown', app.handleHousePointerDown.bind(this, index));
 
     container.on('pointerup', app.handleHousePointerUp.bind(this, index))
@@ -324,8 +324,8 @@ setupSingleField(index){
     container.buttonMode = true;
 
     //prevent stealing    
-    if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
-        if(app.$data.is_subject)  //only subject screen can move items
+    if(app.$data.is_subject)  //only subject screen can move items
+        if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
             container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
 
     container.on('pointerup', app.handleFieldPointerUp.bind(this, index))

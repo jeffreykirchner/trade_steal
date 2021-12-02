@@ -21,6 +21,8 @@ import main
 from main.models import ParameterSet
 from main.models import Parameters
 
+from main.globals import PeriodPhase
+
 #experiment sessoin
 class Session(models.Model):
     '''
@@ -37,6 +39,9 @@ class Session(models.Model):
 
     started =  models.BooleanField(default=False)                                #starts session and filll in session
     current_period = models.IntegerField(default=0)                              #current period of the session
+    current_period_phase = models.CharField(max_length=100, choices=PeriodPhase.choices, default=PeriodPhase.PRODUCTION)         #current phase of current period
+    time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
+    timer_running = models.BooleanField(default=False)                           #true when period timer is running
     finished = models.BooleanField(default=False)                                #true after all session periods are complete
 
     shared = models.BooleanField(default=False)                                  #shared session parameter sets can be imported by other users
@@ -142,6 +147,9 @@ class Session(models.Model):
             "start_date":self.get_start_date_string(),
             "started":self.started,
             "current_period":self.current_period,
+            "current_period_phase":self.current_period_phase,
+            "time_remaining":self.time_remaining,
+            "timer_running":self.timer_running,
             "finished":self.finished,
             "parameter_set":self.parameter_set.json(),
             "session_periods":[i.json() for i in self.session_periods.all()],
@@ -162,6 +170,20 @@ class Session(models.Model):
             "parameter_set":self.parameter_set.json_for_subject(),
 
             "session_players":[i.json_for_subject(session_player) for i in session_player.get_current_group_list()]
+        }
+    
+    def json_for_timmer(self):
+        '''
+        return json object for timer update
+        '''
+
+        return{
+            "started":self.started,
+            "current_period":self.current_period,
+            "current_period_phase":self.current_period_phase,
+            "time_remaining":self.time_remaining,
+            "timer_running":self.timer_running,
+            "finished":self.finished,
         }
        
 @receiver(post_delete, sender=Session)

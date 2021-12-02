@@ -16,7 +16,14 @@ class ContainerTypes(models.TextChoices):
 
 class ChatTypes(models.TextChoices):
     '''
-    subject types
+    chat types
     '''
     ALL = 'All', _('All')
     INDIVIDUAL = 'Individual', _('Individual')
+
+class PeriodPhase(models.TextChoices):
+    '''
+    period phases
+    '''
+    PRODUCTION = 'Production', _('Production')
+    TRADE = 'Trade', _('Trade')

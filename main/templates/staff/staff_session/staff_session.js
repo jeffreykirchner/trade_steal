@@ -44,7 +44,6 @@ var app = Vue.createApp({
                     session_player_move_two_form_ids: {{session_player_move_two_form_ids|safe}},
                     session_player_move_three_form_ids: {{session_player_move_three_form_ids|safe}},
 
-
                     move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
 
                     pixi_loaded : false,             //true when pixi is loaded

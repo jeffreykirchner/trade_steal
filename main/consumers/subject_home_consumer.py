@@ -132,6 +132,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                  "sender_channel_name": self.channel_name},
             )
     
+    #consumer ujpdates
     async def update_start_experiment(self, event):
         '''
         start experiment on subjects
@@ -234,6 +235,20 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def update_time(self, event):
+        '''
+        update running, phase and time status
+        '''
+
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''
