@@ -134,9 +134,10 @@ class Session(models.Model):
         do period timer actions
         '''
 
-        result = {}
+        status = "success"
+        result = self.json_for_timmer()
 
-        return result
+        return {"value" : status, "result" : result}
 
 
 

@@ -257,6 +257,17 @@ var app = Vue.createApp({
          */
         takeUpdateTime(messageData){
 
+            let result = messageData.status.result;
+            let status = messageData.status.value;
+
+            if(status == "fail") return;
+
+            app.$data.session.started = result.started;
+            app.$data.session.current_period = result.current_period;
+            app.$data.session.current_period_phase = result.current_period_phase;
+            app.$data.session.time_remaining = result.time_remaining;
+            app.$data.session.timer_running = result.timer_running;
+            app.$data.session.finished = result.finished;
         },
 
         /**
