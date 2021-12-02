@@ -98,6 +98,8 @@ class Session(models.Model):
         self.started = False
         self.finished = False
         self.current_period = 1
+        self.current_period_phase = PeriodPhase.PRODUCTION
+        self.time_remaining = self.parameter_set.period_length_production
         self.timer_running = False
 
         for p in self.session_players.all():

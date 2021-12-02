@@ -31,7 +31,7 @@
                         class="btn btn-outline-primary"
                         v-on:click = "sendMoveGoods()"
                         title="Move Goods"
-                        v-bind:disabled="reconnecting || working">
+                        v-bind:disabled="reconnecting || working || session.current_period_phase == 'Production'">
                     Move Goods <i class="fas fa-sign-in-alt"></i>
                 </button>
             </div>

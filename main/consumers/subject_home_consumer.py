@@ -24,6 +24,7 @@ from main.models import SessionPlayerChat
 
 from main.globals import ContainerTypes
 from main.globals import ChatTypes
+from main.globals import PeriodPhase
 
 class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
@@ -317,6 +318,10 @@ def take_move_goods(session_id, player_key, data):
         if not session.started:
             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session has not started."]},
                     "message" : "Move Error"}
+        
+        if session.current_period_phase == PeriodPhase.PRODUCTION:
+             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers during growth phase."]},
+                     "message" : "Move Error"}
         
     except KeyError:
             logger.warning(f"take_move_goods session, setup form: {session_id}")
