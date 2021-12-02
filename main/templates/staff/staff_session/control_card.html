@@ -8,6 +8,7 @@
         
     </div>
     <div class="card-body"> 
+
         <!-- start button -->
         <div class="row">
             <div class="col-md text-center">
@@ -30,6 +31,20 @@
                         title="Reset experiment"
                         v-bind:disabled="reconnecting || working || session.started===false || session.locked">
                     Reset experiment <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- start timer -->
+        <div class="row mt-2" v-show="session.started">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "startTimer()"
+                        title="Start/Stop period timer"
+                        v-bind:disabled="reconnecting || working || session.started===false || session.finished">
+                    <span v-if="session.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
+                    <span v-else>Start Timmer <i class="far fa-clock"></i></span>
                 </button>
             </div>
         </div>

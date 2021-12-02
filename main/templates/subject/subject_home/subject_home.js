@@ -24,6 +24,9 @@ var app = Vue.createApp({
                         locked : true,
                         start_date : "---",
                         current_period : 0,
+                        current_period_phase : "Production",
+                        time_remaining : 0,
+                        timer_running : false,
                         finished : false,                        
                         parameter_set : {
                             id : 0,
@@ -120,6 +123,9 @@ var app = Vue.createApp({
                 case "update_chat":
                     app.takeUpdateChat(messageData);
                     break;
+                case "update_time":
+                    app.takeUpdateTime(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -197,6 +203,13 @@ var app = Vue.createApp({
         */
         takeUpdateResetExperiment(messageData){
             app.takeGetSession(messageData);
+        },
+
+        /**
+         * update time and start status
+         */
+         takeUpdateTime(messageData){
+            
         },
 
         //do nothing on when enter pressed for post

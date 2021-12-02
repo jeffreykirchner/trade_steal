@@ -96,6 +96,7 @@ class Session(models.Model):
         self.started = False
         self.finished = False
         self.current_period = 1
+        self.timer_running = False
 
         for p in self.session_players.all():
             p.reset()
@@ -127,6 +128,17 @@ class Session(models.Model):
             new_session_player.player_number = count + 1
 
             new_session_player.save()
+
+    def do_period_timer(self):
+        '''
+        do period timer actions
+        '''
+
+        result = {}
+
+        return result
+
+
 
     def json(self):
         '''

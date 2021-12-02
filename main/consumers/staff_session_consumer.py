@@ -147,25 +147,46 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         #if success send to all connected clients
         if result["value"] == "success":
+
+            #update all that timer has started
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_time",
                  "data": result,
-                 'sender_channel_name': self.channel_name,},
+                 "sender_channel_name": self.channel_name,},
             )
 
-            timer_result = asyncio.create_task(do_period_timer(self.session_id))
+            #start continue timer
+            await self.channel_layer.send(
+                self.channel_name,
+                {
+                    'type': "continue_timer",
+                    'message_text': {},
+                }
+            )
 
-            while await timer_result["status"] == "success":
+    async def continue_timer(self, event):
+        '''
+        continue to next second of the experiment
+        '''
+        timer_result = await do_period_timer(self.session_id)
 
-                await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {"type": "update_time",
-                    "data": timer_result,
-                    'sender_channel_name': self.channel_name,},
-                )
-                
-                pass
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {"type": "update_time",
+             "data": timer_result,
+             "sender_channel_name": self.channel_name,},
+        )
+
+        if timer_result["value"] == "success":
+
+            await self.channel_layer.send(
+                self.channel_name,
+                {
+                    'type': "continue_timer",
+                    'message_text': {},
+                }
+            )
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -256,9 +277,15 @@ async def do_period_timer(session_id):
     '''
     handle period update timer
     '''
+    
+    await asyncio.sleep(1)
 
-    return {"status" : "fail"}
+    result = await sync_to_async(take_do_period_timer)(session_id)
 
+    logger = logging.getLogger(__name__)
+    logger.info(f"do_period_timer: {result}")
+
+    return result
 
 #local sync functions    
 def take_get_session(session_key):
@@ -374,18 +401,42 @@ def take_start_timer(session_id, data):
     '''
     start timer
     '''   
-
     logger = logging.getLogger(__name__) 
     logger.info(f"Start timer {data}")
 
-    #session_id = data["sessionID"]
+    action = data["action"]
+
     with transaction.atomic():
         session = Session.objects.get(id=session_id)
 
-        if session.timer_running:
-            return {"status" : "fail", "result" : {"message":"timmer already running"}}
+        if session.timer_running and action=="start":
+            return {"value" : "fail", "result" : {"message":"timmer already running"}}
 
-        session.timer_running = True
+        if action == "start":
+            session.timer_running = True
+        else:
+            session.timer_running = False
+
         session.save()
         
-    return {"status" : "success", "result" : session.json_for_timmer()}
+    return {"value" : "success", "result" : session.json_for_timmer()}
+
+def take_do_period_timer(session_id):
+    '''
+    do period timer actions
+    '''
+
+    with transaction.atomic():
+        session = Session.objects.get(id=session_id)
+
+        status = "success"
+        result = {}
+
+        if session.timer_running == False:
+            status = "fail"
+        else:
+            result = session.do_period_timer()
+
+    return {"value" : status, "result" : result}
+
+

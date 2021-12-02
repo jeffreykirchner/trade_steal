@@ -22,6 +22,9 @@ var app = Vue.createApp({
                         locked : true,
                         start_date : "---",
                         current_period : 0,
+                        current_period_phase : "Production",
+                        time_remaining : 0,
+                        timer_running : false,
                         finished : false,                        
                         parameter_set : {
                             id : 0,
@@ -121,7 +124,12 @@ var app = Vue.createApp({
                 case "update_chat":
                     app.takeUpdateChat(messageData);
                     break;
-                
+                case "update_time":
+                    app.takeUpdateTime(messageData);
+                    break;
+                case "start_timer":
+                    app.takeStartTimer(messageData);
+                    break;                
             }
 
             if(!app.$data.first_load_done)
@@ -242,6 +250,13 @@ var app = Vue.createApp({
         updateChatDisplayScroll(){
             var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
             elmnt.scrollIntoView(); 
+        },
+
+        /**
+         * update time and start status
+         */
+        takeUpdateTime(messageData){
+
         },
 
         /**
