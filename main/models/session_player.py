@@ -143,6 +143,21 @@ class SessionPlayer(models.Model):
         '''
         return self.parameter_set_player.town
 
+    def do_period_production(self, current_time):
+        '''
+        do one second of production
+        '''
+
+
+        self.save()
+        
+    def do_period_consumption(self):
+        '''
+        covert goods in house to earnings
+        '''
+
+        self.save()
+
     def json(self):
         '''
         json object of model

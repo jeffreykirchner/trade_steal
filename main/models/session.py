@@ -156,11 +156,16 @@ class Session(models.Model):
                     self.current_period_phase = PeriodPhase.TRADE
                     self.time_remaining = self.parameter_set.period_length_trade
                 else:
+                    self.do_period_production()
                     self.current_period += 1
                     self.current_period_phase = PeriodPhase.PRODUCTION
                     self.time_remaining = self.parameter_set.period_length_production
                 
             else:
+                
+                if self.current_period_phase == PeriodPhase.PRODUCTION:
+                    self.do_period_production()
+
                 self.time_remaining -= 1
 
         self.save()
@@ -168,6 +173,22 @@ class Session(models.Model):
         result = self.json_for_timmer()
 
         return {"value" : status, "result" : result}
+
+    def do_period_production(self):
+        '''
+        do one second of production for all players
+        '''
+
+        for p in self.session_players.all():
+            p.do_period_production(self.time_remaining)
+    
+    def do_period_consumption(self):
+        '''
+        covert goods in house to earnings
+        '''
+
+        for p in self.session_players.all():
+            p.do_period_consumption()
 
     def json(self):
         '''
