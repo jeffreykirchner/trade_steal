@@ -134,9 +134,11 @@ class ParameterSet(models.Model):
         #player setup
         for i in range(8):
             if i % 2 == 0:
-                self.add_new_player(main.globals.SubjectType.ONE, i, parameter_set_good_one, parameter_set_good_two, parameter_set_good_three)
+                self.add_new_player(self.parameter_set_types.get(subject_type=main.globals.SubjectType.ONE), i,
+                                     parameter_set_good_one, parameter_set_good_two, parameter_set_good_three)
             else:
-                self.add_new_player(main.globals.SubjectType.TWO, i, parameter_set_good_one, parameter_set_good_two, parameter_set_good_three)
+                self.add_new_player(self.parameter_set_types.get(subject_type=main.globals.SubjectType.TWO), i,
+                                     parameter_set_good_one, parameter_set_good_two, parameter_set_good_three)
             
         self.update_group_counts()
 
@@ -161,7 +163,7 @@ class ParameterSet(models.Model):
         parameter_set_type.good_one_production_3 = g_1_3
 
         parameter_set_type.good_two_production_1 = g_2_1
-        parameter_set_type.good_two_production_2 = g_2_1
+        parameter_set_type.good_two_production_2 = g_2_2
         parameter_set_type.good_two_production_3 = g_2_3
 
         parameter_set_type.save()

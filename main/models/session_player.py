@@ -9,6 +9,10 @@ from django.db import models
 from django.forms.utils import to_current_timezone
 from django.urls import reverse
 from django.db.models import Q
+from django.db.models import F
+from django.db.models import Value
+from django.db.models import Func
+from django.db.models.expressions import RawSQL
 
 from main.models import Session, parameter_set_player
 from main.models import ParameterSetPlayer
@@ -29,6 +33,9 @@ class SessionPlayer(models.Model):
     good_one_field = models.IntegerField(verbose_name='Good one in field', default=0)        #amount of good one currently in field
     good_two_field = models.IntegerField(verbose_name='Good two in field', default=0)        #amount of good two currently in field
 
+    good_one_production_rate = models.IntegerField(verbose_name='Good one production rate (0-100)', default=50)        #percent of time to devote to good one production
+    good_two_production_rate = models.IntegerField(verbose_name='Good two production rate (0-100)', default=50)        #percent of time to devote to good two production
+
     player_number = models.IntegerField(verbose_name='Player number', default=0)               #player number, from 1 to N
     player_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')   #login and channel key
 
@@ -45,6 +52,12 @@ class SessionPlayer(models.Model):
         verbose_name = 'Session Player'
         verbose_name_plural = 'Session Players'
         ordering = ['parameter_set_player__town', 'parameter_set_player__location']
+        constraints = [
+              models.CheckConstraint(check=RawSQL('good_one_production_rate+good_two_production_rate=100',
+                                                  (),
+                                                  output_field=models.BooleanField(),),                                                                       
+                                     name='production_total_equals_100'),
+        ]
 
     def check_good_available_at_location(self, good_location, parameter_set_good):
         '''
@@ -162,6 +175,15 @@ class SessionPlayer(models.Model):
         do one second of production
         '''
 
+        # Good Production = P1 + P2 x Time ^ P3
+
+        total_time = self.parameter_set_player.parameter_set.period_length_production
+        parameter_set_type = self.parameter_set_player.parameter_set_type
+
+        # good_one_field = good_one.
+        
+
+        # self.good_one_field += good_one_field
 
         self.save()
         

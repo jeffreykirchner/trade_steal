@@ -17,7 +17,7 @@ class ParameterSetType(models.Model):
     '''
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE,  related_name="parameter_set_types")
-
+    
     subject_type = models.CharField(max_length=100, choices=SubjectType.choices, default=SubjectType.ONE)         #type of subject
      
     good_one_amount =  models.IntegerField(verbose_name='Good One Amount', default=1)         #amount of good one needed to earn 1 cent
