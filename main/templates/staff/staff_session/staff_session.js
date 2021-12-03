@@ -287,6 +287,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/session/session_card.js"%}
         {%include "subject/subject_home/graph/graph_card.js"%}
         {%include "staff/staff_session/subjects/subjects_card.js"%}
+        {%include "staff/staff_session/summary/summary_card.js"%}
     
         /** clear form error messages
         */

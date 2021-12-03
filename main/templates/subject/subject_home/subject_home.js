@@ -210,7 +210,17 @@ var app = Vue.createApp({
          * update time and start status
          */
          takeUpdateTime(messageData){
-            
+            let result = messageData.status.result;
+            let status = messageData.status.value;
+
+            if(status == "fail") return;
+
+            app.$data.session.started = result.started;
+            app.$data.session.current_period = result.current_period;
+            app.$data.session.current_period_phase = result.current_period_phase;
+            app.$data.session.time_remaining = result.time_remaining;
+            app.$data.session.timer_running = result.timer_running;
+            app.$data.session.finished = result.finished;
         },
 
         //do nothing on when enter pressed for post
@@ -220,6 +230,8 @@ var app = Vue.createApp({
         
         {%include "subject/subject_home/graph/graph_card.js"%}
         {%include "subject/subject_home/chat/chat_card.js"%}
+        {%include "subject/subject_home/production/production_card.js"%}
+        {%include "subject/subject_home/summary/summary_card.js"%}
     
         /** clear form error messages
         */

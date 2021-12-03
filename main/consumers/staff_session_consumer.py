@@ -154,7 +154,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             self.timer_running = False
 
         #Send reply to sending channel
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        if self.timer_running == True:
+            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
         #update all that timer has started
         await self.channel_layer.group_send(
@@ -433,20 +434,20 @@ def take_start_timer(session_id, data):
 
     action = data["action"]
 
-    # with transaction.atomic():
-    session = Session.objects.get(id=session_id)
+    with transaction.atomic():
+        session = Session.objects.get(id=session_id)
 
-    if session.timer_running and action=="start":
-        
-        logger.warning(f"Start timer: already started")
-        return {"value" : "fail", "result" : {"message":"timer already running"}}
+        if session.timer_running and action=="start":
+            
+            logger.warning(f"Start timer: already started")
+            return {"value" : "fail", "result" : {"message":"timer already running"}}
 
-    if action == "start":
-        session.timer_running = True
-    else:
-        session.timer_running = False
+        if action == "start":
+            session.timer_running = True
+        else:
+            session.timer_running = False
 
-    session.save()
+        session.save()
 
     return {"value" : "success", "result" : session.json_for_timmer()}
 
@@ -458,7 +459,7 @@ def take_do_period_timer(session_id):
 
     session = Session.objects.get(id=session_id)
 
-    if session.timer_running == False:
+    if session.timer_running == False or session.finished:
         return_json = {"value" : "fail", "result" : {"message" : "session no longer running"}}
     else:
         return_json = session.do_period_timer()

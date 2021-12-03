@@ -18,7 +18,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 import main
 
-from main.models import ParameterSet
+from main.models import ParameterSet, parameter_set
 from main.models import Parameters
 
 from main.globals import PeriodPhase
@@ -79,6 +79,8 @@ class Session(models.Model):
         self.finished = False
         self.current_period = 1
         self.start_date = datetime.now()
+        self.current_period_phase = PeriodPhase.PRODUCTION
+        self.time_remaining = self.parameter_set.period_length_production
 
         session_periods = []
 
@@ -96,6 +98,8 @@ class Session(models.Model):
         self.started = False
         self.finished = False
         self.current_period = 1
+        self.current_period_phase = PeriodPhase.PRODUCTION
+        self.time_remaining = self.parameter_set.period_length_production
         self.timer_running = False
 
         for p in self.session_players.all():
@@ -135,11 +139,56 @@ class Session(models.Model):
         '''
 
         status = "success"
+
+        #check session over
+        if self.time_remaining == 0 and \
+           self.current_period_phase == PeriodPhase.TRADE and \
+           self.current_period == self.parameter_set.period_count:
+
+            self.finished = True
+            status = "fail"
+
+        if status != "fail":
+            if self.time_remaining == 0:
+
+                if self.current_period_phase == PeriodPhase.PRODUCTION:
+                    #start trade phase
+                    self.current_period_phase = PeriodPhase.TRADE
+                    self.time_remaining = self.parameter_set.period_length_trade
+                else:
+                    self.do_period_production()
+                    self.current_period += 1
+                    self.current_period_phase = PeriodPhase.PRODUCTION
+                    self.time_remaining = self.parameter_set.period_length_production
+                
+            else:
+                
+                if self.current_period_phase == PeriodPhase.PRODUCTION:
+                    self.do_period_production()
+
+                self.time_remaining -= 1
+
+        self.save()
+
         result = self.json_for_timmer()
 
         return {"value" : status, "result" : result}
 
+    def do_period_production(self):
+        '''
+        do one second of production for all players
+        '''
 
+        for p in self.session_players.all():
+            p.do_period_production(self.time_remaining)
+    
+    def do_period_consumption(self):
+        '''
+        covert goods in house to earnings
+        '''
+
+        for p in self.session_players.all():
+            p.do_period_consumption()
 
     def json(self):
         '''
@@ -151,7 +200,7 @@ class Session(models.Model):
             chat[str(i+1)] = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
                                                        .filter(session_player__in=self.session_players.all())\
                                                        .filter(session_player__parameter_set_player__town=i+1)                                                       
-                      ]
+                             ]
 
         return{
             "id":self.id,
@@ -179,6 +228,9 @@ class Session(models.Model):
         return{
             "started":self.started,
             "current_period":self.current_period,
+            "current_period_phase":self.current_period_phase,
+            "time_remaining":self.time_remaining,
+            "timer_running":self.timer_running,
             "finished":self.finished,
             "parameter_set":self.parameter_set.json_for_subject(),
 
