@@ -25,15 +25,16 @@
                 Phase:
             </div>
             <div class="col text-start ps-1">
-                [[session.current_period_phase]]
+                <span v-if="session.current_period_phase=='Production'">Growth</span>
+                <span v-else>Move</span>
             </div>
         </div>
         <div class="row">
             <div class="col text-end pe-1">
-                Profit:
+                Profit (¢):
             </div>
             <div class="col text-start ps-1">
-                
+                [[session_player.earnings]]
             </div>
         </div>
     </div>                    
