@@ -32,6 +32,8 @@ class SessionPlayer(models.Model):
     player_number = models.IntegerField(verbose_name='Player number', default=0)               #player number, from 1 to N
     player_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')   #login and channel key
 
+    earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)      #earnings in cents
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -122,6 +124,18 @@ class SessionPlayer(models.Model):
         self.session_player_moves_b.all().delete()
         self.session_player_chats_b.all().delete()
 
+        self.good_one_house = 0
+        self.good_two_house = 0
+        self.good_three_house = 0
+
+        self.good_one_field = 0
+        self.good_two_field = 0
+        self.good_three_field = 0
+
+        self.earnings = 0
+
+        self.save()
+
     def get_current_group_list(self):
         '''
         return list of session_players in group
@@ -147,7 +161,6 @@ class SessionPlayer(models.Model):
         '''
         json object of model
         '''
-
         return{
             "id" : self.id,         
 
@@ -157,6 +170,8 @@ class SessionPlayer(models.Model):
 
             "good_one_field" : self.good_one_field,
             "good_two_field" : self.good_two_field,
+
+            "earnings" : self.earnings,
 
             "player_number" : self.player_number,
             "player_key" : self.player_key,
@@ -196,7 +211,7 @@ class SessionPlayer(models.Model):
 
     def json_min(self):
         '''
-        minimal json objcet of model
+        minimal json object of model
         '''
 
         return{
