@@ -43,6 +43,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         parameterset_player_form.fields['good_one'].queryset = session.parameter_set.parameter_set_goods.all()
         parameterset_player_form.fields['good_two'].queryset = session.parameter_set.parameter_set_goods.all()
         parameterset_player_form.fields['good_three'].queryset = session.parameter_set.parameter_set_goods.all()
+        parameterset_player_form.fields['parameter_set_type'].queryset = session.parameter_set.parameter_set_types.all()
 
         parameterset_form_ids=[]
         for i in ParameterSetForm():

@@ -156,7 +156,7 @@ class Session(models.Model):
                     self.current_period_phase = PeriodPhase.TRADE
                     self.time_remaining = self.parameter_set.period_length_trade
                 else:
-                    self.do_period_production()
+                    self.do_period_consumption()
                     self.current_period += 1
                     self.current_period_phase = PeriodPhase.PRODUCTION
                     self.time_remaining = self.parameter_set.period_length_production
@@ -242,6 +242,11 @@ class Session(models.Model):
         return json object for timer update
         '''
 
+        session_players = []
+
+        if self.current_period_phase == PeriodPhase.PRODUCTION:
+            session_players = [i.json_min() for i in self.session_players.all()]
+
         return{
             "started":self.started,
             "current_period":self.current_period,
@@ -249,6 +254,7 @@ class Session(models.Model):
             "time_remaining":self.time_remaining,
             "timer_running":self.timer_running,
             "finished":self.finished,
+            "session_players":session_players,
         }
        
 @receiver(post_delete, sender=Session)

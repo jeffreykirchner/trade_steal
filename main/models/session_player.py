@@ -3,7 +3,9 @@ session player model
 '''
 
 #import logging
+import decimal
 import uuid
+from decimal import Decimal
 
 from django.db import models
 from django.forms.utils import to_current_timezone
@@ -17,6 +19,8 @@ from django.db.models.expressions import RawSQL
 from main.models import Session, parameter_set_player
 from main.models import ParameterSetPlayer
 
+from main.globals import round_half_away_from_zero
+
 import main
 
 class SessionPlayer(models.Model):
@@ -26,12 +30,12 @@ class SessionPlayer(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="session_players")
     parameter_set_player = models.ForeignKey(ParameterSetPlayer, on_delete=models.CASCADE, related_name="session_players_paramterset")
 
-    good_one_house = models.IntegerField(verbose_name='Good one in house', default=0)        #amount of good one currently in house
-    good_two_house = models.IntegerField(verbose_name='Good two in house', default=0)        #amount of good two currently in house
-    good_three_house = models.IntegerField(verbose_name='Good three in house', default=0)    #amount of good three currently in house
+    good_one_house = models.DecimalField(verbose_name = 'Good one in house', decimal_places=0, default=0, max_digits=3)
+    good_two_house =  models.DecimalField(verbose_name = 'Good two in house', decimal_places=0, default=0, max_digits=3)
+    good_three_house =  models.DecimalField(verbose_name = 'Good three in house', decimal_places=0, default=0, max_digits=3)
 
-    good_one_field = models.IntegerField(verbose_name='Good one in field', default=0)        #amount of good one currently in field
-    good_two_field = models.IntegerField(verbose_name='Good two in field', default=0)        #amount of good two currently in field
+    good_one_field = models.DecimalField(verbose_name = 'Good one in field', decimal_places=9, default=0, max_digits=12)
+    good_two_field = models.DecimalField(verbose_name = 'Good two in field', decimal_places=9, default=0, max_digits=12)
 
     good_one_production_rate = models.IntegerField(verbose_name='Good one production rate (0-100)', default=50)        #percent of time to devote to good one production
     good_two_production_rate = models.IntegerField(verbose_name='Good two production rate (0-100)', default=50)        #percent of time to devote to good two production
@@ -177,20 +181,44 @@ class SessionPlayer(models.Model):
 
         # Good Production = P1 + P2 x Time ^ P3
 
-        total_time = self.parameter_set_player.parameter_set.period_length_production
-        parameter_set_type = self.parameter_set_player.parameter_set_type
-
-        # good_one_field = good_one.
         
+        parameter_set_type = self.parameter_set_player.parameter_set_type
+  
+        self.good_one_field += self.do_period_production_function(parameter_set_type.good_one_production_1,
+                                                                  parameter_set_type.good_one_production_2,
+                                                                  parameter_set_type.good_one_production_3,
+                                                                  self.good_one_production_rate)
 
-        # self.good_one_field += good_one_field
+        self.good_two_field += self.do_period_production_function(parameter_set_type.good_two_production_1,
+                                                                  parameter_set_type.good_two_production_2,
+                                                                  parameter_set_type.good_two_production_3,
+                                                                  self.good_two_production_rate)
 
         self.save()
+
+    def do_period_production_function(self, good_production_1, good_production_2, good_production_3, production_rate):
+        '''
+        return production for single good
+        '''
+        total_time = Decimal(self.parameter_set_player.parameter_set.period_length_production)
+
+        good_time =  total_time * Decimal(production_rate)/Decimal('100')
+        production = good_production_1 + good_production_2 * good_time ** good_production_3
+        production *= Decimal('1')/total_time
+
+        return round(production, 9)
         
     def do_period_consumption(self):
         '''
         covert goods in house to earnings
         '''
+
+        self.good_one_house = 0
+        self.good_two_house = 0
+        self.good_three_house = 0
+
+        self.good_one_field = 0
+        self.good_two_field = 0
 
         self.save()
 
@@ -201,12 +229,12 @@ class SessionPlayer(models.Model):
         return{
             "id" : self.id,         
 
-            "good_one_house" : self.good_one_house,
-            "good_two_house" : self.good_two_house,
-            "good_three_house" : self.good_three_house,
+            "good_one_house" : round_half_away_from_zero(self.good_one_house, 0),
+            "good_two_house" : round_half_away_from_zero(self.good_two_house, 0),
+            "good_three_house" : round_half_away_from_zero(self.good_three_house, 0),
 
-            "good_one_field" : self.good_one_field,
-            "good_two_field" : self.good_two_field,
+            "good_one_field" : round_half_away_from_zero(self.good_one_field, 0),
+            "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
 
             "earnings" : self.earnings,
 
@@ -229,12 +257,12 @@ class SessionPlayer(models.Model):
         return{
             "id" : self.id,  
 
-            "good_one_house" : self.good_one_house,
-            "good_two_house" : self.good_two_house,
-            "good_three_house" : self.good_three_house,
+            "good_one_house" : round_half_away_from_zero(self.good_one_house, 0),
+            "good_two_house" : round_half_away_from_zero(self.good_two_house, 0),
+            "good_three_house" : round_half_away_from_zero(self.good_three_house, 0),
 
-            "good_one_field" : self.good_one_field,
-            "good_two_field" : self.good_two_field,
+            "good_one_field" : round_half_away_from_zero(self.good_one_field, 0),
+            "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
 
             "player_number" : self.player_number,
 
@@ -254,12 +282,12 @@ class SessionPlayer(models.Model):
         return{
             "id" : self.id,         
 
-            "good_one_house" : self.good_one_house,
-            "good_two_house" : self.good_two_house,
-            "good_three_house" : self.good_three_house,
+            "good_one_house" : round_half_away_from_zero(self.good_one_house, 0),
+            "good_two_house" : round_half_away_from_zero(self.good_two_house, 0),
+            "good_three_house" : round_half_away_from_zero(self.good_three_house, 0),
 
-            "good_one_field" : self.good_one_field,
-            "good_two_field" : self.good_two_field,
+            "good_one_field" : round_half_away_from_zero(self.good_one_field, 0),
+            "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
         }
 
         

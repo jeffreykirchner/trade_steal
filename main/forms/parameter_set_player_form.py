@@ -7,7 +7,7 @@ from django.db.models.query import RawQuerySet
 
 from main.models import ParameterSetPlayer
 from main.models import ParameterSetGood
-from main.globals import SubjectType
+from main.models import ParameterSetType
 
 class ParameterSetPlayerForm(forms.ModelForm):
     '''
@@ -32,9 +32,10 @@ class ParameterSetPlayerForm(forms.ModelForm):
                                                                   "min":"1",
                                                                   "max":"8"}))
     
-    subject_type = forms.ChoiceField(label='Player Type',
-                                     choices=SubjectType.choices,
-                                     widget=forms.Select(attrs={"v-model":"current_parameter_set_player.subject_type"}))
+    parameter_set_type = forms.ModelChoiceField(label='Player Type',
+                                          empty_label=None,
+                                          queryset=ParameterSetType.objects.none(),
+                                          widget=forms.Select(attrs={"v-model":"current_parameter_set_player.parameter_set_type.id"}))
 
     good_one = forms.ModelChoiceField(label='First Good',
                                       empty_label=None,
@@ -53,7 +54,7 @@ class ParameterSetPlayerForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSetPlayer
-        fields =['town','location', 'id_label', 'subject_type', 'good_one', 'good_two', 'good_three']
+        fields =['town','location', 'id_label', 'parameter_set_type', 'good_one', 'good_two', 'good_three']
     
     def clean(self):
         cleaned_data = super().clean()

@@ -356,6 +356,7 @@ def take_update_parameterset_player(data):
     form.fields['good_one'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
     form.fields['good_two'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
     form.fields['good_three'].queryset = parameter_set_player.parameter_set.parameter_set_goods.all()
+    form.fields['parameter_set_type'].queryset = parameter_set_player.parameter_set.parameter_set_types.all()
 
     if form.is_valid():
         #print("valid form")             
@@ -439,14 +440,14 @@ def take_add_paramterset_player(data):
     last_parameter_set_player = session.parameter_set.parameter_set_players.last()
 
     if last_parameter_set_player:
-        session.parameter_set.add_new_player(main.globals.SubjectType.ONE,
+        session.parameter_set.add_new_player(last_parameter_set_player.parameter_set_type,
                                              0,
                                              last_parameter_set_player.good_one,
                                              last_parameter_set_player.good_two,
                                              last_parameter_set_player.good_three)
     else:
         parameters = []
-        parameters.append(main.globals.SubjectType.ONE)
+        parameters.append(last_parameter_set_player.parameter_set_type)
         parameters.append(0)
         for i in session.parameter_set.parameter_set_goods.all():
             parameters.append(i)

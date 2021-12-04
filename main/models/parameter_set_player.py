@@ -22,7 +22,7 @@ class ParameterSetPlayer(models.Model):
     good_two = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_players_b")
     good_three = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_player_c")
 
-    subject_type = models.ForeignKey(ParameterSetType, on_delete=models.CASCADE, related_name="parameter_set_players_d")
+    parameter_set_type = models.ForeignKey(ParameterSetType, on_delete=models.CASCADE, related_name="parameter_set_players_d")
 
     id_label = models.CharField(verbose_name='ID Label', max_length = 2, default="1")      #id label shown on screen to subjects
     location = models.IntegerField(verbose_name='Location number (1-24)', default=1)       #location number of 1 to 8
@@ -113,7 +113,8 @@ class ParameterSetPlayer(models.Model):
             "id_label" : self.id_label,
             "location" : self.location,
             "town" : self.town,
-            "subject_type" : self.subject_type.subject_type,
+
+            "parameter_set_type" : self.parameter_set_type.json(),
 
             "good_one" : self.good_one.json(),
             "good_two" : self.good_two.json(),

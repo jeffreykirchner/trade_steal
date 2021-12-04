@@ -25,6 +25,7 @@ from main.models import SessionPlayerChat
 from main.globals import ContainerTypes
 from main.globals import ChatTypes
 from main.globals import PeriodPhase
+from main.globals import round_half_away_from_zero
 
 class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
@@ -365,16 +366,16 @@ def take_move_goods(session_id, player_key, data):
 
                 #handle source
                 if source_type == "house":
-                    if source_session_player.good_one_house < good_one_amount:
+                    if round_half_away_from_zero(source_session_player.good_one_house, 0) < good_one_amount:
                          return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                     
                     #check enough good two
-                    if source_session_player.good_two_house < good_two_amount:
+                    if round_half_away_from_zero(source_session_player.good_two_house, 0) < good_two_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
 
-                    if session.parameter_set.good_count == 3:
+                    if round_half_away_from_zero(session.parameter_set.good_count, 0) == 3:
                         if source_session_player.good_three_house < good_three_amount:
                             return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_three.label}."]},
                                     "message" : "Move Error"}
@@ -384,19 +385,34 @@ def take_move_goods(session_id, player_key, data):
                     source_session_player.good_one_house -= good_one_amount
                     source_session_player.good_two_house -= good_two_amount 
 
+                    if source_session_player.good_one_house < 0:
+                        source_session_player.good_one_house = 0
+                    
+                    if source_session_player.good_two_house < 0:
+                        source_session_player.good_two_house = 0
+                    
+                    if source_session_player.good_three_house < 0:
+                        source_session_player.good_three_house = 0
+
                 else:
                     #check enough good one
-                    if source_session_player.good_one_field < good_one_amount:
+                    if round_half_away_from_zero(source_session_player.good_one_field, 0) < good_one_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                     
                     #check enough good two
-                    if source_session_player.good_two_field < good_two_amount:
+                    if round_half_away_from_zero(source_session_player.good_two_field, 0) < good_two_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
                     
                     source_session_player.good_one_field -= good_one_amount
                     source_session_player.good_two_field -= good_two_amount
+
+                    if source_session_player.good_one_field < 0:
+                        source_session_player.good_one_field = 0
+
+                    if source_session_player.good_two_field < 0:
+                        source_session_player.good_two_field = 0
 
                 source_session_player.save()
 

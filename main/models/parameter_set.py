@@ -184,7 +184,7 @@ class ParameterSet(models.Model):
         player.good_two = good_two
         player.good_three = good_three
 
-        player.subject_type = subject_type
+        player.parameter_set_type = subject_type
         player.id_label = str(location+1)
         player.location = location+1
 

@@ -268,6 +268,8 @@ var app = Vue.createApp({
             app.$data.session.time_remaining = result.time_remaining;
             app.$data.session.timer_running = result.timer_running;
             app.$data.session.finished = result.finished;
+
+            app.takeUpdateGoods({status : {result : result.session_players}});
         },
 
         /**

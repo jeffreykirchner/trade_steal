@@ -18,7 +18,12 @@ var app = Vue.createApp({
                     other_color : 0xD3D3D3,
                     session_player : {player_number : "---",
                                       earnings : "---",
-                                      chat_all : [],},
+                                      chat_all : [],
+                                      parameter_set_player :{
+                                        good_one : {label:"---", rgb_color:"#ffffff"},
+                                        good_two : {label:"---", rgb_color:"#ffffff"},
+                                        good_three : {label:"---", rgb_color:"#ffffff"},
+                                      }},
                     session : {
                         current_period : 1,
                         started : false,
@@ -207,9 +212,9 @@ var app = Vue.createApp({
         },
 
         /**
-         * update time and start status
-         */
-         takeUpdateTime(messageData){
+        * update time and start status
+        */
+        takeUpdateTime(messageData){
             let result = messageData.status.result;
             let status = messageData.status.value;
 
@@ -221,6 +226,8 @@ var app = Vue.createApp({
             app.$data.session.time_remaining = result.time_remaining;
             app.$data.session.timer_running = result.timer_running;
             app.$data.session.finished = result.finished;
+
+            app.takeUpdateGoods({status : {result : result.session_players}});
         },
 
         //do nothing on when enter pressed for post

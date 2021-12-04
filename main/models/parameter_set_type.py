@@ -35,7 +35,7 @@ class ParameterSetType(models.Model):
     updated= models.DateTimeField(auto_now= True)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.subject_type)
 
     class Meta:
         verbose_name = 'Parameter Set Type'
@@ -80,6 +80,7 @@ class ParameterSetType(models.Model):
         return{
 
             "id" : self.id,
+
             "subject_type" : self.subject_type,
             "good_one_amount" : self.good_one_amount,
             "good_two_amount" : self.good_two_amount,

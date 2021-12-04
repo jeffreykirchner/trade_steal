@@ -56,7 +56,7 @@
                                 [[p.id_label]]
                             </td>
                             <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.subject_type]]
+                                [[p.parameter_set_type.subject_type]]
                             </td>
                             <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
                                 <span v-bind:style = "{color : p.good_one.rgb_color}">[[p.good_one.label]]</span>
