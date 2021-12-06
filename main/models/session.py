@@ -255,6 +255,7 @@ class Session(models.Model):
             "timer_running":self.timer_running,
             "finished":self.finished,
             "session_players":session_players,
+            "session_player_earnings": [i.json_eaning() for i in self.session_players.all()]
         }
        
 @receiver(post_delete, sender=Session)

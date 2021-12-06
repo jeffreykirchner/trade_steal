@@ -228,6 +228,10 @@ var app = Vue.createApp({
             app.$data.session.finished = result.finished;
 
             app.takeUpdateGoods({status : {result : result.session_players}});
+
+            //update subject earnings
+            app.$data.session_player.earnings = result.session_player_earnings.earnings;
+            
         },
 
         //do nothing on when enter pressed for post

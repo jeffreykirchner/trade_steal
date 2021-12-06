@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 
 import json
 import logging
+import copy
 
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
@@ -242,8 +243,16 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update running, phase and time status
         '''
 
+        event_data = copy.deepcopy(event["data"])
+
+        #remove other player earnings
+        for session_players_earnings in event_data["result"]["session_player_earnings"]:
+            if session_players_earnings["id"] == self.session_player_id:
+                event_data["result"]["session_player_earnings"] = session_players_earnings
+                break
+
         message_data = {}
-        message_data["status"] = event["data"]
+        message_data["status"] = event_data
 
         message = {}
         message["messageType"] = event["type"]

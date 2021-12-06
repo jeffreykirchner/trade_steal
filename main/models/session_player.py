@@ -213,6 +213,17 @@ class SessionPlayer(models.Model):
         covert goods in house to earnings
         '''
 
+        parameter_set_type = self.parameter_set_player.parameter_set_type
+
+        earnings_per_unit = max(parameter_set_type.good_one_amount, parameter_set_type.good_two_amount)
+
+        while self.good_one_house >= parameter_set_type.good_one_amount and \
+              self.good_two_house >= parameter_set_type.good_two_amount:
+
+              self.earnings += earnings_per_unit
+              self.good_one_house -= parameter_set_type.good_one_amount
+              self.good_two_house -= parameter_set_type.good_two_amount
+
         self.good_one_house = 0
         self.good_two_house = 0
         self.good_three_house = 0
@@ -280,7 +291,7 @@ class SessionPlayer(models.Model):
         '''
 
         return{
-            "id" : self.id,         
+            "id" : self.id,    
 
             "good_one_house" : round_half_away_from_zero(self.good_one_house, 0),
             "good_two_house" : round_half_away_from_zero(self.good_two_house, 0),
@@ -289,5 +300,15 @@ class SessionPlayer(models.Model):
             "good_one_field" : round_half_away_from_zero(self.good_one_field, 0),
             "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
         }
+    
+    def json_eaning(self):
+        '''
+        return json object of earnings only
+        '''
+        return{
+            "id" : self.id, 
+            "earnings" : self.earnings,
+        }
+
 
         

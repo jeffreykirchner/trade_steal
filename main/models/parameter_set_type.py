@@ -20,8 +20,8 @@ class ParameterSetType(models.Model):
     
     subject_type = models.CharField(max_length=100, choices=SubjectType.choices, default=SubjectType.ONE)         #type of subject
      
-    good_one_amount =  models.IntegerField(verbose_name='Good One Amount', default=1)         #amount of good one needed to earn 1 cent
-    good_two_amount =  models.IntegerField(verbose_name='Good Two Amount', default=1)         #amount of good two needed to earn 1 cent
+    good_one_amount =  models.IntegerField(verbose_name='Good One Amount', default=1)         #amount of good one needed to earn cents
+    good_two_amount =  models.IntegerField(verbose_name='Good Two Amount', default=1)         #amount of good two needed to earn cents
 
     good_one_production_1 = models.DecimalField(verbose_name = 'Good One Production Parameter 1', decimal_places=9, default=0, max_digits=10)
     good_one_production_2 = models.DecimalField(verbose_name = 'Good One Production Parameter 2', decimal_places=9, default=0, max_digits=10)
