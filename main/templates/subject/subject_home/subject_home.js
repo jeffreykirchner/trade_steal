@@ -18,6 +18,8 @@ var app = Vue.createApp({
                     other_color : 0xD3D3D3,
                     session_player : {player_number : "---",
                                       earnings : "---",
+                                      good_one_production_rate : 50,
+                                      good_two_production_rate : 50,
                                       chat_all : [],
                                       parameter_set_player :{
                                         good_one : {label:"---", rgb_color:"#ffffff"},
@@ -86,6 +88,10 @@ var app = Vue.createApp({
                     chat_recipients_index : 0,
                     chat_button_label : "Everyone",
                     chat_list_to_display : [],                //list of chats to display on screen
+
+                    production_slider : 0,
+                    production_slider_one : 50,
+                    production_slider_two : 50,
                 }},
     methods: {
 
@@ -131,6 +137,9 @@ var app = Vue.createApp({
                     break;
                 case "update_time":
                     app.takeUpdateTime(messageData);
+                    break;
+                case "production_time":
+                    app.takeProduction(messageData);
                     break;
             }
 
@@ -180,7 +189,15 @@ var app = Vue.createApp({
 
             if(app.$data.session.started)
             {
-                
+                app.$data.production_slider_one =  app.$data.session_player.good_one_production_rate;
+                app.$data.production_slider_two =  app.$data.session_player.good_two_production_rate;
+
+                if(app.$data.production_slider_one>50){
+                    app.$data.production_slider = 50-app.$data.production_slider_one;
+                }
+                else if(app.$data.production_slider_one<50){
+                    app.$data.production_slider = app.$data.production_slider_two-50;
+                }
             }
             else
             {

@@ -68,7 +68,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         move goods between two containers
         '''
         #update subject count
-        result = await sync_to_async(take_move_goods)(self.session_id, self.connection_uuid, event["message_text"])
+        result = await sync_to_async(take_move_goods)(self.session_id, self.session_player_id, event["message_text"])
 
         message_data = {}
         message_data["status"] = result
@@ -135,7 +135,24 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                  "sender_channel_name": self.channel_name},
             )
     
-    #consumer ujpdates
+    async def production_time(self, event):
+        '''
+        take update to production time between goods one and two
+        '''
+        #update subject count
+        result = await sync_to_async(take_production_time)(self.session_id, self.session_player_id, event["message_text"])
+
+        message_data = {}
+        message_data["status"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        # Send reply to sending channel
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    #consumer updates
     async def update_start_experiment(self, event):
         '''
         start experiment on subjects
@@ -287,13 +304,13 @@ def take_get_session_id(player_key):
 
     return session_player.session.id
   
-def take_move_goods(session_id, player_key, data):
+def take_move_goods(session_id, session_player_id, data):
     '''
     move goods between locations (house or field)
     '''
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Move goods: {session_id} {player_key} {data}")
+    logger.info(f"Move goods: {session_id} {session_player_id} {data}")
 
     #session_id = data["sessionID"]
     #uuid = data["uuid"]
@@ -315,7 +332,7 @@ def take_move_goods(session_id, player_key, data):
         target_id = data["targetID"]
 
         session = Session.objects.get(id=session_id)
-        session_player = session.session_players.get(player_key=player_key)
+        session_player = session.session_players.get(id=session_player_id)
 
         form_type = ""       #form suffix for 2 or three goods        
         if source_type == "house" and session.parameter_set.good_count == 3:
@@ -552,6 +569,46 @@ def take_update_local_info(session_id, player_key, data):
         return {"group_number" : None, 
                 "session_player_id" : None,
                 "town_number" : None}
+
+def take_production_time(session_id, session_player_id, data):
+    '''
+    update subjects production time split between good one and two
+    '''
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"take production time: {session_id} {session_player_id} {data}")
+
+    try:
+        good_one_production_rate =  data["production_slider_one"]
+        good_two_production_rate = data["production_slider_two"]
+    except KeyError:
+        message = "Invalid values."
+        logger.warning(f"take production time: {message}")
+        return {"value" : "fail", "result" : {}, "message" : message}
+    
+    if good_one_production_rate + good_two_production_rate != 100:
+        message = "Invalid values."
+        logger.warning(f"take production time: {message}")
+        return {"value" : "fail", "result" : {}, "message" : message}
+
+    try:
+        session = Session.objects.get(id=session_id)
+        session_player = SessionPlayer.objects.get(id=session_player_id)
+
+        # if session.current_period_phase == PeriodPhase.PRODUCTION:
+        #     message = "Not updates during production."
+        #     logger.warning(f"take production time: {message}")
+        #     return {"value" : "fail", "result" : {}, "message" : message}
+
+        session_player.good_one_production_rate = good_one_production_rate
+        session_player.good_two_production_rate = good_two_production_rate
+
+        session_player.save()
+
+        return {"value" : "success", "result" : {"good_one_production_rate" : session_player.good_one_production_rate,
+                                                 "good_two_production_rate" : session_player.good_two_production_rate }} 
+    except ObjectDoesNotExist:      
+        return {"value" : "fail", "result" : {}, "message" : "Invalid player."} 
 
     
      

@@ -249,6 +249,9 @@ class SessionPlayer(models.Model):
 
             "earnings" : self.earnings,
 
+            "good_one_production_rate" : self.good_one_production_rate,
+            "good_two_production_rate" : self.good_two_production_rate,
+
             "player_number" : self.player_number,
             "player_key" : self.player_key,
 
