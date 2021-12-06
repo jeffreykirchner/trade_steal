@@ -15,6 +15,7 @@ from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerChat
 from main.models import SessionPlayerMove
+from main.models import SessionPlayerPeriod
 
 class ParametersAdmin(admin.ModelAdmin):
     '''
@@ -47,3 +48,4 @@ admin.site.register(Session)
 admin.site.register(SessionPlayer)
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerMove)
+admin.site.register(SessionPlayerPeriod)

@@ -152,7 +152,23 @@ class SessionPlayer(models.Model):
 
         self.earnings = 0
 
+        self.good_one_production_rate = 50
+        self.good_two_production_rate = 50
+
         self.save()
+    
+    def start(self):
+        '''
+        start experiment
+        '''
+
+        #session player periods
+        session_player_periods = []
+
+        for i in self.session.session_periods.all():
+            session_player_periods.append(main.models.SessionPlayerPeriod(session_period=i, session_player=self))
+        
+        main.models.SessionPlayerPeriod.objects.bulk_create(session_player_periods)
 
     def get_current_group_list(self):
         '''
@@ -208,11 +224,32 @@ class SessionPlayer(models.Model):
         production *= Decimal('1')/total_time
 
         return round(production, 9)
-        
+
+    def record_period_production(self):
+        '''
+        record how much subject produced this period
+        '''
+
+        session_player_period = self.session_player_periods_b.get(session_period=self.session.get_current_session_period())
+
+        session_player_period.good_one_production = round_half_away_from_zero(self.good_one_field, 0)
+        session_player_period.good_two_production = round_half_away_from_zero(self.good_two_field, 0)
+
+        session_player_period.save()
+
     def do_period_consumption(self):
         '''
         covert goods in house to earnings
         '''
+
+        #record house inventory
+        session_player_period = self.session_player_periods_b.get(session_period=self.session.get_current_session_period())
+
+        session_player_period.good_one_consumption = int(self.good_one_house)
+        session_player_period.good_two_consumption = int(self.good_two_house)
+        session_player_period.good_three_consumption = int(self.good_three_house)
+
+        #convert goods to earnings
 
         parameter_set_type = self.parameter_set_player.parameter_set_type
 
@@ -222,6 +259,8 @@ class SessionPlayer(models.Model):
               self.good_two_house >= parameter_set_type.good_two_amount:
 
               self.earnings += earnings_per_unit
+              session_player_period.earnings += earnings_per_unit
+
               self.good_one_house -= parameter_set_type.good_one_amount
               self.good_two_house -= parameter_set_type.good_two_amount
 
@@ -233,6 +272,7 @@ class SessionPlayer(models.Model):
         self.good_two_field = 0
 
         self.save()
+        session_player_period.save()
 
     def json(self):
         '''

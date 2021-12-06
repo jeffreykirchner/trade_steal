@@ -90,6 +90,9 @@ class Session(models.Model):
         main.models.SessionPeriod.objects.bulk_create(session_periods)
 
         self.save()
+
+        for i in self.session_players.all():
+            i.start()
     
     def reset_experiment(self):
         '''
@@ -152,6 +155,8 @@ class Session(models.Model):
             if self.time_remaining == 0:
 
                 if self.current_period_phase == PeriodPhase.PRODUCTION:
+                    self.record_period_production()
+                    
                     #start trade phase
                     self.current_period_phase = PeriodPhase.TRADE
                     self.time_remaining = self.parameter_set.period_length_trade
@@ -181,6 +186,14 @@ class Session(models.Model):
 
         for p in self.session_players.all():
             p.do_period_production(self.time_remaining)
+    
+    def record_period_production(self):
+        '''
+        do one second of production for all players
+        '''
+
+        for p in self.session_players.all():
+            p.record_period_production()
     
     def do_period_consumption(self):
         '''
