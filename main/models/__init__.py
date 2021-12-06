@@ -14,5 +14,6 @@ from .session_period import SessionPeriod
 from .session_player import SessionPlayer
 from .session_player_move import SessionPlayerMove
 from .session_player_chat import SessionPlayerChat
+from .session_player_period import SessionPeriod
 
 

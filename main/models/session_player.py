@@ -140,6 +140,7 @@ class SessionPlayer(models.Model):
         '''
         self.session_player_moves_b.all().delete()
         self.session_player_chats_b.all().delete()
+        self.session_player_periods_b.all().delete()
 
         self.good_one_house = 0
         self.good_two_house = 0

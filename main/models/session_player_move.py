@@ -1,5 +1,5 @@
 '''
-session move goods
+session player move goods
 '''
 
 #import logging
@@ -53,7 +53,6 @@ class SessionPlayerMove(models.Model):
         '''
         json object of model
         '''
-
         return{
             "id" : self.id,         
 
