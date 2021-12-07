@@ -205,7 +205,7 @@ setupSingleHouse(index){
                       good_c_label : parameter_set_player.good_three.label,};
 
     if(app.$data.is_subject)  //only subject screen can move items
-        if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
+        if(app.$data.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.$data.session_player.id)
             container.on('pointerdown', app.handleHousePointerDown.bind(this, index));
 
     container.on('pointerup', app.handleHousePointerUp.bind(this, index))
@@ -325,7 +325,7 @@ setupSingleField(index){
 
     //prevent stealing    
     if(app.$data.is_subject)  //only subject screen can move items
-        if(app.$data.session.parameter_set.allow_stealing == "True" || index == app.$data.session_player.player_number-1)
+        if(app.$data.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.$data.session_player.id)
             container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
 
     container.on('pointerup', app.handleFieldPointerUp.bind(this, index))

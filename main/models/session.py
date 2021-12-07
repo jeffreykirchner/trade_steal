@@ -164,8 +164,7 @@ class Session(models.Model):
                     self.do_period_consumption()
                     self.current_period += 1
                     self.current_period_phase = PeriodPhase.PRODUCTION
-                    self.time_remaining = self.parameter_set.period_length_production
-                
+                    self.time_remaining = self.parameter_set.period_length_production                
             else:
                 
                 if self.current_period_phase == PeriodPhase.PRODUCTION:
@@ -268,7 +267,8 @@ class Session(models.Model):
             "timer_running":self.timer_running,
             "finished":self.finished,
             "session_players":session_players,
-            "session_player_earnings": [i.json_eaning() for i in self.session_players.all()]
+            "do_group_update" : True if self.time_remaining==self.parameter_set.period_length_production and self.current_period_phase == PeriodPhase.PRODUCTION else False,
+            "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }
        
 @receiver(post_delete, sender=Session)

@@ -262,11 +262,23 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         event_data = copy.deepcopy(event["data"])
 
+        #if new period is starting, update local info
+        if event_data["result"]["do_group_update"]:
+             await self.update_local_info(event)
+
         #remove other player earnings
         for session_players_earnings in event_data["result"]["session_player_earnings"]:
             if session_players_earnings["id"] == self.session_player_id:
                 event_data["result"]["session_player_earnings"] = session_players_earnings
                 break
+        
+        #remove none group memebers
+        session_players = []
+        for session_player in event_data["result"]["session_players"]:
+            if session_player["group_number"] == self.group_number:
+                session_players.append(session_player)
+
+        event_data["result"]["session_players"] = session_players
 
         message_data = {}
         message_data["status"] = event_data
@@ -276,7 +288,23 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-        
+
+    async def update_groups(self, event)  :
+        '''
+        update groups on client
+        '''
+
+        result = await sync_to_async(take_update_groups)(self.session_id, self.session_player_id)
+
+        message_data = {}
+        message_data["status"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''
@@ -610,5 +638,23 @@ def take_production_time(session_id, session_player_id, data):
     except ObjectDoesNotExist:      
         return {"value" : "fail", "result" : {}, "message" : "Invalid player."} 
 
-    
+def take_update_groups(session_id, session_player_id):
+    '''
+    update groups on the client screen
+    '''
+    logger = logging.getLogger(__name__) 
+
+    try:
+        session_player = SessionPlayer.objects.get(id=session_player_id)
+
+        group_list = session_player.get_current_group_list()
+
+        return {"value" : "success",
+                "result" : {"session_players" : [p.json_for_subject(session_player) for p in group_list]}}
+
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_groups: session not found, session {session_id}, session_player_id {session_player_id}")
+        return {"value" : "fail", "result" : {}, "message" : "Group update error"}
+
+
      

@@ -209,6 +209,14 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 "sender_channel_name": self.channel_name,},
             )
 
+            if timer_result["result"]["do_group_update"]:
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_groups",
+                     "data": {},
+                     "sender_channel_name": self.channel_name,},
+                )
+
             await self.channel_layer.send(
                 self.channel_name,
                 {
@@ -301,19 +309,23 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def update_groups(self, event)  :
+        '''
+        update groups on client
+        '''
+
+        result = await sync_to_async(take_update_groups)(self.session_id)
+
+        message_data = {}
+        message_data["status"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
 #local async function
-# async def do_period_timer(session_id):
-#     '''
-#     handle period update timer
-#     '''
-    
-#     result={}
-
-#     logger = logging.getLogger(__name__)
-#     logger.info(f"do_period_timer: {result}")
-
-#     return result
 
 #local sync functions    
 def take_get_session(session_key):
@@ -467,5 +479,17 @@ def take_do_period_timer(session_id):
     logger.info(f"take_do_period_timer: {return_json}")
 
     return return_json
+
+def take_update_groups(session_id):
+    '''
+    take update groups
+    '''
+
+    session = Session.objects.get(id=session_id)
+
+    status = "success"
+    
+    return {"status" : status,
+            "group_list" : []}
 
 

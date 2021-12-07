@@ -301,6 +301,8 @@ class SessionPlayer(models.Model):
 
             "parameter_set_player" : self.parameter_set_player.json(),
 
+            "group_number" : self.get_current_group_number(),
+
             "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)],
         }
     
@@ -321,6 +323,8 @@ class SessionPlayer(models.Model):
             "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
 
             "player_number" : self.player_number,
+
+            "group_number" : self.get_current_group_number(),
 
             "chat_individual" : [c.json_for_subject() for c in  main.models.SessionPlayerChat.objects \
                                                                             .filter(chat_type=main.globals.ChatTypes.INDIVIDUAL) \
@@ -344,9 +348,11 @@ class SessionPlayer(models.Model):
 
             "good_one_field" : round_half_away_from_zero(self.good_one_field, 0),
             "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
+
+            "group_number" : self.get_current_group_number(),
         }
     
-    def json_eaning(self):
+    def json_earning(self):
         '''
         return json object of earnings only
         '''

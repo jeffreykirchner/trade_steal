@@ -149,6 +149,9 @@ var app = Vue.createApp({
                 case "production_time":
                     app.takeProduction(messageData);
                     break;
+                case "update_groups":
+                    app.takeUpdateGroups(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -258,6 +261,20 @@ var app = Vue.createApp({
             //update subject earnings
             app.$data.session_player.earnings = result.session_player_earnings.earnings;
             
+        },
+
+        /**
+         * update players in group
+         */
+        takeUpdateGroups(messageData){
+            app.destroyPixiPlayers();
+
+            app.$data.session.session_players = messageData.status.result.session_players;
+
+            setTimeout(app.setupPixiPlayers, 250);
+
+            app.updateChatDisplay();
+            app.calcWaste();
         },
 
         //do nothing on when enter pressed for post
