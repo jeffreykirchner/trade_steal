@@ -183,6 +183,7 @@ class SessionPlayer(models.Model):
         '''
         return current group number
         '''
+        
         return self.parameter_set_player.parameter_set_player_groups.get(period=self.session.current_period).group_number
     
     def get_current_town_number(self):

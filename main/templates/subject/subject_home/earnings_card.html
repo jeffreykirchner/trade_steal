@@ -1,4 +1,4 @@
-<div class="card mt-4">                  
+<div class="card">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">Period Earnings</span>            
 
@@ -20,11 +20,7 @@
                 </span>
 
                 goods and 
-            </div>            
-        </div>
 
-        <div class="row">
-            <div class="col text-center">
                 [[session_player.parameter_set_player.parameter_set_type.good_two_amount]]
 
                 <span v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
@@ -32,30 +28,35 @@
                 </span>
 
                 goods
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col text-center">
-                in your house
             </div>            
         </div>
 
         <div class="row">
             <div class="col text-center">
-                you earn [[Math.max(session_player.parameter_set_player.parameter_set_type.good_one_amount, session_player.parameter_set_player.parameter_set_type.good_two_amount)]]¢ each period.
+                in your house you earn [[Math.max(session_player.parameter_set_player.parameter_set_type.good_one_amount, session_player.parameter_set_player.parameter_set_type.good_two_amount)]]¢ each period.
             </div>            
         </div>
 
         <div class="row border-top mt-3">
             <div class="col text-center mt-2">
-                Waste Here
+                <span v-bind:style = "{color : session_player.parameter_set_player.good_one.rgb_color}">
+                    [[session_player.parameter_set_player.good_one.label]] 
+                </span>
+                goods wasted in house: [[good_one_waste]]
+            </div>            
+        </div>
+        <div class="row mt-2">
+            <div class="col text-center">
+                <span v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
+                    [[session_player.parameter_set_player.good_two.label]]
+                </span>
+                goods wasted in house: [[good_two_waste]]
             </div>            
         </div>
 
         <div class="row border-top mt-3">
             <div class="col text-center mt-2">
-                Neede Here
+                Current value of goods in house: [[potential_earnings]]¢
             </div>            
         </div>
     </div>                    
