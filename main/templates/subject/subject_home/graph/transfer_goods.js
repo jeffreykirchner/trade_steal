@@ -132,14 +132,17 @@ takeUpdateGoods(messageData){
         player_id = results[r].id;
         
         //update session player
-        if(player_id == session_player.id)
+        if(app.$data.is_subject)
         {
-            session_player.good_one_house = results[r].good_one_house;
-            session_player.good_two_house = results[r].good_two_house;
-            session_player.good_three_house = results[r].good_three_house;
+            if(player_id == session_player.id)
+            {
+                session_player.good_one_house = results[r].good_one_house;
+                session_player.good_two_house = results[r].good_two_house;
+                session_player.good_three_house = results[r].good_three_house;
 
-            session_player.good_one_field = results[r].good_one_field;
-            session_player.good_two_field = results[r].good_two_field; 
+                session_player.good_one_field = results[r].good_one_field;
+                session_player.good_two_field = results[r].good_two_field; 
+            }
         }
 
         //update player list in session 
@@ -168,5 +171,5 @@ takeUpdateGoods(messageData){
         
     }
 
-    app.calcWaste();
+    if(app.$data.is_subject) app.calcWaste();
 },
