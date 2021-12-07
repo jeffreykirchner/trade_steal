@@ -270,7 +270,14 @@ class Session(models.Model):
             "do_group_update" : True if self.time_remaining==self.parameter_set.period_length_production and self.current_period_phase == PeriodPhase.PRODUCTION else False,
             "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }
-       
+
+    def json_for_group_update(self):
+        '''
+        return list of groups
+        '''   
+
+        return [{"id" : p.id, "group_number" : p.get_current_group_number()} for p in self.session_players.all()]
+        
 @receiver(post_delete, sender=Session)
 def post_delete_parameterset(sender, instance, *args, **kwargs):
     '''

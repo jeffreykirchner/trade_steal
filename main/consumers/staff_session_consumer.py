@@ -490,6 +490,6 @@ def take_update_groups(session_id):
     status = "success"
     
     return {"status" : status,
-            "group_list" : []}
+            "group_list" : session.json_for_group_update()}
 
 
