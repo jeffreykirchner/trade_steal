@@ -220,6 +220,7 @@ var app = Vue.createApp({
             }
             
             app.updateChatDisplay();
+            app.calcWaste();
         },
 
         /** update start status

@@ -126,9 +126,23 @@ takeUpdateMoveGoods(messageData){
 takeUpdateGoods(messageData){
     results = messageData.status.result;
 
+    let session_player = app.$data.session_player;
+
     for(let r=0; r<results.length; r++){
         player_id = results[r].id;
+        
+        //update session player
+        if(player_id == session_player.id)
+        {
+            session_player.good_one_house = results[r].good_one_house;
+            session_player.good_two_house = results[r].good_two_house;
+            session_player.good_three_house = results[r].good_three_house;
 
+            session_player.good_one_field = results[r].good_one_field;
+            session_player.good_two_field = results[r].good_two_field; 
+        }
+
+        //update player list in session 
         for(let p=0; p<app.$data.session.session_players.length; p++)
         {
             player = app.$data.session.session_players[p];
@@ -151,5 +165,8 @@ takeUpdateGoods(messageData){
                 break;
             }
         }
+        
     }
+
+    app.calcWaste();
 },
