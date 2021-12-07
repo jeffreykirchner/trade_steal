@@ -1,0 +1,62 @@
+<div class="card mt-4">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Period Earnings</span>            
+
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col text-center ">
+                For each set of
+            </div>            
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                [[session_player.parameter_set_player.parameter_set_type.good_one_amount]]
+
+                <span v-bind:style = "{color : session_player.parameter_set_player.good_one.rgb_color}">
+                    [[session_player.parameter_set_player.good_one.label]] 
+                </span>
+
+                goods and 
+            </div>            
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                [[session_player.parameter_set_player.parameter_set_type.good_two_amount]]
+
+                <span v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
+                    [[session_player.parameter_set_player.good_two.label]] 
+                </span>
+
+                goods
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                in your house
+            </div>            
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                you earn [[Math.max(session_player.parameter_set_player.parameter_set_type.good_one_amount, session_player.parameter_set_player.parameter_set_type.good_two_amount)]]¢ each period.
+            </div>            
+        </div>
+
+        <div class="row border-top mt-3">
+            <div class="col text-center mt-2">
+                Waste Here
+            </div>            
+        </div>
+
+        <div class="row border-top mt-3">
+            <div class="col text-center mt-2">
+                Neede Here
+            </div>            
+        </div>
+    </div>                    
+</div> 

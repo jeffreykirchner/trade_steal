@@ -116,10 +116,10 @@ class ParameterSet(models.Model):
         '''
 
         #three type parameters
-        self.add_parameter_set_type(globals.SubjectType.ONE, Decimal('0'), Decimal('0.411096'), Decimal('2.5'), Decimal('0'), Decimal('2.254'),  Decimal('1'))
-        self.add_parameter_set_type(globals.SubjectType.TWO, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'))
-        self.add_parameter_set_type(globals.SubjectType.THREE, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'))
-        self.add_parameter_set_type(globals.SubjectType.FOUR, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'))
+        self.add_parameter_set_type(globals.SubjectType.ONE, Decimal('0'), Decimal('0.411096'), Decimal('2.5'), Decimal('0'), Decimal('2.254'),  Decimal('1'), 3, 1)
+        self.add_parameter_set_type(globals.SubjectType.TWO, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'), 1, 2)
+        self.add_parameter_set_type(globals.SubjectType.THREE, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'), 1, 2)
+        self.add_parameter_set_type(globals.SubjectType.FOUR, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'), 1, 2)
     
         # good setup
         parameter_set_good_one = main.models.ParameterSetGood(parameter_set=self, label="Orange", rgb_color="#FF5733")
@@ -142,7 +142,7 @@ class ParameterSet(models.Model):
             
         self.update_group_counts()
 
-    def add_parameter_set_type(self, subject_type, g_1_1, g_1_2, g_1_3,g_2_1 ,g_2_2, g_2_3):
+    def add_parameter_set_type(self, subject_type, g_1_1, g_1_2, g_1_3,g_2_1 ,g_2_2, g_2_3, g1, g2):
         '''
         add new parameter set good
         subject_type :  SubjectType()
@@ -165,6 +165,9 @@ class ParameterSet(models.Model):
         parameter_set_type.good_two_production_1 = g_2_1
         parameter_set_type.good_two_production_2 = g_2_2
         parameter_set_type.good_two_production_3 = g_2_3
+
+        parameter_set_type.good_one_amount = g1
+        parameter_set_type.good_two_amount = g2
 
         parameter_set_type.save()
 

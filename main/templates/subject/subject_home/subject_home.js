@@ -25,6 +25,8 @@ var app = Vue.createApp({
                                         good_one : {label:"---", rgb_color:"#ffffff"},
                                         good_two : {label:"---", rgb_color:"#ffffff"},
                                         good_three : {label:"---", rgb_color:"#ffffff"},
+                                        parameter_set_type : {good_one_amount:1,
+                                                              good_two_amount:1, }                                        
                                       }},
                     session : {
                         current_period : 1,
@@ -49,7 +51,7 @@ var app = Vue.createApp({
                             good_a_rgb_color : '#000000',
                             good_b_rgb_color : '#000000',
                             parameter_set_types : [{good_one_amount:""},
-                                                   {good_one_amount:""}],                               
+                                                   {good_two_amount:""}],                               
                         },
                         session_periods : [],
                         session_players : [],
@@ -92,6 +94,12 @@ var app = Vue.createApp({
                     production_slider : 0,
                     production_slider_one : 50,
                     production_slider_two : 50,
+
+                    good_one_waste : 0,
+                    good_two_waste : 0,
+                    good_one_need : 0,
+                    good_two_needed : 0,
+                    potential_earnings : 0,
                 }},
     methods: {
 
@@ -259,6 +267,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/graph/graph_card.js"%}
         {%include "subject/subject_home/chat/chat_card.js"%}
         {%include "subject/subject_home/production/production_card.js"%}
+        {%include "subject/subject_home/earnings/earnings_card.js"%}
         {%include "subject/subject_home/summary/summary_card.js"%}
     
         /** clear form error messages
