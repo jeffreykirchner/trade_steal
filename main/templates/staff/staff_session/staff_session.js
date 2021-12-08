@@ -132,6 +132,9 @@ var app = Vue.createApp({
                     break;   
                 case "update_groups":
                     app.takeUpdateGroups(messageData);
+                    break;  
+                case "update_connection_status":
+                    app.takeUpdateConnectionStatus(messageData);
                     break;              
             }
 
@@ -194,31 +197,7 @@ var app = Vue.createApp({
             app.updateChatDisplay();
         },
 
-        /**
-         * take update player groups
-         * @param messageData {json} session day in json format
-         */
-        takeUpdateGroups(messageData){
-            
-            if(messageData.status.status == "success")
-            {
-                let group_list = messageData.status.group_list;
-                let session_players = app.$data.session.session_players;
-
-                for(let i=0; i<session_players.length; i++)
-                {
-                    for(let j=0; j<group_list.length; j++)
-                    {
-                        if(session_players[i].id == group_list[j].id)
-                        {
-                            session_players[i].group_number = group_list[j].group_number;
-                            break;
-                        }
-                    }
-                }
-            }
-        },
-
+       
         /**update text of move on button based on current state
          */
         updateMoveOnButtonText(){

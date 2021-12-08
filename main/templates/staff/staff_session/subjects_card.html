@@ -53,6 +53,9 @@
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
                                 Login Link
+                            </th> 
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Connected
                             </th>                            
                         </tr>
                     </thead>
@@ -93,6 +96,14 @@
                             </td>                            
                             <td class="player_table_cell">
                                 <a v-bind:href="p.login_link">Login Link</a>
+                            </td>
+                            <td class="player_table_cell">
+                                <span v-if="p.connected" style="color: lightgreen;">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                                <span v-else style="color: crimson;">
+                                    <i class="fas fa-times"></i>
+                                </span>
                             </td>                           
                         </tr>
                     </tbody>

@@ -43,7 +43,16 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        result = await sync_to_async(take_handle_dis_connect)(self.player_key, False)
+        result = await sync_to_async(take_handle_dis_connect)(self.player_key, True)
+
+        #send updated connection status to all users
+        await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "update_connection_status",
+                 "data": result,
+                 'sender_channel_name': self.channel_name,
+                },
+            )
 
         logger = logging.getLogger(__name__) 
         logger.info(f"SocketConsumerMixin Connect channel name: {self.channel_name}, room group name: {self.room_group_name}")
@@ -57,6 +66,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
 
         result = await sync_to_async(take_handle_dis_connect)(self.player_key, False)
 
+        #send updated connection status to all users
         await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "update_connection_status",

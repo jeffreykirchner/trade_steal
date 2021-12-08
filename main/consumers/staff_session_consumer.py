@@ -332,6 +332,19 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         logger = logging.getLogger(__name__) 
         logger.info("Connection update")
 
+        #update not from a client
+        if event["data"]["value"] == "fail":
+            return
+
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
 #local async function
 
 #local sync functions    
