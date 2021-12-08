@@ -107,10 +107,19 @@ def take_handle_dis_connect(connection_uuid, value):
 
     try:
         session_player = SessionPlayer.objects.get(player_key=connection_uuid)
-        session_player.connected = value
+        session_player.connecting = False
+
+        if value:
+            session_player.connected_count += 1
+        else:
+            session_player.connected_count -= 1
+
+        if session_player.connected_count < 0:
+            session_player.connected_count = 0
+
         session_player.save()
 
-        return {"value" : "success",  "result" : {"id" : session_player.id, "player_key" : f'{session_player.player_key}', "connected" : session_player.connected}}              
+        return {"value" : "success",  "result" : {"id" : session_player.id, "player_key" : f'{session_player.player_key}', "connected_count" : session_player.connected_count}}              
 
     except ObjectDoesNotExist:
         logger.info(f"take_handle_dis_connect session player not found: {connection_uuid} {value}")

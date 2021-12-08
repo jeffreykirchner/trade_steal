@@ -13,7 +13,7 @@
         {
             if(session_players[i].id == result.id)
             {
-                session_players[i].connected = result.connected;
+                session_players[i].connected_count = result.connected_count;
             }
         }
     }

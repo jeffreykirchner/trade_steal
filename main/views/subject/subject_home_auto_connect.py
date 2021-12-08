@@ -36,14 +36,14 @@ class SubjectHomeAutoConnectView(View):
 
             try:
                 with transaction.atomic():
-                    session_player = session.session_players.filter(connected=False).first()
+                    session_player = session.session_players.filter(connecting=False, connected_count=0).first()
 
                     if session_player:
                         player_key = session_player.player_key
                     else:
                         raise Http404("Connections are full.")
                     
-                    session_player.connected = True
+                    session_player.connecting = False
                     session_player.save()
 
             except ObjectDoesNotExist:

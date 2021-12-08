@@ -98,7 +98,7 @@
                                 <a v-bind:href="p.login_link">Login Link</a>
                             </td>
                             <td class="player_table_cell">
-                                <span v-if="p.connected" style="color: lightgreen;">
+                                <span v-if="p.connected_count > 0" style="color: lightgreen;">
                                     <i class="fas fa-check"></i>
                                 </span>
                                 <span v-else style="color: crimson;">
