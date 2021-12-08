@@ -43,7 +43,7 @@ class SubjectHomeAutoConnectView(View):
                     else:
                         raise Http404("Connections are full.")
                     
-                    session_player.connecting = False
+                    session_player.connecting = True
                     session_player.save()
 
             except ObjectDoesNotExist:
