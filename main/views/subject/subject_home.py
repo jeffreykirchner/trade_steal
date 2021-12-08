@@ -4,16 +4,14 @@ staff view
 import logging
 import uuid
 
+from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
 from django.views import View
 from django.shortcuts import render
-from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 
-from main.decorators import user_is_owner
-
-from main.models import Session
 from main.models import SessionPlayer
 
 from main.forms import SessionForm
@@ -31,8 +29,11 @@ class SubjectHomeView(View):
         '''
         handle get requests
         '''
-        session_player = SessionPlayer.objects.get(player_key=kwargs['player_key'])
-        session = session_player.session
+        try:
+            session_player = SessionPlayer.objects.get(player_key=kwargs['player_key'])
+            session = session_player.session
+        except ObjectDoesNotExist:
+            raise Http404("Subject not found.")
 
         session_player_move_two_form_ids=[]
         for i in SessionPlayerMoveTwoForm():

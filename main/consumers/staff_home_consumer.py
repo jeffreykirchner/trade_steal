@@ -117,7 +117,14 @@ class StaffHomeConsumer(SocketConsumerMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
 
-
+    #consumer updates
+    async def update_connection_status(self, event):
+        '''
+        handle connection status update from group member
+        '''
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Connection update")
+        
 def create_new_session(auth_user):
     '''
     create an emtpy session and return it

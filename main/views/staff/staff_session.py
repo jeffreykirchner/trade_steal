@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from main.decorators import user_is_owner
 
 from main.models import Session
+from main.models import Parameters
 
 from main.forms import SessionForm
 from main.forms import SessionPlayerMoveTwoForm
@@ -33,6 +34,8 @@ class StaffSessionView(SingleObjectMixin, View):
         '''
         handle get requests
         '''
+
+        parameters=Parameters.objects.first()
 
         session = self.get_object()
 
@@ -57,6 +60,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "websocket_path" : self.websocket_path,
                                "town_count_range" : range(session.parameter_set.town_count),
                                "page_key" : f'session-{session.id}',
+                               "parameters" : parameters,
                                "session" : session})
     
     @method_decorator(login_required)

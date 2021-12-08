@@ -24,6 +24,9 @@ urlpatterns = [
     path('staff-session/<int:pk>/parameters', views.StaffSessionParametersView.as_view(), name='staff_session_parameters'),
 
     path('subject-home/<uuid:player_key>', views.SubjectHomeView.as_view(), name='subject_home'),
+
+    path('auto-login/<uuid:session_key>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect'),
+    path('auto-login/<uuid:session_key>/<int:player_number>/', views.SubjectHomeAutoConnectView.as_view(), name='subject_home_auto_connect_player_number'),
     
     #txt
     path('robots.txt', views.RobotsTxt, name='robotsTxt'),
