@@ -76,17 +76,13 @@ setupPixiPlayers(){
     //setup pixi houses
     for(let i=0;i<session_players.length;i++)
     {
-        if(session_players[i].parameter_set_player.town.toString() == app.$data.current_town){
-            app.setupSingleHouse(i);
-        } 
+        app.setupSingleHouse(i);
     }
 
     //setup pixi fields
     for(let i=0;i<session_players.length;i++)
     {
-        if(session_players[i].parameter_set_player.town.toString() == app.$data.current_town){
-             app.setupSingleField(i);
-        }
+        app.setupSingleField(i);
     }
 },
 

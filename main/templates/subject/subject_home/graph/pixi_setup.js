@@ -78,18 +78,14 @@ setupPixiPlayers(){
 
     //setup pixi houses
     for(let i=0;i<session_players.length;i++)
-    {
-        if(session_players[i].parameter_set_player.town.toString() == app.$data.current_town){
-            app.setupSingleHouse(i);
-        } 
+    {        
+        app.setupSingleHouse(i);
     }
 
     //setup pixi fields
     for(let i=0;i<session_players.length;i++)
     {
-        if(session_players[i].parameter_set_player.town.toString() == app.$data.current_town){
-             app.setupSingleField(i);
-        }
+        app.setupSingleField(i);
     }
 
     if(app.is_subject)
@@ -100,10 +96,19 @@ setupPixiPlayers(){
  * @param index : int
  */
 setupSingleHouse(index){
-    let container = new PIXI.Container();
-
     let session_players = app.$data.session.session_players;
     let session_player = session_players[index];
+
+    if(session_players[index].parameter_set_player.town.toString() != app.$data.current_town) return;
+
+    if(session_player.houseContainer)
+    {
+        session_player.houseContainer.destroy();
+        session_player.houseContainer=null;
+    }
+
+    let container = new PIXI.Container();
+    
     let parameter_set_player = session_player.parameter_set_player;
     let parameter_set = app.$data.session.parameter_set;
 
@@ -248,10 +253,19 @@ createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
  * @param index : int
  */
 setupSingleField(index){
-    let container = new PIXI.Container();
-
     let session_players = app.$data.session.session_players;
     let session_player = session_players[index];
+
+    if(session_players[index].parameter_set_player.town.toString() != app.$data.current_town) return;
+
+    if(session_player.fieldContainer)
+    {
+        session_player.fieldContainer.destroy();
+        session_player.fieldContainer=null;
+    }
+
+    let container = new PIXI.Container();
+
     let parameter_set_player = session_player.parameter_set_player;
     let parameter_set = app.$data.session.parameter_set;
 
