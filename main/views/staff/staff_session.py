@@ -47,6 +47,7 @@ class StaffSessionView(SingleObjectMixin, View):
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
+                               "player_key" :  session.channel_key,
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "session_player_move_two_form" : SessionPlayerMoveTwoForm(),

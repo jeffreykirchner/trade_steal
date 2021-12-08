@@ -27,7 +27,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
     has_timer_control = False
     timer_running = False
-
+        
     async def get_session(self, event):
         '''
         return a list of sessions
@@ -324,6 +324,13 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def update_connection_status(self, event):
+        '''
+        handle connection status update from group member
+        '''
+        logger = logging.getLogger(__name__) 
+        logger.info("Connection update")
 
 #local async function
 

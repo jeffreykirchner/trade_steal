@@ -32,5 +32,6 @@ class StaffHomeView(View):
         parameters = Parameters.objects.first()
 
         return render(request, self.template_name, {"channel_key" : uuid.uuid4(),
+                                                    "player_key" :  uuid.uuid4(),
                                                     "page_key" : "staff-home",
                                                     "websocket_path" : self.websocket_path})

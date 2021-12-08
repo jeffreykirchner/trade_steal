@@ -40,8 +40,9 @@ class SessionPlayer(models.Model):
     good_one_production_rate = models.IntegerField(verbose_name='Good one production rate (0-100)', default=50)        #percent of time to devote to good one production
     good_two_production_rate = models.IntegerField(verbose_name='Good two production rate (0-100)', default=50)        #percent of time to devote to good two production
 
-    player_number = models.IntegerField(verbose_name='Player number', default=0)               #player number, from 1 to N
+    player_number = models.IntegerField(verbose_name='Player number', default=0)                     #player number, from 1 to N
     player_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')   #login and channel key
+    connected = models.BooleanField(default=False)                                                   #true when a consumer is connceted
 
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)      #earnings in cents
 
@@ -298,6 +299,7 @@ class SessionPlayer(models.Model):
             "player_key" : self.player_key,
 
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
+            "connected" : self.connected,
 
             "parameter_set_player" : self.parameter_set_player.json(),
 

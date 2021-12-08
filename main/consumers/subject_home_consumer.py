@@ -305,7 +305,16 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def update_connection_status(self, event):
+        '''
+        handle connection status update from group member
+        '''
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Connection update")
+
 #local sync functions  
+
+
 def take_get_session_subject(session_player_id):
     '''
     get session info for subject
@@ -589,6 +598,7 @@ def take_update_local_info(session_id, player_key, data):
 
     try:
         session_player = SessionPlayer.objects.get(player_key=player_key)
+        session_player.save()
 
         return {"group_number" : session_player.get_current_group_number(), 
                 "session_player_id" : session_player.id,

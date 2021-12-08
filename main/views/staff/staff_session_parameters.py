@@ -72,6 +72,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
+                               "player_key" :  uuid.uuid4(),
                                "id" : session.id,
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_type_form" : ParameterSetTypeForm(),

@@ -31,8 +31,8 @@ class SubjectHomeView(View):
         '''
         handle get requests
         '''
-        session_subject = SessionPlayer.objects.get(player_key=kwargs['player_key'])
-        session = session_subject.session
+        session_player = SessionPlayer.objects.get(player_key=kwargs['player_key'])
+        session = session_player.session
 
         session_player_move_two_form_ids=[]
         for i in SessionPlayerMoveTwoForm():
@@ -45,6 +45,7 @@ class SubjectHomeView(View):
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
+                               "player_key" :  session_player.player_key,
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "session_player_move_two_form" : SessionPlayerMoveTwoForm(),
@@ -53,7 +54,7 @@ class SubjectHomeView(View):
                                "session_player_move_three_form_ids" : session_player_move_three_form_ids,
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'session-{session.id}',
-                               "session_subject" : session_subject,
+                               "session_subject" : session_player,
                                "session" : session})
     
     @method_decorator(login_required)
