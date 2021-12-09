@@ -10,10 +10,10 @@
     <div class="card-body"> 
 
         <!-- start button -->
-        <div class="row">
+        <div class="row" v-show="session.started == false">
             <div class="col-md text-center">
                 <button type="button"
-                        class="btn btn-outline-success"
+                        class="btn btn-outline-primary"
                         v-on:click = "start_experiment()"
                         title="Start experiment"
                         v-bind:disabled="reconnecting || working || session.started">
@@ -22,8 +22,35 @@
             </div>
         </div>
 
+        <!-- reset connection status -->
+        <div class="row mt-2" v-show="session.started == false">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        v-on:click = "resetConnections()"
+                        title="Reset experiment"
+                        v-bind:disabled="reconnecting || working || session.locked">
+                    Reset connection status <i class="fas fa-network-wired"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- start timer -->
+        <div class="row" v-show="session.started">
+            <div class="col-md text-center">
+                <button type="button"                        
+                        v-on:click = "startTimer()"
+                        title="Start/Stop period timer"
+                        v-bind:class="[(session.timer_running) ? 'btn-outline-warning' : 'btn-outline-success' , 'btn']"
+                        v-bind:disabled="reconnecting || working || session.started===false || session.finished">
+                    <span v-if="session.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
+                    <span v-else>Start Timmer <i class="far fa-clock"></i></span>
+                </button>
+            </div>
+        </div>
+
         <!-- reset experiment -->
-        <div class="row mt-2">
+        <div class="row mt-2" v-show="session.started">
             <div class="col-md text-center">
                 <button type="button"
                         class="btn btn-outline-danger"
@@ -35,22 +62,8 @@
             </div>
         </div>
 
-        <!-- start timer -->
-        <div class="row mt-2" v-show="session.started">
-            <div class="col-md text-center">
-                <button type="button"
-                        class="btn btn-outline-primary"
-                        v-on:click = "startTimer()"
-                        title="Start/Stop period timer"
-                        v-bind:disabled="reconnecting || working || session.started===false || session.finished">
-                    <span v-if="session.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
-                    <span v-else>Start Timmer <i class="far fa-clock"></i></span>
-                </button>
-            </div>
-        </div>
-
         <!-- next period -->
-        <div class="row mt-2" v-show="session.started">
+        <!-- <div class="row mt-2" v-show="session.started">
             <div class="col-md text-center">
                 <button type="button"
                         class="btn btn-outline-primary"
@@ -60,7 +73,7 @@
                     <span v-html="move_to_next_period_text"></span>
                 </button>
             </div>
-        </div>
+        </div> -->
         
     </div>                    
 </div> 

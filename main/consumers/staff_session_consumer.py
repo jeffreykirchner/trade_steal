@@ -116,6 +116,29 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "sender_channel_name": self.channel_name},
                 )
     
+    async def reset_connections(self, event):
+        '''
+        reset connection counts for experiment
+        '''
+        #update subject count
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_reset_connections)(self.session_id, event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        if message_data["status"]["value"] == "fail":
+            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        else:
+            #send message to client pages
+            await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_reset_connections",
+                     "sender_channel_name": self.channel_name},
+                )
+
     async def next_period(self, event):
         '''
         force advance to next period in experiment
@@ -254,7 +277,21 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         #update subject count
         message_data = {}
-        #message_data["status"] = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
+        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_reset_connections(self, event):
+        '''
+        update reset experiment
+        '''
+        #update subject count
+        message_data = {}
         message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
 
         message = {}
@@ -428,6 +465,24 @@ def take_reset_experiment(session_id, data):
 
     if session.started:
         session.reset_experiment()  
+
+    value = "success"
+    
+    return {"value" : value, "started" : session.started}
+
+def take_reset_connections(session_id, data):
+    '''
+    reset connection counts for experiment
+    '''   
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Reset connection counts: {data}")
+
+    #session_id = data["sessionID"]
+    session = Session.objects.get(id=session_id)
+
+    if not session.started:
+        session.reset_connection_counts()  
 
     value = "success"
     

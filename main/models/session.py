@@ -111,6 +111,12 @@ class Session(models.Model):
         self.save()
         self.session_periods.all().delete()
     
+    def reset_connection_counts(self):
+        '''
+        reset connection counts
+        '''
+        self.session_players.all().update(connecting=False, connected_count=0)
+    
     def get_current_session_period(self):
         '''
         return the current session period

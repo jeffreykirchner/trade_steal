@@ -46,6 +46,29 @@ takeResetExperiment(messageData){
     app.takeGetSession(messageData);
 },
 
+resetConnections(){
+    if (!confirm('Reset connection status?.')) {
+        return;
+    }
+
+    app.$data.working = true;
+    app.sendMessage("reset_connections", {});
+},
+
+/** update start status
+*    @param messageData {json} session day in json format
+*/
+takeUpdateResetConnections(messageData){
+    app.takeGetSession(messageData);
+},
+
+/** take reset experiment response
+ * @param messageData {json}
+*/
+takeResetConnections(messageData){
+    app.takeGetSession(messageData);
+},
+
 /**advance to next period
 */
 next_period(){

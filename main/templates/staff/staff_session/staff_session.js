@@ -135,7 +135,13 @@ var app = Vue.createApp({
                     break;  
                 case "update_connection_status":
                     app.takeUpdateConnectionStatus(messageData);
-                    break;              
+                    break;   
+                case "reset_connections":
+                    app.takeResetConnections(messageData);
+                    break; 
+                case "update_reset_connections":
+                    app.takeUpdateResetConnections(messageData);
+                    break;          
             }
 
             if(!app.$data.first_load_done)
