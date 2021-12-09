@@ -19,7 +19,7 @@ resetPixiApp(){
                                                backgroundColor : 0xFFFFFF,
                                                autoResize: true,
                                                antialias: false,
-                                               resolution: devicePixelRatio,
+                                               resolution: 1,
                                                view: canvas });
 
     app.$data.canvas_width = canvas.width;
