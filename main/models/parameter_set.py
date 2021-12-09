@@ -55,10 +55,6 @@ class ParameterSet(models.Model):
             self.break_period_frequency = new_ps.get("break_period_frequency")
             self.allow_stealing = new_ps.get("allow_stealing")
             self.private_chat = new_ps.get("private_chat")
-            self.good_a_label = new_ps.get("good_a_label")
-            self.good_b_label = new_ps.get("good_b_label")
-            self.good_a_rgb_color = new_ps.get("good_a_rgb_color")
-            self.good_b_rgb_color = new_ps.get("good_b_rgb_color")
             self.town_count = new_ps.get("town_count")
             self.good_count = new_ps.get("good_count")
 
@@ -70,7 +66,13 @@ class ParameterSet(models.Model):
                 p = self.parameter_set_types.get(subject_type=new_p.get("subject_type"))
                 p.from_dict(new_p)
             
+            #parameter set goods
+            new_parameter_set_goods = new_ps.get("parameter_set_goods")
+            for index, p in enumerate(self.parameter_set_goods.all()) :
+                p.from_dict(new_parameter_set_goods[index])
+            
             #parameter set players
+            parameter_set_goods = self.parameter_set_goods.all()
             new_parameter_set_players = new_ps.get("parameter_set_players")
 
             if len(new_parameter_set_players) > self.parameter_set_players.count():
@@ -78,7 +80,11 @@ class ParameterSet(models.Model):
                 new_player_count = len(new_parameter_set_players) - self.parameter_set_players.count()
 
                 for i in range(new_player_count):
-                    self.add_new_player(main.globals.SubjectType.ONE, i)
+                    self.add_new_player(self.parameter_set_types.first(),
+                                        i,
+                                        parameter_set_goods[0],
+                                        parameter_set_goods[1],
+                                        parameter_set_goods[2])
 
             elif len(new_parameter_set_players) < self.parameter_set_players.count():
                 #remove excess players
