@@ -188,6 +188,20 @@ class SessionPlayer(models.Model):
         
         return self.parameter_set_player.parameter_set_player_groups.get(period=self.session.current_period).group_number
     
+    def get_group_changed_this_period(self):
+        '''
+        true if subject is in a new group this period
+        '''
+        if self.session.current_period == 1:
+            return False
+
+        if self.parameter_set_player.parameter_set_player_groups.get(period=self.session.current_period).group_number != \
+           self.parameter_set_player.parameter_set_player_groups.get(period=self.session.current_period-1).group_number:
+
+           return True
+        
+        return False
+
     def get_current_town_number(self):
         '''
         return current town number
@@ -307,6 +321,7 @@ class SessionPlayer(models.Model):
             "group_number" : self.get_current_group_number(),
 
             "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)],
+            "new_chat_message" : False,           #true on client side when a new un read message comes in
         }
     
     def json_for_subject(self, session_player):
@@ -333,6 +348,8 @@ class SessionPlayer(models.Model):
                                                                             .filter(chat_type=main.globals.ChatTypes.INDIVIDUAL) \
                                                                             .filter(Q(Q(session_player_recipients=session_player) & Q(session_player=self)) |
                                                                                     Q(Q(session_player_recipients=self) & Q(session_player=session_player))                       )],
+
+            "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "parameter_set_player" : self.parameter_set_player.json_for_subject(),
         }

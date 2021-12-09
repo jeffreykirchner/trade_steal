@@ -39,6 +39,10 @@ takeUpdateChat(messageData){
     if(result.chat_type=="All")
     {
         session_player.chat_all.push(chat);
+        if(app.$data.chat_recipients != "all")
+        {
+            session_player.new_chat_message = true;
+        }
     }
     else
     {
@@ -60,6 +64,11 @@ takeUpdateChat(messageData){
             if(session_players[i].id == target)
             {
                 session_players[i].chat_individual.push(chat);
+
+                if(i != app.$data.chat_recipients_index)
+                {
+                    session_players[i].new_chat_message = true;
+                }
                 break;
             }
         }        
@@ -77,6 +86,15 @@ updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
     app.$data.chat_recipients_index = chat_recipients_index;
 
     app.updateChatDisplay();
+
+    if(app.$data.chat_recipients=="all")
+    {
+        app.$data.session_player.new_chat_message = false;
+    }
+    else
+    {
+        app.$data.session.session_players[chat_recipients_index].new_chat_message = false;
+    }
 },
 
 /** update chat displayed on the screen

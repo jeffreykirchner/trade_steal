@@ -259,6 +259,20 @@ class Session(models.Model):
         if self.current_period_phase == PeriodPhase.PRODUCTION:
             session_players = [i.json_min() for i in self.session_players.all()]
 
+        #if groups have changed this period send a group update
+        if self.time_remaining==self.parameter_set.period_length_production and \
+           self.current_period_phase == PeriodPhase.PRODUCTION :
+           
+           do_group_update = False
+
+           for i in self.session_players.all():
+               if i.get_group_changed_this_period():
+                   do_group_update = True
+                   break
+
+        else:
+            do_group_update = False
+
         return{
             "started":self.started,
             "current_period":self.current_period,
@@ -267,7 +281,7 @@ class Session(models.Model):
             "timer_running":self.timer_running,
             "finished":self.finished,
             "session_players":session_players,
-            "do_group_update" : True if self.time_remaining==self.parameter_set.period_length_production and self.current_period_phase == PeriodPhase.PRODUCTION else False,
+            "do_group_update" : do_group_update,
             "session_player_earnings": [i.json_earning() for i in self.session_players.all()]
         }
 

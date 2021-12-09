@@ -61,7 +61,10 @@
                         autocomplete="off" 
                         v-on:click="updateChatRecipients('all', 'Everyone', -1)" 
                         checked>
-                    <label class="btn btn-outline-secondary" for="btnradioall">Everyone</label>
+                    <label class="btn btn-outline-secondary" for="btnradioall">
+                        Everyone
+                        <span v-if=session_player.new_chat_message>*</span>
+                    </label>
                     
                     <div v-for="(p, index) in session.session_players" v-bind:key="p.id">
                         
@@ -74,7 +77,10 @@
                             v-on:click="updateChatRecipients(p.id, 'Person ' + p.parameter_set_player.id_label, index)">
                         <label class="btn btn-outline-secondary"
                                v-if="p.id != session_player.id"
-                               v-bind:for="'btnradio' + index">[[p.parameter_set_player.id_label]]</label>
+                               v-bind:for="'btnradio' + index">
+                            [[p.parameter_set_player.id_label]]
+                            <span v-if=p.new_chat_message>*</span>
+                        </label>
                     </div>
 
                 </div> 

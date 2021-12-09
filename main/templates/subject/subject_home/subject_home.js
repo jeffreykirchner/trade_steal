@@ -21,6 +21,7 @@ var app = Vue.createApp({
                                       good_one_production_rate : 50,
                                       good_two_production_rate : 50,
                                       chat_all : [],
+                                      new_chat_message : false,
                                       parameter_set_player :{
                                         good_one : {label:"---", rgb_color:"#ffffff"},
                                         good_two : {label:"---", rgb_color:"#ffffff"},
