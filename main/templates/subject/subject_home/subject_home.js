@@ -13,50 +13,11 @@ var app = Vue.createApp({
                     is_subject : true,
                     working : false,
                     first_load_done : false,                       //true after software is loaded for the first time
-                    playerKey : "{{session_subject.player_key}}",
+                    playerKey : "{{session_player.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
-                    session_player : {player_number : "---",
-                                      earnings : "---",
-                                      good_one_production_rate : 50,
-                                      good_two_production_rate : 50,
-                                      chat_all : [],
-                                      new_chat_message : false,
-                                      parameter_set_player :{
-                                        good_one : {label:"---", rgb_color:"#ffffff"},
-                                        good_two : {label:"---", rgb_color:"#ffffff"},
-                                        good_three : {label:"---", rgb_color:"#ffffff"},
-                                        parameter_set_type : {good_one_amount:1,
-                                                              good_two_amount:1, }                                        
-                                      }},
-                    session : {
-                        current_period : 1,
-                        started : false,
-                        locked : true,
-                        start_date : "---",
-                        current_period : "---",
-                        current_period_phase : "---",
-                        time_remaining : "---",
-                        timer_running : false,
-                        finished : false,                        
-                        parameter_set : {
-                            id : 0,
-                            period_count : 0,
-                            period_length_production : 0,
-                            period_length_trade : 0,
-                            break_period_frequency : 0,
-                            private_chat : "False",
-                            allow_steal : "False",
-                            good_a_label : "",
-                            good_b_label : "",
-                            good_a_rgb_color : '#000000',
-                            good_b_rgb_color : '#000000',
-                            parameter_set_types : [{good_one_amount:""},
-                                                   {good_two_amount:""}],                               
-                        },
-                        session_periods : [],
-                        session_players : [],
-                    },
+                    session_player : {{session_player_json|safe}}, 
+                    session : {{session_json|safe}},
 
                     session_player_move_two_form_ids: {{session_player_move_two_form_ids|safe}},
                     session_player_move_three_form_ids: {{session_player_move_three_form_ids|safe}},
@@ -335,12 +296,54 @@ var app = Vue.createApp({
 
             }
         }, 
+
+        {%if session.parameter_set.test_mode%}
+        /**
+         * do random self test actions
+         */
+         randomNumber(min, max){
+            //return a random number between min and max
+            min = Math.ceil(min);
+            max = Math.floor(max+1);
+            return Math.floor(Math.random() * (max - min) + min);
+        },
+
+        doTestMode(){
+            {%if DEBUG%}
+            console.log("Do Test Mode");
+            {%endif%}
+
+            if(this.$data.session.started &&
+               this.$data.session.parameter_set.test_mode)
+            {
+                //do chat
+                if(this.chat_text != "")
+                {
+                    this.sendChat()
+                }
+                else
+                {
+                    r = this.randomNumber(20 ,5);
+                    for(let i=0;i<r;i++)
+                    {
+                        v = this.randomNumber(122, 48);
+                        this.chat_text += String.fromCharCode(v);
+                    }
+                
+                }
+            }
+
+            setTimeout(this.doTestMode, this.randomNumber(10000 , 1000));
+        },
+        {%endif%}
     },
 
     mounted(){
 
         $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
         $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
+        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(10000 , 1000)); {%endif%}
+
     },
 
 }).mount('#app');

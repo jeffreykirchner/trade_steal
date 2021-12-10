@@ -61,7 +61,8 @@ class StaffSessionView(SingleObjectMixin, View):
                                "town_count_range" : range(session.parameter_set.town_count),
                                "page_key" : f'session-{session.id}',
                                "parameters" : parameters,
-                               "session" : session})
+                               "session" : session,
+                               })
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):

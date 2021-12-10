@@ -3,7 +3,9 @@ staff view
 '''
 import logging
 import uuid
+import json
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.views import View
@@ -55,8 +57,10 @@ class SubjectHomeView(View):
                                "session_player_move_three_form_ids" : session_player_move_three_form_ids,
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'session-{session.id}',
-                               "session_subject" : session_player,
-                               "session" : session})
+                               "session_player" : session_player,
+                               "session_player_json" : json.dumps(session_player.json(), cls=DjangoJSONEncoder),
+                               "session" : session,
+                               "session_json":json.dumps(session.json_for_subject(session_player), cls=DjangoJSONEncoder)})
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):

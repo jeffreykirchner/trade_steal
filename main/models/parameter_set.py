@@ -29,6 +29,8 @@ class ParameterSet(models.Model):
     town_count = models.IntegerField(verbose_name='Town Count', default=1)                                    #number of different towns
     good_count = models.IntegerField(verbose_name='Number of Goods', default=2)                               #number of goods available to all towns
 
+    test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                 #if true subject screens will do random auto testing
+
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
 
@@ -245,6 +247,7 @@ class ParameterSet(models.Model):
             "parameter_set_goods" : [p.json() for p in self.parameter_set_goods.all()],
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
+            "test_mode" : "True" if self.test_mode else "False",
         }
     
     def json_for_subject(self):
@@ -262,5 +265,7 @@ class ParameterSet(models.Model):
             "break_period_frequency" : self.break_period_frequency,
             "allow_stealing" : "True" if self.allow_stealing else "False",
             "private_chat" : "True" if self.private_chat else "False",
+
+            "test_mode" : self.test_mode,
         }
 

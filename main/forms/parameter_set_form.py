@@ -57,8 +57,13 @@ class ParameterSetForm(forms.ModelForm):
     private_chat = forms.ChoiceField(label='Private Chat',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.private_chat",}))
+    
+    test_mode = forms.ChoiceField(label='Test Mode',
+                                       choices=((True, 'Yes'), (False,'No' )),
+                                       widget=forms.Select(attrs={"v-model":"session.parameter_set.test_mode",}))
 
     class Meta:
         model=ParameterSet
         fields =['town_count','good_count', 'period_count', 'period_length_production' ,
-                 'period_length_trade', 'break_period_frequency', 'allow_stealing' , 'private_chat']
+                 'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
+                 'private_chat', 'test_mode']

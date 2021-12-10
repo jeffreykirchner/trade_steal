@@ -24,9 +24,11 @@ doWebSockets = function()
         };                
 };
 
-randomNumber = function(minimum,maximum){
+randomNumber = function(min, max){
     //return a random number between min and max
-    return (Math.random() * (maximum - minimum + 1) );
+    min = Math.ceil(min);
+    max = Math.floor(max+1);
+    return Math.floor(Math.random() * (max - min) + min);
 };
 
 doWebSockets();
