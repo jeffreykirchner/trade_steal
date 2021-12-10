@@ -8,6 +8,7 @@
     app.$data.parametersetPlayerBeforeEdit.good_two =  Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index].good_two);
     app.$data.parametersetPlayerBeforeEdit.good_three =  Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index].good_three);
     app.$data.parametersetPlayerBeforeEdit.parameter_set_type =  Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index].parameter_set_type);
+    app.$data.parametersetPlayerBeforeEdit.avatar =  Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index].avatar);
 
     app.$data.parametersetPlayerBeforeEditIndex = index;
     app.$data.current_parameter_set_player = app.$data.session.parameter_set.parameter_set_players[index];
@@ -31,6 +32,7 @@ hideEditParametersetPlayer:function(){
         Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex].good_two, app.$data.parametersetPlayerBeforeEdit.good_two);
         Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex].good_three, app.$data.parametersetPlayerBeforeEdit.good_three);
         Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex].parameter_set_type, app.$data.parametersetPlayerBeforeEdit.parameter_set_type);
+        Object.assign(app.$data.session.parameter_set.parameter_set_players[app.$data.parametersetPlayerBeforeEditIndex].avatar, app.$data.parametersetPlayerBeforeEdit.avatar);
 
         app.$data.parametersetPlayerBeforeEdit=null;
     }

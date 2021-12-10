@@ -8,6 +8,7 @@ from django.db.models.query import RawQuerySet
 from main.models import ParameterSetPlayer
 from main.models import ParameterSetGood
 from main.models import ParameterSetType
+from main.models import Avatar
 
 class ParameterSetPlayerForm(forms.ModelForm):
     '''
@@ -51,10 +52,15 @@ class ParameterSetPlayerForm(forms.ModelForm):
                                         empty_label=None,
                                         queryset=ParameterSetGood.objects.none(),
                                         widget=forms.Select(attrs={"v-model":"current_parameter_set_player.good_three.id"}))
+    
+    avatar = forms.ModelChoiceField(label='Avatar',
+                                    empty_label=None,
+                                    queryset=Avatar.objects.all(),
+                                    widget=forms.Select(attrs={"v-model":"current_parameter_set_player.avatar.id"}))
 
     class Meta:
         model=ParameterSetPlayer
-        fields =['town','location', 'id_label', 'parameter_set_type', 'good_one', 'good_two', 'good_three']
+        fields =['town','location', 'id_label', 'parameter_set_type', 'good_one', 'good_two', 'good_three', 'avatar']
     
     def clean(self):
         cleaned_data = super().clean()

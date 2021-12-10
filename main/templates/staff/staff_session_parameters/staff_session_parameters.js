@@ -57,6 +57,7 @@ var app = Vue.createApp({
                         good_one:{id:0},
                         good_two:{id:0},
                         good_three:{id:0},
+                        avatar:{id:0},
                         parameter_set_type:{id:0},     
                     },
                     current_parameter_set_player_group : {

@@ -28,6 +28,7 @@ class ParameterSet(models.Model):
     private_chat = models.BooleanField(default=True, verbose_name = 'Private Chat')                           #if true subjects can privately chat one on one
     town_count = models.IntegerField(verbose_name='Town Count', default=1)                                    #number of different towns
     good_count = models.IntegerField(verbose_name='Number of Goods', default=2)                               #number of goods available to all towns
+    show_avatars = models.BooleanField(default=False, verbose_name = 'Show Avatars')                          #if true show avatar next to field
 
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                 #if true subject screens will do random auto testing
 
@@ -59,6 +60,7 @@ class ParameterSet(models.Model):
             self.private_chat = new_ps.get("private_chat")
             self.town_count = new_ps.get("town_count")
             self.good_count = new_ps.get("good_count")
+            self.show_avatars = new_ps.get("show_avatars")
 
             self.save()
 
@@ -239,14 +241,19 @@ class ParameterSet(models.Model):
             "town_count" : self.town_count,
             "good_count" : self.good_count,
             "period_count" : self.period_count,
+
             "period_length_production" : self.period_length_production,
             "period_length_trade" : self.period_length_trade,
             "break_period_frequency" : self.break_period_frequency,
+
             "allow_stealing" : "True" if self.allow_stealing else "False",
             "private_chat" : "True" if self.private_chat else "False",
+            "show_avatars" : "True" if self.show_avatars else "False",
+
             "parameter_set_goods" : [p.json() for p in self.parameter_set_goods.all()],
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
+
             "test_mode" : "True" if self.test_mode else "False",
         }
     
@@ -256,6 +263,7 @@ class ParameterSet(models.Model):
         '''
         return{
             "id" : self.id,
+
             "town_count" : self.town_count,
             "good_count" : self.good_count,
             
@@ -265,6 +273,7 @@ class ParameterSet(models.Model):
             "break_period_frequency" : self.break_period_frequency,
             "allow_stealing" : "True" if self.allow_stealing else "False",
             "private_chat" : "True" if self.private_chat else "False",
+            "show_avatars" : "True" if self.show_avatars else "False",
 
             "test_mode" : self.test_mode,
         }

@@ -58,6 +58,10 @@ class ParameterSetForm(forms.ModelForm):
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.private_chat",}))
     
+    show_avatars = forms.ChoiceField(label='Show Avatars',
+                                       choices=((True, 'Yes'), (False,'No' )),
+                                       widget=forms.Select(attrs={"v-model":"session.parameter_set.show_avatars",}))
+    
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.test_mode",}))
@@ -66,4 +70,4 @@ class ParameterSetForm(forms.ModelForm):
         model=ParameterSet
         fields =['town_count','good_count', 'period_count', 'period_length_production' ,
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
-                 'private_chat', 'test_mode']
+                 'private_chat', 'show_avatars', 'test_mode']

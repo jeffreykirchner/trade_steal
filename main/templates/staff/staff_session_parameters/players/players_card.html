@@ -25,7 +25,7 @@
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
                                 Type
-                            </th>
+                            </th>                            
                             <th scope="col" class = "text-center m-1 p-1">
                                 First Good
                             </th>
@@ -34,6 +34,9 @@
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
                                 Third Good
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
+                                Avatar
                             </th>
                             <th class = "text-center m-1 p-1">
                                 Groups:
@@ -67,6 +70,9 @@
                             <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
                                 <span v-bind:style = "[{color : p.good_three.rgb_color},
                                                        (session.parameter_set.good_count==2) ? {'text-decoration': 'line-through'}:{}]">[[p.good_three.label]]</span>
+                            </td>
+                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
+                                [[p.avatar.label]]
                             </td>
                             <td style="background-color:rgb(240, 240, 240);">
                                

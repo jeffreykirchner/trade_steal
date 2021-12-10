@@ -8,6 +8,7 @@ from django.db.models import F
 
 from main.models import ParameterSet
 from main.models import ParameterSetType
+from main.models import Avatar
 
 import main
 
@@ -23,6 +24,8 @@ class ParameterSetPlayer(models.Model):
     good_three = models.ForeignKey('main.ParameterSetGood', on_delete=models.CASCADE, related_name="parameter_set_player_c")
 
     parameter_set_type = models.ForeignKey(ParameterSetType, on_delete=models.CASCADE, related_name="parameter_set_players_d")
+
+    avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE, related_name="parameter_set_players_e") 
 
     id_label = models.CharField(verbose_name='ID Label', max_length = 2, default="1")      #id label shown on screen to subjects
     location = models.IntegerField(verbose_name='Location number (1-24)', default=1)       #location number of 1 to 8
@@ -52,10 +55,16 @@ class ParameterSetPlayer(models.Model):
         
         message = "Parameters loaded successfully."
 
-        self.subject_type = source.get("subject_type")
         self.id_label = source.get("id_label")
         self.location = source.get("location")
         self.town = source.get("town")
+
+        self.good_one.id = source.get("good_one").id
+        self.good_two.id = source.get("good_two").id
+        self.good_three.id = source.get("good_three").id
+
+        if source.get("avatar"):
+            self.avatar.id = source.get("avatar").id
 
         self.save()
 
@@ -120,6 +129,8 @@ class ParameterSetPlayer(models.Model):
             "good_two" : self.good_two.json(),
             "good_three" : self.good_three.json(),
 
+            "avatar" : self.avatar.json() if self.avatar else None,
+
             "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
         }
     
@@ -137,6 +148,8 @@ class ParameterSetPlayer(models.Model):
             "good_one" : self.good_one.json(),
             "good_two" : self.good_two.json(),
             "good_three" : self.good_three.json(),
+
+            "avatar" : self.avatar.json() if self.avatar else None,
 
             "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
         }
