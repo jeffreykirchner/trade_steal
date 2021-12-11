@@ -20,5 +20,10 @@ setFieldHouseVisbility(value){
         {
             session_players[i].fieldContainer.visible = value;
         }
+
+        if(session_players[i].avatarContainer)
+        {
+            session_players[i].avatarContainer.visible = value;
+        }
     }
 },
