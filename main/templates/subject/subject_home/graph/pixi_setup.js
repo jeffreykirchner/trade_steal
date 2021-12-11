@@ -3,9 +3,11 @@
 /**
  * update the pixi players with new info
  */
- setupPixi(){    
+setupPixi(){    
     app.resetPixiApp();
-    PIXI.Loader.shared.add("{% static 'sprite_sheet.json' %}").load(app.setupPixiSheets);
+    PIXI.Loader.shared.add("{% static 'sprite_sheet.json' %}")
+                      .add("{% static 'avatars.json' %}")
+                      .load(app.setupPixiSheets);
 },
 
 resetPixiApp(){
@@ -47,6 +49,7 @@ resetPixiApp(){
 */
 setupPixiSheets(){
     app.$data.house_sheet = PIXI.Loader.shared.resources["{% static 'sprite_sheet.json' %}"].spritesheet;
+    app.$data.avatar_sheet = PIXI.Loader.shared.resources["{% static 'avatars.json' %}"].spritesheet;
     app.$data.house_sprite = new PIXI.Sprite(app.$data.house_sheet.textures["House0000"]);
 
     app.$data.grid_x = 11;
@@ -382,7 +385,8 @@ setupSingleAvatar(index){
     let parameter_set = app.$data.session.parameter_set;
 
     let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'avatar');
-    let sprite = PIXI.Sprite.from('/static/avatars/' + session_players[index].parameter_set_player.avatar.file_name);
+    
+    let sprite = PIXI.Sprite.from(app.$data.avatar_sheet.textures[session_players[index].parameter_set_player.avatar.file_name]);
 
     container.x = pt.x;
     container.y = pt.y;
