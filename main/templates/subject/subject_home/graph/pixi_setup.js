@@ -88,6 +88,15 @@ setupPixiPlayers(){
         app.setupSingleField(i);
     }
 
+    //setup pixi avatars
+    if(app.$data.session.parameter_set.show_avatars == "True")
+    {
+        for(let i=0;i<session_players.length;i++)
+        {
+            app.setupSingleAvatar(i);
+        }
+    }
+
     if(app.is_subject)
         app.setFieldHouseVisbility(app.$data.session.started);
 },
@@ -271,7 +280,7 @@ setupSingleField(index){
 
     let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'field');
 
-    //house texture
+    //field texture
     let sprite = PIXI.Sprite.from(app.$data.house_sheet.textures["Field0000"]);
 
     sprite.x = 0;
@@ -353,6 +362,44 @@ setupSingleField(index){
     app.$data.pixi_app.stage.addChild(session_players[index].fieldContainer);
 },
 
+/**setup avatar container for player */
+setupSingleAvatar(index){
+
+    let session_players = app.$data.session.session_players;
+    let session_player = session_players[index];
+
+    if(session_players[index].parameter_set_player.town.toString() != app.$data.current_town) return;
+
+    if(session_player.avatarContainer)
+    {
+        session_player.avatarContainer.destroy();
+        session_player.avatarContainer=null;
+    }
+
+    let container = new PIXI.Container();
+
+    let parameter_set_player = session_player.parameter_set_player;
+    let parameter_set = app.$data.session.parameter_set;
+
+    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'avatar');
+    let sprite = PIXI.Sprite.from('/static/avatars/' + session_players[index].parameter_set_player.avatar.file_name);
+
+    container.x = pt.x;
+    container.y = pt.y;
+
+    sprite.x = 0;
+    sprite.y = 0;   
+    container.addChild(sprite)
+
+    container.pivot.set(container.width/2, container.height/2);
+
+    scale = (app.$data.canvas_width/11) / container.width;
+
+    container.scale.set(scale, scale);
+
+    session_players[index].avatarContainer = container;
+    app.$data.pixi_app.stage.addChild(session_players[index].avatarContainer);
+},
 /**
  * location grid for layout
  */
@@ -398,6 +445,12 @@ destroyPixiPlayers(){
             session_players[i].fieldContainer.destroy();
             session_players[i].fieldContainer = null;
         }
+
+        if(session_players[i].avatarContainer)
+        {
+            session_players[i].avatarContainer.destroy();
+            session_players[i].avatarContainer = null;
+        }
     }
 },
 
@@ -412,8 +465,10 @@ getLocationCordinates(index, field_or_house){
     {
         if(field_or_house == "house")
             x = app.$data.canvas_scale_width * 3;
-        else
+        else if (field_or_house == "field")
             x = app.$data.canvas_scale_width * 2;
+        else
+            x = app.$data.canvas_scale_width * 1;
 
         y += index * (app.$data.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale));
     }
@@ -421,8 +476,10 @@ getLocationCordinates(index, field_or_house){
     {
         if(field_or_house == "house")
             x = app.$data.canvas_scale_width * 8;
-        else
+        else if (field_or_house == "field")
             x = app.$data.canvas_scale_width * 9;
+        else
+            x = app.$data.canvas_scale_width * 10;
 
         y += (index-4) * (app.$data.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale));
     }    

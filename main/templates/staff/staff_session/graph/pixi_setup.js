@@ -84,6 +84,12 @@ setupPixiPlayers(){
     {
         app.setupSingleField(i);
     }
+
+     //setup pixi avatars
+     for(let i=0;i<session_players.length;i++)
+     {
+         app.setupSingleAvatar(i);
+     }
 },
 
 /**setup house container for player
