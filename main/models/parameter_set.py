@@ -201,6 +201,8 @@ class ParameterSet(models.Model):
         player.id_label = str(location+1)
         player.location = location+1
 
+        player.avatar = main.models.Avatar.objects.first()
+
         player.save()
 
     def update_group_counts(self):
