@@ -36,12 +36,9 @@
                     <div class="one">
                         <canvas class="one" key="sd_graph" id="sd_graph_id" style="border-style: solid;border-width: 1px;"></canvas>
                     </div>               
-                    <div class="two border" v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]">
-                        <div class="row justify-content-center mt-2" v-show="!session.started">
-                            <div class="col-md fs-1 text-center" >
-                                <span class="align-middle" >Please Wait</span>  
-                            </div>
-                        </div>
+                    <div class="two border"
+                         v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]"
+                         v-show="session.started">
 
                         <div class="d-flex flex-column">
                             <div class="p-1" v-for="(c, index) in chat_list_to_display" v-bind:key="c.id">
@@ -61,6 +58,13 @@
                           
                         
                     </div>
+
+                    <div class="two border" v-show="!session.started">
+                        <div class="d-flex flex-column">
+                            <span class="text-center fs-1" >Please Wait</span>  
+                        </div>                        
+                    </div>
+
                 </div>
             </div>
         </div>
