@@ -2,10 +2,11 @@
 websocket session list
 '''
 from asgiref.sync import sync_to_async
+from pprint import pprint
 
-import json
 import logging
 import copy
+import json
 
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
@@ -22,6 +23,7 @@ from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerMove
 from main.models import SessionPlayerChat
+from main.models import SessionPlayerNotice
 
 from main.globals import ContainerTypes
 from main.globals import ChatTypes
@@ -515,7 +517,16 @@ def take_move_goods(session_id, session_player_id, data):
                     session_player_move.target_container = ContainerTypes.FIELD
 
                 session_player_move.save()
-                
+
+                #record notice for source player
+                session_player_notice_1 = SessionPlayerNotice()
+
+                session_player_notice_1.session_period = session.get_current_session_period()
+                session_player_notice_1.session_player = source_session_player
+                session_player_notice_1.text = "You transfered "
+                session_player_notice_1.save()
+
+                #record notice for target player
         except ObjectDoesNotExist:
             logger.warning(f"take_move_goods session, not found ID: {session_id}")
             return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       

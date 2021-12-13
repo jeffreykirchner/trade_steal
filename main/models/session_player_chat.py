@@ -1,5 +1,5 @@
 '''
-session move goods
+session player chat
 '''
 
 #import logging

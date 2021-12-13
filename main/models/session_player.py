@@ -143,6 +143,7 @@ class SessionPlayer(models.Model):
         self.session_player_moves_b.all().delete()
         self.session_player_chats_b.all().delete()
         self.session_player_periods_b.all().delete()
+        self.session_player_notices_b.all().delete()
 
         self.good_one_house = 0
         self.good_two_house = 0
@@ -325,6 +326,8 @@ class SessionPlayer(models.Model):
 
             "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)],
             "new_chat_message" : False,           #true on client side when a new un read message comes in
+
+            "notices" : [n.json() for n in self.session_player_notices_b.all()],
         }
     
     def json_for_subject(self, session_player):
