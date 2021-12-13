@@ -200,6 +200,9 @@ var app = Vue.createApp({
         */
         takeUpdateResetExperiment(messageData){
             app.takeGetSession(messageData);
+            app.$data.production_slider_one = 50;
+            app.$data.production_slider_two = 50;
+            app.$data.production_slider=0;
         },
 
         /**

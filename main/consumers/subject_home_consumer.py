@@ -633,10 +633,12 @@ def take_production_time(session_id, session_player_id, data):
         session = Session.objects.get(id=session_id)
         session_player = SessionPlayer.objects.get(id=session_player_id)
 
-        # if session.current_period_phase == PeriodPhase.PRODUCTION:
-        #     message = "Not updates during production."
-        #     logger.warning(f"take production time: {message}")
-        #     return {"value" : "fail", "result" : {}, "message" : message}
+        if session.current_period_phase == PeriodPhase.PRODUCTION and \
+           session.current_period > 1:
+
+            message = "Not updates during production."
+            logger.warning(f"take production time: {message}")
+            return {"value" : "fail", "result" : {}, "message" : message}
 
         session_player.good_one_production_rate = good_one_production_rate
         session_player.good_two_production_rate = good_two_production_rate

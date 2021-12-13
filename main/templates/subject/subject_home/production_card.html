@@ -49,11 +49,15 @@
 
         <div class="row" v-if="production_slider_one != session_player.good_one_production_rate">
             <div class="col text-center">
-                <!-- || session.current_period_phase=='Production' -->
+                <!--  -->
                 <button type="button"
                     class="btn btn-outline-primary"
                     title="Send new production values."
-                    v-bind:disabled="reconnecting || working || session.started===false || session.finished" 
+                    v-bind:disabled="reconnecting || 
+                                     working || 
+                                     session.started===false || 
+                                     session.finished || 
+                                     (session.current_period_phase=='Production' && session.current_period > 1)" 
                     v-on:click = "sendProdution()">
                     Update Production <i class="fas fa-sign-in-alt"></i>
                 </button>
