@@ -33,9 +33,13 @@
             <div class="col">
              
                 <div class="container">
+                    
+                    <!-- homes and fields -->
                     <div class="one">
                         <canvas class="one" key="sd_graph" id="sd_graph_id" style="border-style: solid;border-width: 1px;"></canvas>
-                    </div>               
+                    </div>  
+
+                    <!-- chat box -->
                     <div class="two border"
                          v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]"
                          v-show="session.started">
@@ -54,14 +58,20 @@
                                     <span class="fw-bold">[[c.sender_label]]:</span> [[c.text]]
                                 </div>
                             </div>
-                        </div>
-                          
+                        </div>                          
                         
                     </div>
 
                     <div class="two border" v-show="!session.started">
                         <div class="d-flex flex-column">
                             <span class="text-center fs-1" >Please Wait</span>  
+                        </div>                        
+                    </div>
+
+                    <div class="three border"
+                         v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]">
+                        <div class="d-flex flex-column">
+                            <span class="text-center fs-4" ><u>Notices</u></span>  
                         </div>                        
                     </div>
 

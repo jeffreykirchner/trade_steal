@@ -252,6 +252,9 @@ class SessionPlayer(models.Model):
         session_player_period.good_one_production = round_half_away_from_zero(self.good_one_field, 0)
         session_player_period.good_two_production = round_half_away_from_zero(self.good_two_field, 0)
 
+        session_player_period.good_one_production_rate = self.good_one_production_rate
+        session_player_period.good_two_production_rate = self.good_two_production_rate
+
         session_player_period.save()
 
     def do_period_consumption(self):

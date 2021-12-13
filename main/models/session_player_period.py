@@ -24,6 +24,9 @@ class SessionPlayerPeriod(models.Model):
     good_two_consumption = models.IntegerField(verbose_name='Good two amount consumed', default=0)        #amount of good two consumed
     good_three_consumption = models.IntegerField(verbose_name='Good three amount consumed', default=0)      #amount of good three consumed
 
+    good_one_production_rate = models.IntegerField(verbose_name='Good one production setting 0-100', default=0)        #amount of time producing good one
+    good_two_production_rate = models.IntegerField(verbose_name='Good two production setting 0-100', default=0)        #amount of time producing good two
+
     earnings = models.IntegerField(verbose_name='Period Earnings', default=0)        #earnings in cents this period
 
     timestamp = models.DateTimeField(auto_now_add=True)
