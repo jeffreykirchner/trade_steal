@@ -12,6 +12,12 @@
  */
 handleFieldPointerUp(index, event){
     //console.log('Field ' + (index+1).toString() + ' up');
+    if(app.$data.session.parameter_set.allow_stealing == "False")
+    {
+        app.turnOffHighlights();
+        return;
+    }
+
     let session_players = app.$data.session.session_players;
     app.handleContainerUp(session_players[index].fieldContainer, event);
 },

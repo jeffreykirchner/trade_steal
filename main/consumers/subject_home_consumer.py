@@ -387,6 +387,11 @@ def take_move_goods(session_id, session_player_id, data):
              return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers during growth phase."]},
                      "message" : "Move Error"}
         
+        if not session.parameter_set.allow_stealing:
+            if target_type == "field":
+                return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers to fields."]},
+                        "message" : "Move Error"}
+        
     except KeyError:
             logger.warning(f"take_move_goods session, setup form: {session_id}")
             return {"value" : "fail", "errors" : {}, "message" : "Move Error"}
