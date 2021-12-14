@@ -72,10 +72,10 @@
                     <div class="three border"
                          v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]">
                         <div class="d-flex flex-column">
-                            <span class="text-center fs-4" ><u>Notices</u></span>  
+                            <span class="text-center fs-5" ><u>Notices</u></span>  
 
                             <div class="p-1" v-for="(n, index) in session_player.notices" v-bind:key="n.id">
-                                [[n.text | safe]]
+                                <span v-html="n.text"></span>
                             </div>
                         </div>                        
                     </div>

@@ -2,7 +2,6 @@
 websocket session list
 '''
 from asgiref.sync import sync_to_async
-from pprint import pprint
 
 import logging
 import copy
@@ -519,14 +518,50 @@ def take_move_goods(session_id, session_player_id, data):
                 session_player_move.save()
 
                 #record notice for source player
+                transfer_list = []
+                if good_one_amount > 0:
+                    transfer_list.append(f"{good_one_amount} <span style='color:{source_session_player.parameter_set_player.good_one.rgb_color}'>{source_session_player.parameter_set_player.good_one.label}</span>")
+                
+                if good_two_amount > 0:
+                    transfer_list.append(f"{good_two_amount} <span style='color:{source_session_player.parameter_set_player.good_two.rgb_color}'>{source_session_player.parameter_set_player.good_two.label}</span>")
+                
+                if good_three_amount > 0:
+                    transfer_list.append(f"{good_three_amount} <span style='color:{source_session_player.parameter_set_player.good_two.rgb_color}'>{source_session_player.parameter_set_player.good_two.label}{source_session_player.parameter_set_player.good_three.label}</span>")
+
+                transfer_string = ""
+                if len(transfer_list) == 1:
+                    transfer_string = f'{transfer_list[0]}'
+                elif len(transfer_list) == 2:
+                    transfer_string = f'{transfer_list[0]} and {transfer_list[1]}'
+                else:
+                    transfer_string = f'{transfer_list[0]}, {transfer_list[1]}, and {transfer_list[2]}'
+
+                transfer_string = f"moved {transfer_string} from Person {source_session_player.parameter_set_player.id_label}'s {source_type} to Person {target_session_player.parameter_set_player.id_label}'s {target_type}."
+
                 session_player_notice_1 = SessionPlayerNotice()
 
                 session_player_notice_1.session_period = session.get_current_session_period()
-                session_player_notice_1.session_player = source_session_player
-                session_player_notice_1.text = "You transfered "
+                session_player_notice_1.session_player = session_player
+                session_player_notice_1.text = f"You {transfer_string}"
                 session_player_notice_1.save()
 
-                #record notice for target player
+                #record notice for source player if source does not match mover
+                if source_session_player != session_player:
+                    session_player_notice_2 = SessionPlayerNotice()
+
+                    session_player_notice_2.session_period = session.get_current_session_period()
+                    session_player_notice_2.session_player = source_session_player
+                    session_player_notice_2.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
+                    session_player_notice_2.save()
+                
+                if target_session_player != session_player:
+                    session_player_notice_2 = SessionPlayerNotice()
+
+                    session_player_notice_2.session_period = session.get_current_session_period()
+                    session_player_notice_2.session_player = target_session_player
+                    session_player_notice_2.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
+                    session_player_notice_2.save()
+
         except ObjectDoesNotExist:
             logger.warning(f"take_move_goods session, not found ID: {session_id}")
             return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
