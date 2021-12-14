@@ -119,8 +119,6 @@ updateChatDisplay(){
     //scroll to view
     if(app.$data.chat_list_to_display.length>0)
     {
-        //setTimeout(app.updateChatDisplayScroll, 250);
-
         Vue.nextTick(() => {app.updateChatDisplayScroll()});        
     }
 },

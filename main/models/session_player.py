@@ -360,7 +360,7 @@ class SessionPlayer(models.Model):
             "parameter_set_player" : self.parameter_set_player.json_for_subject(),
         }
 
-    def json_min(self):
+    def json_min(self, session_player_notice=None):
         '''
         minimal json object of model
         '''
@@ -376,6 +376,8 @@ class SessionPlayer(models.Model):
             "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
 
             "group_number" : self.get_current_group_number(),
+
+            "notice" : session_player_notice.json() if session_player_notice else None,
         }
     
     def json_earning(self):

@@ -536,13 +536,18 @@ def take_move_goods(session_id, session_player_id, data):
                 else:
                     transfer_string = f'{transfer_list[0]}, {transfer_list[1]}, and {transfer_list[2]}'
 
-                transfer_string = f"moved {transfer_string} from Person {source_session_player.parameter_set_player.id_label}'s {source_type} to Person {target_session_player.parameter_set_player.id_label}'s {target_type}."
+                #check for steal
+                if source_session_player != session_player:
+                    transfer_string = f"moved {transfer_string} from <u>Person {source_session_player.parameter_set_player.id_label}'s {source_type}</u> to <u>Person {target_session_player.parameter_set_player.id_label}'s {target_type}</u>."
+                else:
+                    transfer_string = f"moved {transfer_string} from Person {source_session_player.parameter_set_player.id_label}'s {source_type} to Person {target_session_player.parameter_set_player.id_label}'s {target_type}."
 
                 session_player_notice_1 = SessionPlayerNotice()
 
                 session_player_notice_1.session_period = session.get_current_session_period()
                 session_player_notice_1.session_player = session_player
                 session_player_notice_1.text = f"You {transfer_string}"
+                session_player_notice_1.text = session_player_notice_1.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "your")
                 session_player_notice_1.save()
 
                 #record notice for source player if source does not match mover
@@ -552,23 +557,34 @@ def take_move_goods(session_id, session_player_id, data):
                     session_player_notice_2.session_period = session.get_current_session_period()
                     session_player_notice_2.session_player = source_session_player
                     session_player_notice_2.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
+                    session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {source_session_player.parameter_set_player.id_label}'s", "your")
+                    session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "their")
                     session_player_notice_2.save()
                 
                 if target_session_player != session_player:
-                    session_player_notice_2 = SessionPlayerNotice()
+                    session_player_notice_3 = SessionPlayerNotice()
 
-                    session_player_notice_2.session_period = session.get_current_session_period()
-                    session_player_notice_2.session_player = target_session_player
-                    session_player_notice_2.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
-                    session_player_notice_2.save()
+                    session_player_notice_3.session_period = session.get_current_session_period()
+                    session_player_notice_3.session_player = target_session_player
+                    session_player_notice_3.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
+                    session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {target_session_player.parameter_set_player.id_label}'s", "your")
+                    session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "their")
+                    session_player_notice_3.save()
 
         except ObjectDoesNotExist:
             logger.warning(f"take_move_goods session, not found ID: {session_id}")
             return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
         
         result = []
-        result.append(source_session_player.json_min())
-        result.append(target_session_player.json_min())
+        session_player = session.session_players.get(id=session_player_id)
+        result.append(session_player.json_min(session_player_notice_1))
+
+        if source_session_player != session_player:
+            result.append(source_session_player.json_min(session_player_notice_2))
+
+        if target_session_player != session_player:
+            result.append(target_session_player.json_min(session_player_notice_3))
+        
         
         return {"value" : "success", "result" : result}                      
                                 

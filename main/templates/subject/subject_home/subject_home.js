@@ -186,6 +186,7 @@ var app = Vue.createApp({
             
             app.updateChatDisplay();
             app.calcWaste();
+            setTimeout(app.updateNoticeDisplayScroll, 250);
         },
 
         /** update start status

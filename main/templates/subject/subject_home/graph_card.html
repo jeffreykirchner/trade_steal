@@ -75,7 +75,7 @@
                             <span class="text-center fs-5" ><u>Notices</u></span>  
 
                             <div class="p-1" v-for="(n, index) in session_player.notices" v-bind:key="n.id">
-                                <span v-html="n.text"></span>
+                                <span v-html="n.text" v-bind:id="'notice_id_' + n.id"></span>
                             </div>
                         </div>                        
                     </div>

@@ -142,6 +142,17 @@ takeUpdateGoods(messageData){
 
                 session_player.good_one_field = results[r].good_one_field;
                 session_player.good_two_field = results[r].good_two_field; 
+
+                if(results[r].notice)
+                {
+                    session_player.notices.push(results[r].notice);
+
+                    //scroll to view
+                    if(session_player.notices.length>0)
+                    {
+                        Vue.nextTick(() => {app.updateNoticeDisplayScroll()});        
+                    }
+                }
             }
         }
 
@@ -169,4 +180,9 @@ takeUpdateGoods(messageData){
     }
 
     if(app.$data.is_subject) app.calcWaste();
+},
+
+updateNoticeDisplayScroll(){
+    var elmnt = document.getElementById("notice_id_" + app.$data.session_player.notices[app.$data.session_player.notices.length-1].id.toString());
+    elmnt.scrollIntoView(); 
 },
