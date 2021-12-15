@@ -111,7 +111,7 @@ updateChatDisplay(){
     }
 
     //add spacers
-    for(let i=app.$data.chat_list_to_display.length;i<18;i++)
+    for(let i=app.$data.chat_list_to_display.length;i<12;i++)
     {
         app.$data.chat_list_to_display.unshift({id:i*-1, text:"|", sender_id:app.$data.session_player.id})
     }

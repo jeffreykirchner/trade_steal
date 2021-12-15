@@ -3,20 +3,15 @@ session player model
 '''
 
 #import logging
-import decimal
 import uuid
 from decimal import Decimal
 
 from django.db import models
-from django.forms.utils import to_current_timezone
 from django.urls import reverse
 from django.db.models import Q
-from django.db.models import F
-from django.db.models import Value
-from django.db.models import Func
 from django.db.models.expressions import RawSQL
 
-from main.models import Session, parameter_set_player
+from main.models import Session
 from main.models import ParameterSetPlayer
 
 from main.globals import round_half_away_from_zero
@@ -257,6 +252,35 @@ class SessionPlayer(models.Model):
         session_player_period.good_two_production_rate = self.good_two_production_rate
 
         session_player_period.save()
+
+        #record production notice
+        session_player_notice = main.models.SessionPlayerNotice()
+
+        session_player_notice.session_period = self.session.get_current_session_period()
+        session_player_notice.session_player = self
+
+        session_player_notice.text = f'Period {self.session.current_period} production: '
+
+        if session_player_period.good_one_production > 0:
+            session_player_notice.text += f"{int(session_player_period.good_one_production)} {self.parameter_set_player.good_one.get_html()}"
+        
+        if session_player_period.good_two_production > 0:
+
+            if session_player_period.good_one_production > 0:
+                session_player_notice.text += ' and '
+
+            session_player_notice.text += f"{int(session_player_period.good_two_production)} {self.parameter_set_player.good_two.get_html()}"
+
+        session_player_notice.text += ' at '
+        session_player_notice.text += f'{session_player_period.good_one_production_rate}% {self.parameter_set_player.good_one.get_html()} and '
+        session_player_notice.text += f'{session_player_period.good_two_production_rate}% {self.parameter_set_player.good_two.get_html()}'
+
+        session_player_notice.text += "."
+
+        session_player_notice.save()
+
+        return session_player_notice.json()
+
 
     def do_period_consumption(self):
         '''

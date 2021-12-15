@@ -18,7 +18,7 @@ from main.consumers import get_session
 from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
 
-from main.models import Session
+from main.models import Session, session_player_notice
 from main.models import SessionPlayer
 from main.models import SessionPlayerMove
 from main.models import SessionPlayerChat
@@ -278,6 +278,15 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         for session_player in event_data["result"]["session_players"]:
             if session_player["group_number"] == self.group_number:
                 session_players.append(session_player)
+        
+        #remove other player notices
+        notice_list = []
+        for session_player_notice in event_data.get("notice_list", []):
+            if session_player_notice["session_player_id"] == self.session_player_id:
+                notice_list.append(session_player_notice)
+                break
+
+        event_data["notice_list"] = notice_list   
 
         event_data["result"]["session_players"] = session_players
 
@@ -520,13 +529,13 @@ def take_move_goods(session_id, session_player_id, data):
                 #record notice for source player
                 transfer_list = []
                 if good_one_amount > 0:
-                    transfer_list.append(f"{good_one_amount} <span style='color:{source_session_player.parameter_set_player.good_one.rgb_color}'>{source_session_player.parameter_set_player.good_one.label}</span>")
+                    transfer_list.append(f"{good_one_amount} {source_session_player.parameter_set_player.good_one.get_html()}")
                 
                 if good_two_amount > 0:
-                    transfer_list.append(f"{good_two_amount} <span style='color:{source_session_player.parameter_set_player.good_two.rgb_color}'>{source_session_player.parameter_set_player.good_two.label}</span>")
+                    transfer_list.append(f"{good_two_amount} {source_session_player.parameter_set_player.good_two.get_html()}")
                 
                 if good_three_amount > 0:
-                    transfer_list.append(f"{good_three_amount} <span style='color:{source_session_player.parameter_set_player.good_two.rgb_color}'>{source_session_player.parameter_set_player.good_two.label}{source_session_player.parameter_set_player.good_three.label}</span>")
+                    transfer_list.append(f"{good_three_amount} {source_session_player.parameter_set_player.good_three.get_html()}")
 
                 transfer_string = ""
                 if len(transfer_list) == 1:

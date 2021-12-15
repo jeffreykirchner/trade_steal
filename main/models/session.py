@@ -157,11 +157,13 @@ class Session(models.Model):
             self.finished = True
             status = "fail"
 
+        notice_list = []
+
         if status != "fail":
             if self.time_remaining == 0:
 
                 if self.current_period_phase == PeriodPhase.PRODUCTION:
-                    self.record_period_production()
+                    notice_list = self.record_period_production()
                     
                     #start trade phase
                     self.current_period_phase = PeriodPhase.TRADE
@@ -182,7 +184,9 @@ class Session(models.Model):
 
         result = self.json_for_timmer()
 
-        return {"value" : status, "result" : result}
+        return {"value" : status,
+                "result" : result,
+                "notice_list" : notice_list}
 
     def do_period_production(self):
         '''
@@ -197,8 +201,12 @@ class Session(models.Model):
         do one second of production for all players
         '''
 
+        notice_list=[]
+
         for p in self.session_players.all():
-            p.record_period_production()
+            notice_list.append(p.record_period_production())
+
+        return notice_list
     
     def do_period_consumption(self):
         '''
@@ -262,6 +270,7 @@ class Session(models.Model):
 
         session_players = []
 
+        #send update each second during production
         if self.current_period_phase == PeriodPhase.PRODUCTION:
             session_players = [i.json_min() for i in self.session_players.all()]
 

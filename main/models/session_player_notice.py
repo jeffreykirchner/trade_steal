@@ -40,6 +40,7 @@ class SessionPlayerNotice(models.Model):
         '''
 
         return{
-            "id" : self.id,    
+            "id" : self.id,   
+            "session_player_id" : self.session_player.id, 
             "text" : self.text,  
         }

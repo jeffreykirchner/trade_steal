@@ -46,6 +46,12 @@ class ParameterSetGood(models.Model):
         return message
 
 
+    def get_html(self):
+        '''
+        return html object of model
+        '''
+        return f"<span style='color:{self.rgb_color}'>{self.label}</span>"
+
     def json(self):
         '''
         return json object of model

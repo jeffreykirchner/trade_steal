@@ -212,6 +212,7 @@ var app = Vue.createApp({
         takeUpdateTime(messageData){
             let result = messageData.status.result;
             let status = messageData.status.value;
+            let notice_list = messageData.status.notice_list;
 
             if(status == "fail") return;
 
@@ -226,6 +227,12 @@ var app = Vue.createApp({
 
             //update subject earnings
             app.$data.session_player.earnings = result.session_player_earnings.earnings;
+
+            if(notice_list.length>0)
+            {
+                app.$data.session_player.notices.push(notice_list[0]);
+                setTimeout(app.updateNoticeDisplayScroll, 250);
+            }
             
         },
 
