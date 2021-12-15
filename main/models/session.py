@@ -29,7 +29,8 @@ class Session(models.Model):
     session model
     '''
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sessions_a")
+    collaborators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="sessions_b")
 
     title = models.CharField(max_length = 300, default="*** New Session ***")    #title of session
     start_date = models.DateField(default=now)                                   #date of session start

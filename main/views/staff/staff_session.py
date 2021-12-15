@@ -34,7 +34,7 @@ class StaffSessionView(SingleObjectMixin, View):
         '''
         handle get requests
         '''
-
+        
         parameters=Parameters.objects.first()
 
         session = self.get_object()

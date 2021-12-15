@@ -4,6 +4,7 @@ admin interface
 from django.contrib import admin
 
 from main.forms import ParametersForm
+from main.forms import SessionFormAdmin
 
 from main.models import Parameters
 from main.models import ParameterSet
@@ -46,7 +47,13 @@ class ParameterSetPlayerGroupAdmin(admin.ModelAdmin):
 
 admin.site.register(ParameterSetPlayerGroup, ParameterSetPlayerGroupAdmin)
 
-admin.site.register(Session)
+
+class SessionAdmin(admin.ModelAdmin):
+    form = SessionFormAdmin
+
+admin.site.register(Session, SessionAdmin)
+
+
 admin.site.register(SessionPlayer)
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerMove)

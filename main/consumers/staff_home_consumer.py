@@ -12,6 +12,7 @@ import pytz
 from django.core.serializers.json import DjangoJSONEncoder
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 from main.consumers import SocketConsumerMixin
 
@@ -154,8 +155,11 @@ def get_session_list_json(usr):
     get list of sessions created by usr
     usr: auth user
     '''
+    session_list_1 = usr.sessions_a.all()
+    session_list_2 = usr.sessions_b.all()
 
-    return list(Session.objects.filter(soft_delete=False, creator=usr)
+    return list(Session.objects.filter(soft_delete=False) \
+                               .filter(Q(id__in=session_list_1) | Q(id__in=session_list_2)) \
                                .values('title', 'id', 'locked', 'start_date'))
 
 def get_session_list_admin_json(usr):

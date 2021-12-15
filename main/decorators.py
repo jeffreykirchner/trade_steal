@@ -11,7 +11,10 @@ def user_is_owner(function):
 
         session = Session.objects.get(id=kwargs['pk'])
 
-        if request.user == session.creator or request.user.is_superuser:
+        if request.user == session.creator or \
+           request.user.is_superuser or \
+           request.user in session.collaborators.all() :
+
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied
