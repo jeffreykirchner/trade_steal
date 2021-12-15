@@ -72,11 +72,17 @@
 
 <!-- cards -->
 <div class="row justify-content-lg-center" v-cloak>
-    <div class="col-md-9">
+    <div class="col-md">
         {%include "staff/staff_session/subjects_card.html"%}                
+    </div>    
+</div>
+
+<div class="row justify-content-lg-center mt-4" v-cloak>
+    <div class="col-md-9">
+        {%include "staff/staff_session/graph_card.html"%}                
     </div>
     <div class="col-md-3">
-        
+       
         <div class="row">
             <div class="col">
                 {%include "staff/staff_session/session_card.html"%}
@@ -88,16 +94,14 @@
                 {%include "staff/staff_session/control_card.html"%} 
             </div>
         </div>
-                        
-    </div>
-</div>
 
-<div class="row justify-content-lg-center mt-4" v-cloak>
-    <div class="col-md-9">
-        {%include "staff/staff_session/graph_card.html"%}                
-    </div>
-    <div class="col-md-3">
-        {%include "staff/staff_session/summary_card.html"%}                  
+        
+        <div class="row mt-2">
+            <div class="col">
+                {%include "staff/staff_session/summary_card.html"%}
+            </div>                
+        </div>
+                                           
     </div>
 </div>
 

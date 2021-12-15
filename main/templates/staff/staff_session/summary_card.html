@@ -1,6 +1,6 @@
-<div class="card">                  
+<div class="card" v-show="first_load_done">                  
     <div class="card-header fw-bold">                
-        <span class="align-middle">Summary</span>            
+        <span class="align-middle">Status</span>            
 
     </div>
     <div class="card-body">      
@@ -17,7 +17,12 @@
                 Time Remaining:
             </div>
             <div class="col text-start ps-1">
-                [[session.time_remaining]]
+                <span v-if="session.finished">
+                    Complete
+                </span>
+                <span v-else>
+                     [[session.time_remaining]]
+                </span>               
             </div>
         </div>
         <div class="row">
