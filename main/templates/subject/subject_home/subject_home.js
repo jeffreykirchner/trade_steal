@@ -21,6 +21,7 @@ var app = Vue.createApp({
 
                     session_player_move_two_form_ids: {{session_player_move_two_form_ids|safe}},
                     session_player_move_three_form_ids: {{session_player_move_three_form_ids|safe}},
+                    end_game_form_ids: {{end_game_form_ids|safe}},
 
                     pixi_loaded : false,             //true when pixi is loaded
                     pixi_transfer_line : {visible : false},       //transfer line between two pixi containers  
@@ -114,6 +115,12 @@ var app = Vue.createApp({
                 case "update_groups":
                     app.takeUpdateGroups(messageData);
                     break;
+                case "update_end_game":
+                    app.takeEndGame(messageData);
+                    break;
+                case "name":
+                    app.takeName(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -187,6 +194,15 @@ var app = Vue.createApp({
             app.updateChatDisplay();
             app.calcWaste();
             setTimeout(app.updateNoticeDisplayScroll, 250);
+
+            if(app.$data.session.finished)
+            {
+                var myModal = new bootstrap.Modal(document.getElementById('endGameModal'), {
+                    keyboard: false
+                    })
+                
+                myModal.toggle();
+            }
         },
 
         /** update start status
@@ -233,7 +249,29 @@ var app = Vue.createApp({
                 app.$data.session_player.notices.push(notice_list[0]);
                 setTimeout(app.updateNoticeDisplayScroll, 250);
             }
+
+            //session complete
+            if(app.$data.session.finished)
+            {
+                //hide transfer modals
+                $('#moveTwoGoodsModal').modal('hide');
+                $('#moveThreeGoodsModal').modal('hide');
+
+                //show endgame modal
+                var myModal = new bootstrap.Modal(document.getElementById('endGameModal'), {
+                    keyboard: false
+                    })
+                
+                myModal.toggle();
+            }
             
+        },
+
+         /**
+         * take end of game notice
+         */
+        takeEndGame(messageData){
+
         },
 
         /**
@@ -279,6 +317,13 @@ var app = Vue.createApp({
             }
 
             s = app.$data.session_player_move_three_form_ids;
+            for(var i in s)
+            {
+                $("#id_" + s[i]).attr("class","form-control");
+                $("#id_errors_" + s[i]).remove();
+            }
+
+            s = app.$data.end_game_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");

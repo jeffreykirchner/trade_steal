@@ -4,12 +4,15 @@ session player model
 
 #import logging
 import uuid
+import logging
+
 from decimal import Decimal
 
 from django.db import models
 from django.urls import reverse
 from django.db.models import Q
 from django.db.models.expressions import RawSQL
+from django.core.exceptions import ObjectDoesNotExist
 
 from main.models import Session
 from main.models import ParameterSetPlayer
@@ -38,8 +41,10 @@ class SessionPlayer(models.Model):
     player_number = models.IntegerField(verbose_name='Player number', default=0)                        #player number, from 1 to N
     player_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Player Key')      #login and channel key
     connecting = models.BooleanField(default=False, verbose_name='Consumer is connecting')              #true when a consumer is connceting
-    connected_count = models.IntegerField(verbose_name='Number of consumer connections', default=0)    #number of consumers connected to this subject
+    connected_count = models.IntegerField(verbose_name='Number of consumer connections', default=0)     #number of consumers connected to this subject
 
+    name = models.CharField(verbose_name='Full Name', max_length = 100, default="")       #subject's full name
+    student_id = models.CharField(verbose_name='Student ID', max_length = 100, default="")              #subject's student ID number
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)      #earnings in cents
 
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -149,6 +154,8 @@ class SessionPlayer(models.Model):
         self.good_three_field = 0
 
         self.earnings = 0
+        self.name = ""
+        self.student_id = ""
 
         self.good_one_production_rate = 50
         self.good_two_production_rate = 50
@@ -181,9 +188,14 @@ class SessionPlayer(models.Model):
         '''
         return current group number
         '''
-        
-        return self.parameter_set_player.parameter_set_player_groups.get(period=self.session.current_period).group_number
-    
+        logger = logging.getLogger(__name__)
+
+        try:
+            return self.parameter_set_player.parameter_set_player_groups.get(period=self.session.current_period).group_number
+        except ObjectDoesNotExist:
+            logging.warning(f"get_current_group_number: not found for period {self.session.current_period}")
+            return -1
+
     def get_group_changed_this_period(self):
         '''
         true if subject is in a new group this period
@@ -324,7 +336,9 @@ class SessionPlayer(models.Model):
         json object of model
         '''
         return{
-            "id" : self.id,         
+            "id" : self.id,      
+            "name" : self.name,
+            "student_id" : self.student_id,   
 
             "good_one_house" : round_half_away_from_zero(self.good_one_house, 0),
             "good_two_house" : round_half_away_from_zero(self.good_two_house, 0),

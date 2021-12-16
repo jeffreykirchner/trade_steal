@@ -141,6 +141,9 @@ var app = Vue.createApp({
                     break; 
                 case "update_reset_connections":
                     app.takeUpdateResetConnections(messageData);
+                    break; 
+                case "update_end_game":
+                    app.takeUpdateEndGame(messageData);
                     break;          
             }
 
@@ -284,6 +287,13 @@ var app = Vue.createApp({
 
             app.takeUpdateGoods({status : {result : result.session_players}});
         },
+
+        /**
+         * take update end game
+         */
+         takeUpdateEndGame(messageData){
+            
+         },
 
         /**
          * change the town shown

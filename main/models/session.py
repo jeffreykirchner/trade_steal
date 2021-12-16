@@ -149,18 +149,21 @@ class Session(models.Model):
         '''
 
         status = "success"
+        end_game = False
 
         #check session over
         if self.time_remaining == 0 and \
            self.current_period_phase == PeriodPhase.TRADE and \
            self.current_period == self.parameter_set.period_count:
 
+            self.do_period_consumption()
             self.finished = True
-            status = "fail"
+            end_game = True
 
         notice_list = []
 
-        if status != "fail":
+        if not status == "fail" and not end_game:
+            
             if self.time_remaining == 0:
 
                 if self.current_period_phase == PeriodPhase.PRODUCTION:
@@ -187,7 +190,8 @@ class Session(models.Model):
 
         return {"value" : status,
                 "result" : result,
-                "notice_list" : notice_list}
+                "notice_list" : notice_list,
+                "end_game" : end_game}
 
     def do_period_production(self):
         '''

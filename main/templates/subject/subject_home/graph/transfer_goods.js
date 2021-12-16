@@ -182,7 +182,12 @@ takeUpdateGoods(messageData){
     if(app.$data.is_subject) app.calcWaste();
 },
 
+/**
+ * scroll notice text to the bottom
+ */
 updateNoticeDisplayScroll(){
+    if(app.$data.session_player.notices.length==0) return;
+
     var elmnt = document.getElementById("notice_id_" + app.$data.session_player.notices[app.$data.session_player.notices.length-1].id.toString());
     elmnt.scrollIntoView(); 
 },

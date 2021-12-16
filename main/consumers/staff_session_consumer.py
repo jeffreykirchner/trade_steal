@@ -240,13 +240,15 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "sender_channel_name": self.channel_name,},
                 )
 
-            await self.channel_layer.send(
-                self.channel_name,
-                {
-                    'type': "continue_timer",
-                    'message_text': {},
-                }
-            )
+            #if session is not over continue
+            if not timer_result["end_game"]:
+                await self.channel_layer.send(
+                    self.channel_name,
+                    {
+                        'type': "continue_timer",
+                        'message_text': {},
+                    }
+                )
         
         logger.info(f"continue_timer end")
 
@@ -366,12 +368,29 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         handle connection status update from group member
         '''
-        logger = logging.getLogger(__name__) 
-        logger.info("Connection update")
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Connection update")
 
         #update not from a client
         if event["data"]["value"] == "fail":
             return
+
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def update_end_game(self, event):
+        '''
+        send end game notice to staff screens
+        '''
+
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Eng game update")
 
         message_data = {}
         message_data["status"] = event["data"]
@@ -393,12 +412,12 @@ def take_get_session(session_key):
     session = None
     logger = logging.getLogger(__name__)
 
-    try:        
-        session = Session.objects.get(session_key=session_key)
-        return session.json()
-    except ObjectDoesNotExist:
-        logger.warning(f"staff get_session session, not found: {session_key}")
-        return {}
+    # try:        
+    session = Session.objects.get(session_key=session_key)
+    return session.json()
+    # except ObjectDoesNotExist:
+    #     logger.warning(f"staff get_session session, not found: {session_key}")
+    #     return {}
 
 def take_update_session_form(session_id, data):
     '''

@@ -7,18 +7,18 @@ import logging
 import copy
 import json
 
-from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
+from django.core.exceptions import  ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 
 from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
-from main.consumers import get_session
 
 from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
+from main.forms import EndGameForm
 
-from main.models import Session, session_player_notice
+from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerMove
 from main.models import SessionPlayerChat
@@ -151,6 +151,19 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         # Send reply to sending channel
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def name(self, event):
+        '''
+        take name and id number
+        '''
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_name)(self.session_id, self.session_player_id, event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     #consumer updates
@@ -322,6 +335,15 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # logger = logging.getLogger(__name__) 
         # logger.info("Connection update")
 
+    async def update_name(self, event):
+        '''
+        send end game notice to staff screens
+        '''
+
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Eng game update")
+    
+
 #local sync functions  
 
 
@@ -391,6 +413,10 @@ def take_move_goods(session_id, session_player_id, data):
 
         if not session.started:
             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session has not started."]},
+                    "message" : "Move Error"}
+        
+        if session.finished:
+            return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session complete."]},
                     "message" : "Move Error"}
         
         if session.current_period_phase == PeriodPhase.PRODUCTION:
@@ -624,6 +650,12 @@ def take_chat(session_id, session_player_id, data):
     session_player_chat.session_player = session_player
     session_player_chat.session_period = session.get_current_session_period()
 
+    if not session.started:
+        return  {"value" : "fail", "result" : {}}
+        
+    if session.finished:
+        return {"value" : "fail", "result" : {}}
+
     if recipients == "all":
         session_player_chat.chat_type = ChatTypes.ALL
     else:
@@ -744,5 +776,51 @@ def take_update_groups(session_id, session_player_id):
         logger.warning(f"take_update_groups: session not found, session {session_id}, session_player_id {session_player_id}")
         return {"value" : "fail", "result" : {}, "message" : "Group update error"}
 
+def take_name(session_id, session_player_id, data):
+    '''
+    take name and student id at end of game
+    '''
 
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Take name: {session_id} {session_player_id} {data}")
+
+    form_data = data["formData"]
+    
+    form_data_dict = {}
+
+    for field in form_data:            
+        form_data_dict[field["name"]] = field["value"]
+
+    try:
+        session = Session.objects.get(id=session_id)
+        session_player = session.session_players.get(id=session_player_id)
+
+        logger.info(f'form_data_dict : {form_data_dict}')       
+
+        form = EndGameForm(form_data_dict)
+        
+        if not session.finished:
+            return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
+                    "message" : "Move Error"}
+        
+    except KeyError:
+            logger.warning(f"take_name , setup form: {session_player_id}")
+            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}
+
+    if form.is_valid():
+        #print("valid form") 
+
+        try:        
+            session_player.name = form.cleaned_data["name"]
+            session_player.student_id = form.cleaned_data["student_id"]
+
+            session_player.save()
+        except ObjectDoesNotExist:
+            logger.warning(f"take_name : {session_player_id}")
+            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+        
+        return {"value" : "success", "result" : {"name" : session_player.name, "student_id" : session_player.student_id}}                      
+                                
+    logger.info("Invalid session form")
+    return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
      

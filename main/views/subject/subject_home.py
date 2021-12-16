@@ -17,6 +17,7 @@ from django.http import JsonResponse
 from main.models import SessionPlayer
 
 from main.forms import SessionForm
+from main.forms import EndGameForm
 from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
 
@@ -44,6 +45,10 @@ class SubjectHomeView(View):
         session_player_move_three_form_ids=[]
         for i in SessionPlayerMoveThreeForm():
             session_player_move_three_form_ids.append(i.html_name)
+        
+        end_game_form_ids=[]
+        for i in EndGameForm():
+            end_game_form_ids.append(i.html_name)
 
         return render(request=request,
                       template_name=self.template_name,
@@ -51,6 +56,8 @@ class SubjectHomeView(View):
                                "player_key" :  session_player.player_key,
                                "id" : session.id,
                                "session_form" : SessionForm(),
+                               "end_game_form" : EndGameForm(),
+                               "end_game_form_ids" : end_game_form_ids,
                                "session_player_move_two_form" : SessionPlayerMoveTwoForm(),
                                "session_player_move_two_form_ids" : session_player_move_two_form_ids,
                                "session_player_move_three_form" : SessionPlayerMoveThreeForm(),

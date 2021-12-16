@@ -82,6 +82,8 @@ handleHousePointerOut(index, event){
 handleContainerDown(container, event){
     app.turnOffHighlights();
 
+    if(app.$data.session.finished) return;
+
     container.getChildByName("highlight").visible=true;
     app.$data.pixi_transfer_source = container;
     app.updatePixiTransfer(event.data.global.x , event.data.global.y);
@@ -91,6 +93,8 @@ handleContainerDown(container, event){
  * handle container mouse up
  */
 handleContainerUp(container, event){
+    if(app.$data.session.finished) return;
+        
     app.setContainerAsTarget(container, event);
     app.showTransferModal(container, event);
 },
