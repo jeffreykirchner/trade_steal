@@ -157,14 +157,23 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         take name and id number
         '''
+        result = await sync_to_async(take_name)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
-        message_data["status"] = await sync_to_async(take_name)(self.session_id, self.session_player_id, event["message_text"])
+        message_data["status"] = result
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        if result["value"] == "success":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "update_name",
+                 "data": result,
+                 "sender_channel_name": self.channel_name},
+            )
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -819,7 +828,10 @@ def take_name(session_id, session_player_id, data):
             logger.warning(f"take_name : {session_player_id}")
             return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
         
-        return {"value" : "success", "result" : {"name" : session_player.name, "student_id" : session_player.student_id}}                      
+        return {"value" : "success",
+                "result" : {"id" : session_player_id,
+                            "name" : session_player.name, 
+                            "student_id" : session_player.student_id}}                      
                                 
     logger.info("Invalid session form")
     return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}

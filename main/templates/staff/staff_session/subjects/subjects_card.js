@@ -9,12 +9,11 @@
         let result = messageData.status.result;
         let session_players = app.$data.session.session_players;
 
-        for(let i=0; i<session_players.length; i++)
+        session_player = app.findSessionPlayer(result.id);
+
+        if(session_player)
         {
-            if(session_players[i].id == result.id)
-            {
-                session_players[i].connected_count = result.connected_count;
-            }
+            session_player.connected_count = result.connected_count;
         }
     }
 },
@@ -30,16 +29,73 @@
         let group_list = messageData.status.group_list;
         let session_players = app.$data.session.session_players;
 
-        for(let i=0; i<session_players.length; i++)
+        for(let i=0; i<group_list.length; i++)
         {
-            for(let j=0; j<group_list.length; j++)
+            session_player = app.findSessionPlayer(group_list[i].id);
+
+            if(session_player)
             {
-                if(session_players[i].id == group_list[j].id)
-                {
-                    session_players[i].group_number = group_list[j].group_number;
-                    break;
-                }
+                session_player.group_number = group_list[i].group_number;
             }
         }
     }
 },
+
+/** take name and student id
+* @param messageData {json} session day in json format
+*/
+takeUpdateName(messageData){
+           
+    if(messageData.status.value == "success")
+    {
+        let result = messageData.status.result;
+
+        session_player = app.findSessionPlayer(result.id);
+
+        if(session_player)
+        {
+            session_player.name = result.name;
+            session_player.student_id = result.student_id;
+        }       
+    }
+ },
+
+ /**
+  * update subject earnings
+  *  @param messageData {json} session day in json format
+  */
+ takeUpdateEarnings(messageData){
+
+    if(messageData.status.value == "success")
+    {
+        let session_player_earnings = messageData.status.result.session_player_earnings;
+        let session_players = app.$data.session.session_players;
+
+        for(let i=0; i<session_player_earnings.length; i++)
+        {
+            session_player = app.findSessionPlayer(session_player_earnings[i].id);
+
+            if(session_player)
+            {
+                session_player.earnings = session_player_earnings[i].earnings;
+            }
+        }
+    }
+ },
+
+ /**
+  * return session player that has specified id
+  */
+ findSessionPlayer(id){
+
+    let session_players = app.$data.session.session_players;
+    for(let i=0; i<session_players.length; i++)
+    {
+        if(session_players[i].id == id)
+        {
+            return session_players[i];
+        }
+    }
+
+    return null;
+ },

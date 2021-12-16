@@ -142,8 +142,8 @@ var app = Vue.createApp({
                 case "update_reset_connections":
                     app.takeUpdateResetConnections(messageData);
                     break; 
-                case "update_end_game":
-                    app.takeUpdateEndGame(messageData);
+                case "update_name":
+                    app.takeUpdateName(messageData);
                     break;          
             }
 
@@ -286,13 +286,14 @@ var app = Vue.createApp({
             app.$data.session.finished = result.finished;
 
             app.takeUpdateGoods({status : {result : result.session_players}});
+            app.takeUpdateEarnings(messageData);
         },
 
         /**
          * take update end game
          */
          takeUpdateEndGame(messageData){
-            
+
          },
 
         /**

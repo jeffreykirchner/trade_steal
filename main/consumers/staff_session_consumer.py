@@ -384,9 +384,9 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
-    async def update_end_game(self, event):
+    async def update_name(self, event):
         '''
-        send end game notice to staff screens
+        send update name notice to staff screens
         '''
 
         # logger = logging.getLogger(__name__) 

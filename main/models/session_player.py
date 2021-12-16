@@ -293,7 +293,6 @@ class SessionPlayer(models.Model):
 
         return session_player_notice.json()
 
-
     def do_period_consumption(self):
         '''
         covert goods in house to earnings
