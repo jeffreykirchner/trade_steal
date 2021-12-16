@@ -1,6 +1,9 @@
 /**show edit parameter set player
  */
  showEditParametersetPlayer:function(index){
+    
+    if(app.$data.session.started) return;
+    
     app.clearMainFormErrors();
     app.$data.cancelModal=true;
     app.$data.parametersetPlayerBeforeEdit = Object.assign({}, app.$data.session.parameter_set.parameter_set_players[index]);
@@ -72,6 +75,9 @@ takeUpdateParametersetPlayer(messageData){
 /**show edit parameter set player group
  */
  showEditParametersetPlayerGroup:function(player_id, period_id){
+     
+    if(app.$data.session.started) return;
+
     app.clearMainFormErrors();
     app.$data.cancelModal=true;
     app.$data.parametersetPlayerGroupBeforeEdit = Object.assign({}, app.$data.session.parameter_set.parameter_set_players[player_id].period_groups[period_id]);
