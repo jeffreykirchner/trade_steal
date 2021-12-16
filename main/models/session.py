@@ -163,12 +163,12 @@ class Session(models.Model):
         notice_list = []
 
         if not status == "fail" and not end_game:
-            
+
             if self.time_remaining == 0:
 
                 if self.current_period_phase == PeriodPhase.PRODUCTION:
                     notice_list = self.record_period_production()
-                    
+                                       
                     #start trade phase
                     self.current_period_phase = PeriodPhase.TRADE
                     self.time_remaining = self.parameter_set.period_length_trade
@@ -176,11 +176,16 @@ class Session(models.Model):
                     self.do_period_consumption()
                     self.current_period += 1
                     self.current_period_phase = PeriodPhase.PRODUCTION
-                    self.time_remaining = self.parameter_set.period_length_production                
+                    self.time_remaining = self.parameter_set.period_length_production     
+
+                    if self.current_period % self.parameter_set.break_period_frequency == 0:
+                        notice_list = self.add_notice_to_all(f"<center>*** Break period, no production. ***</center>")           
             else:
                 
                 if self.current_period_phase == PeriodPhase.PRODUCTION:
-                    self.do_period_production()
+
+                    if self.current_period % self.parameter_set.break_period_frequency != 0 :
+                        self.do_period_production()                        
 
                 self.time_remaining -= 1
 
@@ -210,6 +215,14 @@ class Session(models.Model):
 
         for p in self.session_players.all():
             notice_list.append(p.record_period_production())
+
+        return notice_list
+    
+    def add_notice_to_all(self, text):
+        notice_list=[]
+
+        for p in self.session_players.all():
+            notice_list.append(p.add_notice(text))
 
         return notice_list
     

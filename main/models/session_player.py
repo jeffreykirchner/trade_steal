@@ -263,35 +263,46 @@ class SessionPlayer(models.Model):
         session_player_period.good_one_production_rate = self.good_one_production_rate
         session_player_period.good_two_production_rate = self.good_two_production_rate
 
-        session_player_period.save()
+        session_player_period.save() 
 
-        #record production notice
+        #record production notice        
+        text = f'Period {self.session.current_period} production: '
+
+        if session_player_period.good_one_production == 0 and session_player_period.good_two_production == 0:
+            text += "None"
+        else:
+            if session_player_period.good_one_production > 0:
+                text += f"{int(session_player_period.good_one_production)} {self.parameter_set_player.good_one.get_html()}"
+            
+            if session_player_period.good_two_production > 0:
+                if session_player_period.good_one_production > 0:
+                    text += ' and '
+
+                text += f"{int(session_player_period.good_two_production)} {self.parameter_set_player.good_two.get_html()}"
+
+            text += ' at '
+            text += f'{session_player_period.good_one_production_rate}% {self.parameter_set_player.good_one.get_html()} and '
+            text += f'{session_player_period.good_two_production_rate}% {self.parameter_set_player.good_two.get_html()}'
+
+            text += "."
+
+        return self.add_notice(text)
+
+    def add_notice(self, text):
+        '''
+        add notice
+        '''
         session_player_notice = main.models.SessionPlayerNotice()
 
         session_player_notice.session_period = self.session.get_current_session_period()
         session_player_notice.session_player = self
 
-        session_player_notice.text = f'Period {self.session.current_period} production: '
-
-        if session_player_period.good_one_production > 0:
-            session_player_notice.text += f"{int(session_player_period.good_one_production)} {self.parameter_set_player.good_one.get_html()}"
-        
-        if session_player_period.good_two_production > 0:
-
-            if session_player_period.good_one_production > 0:
-                session_player_notice.text += ' and '
-
-            session_player_notice.text += f"{int(session_player_period.good_two_production)} {self.parameter_set_player.good_two.get_html()}"
-
-        session_player_notice.text += ' at '
-        session_player_notice.text += f'{session_player_period.good_one_production_rate}% {self.parameter_set_player.good_one.get_html()} and '
-        session_player_notice.text += f'{session_player_period.good_two_production_rate}% {self.parameter_set_player.good_two.get_html()}'
-
-        session_player_notice.text += "."
+        session_player_notice.text = text
 
         session_player_notice.save()
 
         return session_player_notice.json()
+
 
     def do_period_consumption(self):
         '''
