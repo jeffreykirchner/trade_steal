@@ -429,7 +429,7 @@ def take_move_goods(session_id, session_player_id, data):
                     "message" : "Move Error"}
         
         if session.current_period_phase == PeriodPhase.PRODUCTION:
-             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers during growth phase."]},
+             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers during production phase."]},
                      "message" : "Move Error"}
         
         if not session.parameter_set.allow_stealing:
