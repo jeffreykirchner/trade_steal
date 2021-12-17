@@ -179,7 +179,7 @@ class Session(models.Model):
                     self.time_remaining = self.parameter_set.period_length_production     
 
                     if self.current_period % self.parameter_set.break_period_frequency == 0:
-                        notice_list = self.add_notice_to_all(f"<center>*** Break period, no production. ***</center>")           
+                        notice_list = self.add_notice_to_all(f"<center>*** Break period, chat only, no production. ***</center>")           
             else:
                 
                 if self.current_period_phase == PeriodPhase.PRODUCTION:

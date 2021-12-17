@@ -203,7 +203,7 @@ var app = Vue.createApp({
             else
                 setTimeout(app.setupPixiPlayers, 250);
             
-            app.updateChatDisplay();
+            app.updateChatDisplay(true);
         },
 
        
@@ -237,13 +237,13 @@ var app = Vue.createApp({
             let town = result.town;
             
             app.$data.session.chat_all[town].push(chat);
-            app.updateChatDisplay();
+            app.updateChatDisplay(false);
         },
 
         /**
          * update chat displayed based on town chosen
          */
-        updateChatDisplay(){
+        updateChatDisplay(force_scroll){
             
             app.$data.chat_list_to_display=Array.from(app.$data.session.chat_all[parseInt(app.$data.current_town)]);
 
@@ -256,16 +256,20 @@ var app = Vue.createApp({
             //scroll to view
             if(app.$data.chat_list_to_display.length>0)
             {
-                Vue.nextTick(() => {app.updateChatDisplayScroll()});        
+                Vue.nextTick(() => {app.updateChatDisplayScroll(force_scroll)});        
             }
         },
 
         /**
          * scroll to newest chat element
          */
-        updateChatDisplayScroll(){
-            var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
-            elmnt.scrollIntoView(); 
+        updateChatDisplayScroll(force_scroll){
+
+            if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
+            {
+                var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
+                elmnt.scrollIntoView(); 
+            }
         },
 
         /**
@@ -302,7 +306,7 @@ var app = Vue.createApp({
         change_town_view(){
             app.destroyPixiPlayers();
             app.setupPixiPlayers();
-            app.updateChatDisplay();
+            app.updateChatDisplay(true);
         },
         //do nothing on when enter pressed for post
         onSubmit(){
