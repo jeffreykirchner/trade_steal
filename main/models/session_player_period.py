@@ -43,6 +43,27 @@ class SessionPlayerPeriod(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['session_player', 'session_period'], name='unique_session_player_period'),
         ]
+    
+    def write_summary_download_csv(self, writer):
+        '''
+        take csv writer and add row
+        '''
+        # writer.writerow(["Period", "Town", "Group", "Location", "Client #", "Label", "Good One Production", "Good One Production %", "Good Two Production", "Good Two Production %",
+        #                 "Good One Consumption", "Good Two Consumption", "Earnings ¢"])
+
+        writer.writerow([self.session_period.period_number,
+                         self.session_player.parameter_set_player.town,
+                         self.session_player.get_group_number(self.session_period.period_number),
+                         self.session_player.parameter_set_player.location,
+                         self.session_player.player_number,
+                         self.session_player.parameter_set_player.id_label,
+                         self.good_one_production,
+                         self.good_one_production_rate,
+                         self.good_two_production,
+                         self.good_two_production_rate,
+                         self.good_one_consumption,
+                         self.good_two_consumption,
+                         self.earnings,])
         
     def json_for_subject(self):
         '''

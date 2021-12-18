@@ -195,6 +195,16 @@ class SessionPlayer(models.Model):
         except ObjectDoesNotExist:
             logging.warning(f"get_current_group_number: not found for period {self.session.current_period}")
             return -1
+    
+    def get_group_number(self, period_number):
+        '''
+        return group number for player for period_number
+        '''
+        try:
+            return self.parameter_set_player.parameter_set_player_groups.get(period=period_number).group_number
+        except ObjectDoesNotExist:
+            logging.warning(f"get_group_number: not found for period {self.session.current_period}")
+            return -1
 
     def get_group_changed_this_period(self):
         '''
@@ -302,7 +312,6 @@ class SessionPlayer(models.Model):
         session_player_notice.save()
 
         return session_player_notice.json()
-
 
     def do_period_consumption(self):
         '''

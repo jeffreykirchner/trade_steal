@@ -549,6 +549,9 @@ def take_move_goods(session_id, session_player_id, data):
                 session_player_move.good_two_amount = good_two_amount
                 session_player_move.good_three_amount = good_three_amount        
 
+                session_player_move.time_remaining = session.time_remaining
+                session_player_move.current_period_phase = session.current_period_phase
+
                 if source_type == "house":
                     session_player_move.source_container = ContainerTypes.HOUSE
                 else:
@@ -679,6 +682,8 @@ def take_chat(session_id, session_player_id, data):
     result["recipients"] = []
 
     session_player_chat.text = chat_text
+    session_player_chat.time_remaining = session.time_remaining
+    session_player_chat.current_period_phase = session.current_period_phase
 
     session_player_chat.save()
 

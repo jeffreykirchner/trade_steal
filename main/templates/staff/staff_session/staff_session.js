@@ -144,7 +144,16 @@ var app = Vue.createApp({
                     break; 
                 case "update_name":
                     app.takeUpdateName(messageData);
-                    break;          
+                    break;         
+                case "download_summary_data":
+                    app.takeDownloadSummaryData(messageData);
+                    break;
+                case "download_action_data":
+                    app.takeDownloadActionData(messageData);
+                    break;
+                case "download_recruiter_data":
+                    app.takeDownloadRecruiterData(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -318,6 +327,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/graph/graph_card.js"%}
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
+        {%include "staff/staff_session/data/data_card.js"%}
     
         /** clear form error messages
         */

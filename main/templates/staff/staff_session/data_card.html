@@ -1,0 +1,51 @@
+<div class="card" v-show="first_load_done">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Data</span>       
+            
+        <span class="float-end">
+             
+        </span>
+        
+    </div>
+    <div class="card-body"> 
+
+        <!-- summary data -->
+        <div class="row">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "downloadSummaryData()"
+                        title="Download Summary Data"
+                        v-bind:disabled="reconnecting || working || session.started==false">
+                    Download Summary <i class="fas fa-scroll"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "downloadActionsData()"
+                        title="Download Action Data"
+                        v-bind:disabled="reconnecting || working || session.started==false">
+                    Download Actions <i class="fas fa-scroll"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "downloadRecruiterData()"
+                        title="Download Recruiter Data"
+                        v-bind:disabled="reconnecting || working || session.started==false">
+                    Download Recruiter Payments <i class="fas fa-scroll"></i>
+                </button>
+            </div>
+        </div>
+        
+        
+    </div>                    
+</div> 

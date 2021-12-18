@@ -6,8 +6,9 @@ from datetime import datetime
 
 import logging
 import uuid
+import csv
+import io
 
-from asgiref.sync import sync_to_async
 from django.conf import settings
 
 from django.dispatch import receiver
@@ -18,8 +19,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 import main
 
-from main.models import ParameterSet, parameter_set
-from main.models import Parameters
+from main.models import ParameterSet
 
 from main.globals import PeriodPhase
 
@@ -233,6 +233,63 @@ class Session(models.Model):
 
         for p in self.session_players.all():
             p.do_period_consumption()
+
+    def get_download_summary_csv(self):
+        '''
+        return data summary in csv format
+        '''
+        output = io.StringIO()
+
+        writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+
+        writer.writerow(["Period", "Town", "Group", "Location", "Client #", "Label", "Good One Production", "Good One Production %", "Good Two Production", "Good Two Production %",
+                         "Good One Consumption", "Good Two Consumption", "Earnings ¢"])
+
+        session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
+                                                                        .order_by('session_period__period_number', 'session_player__parameter_set_player__location')
+
+        for p in session_player_periods.all():
+            p.write_summary_download_csv(writer)
+
+        return output.getvalue()
+    
+    def get_download_action_csv(self):
+        '''
+        return data actions in csv format
+        '''
+        output = io.StringIO()
+
+        writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+
+        writer.writerow(["Period", "Town", "Phase", "Time", "Group",  "Location", "Client #", "Label", "Action","Info", "Info (JSON)", "Timestamp"])
+
+        session_player_chats = main.models.SessionPlayerChat.objects.filter(session_player__in=self.session_players.all())
+
+        for p in session_player_chats.all():
+            p.write_action_download_csv(writer)
+        
+        session_player_moves = main.models.SessionPlayerMove.objects.filter(session_player_source__in=self.session_players.all())
+
+        for p in session_player_moves.all():
+            p.write_action_download_csv(writer)
+
+        return output.getvalue()
+    
+    def get_download_recruiter_csv(self):
+        '''
+        return data recruiter in csv format
+        '''
+        output = io.StringIO()
+
+        writer = csv.writer(output)
+
+        session_players = self.session_players.all().values_list('student_id', 'earnings')
+
+        for p in session_players:
+            writer.writerow(p)
+
+        return output.getvalue()
+
 
     def json(self):
         '''

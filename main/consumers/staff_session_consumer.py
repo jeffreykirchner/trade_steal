@@ -32,8 +32,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         return a list of sessions
         '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f"Get Session {event}")
+        # logger = logging.getLogger(__name__) 
+        # logger.info(f"Get Session {event}")
 
         self.connection_uuid = event["message_text"]["sessionKey"]
         self.connection_type = "staff"
@@ -55,8 +55,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         return a list of sessions
         '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f"Update Session: {event}")
+        # logger = logging.getLogger(__name__) 
+        # logger.info(f"Update Session: {event}")
 
         #build response
         message_data = {}
@@ -73,7 +73,6 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         start experiment
         '''
-        #update subject count
         message_data = {}
         message_data["status"] = await sync_to_async(take_start_experiment)(self.session_id, event["message_text"])
 
@@ -96,10 +95,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         reset experiment, removes all trades, bids and asks
         '''
-        #update subject count
         message_data = {}
         message_data["status"] = await sync_to_async(take_reset_experiment)(self.session_id, event["message_text"])
-        #message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)
 
         message = {}
         message["messageType"] = event["type"]
@@ -251,6 +248,48 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 )
         
         logger.info(f"continue_timer end")
+
+    async def download_summary_data(self, event):
+        '''
+        download summary data
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_download_summary_data)(self.session_id)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def download_action_data(self, event):
+        '''
+        download summary data
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_download_action_data)(self.session_id)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def download_recruiter_data(self, event):
+        '''
+        download summary data
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_download_recruiter_data)(self.session_id)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -585,5 +624,32 @@ def take_update_groups(session_id):
     
     return {"status" : status,
             "group_list" : session.json_for_group_update()}
+
+def take_download_summary_data(session_id):
+    '''
+    download summary data for session
+    '''
+
+    session = Session.objects.get(id=session_id)
+
+    return {"value" : "success", "result" : session.get_download_summary_csv()}
+
+def take_download_action_data(session_id):
+    '''
+    download action data for session
+    '''
+
+    session = Session.objects.get(id=session_id)
+
+    return {"value" : "success", "result" : session.get_download_action_csv()}
+
+def take_download_recruiter_data(session_id):
+    '''
+    download recruiter data for session
+    '''
+
+    session = Session.objects.get(id=session_id)
+
+    return {"value" : "success", "result" : session.get_download_recruiter_csv()}
 
 
