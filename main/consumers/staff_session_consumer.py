@@ -290,6 +290,20 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def download_payment_data(self, event):
+        '''
+        download payment data
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_download_payment_data)(self.session_id)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -651,5 +665,14 @@ def take_download_recruiter_data(session_id):
     session = Session.objects.get(id=session_id)
 
     return {"value" : "success", "result" : session.get_download_recruiter_csv()}
+
+def take_download_payment_data(session_id):
+    '''
+    download payment data for session
+    '''
+
+    session = Session.objects.get(id=session_id)
+
+    return {"value" : "success", "result" : session.get_download_payment_csv()}
 
 

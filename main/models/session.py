@@ -283,13 +283,29 @@ class Session(models.Model):
 
         writer = csv.writer(output)
 
-        session_players = self.session_players.all().values_list('student_id', 'earnings')
+        session_players = self.session_players.all()
 
         for p in session_players:
-            writer.writerow(p)
+            writer.writerow([p.student_id, p.earnings/100])
 
         return output.getvalue()
+    
+    def get_download_payment_csv(self):
+        '''
+        return data payments in csv format
+        '''
+        output = io.StringIO()
 
+        writer = csv.writer(output)
+
+        writer.writerow(['Name', 'Student ID', 'Earnings'])
+
+        session_players = self.session_players.all()
+
+        for p in session_players:
+            writer.writerow([p.name, p.student_id, p.earnings/100])
+
+        return output.getvalue()
 
     def json(self):
         '''

@@ -22,6 +22,7 @@
             </div>
         </div>
 
+        <!-- actions data -->
         <div class="row mt-2">
             <div class="col-md text-center">
                 <button type="button"
@@ -34,6 +35,7 @@
             </div>
         </div>
 
+        <!-- recruiter payments -->
         <div class="row mt-2">
             <div class="col-md text-center">
                 <button type="button"
@@ -46,6 +48,17 @@
             </div>
         </div>
         
-        
+        <!-- earnings -->
+        <div class="row mt-2">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "downloadPaymentData()"
+                        title="Download Recruiter Data"
+                        v-bind:disabled="reconnecting || working || session.started==false">
+                    Download Earnings <i class="fas fa-scroll"></i>
+                </button>
+            </div>
+        </div>
     </div>                    
 </div> 

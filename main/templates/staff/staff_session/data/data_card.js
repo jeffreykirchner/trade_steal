@@ -67,3 +67,26 @@ takeDownloadRecruiterData(messageData){
     document.body.removeChild(downloadLink);
 },
 
+/**send download payment data
+*/
+downloadPaymentData(){
+    app.$data.working = true;
+    app.sendMessage("download_payment_data", {});
+},
+
+/** take download payment data
+ * @param messageData {json}
+*/
+takeDownloadPaymentData(messageData){
+
+    var downloadLink = document.createElement("a");
+    var blob = new Blob(["\ufeff", messageData.status.result]);
+    var url = URL.createObjectURL(blob);
+    downloadLink.href = url;
+    downloadLink.download = "Trade_Steal_Payment_Data_Session_" + app.$data.session.id +".csv";
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+},
+

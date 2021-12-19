@@ -154,6 +154,9 @@ var app = Vue.createApp({
                 case "download_recruiter_data":
                     app.takeDownloadRecruiterData(messageData);
                     break;
+                case "download_payment_data":
+                    app.takeDownloadPaymentData(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)

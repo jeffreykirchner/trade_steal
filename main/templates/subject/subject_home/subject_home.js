@@ -353,6 +353,23 @@ var app = Vue.createApp({
             }
         }, 
 
+        /**
+         * return session player that has specified id
+         */
+        findSessionPlayer(id){
+
+            let session_players = app.$data.session.session_players;
+            for(let i=0; i<session_players.length; i++)
+            {
+                if(session_players[i].id == id)
+                {
+                    return session_players[i];
+                }
+            }
+
+            return null;
+        },
+
         {%if session.parameter_set.test_mode%}
         /**
          * do random self test actions
@@ -373,23 +390,43 @@ var app = Vue.createApp({
                this.$data.session.parameter_set.test_mode)
             {
                 //do chat
+                let go = true;
                 if(this.chat_text != "")
                 {
                     this.sendChat()
+                    go=false;
                 }
-                else
-                {
-                    r = this.randomNumber(20 ,5);
-                    for(let i=0;i<r;i++)
+
+                if(go)
+                    if(this.pixi_modal_open)
                     {
-                        v = this.randomNumber(122, 48);
-                        this.chat_text += String.fromCharCode(v);
+                        go=false;
                     }
-                
-                }
+
+                if(go)
+                    switch (this.randomNumber(1 ,2)){
+                        case 1:
+                            r = this.randomNumber(20 ,5);
+                            for(let i=0;i<r;i++)
+                            {
+                                v = this.randomNumber(122, 48);
+                                this.chat_text += String.fromCharCode(v);
+                            }
+
+                            break;
+                        
+                        case 2:
+                            session_player = this.findSessionPlayer(this.session_player.id)
+                            this.handleContainerDown(session_player.fieldContainer,
+                                                     {data: {global: {x:session_player.fieldContainer.x, y:session_player.fieldContainer.y}}})
+                            
+                            this.handleContainerUp(session_player.houseContainer,
+                                                   {data: {global: {x:session_player.houseContainer.x, y:session_player.houseContainer.y}}})
+                            break;
+                    }
             }
 
-            setTimeout(this.doTestMode, this.randomNumber(10000 , 1000));
+            setTimeout(this.doTestMode, this.randomNumber(1000 , 10000));
         },
         {%endif%}
     },
