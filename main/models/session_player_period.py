@@ -48,10 +48,11 @@ class SessionPlayerPeriod(models.Model):
         '''
         take csv writer and add row
         '''
-        # writer.writerow(["Period", "Town", "Group", "Location", "Client #", "Label", "Good One Production", "Good One Production %", "Good Two Production", "Good Two Production %",
+        # writer.writerow(["Session ID", "Period", "Town", "Group", "Location", "Client #", "Label", "Good One Production", "Good One Production %", "Good Two Production", "Good Two Production %",
         #                 "Good One Consumption", "Good Two Consumption", "Earnings ¢"])
 
-        writer.writerow([self.session_period.period_number,
+        writer.writerow([self.session_period.session.id,
+                         self.session_period.period_number,
                          self.session_player.parameter_set_player.town,
                          self.session_player.get_group_number(self.session_period.period_number),
                          self.session_player.parameter_set_player.location,

@@ -242,7 +242,7 @@ class Session(models.Model):
 
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Period", "Town", "Group", "Location", "Client #", "Label", "Good One Production", "Good One Production %", "Good Two Production", "Good Two Production %",
+        writer.writerow(["Session ID", "Period", "Town", "Group", "Location", "Client #", "Label", "Good One Production", "Good One Production %", "Good Two Production", "Good Two Production %",
                          "Good One Consumption", "Good Two Consumption", "Earnings ¢"])
 
         session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
@@ -261,7 +261,7 @@ class Session(models.Model):
 
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(["Period", "Town", "Phase", "Time", "Group",  "Location", "Client #", "Label", "Action","Info", "Info (JSON)", "Timestamp"])
+        writer.writerow(["Session ID", "Period", "Town", "Phase", "Time", "Group",  "Location", "Client #", "Label", "Action","Info", "Info (JSON)", "Timestamp"])
 
         session_player_chats = main.models.SessionPlayerChat.objects.filter(session_player__in=self.session_players.all())
 

@@ -44,6 +44,40 @@ class SessionPlayerChat(models.Model):
              models.CheckConstraint(check=~Q(text=''), name='text_not_empty'),
         ]
 
+    def write_action_download_csv(self, writer):
+        '''
+        take csv writer and add row
+        '''        
+        # writer.writerow(["Session ID", "Period", "Town", "Phase", "Time", "Group", "Location", "Client #", "Label", "Action", "Info (JSON)", "Timestamp"])
+
+        writer.writerow([self.session_player.session.id,
+                        self.session_period.period_number,
+                        self.session_player.parameter_set_player.town,
+                        self.current_period_phase,
+                        self.time_remaining,
+                        self.session_player.get_group_number(self.session_period.period_number),
+                        self.session_player.parameter_set_player.location,
+                        self.session_player.player_number,
+                        self.session_player.parameter_set_player.id_label,
+                        "Chat",
+                        self.text,
+                        self.json_csv(),
+                        self.timestamp])
+
+    def json_csv(self):
+        '''
+        json object for csv download
+        '''
+        return{
+
+            "sender_client_number" : self.session_player.player_number,
+
+            "session_player_recipients" : [i.parameter_set_player.id_label for i in self.session_player_recipients.all()],
+
+            "text" : self.text,
+            "chat_type" : self.chat_type,
+        }
+
     def json_for_subject(self):
         '''
         json object of model
@@ -56,24 +90,7 @@ class SessionPlayerChat(models.Model):
             "text" : self.text,
         }
 
-    def write_action_download_csv(self, writer):
-        '''
-        take csv writer and add row
-        '''        
-        # writer.writerow(["Period", "Town", "Phase", "Time", "Group", "Location", "Client #", "Label", "Action", "Info (JSON)", "Timestamp"])
-
-        writer.writerow([self.session_period.period_number,
-                        self.session_player.parameter_set_player.town,
-                        self.current_period_phase,
-                        self.time_remaining,
-                        self.session_player.get_group_number(self.session_period.period_number),
-                        self.session_player.parameter_set_player.location,
-                        self.session_player.player_number,
-                        self.session_player.parameter_set_player.id_label,
-                        "Chat",
-                        self.text,
-                        self.json_for_staff(),
-                        self.timestamp])
+    
 
     #return json object of class
     def json_for_staff(self):

@@ -56,9 +56,10 @@ class SessionPlayerMove(models.Model):
         '''
         take csv writer and add row
         '''        
-        #  writer.writerow(["Period", "Town", "Phase", "Time", "Group", "Location", "Client #", "Label", "Action","Info", "Info (JSON)", "Timestamp"])
+        #  writer.writerow(["Session ID", "Period", "Town", "Phase", "Time", "Group", "Location", "Client #", "Label", "Action","Info", "Info (JSON)", "Timestamp"])
 
-        writer.writerow([self.session_period.period_number,
+        writer.writerow([self.session_period.session.id,
+                        self.session_period.period_number,
                         self.session_player_source.parameter_set_player.town,
                         self.current_period_phase,
                         self.time_remaining,
@@ -77,8 +78,7 @@ class SessionPlayerMove(models.Model):
         '''
         json object for csv download
         '''
-        return{
-            "id" : self.id,         
+        return{        
 
             "session_player_source_client_number" : self.session_player_source.player_number,
             "session_player_target_client_number" : self.session_player_target.player_number,
