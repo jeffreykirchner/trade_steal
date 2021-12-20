@@ -257,8 +257,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         update good count on all but sender
         '''
-        logger = logging.getLogger(__name__) 
-        logger.info(f'update_goods{self.channel_name}')
+        # logger = logging.getLogger(__name__) 
+        # logger.info(f'update_goods{self.channel_name}')
 
         message_data = {}
         message_data["status"] = event["data"]
@@ -580,8 +580,10 @@ def take_move_goods(session_id, session_player_id, data):
                     transfer_string = f'{transfer_list[0]}'
                 elif len(transfer_list) == 2:
                     transfer_string = f'{transfer_list[0]} and {transfer_list[1]}'
-                else:
+                elif len(transfer_list) == 3:
                     transfer_string = f'{transfer_list[0]}, {transfer_list[1]}, and {transfer_list[2]}'
+                else:
+                    transfer_string = "no goods"
 
                 #check for steal
                 if source_session_player != session_player:

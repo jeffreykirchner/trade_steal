@@ -400,6 +400,7 @@ var app = Vue.createApp({
                 if(go)
                     if(this.pixi_modal_open)
                     {
+                        this.sendMoveGoods();
                         go=false;
                     }
 
@@ -416,12 +417,38 @@ var app = Vue.createApp({
                             break;
                         
                         case 2:
-                            session_player = this.findSessionPlayer(this.session_player.id)
-                            this.handleContainerDown(session_player.fieldContainer,
-                                                     {data: {global: {x:session_player.fieldContainer.x, y:session_player.fieldContainer.y}}})
+
+                            let session_player_source = null;
+                            let source_container = null;
+
+                            if(this.randomNumber(1, 2) == 1)
+                            {
+                                session_player_source = this.findSessionPlayer(this.session_player.id);
+
+                                source_container = session_player_source.fieldContainer;
+
+                                this.transfer_good_one_amount = this.randomNumber(0, session_player_source.good_one_field);
+                                this.transfer_good_two_amount = this.randomNumber(0, session_player_source.good_two_field);
+                            }
+                            else
+                            {
+                                session_player_source = this.findSessionPlayer(this.session_player.id);  
+
+                                source_container = session_player_source.houseContainer;
+
+                                this.transfer_good_one_amount = this.randomNumber(0, session_player_source.good_one_house);
+                                this.transfer_good_two_amount = this.randomNumber(0, session_player_source.good_two_house);
+                            }
+
+                            let session_player_target = this.session.session_players[this.randomNumber(0, this.session.session_players.length-1)];
+                            let target_container = session_player_target.houseContainer;
+
+                            this.handleContainerDown(source_container,
+                                                     {data: {global: {x:source_container.x, y:source_container.y}}})
                             
-                            this.handleContainerUp(session_player.houseContainer,
-                                                   {data: {global: {x:session_player.houseContainer.x, y:session_player.houseContainer.y}}})
+                            this.handleContainerUp(target_container,
+                                                   {data: {global: {x:target_container.x, y:target_container.y}}})
+
                             break;
                     }
             }
