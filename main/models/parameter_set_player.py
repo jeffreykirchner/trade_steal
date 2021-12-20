@@ -59,12 +59,12 @@ class ParameterSetPlayer(models.Model):
         self.location = source.get("location")
         self.town = source.get("town")
 
-        self.good_one.id = source.get("good_one").id
-        self.good_two.id = source.get("good_two").id
-        self.good_three.id = source.get("good_three").id
+        self.good_one.id = source.get("good_one")["id"]
+        self.good_two.id = source.get("good_two")["id"]
+        self.good_three.id = source.get("good_three")["id"]
 
         if source.get("avatar"):
-            self.avatar.id = source.get("avatar").id
+            self.avatar.id = source.get("avatar")["id"]
 
         self.save()
 
