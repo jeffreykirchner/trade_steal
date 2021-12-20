@@ -71,7 +71,7 @@
                                 <span v-bind:style = "[{color : p.good_three.rgb_color},
                                                        (session.parameter_set.good_count==2) ? {'text-decoration': 'line-through'}:{}]">[[p.good_three.label]]</span>
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
+                            <td v-on:click="showEditParametersetPlayer(index)" class="text-nowrap player_table_cell">
                                 [[p.avatar.label]]
                             </td>
                             <td style="background-color:rgb(240, 240, 240);">
@@ -93,6 +93,8 @@
                                         v-on:click="sendAddParameterSetPlayer()">
                                        Add <i class="fas fa-plus"></i>
                                 </button>
+                            </td>
+                            <td>
                             </td>
                             <td>
                             </td>
