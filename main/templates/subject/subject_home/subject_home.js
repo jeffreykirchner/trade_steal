@@ -63,6 +63,8 @@ var app = Vue.createApp({
                     good_one_need : 0,
                     good_two_needed : 0,
                     potential_earnings : 0,
+
+                    end_game_modal_visible : false,
                 }},
     methods: {
 
@@ -263,6 +265,8 @@ var app = Vue.createApp({
                     })
                 
                 myModal.toggle();
+
+                this.end_game_modal_visible = true;
             }
             
         },

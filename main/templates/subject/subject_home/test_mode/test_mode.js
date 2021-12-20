@@ -3,11 +3,25 @@
 /**
  * do random self test actions
  */
-    randomNumber(min, max){
+randomNumber(min, max){
     //return a random number between min and max
     min = Math.ceil(min);
     max = Math.floor(max+1);
     return Math.floor(Math.random() * (max - min) + min);
+},
+
+randomString(min_length, max_length){
+
+    s = "";
+    r = this.randomNumber(min_length, max_length);
+
+    for(let i=0;i<r;i++)
+    {
+        v = this.randomNumber(48, 122);
+        s += String.fromCharCode(v);
+    }
+
+    return s;
 },
 
 doTestMode(){
@@ -20,11 +34,26 @@ doTestMode(){
     {
         //do chat
         let go = true;
-        if(this.chat_text != "")
+
+        if(this.end_game_modal_visible)
         {
-            this.sendChat()
-            go=false;
+            if(this.session_player.name == "")
+            {
+                document.getElementById("id_name").value =  this.randomString(5, 20);
+                document.getElementById("id_student_id").value =  this.randomNumber(1000, 10000);
+
+                this.sendName();
+            }
+
+            return;
         }
+
+        if(go)
+            if(this.chat_text != "")
+            {
+                this.sendChat()
+                go=false;
+            }
 
         //move goods
         if(go)
@@ -43,7 +72,7 @@ doTestMode(){
             }
 
         if(go)
-            switch (this.randomNumber(1 ,3)){
+            switch (this.randomNumber(1, 3)){
                 case 1:
                     this.doTestModeChat();
                     break;
@@ -65,12 +94,8 @@ doTestMode(){
  * test mode chat
  */
 doTestModeChat(){
-    r = this.randomNumber(20 ,5);
-    for(let i=0;i<r;i++)
-    {
-        v = this.randomNumber(122, 48);
-        this.chat_text += String.fromCharCode(v);
-    }
+
+    this.chat_text = this.randomString(5, 20);
 },
 
 /**
