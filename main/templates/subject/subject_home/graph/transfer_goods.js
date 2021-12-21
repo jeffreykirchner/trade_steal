@@ -97,20 +97,27 @@ takeMoveGoods(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.takeUpdateGoods(messageData);       
-        $('#moveTwoGoodsModal').modal('hide');
-        $('#moveThreeGoodsModal').modal('hide');
-
-
-        app.$data.transfer_good_one_amount = 0;  
-        app.$data.transfer_good_two_amount = 0;  
-        app.$data.transfer_good_three_amount = 0;            
+        app.takeUpdateGoods(messageData);    
+        this.closeMoveModal();               
     } 
     else
     {
         app.$data.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     }
+},
+
+/**
+ * close and reset the move modals
+ */
+closeMoveModal(){
+    $('#moveTwoGoodsModal').modal('hide');
+    $('#moveThreeGoodsModal').modal('hide');
+
+
+    app.$data.transfer_good_one_amount = 0;  
+    app.$data.transfer_good_two_amount = 0;  
+    app.$data.transfer_good_three_amount = 0;
 },
 
 /** take updated data from goods being moved by another player

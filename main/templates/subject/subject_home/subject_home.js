@@ -222,6 +222,9 @@ var app = Vue.createApp({
             app.$data.production_slider_one = 50;
             app.$data.production_slider_two = 50;
             app.$data.production_slider=0;
+
+            $('#endGameModal').modal('hide');
+            this.closeMoveModal();
         },
 
         /**
@@ -246,18 +249,24 @@ var app = Vue.createApp({
             //update subject earnings
             app.$data.session_player.earnings = result.session_player_earnings.earnings;
 
-            if(notice_list.length>0)
+            if(notice_list.length > 0)
             {
                 app.$data.session_player.notices.push(notice_list[0]);
                 setTimeout(app.updateNoticeDisplayScroll, 250);
+            }
+
+            //if start production phase close transfer
+            if(this.session.current_period_phase == "Production" &&
+               this.session.time_remaining==this.session.parameter_set.period_length_production)
+            {
+                this.closeMoveModal();
             }
 
             //session complete
             if(app.$data.session.finished)
             {
                 //hide transfer modals
-                $('#moveTwoGoodsModal').modal('hide');
-                $('#moveThreeGoodsModal').modal('hide');
+                this.closeMoveModal();
 
                 //show endgame modal
                 var myModal = new bootstrap.Modal(document.getElementById('endGameModal'), {
