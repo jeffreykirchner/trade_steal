@@ -70,7 +70,9 @@ doTestMode(){
                 this.sendProdution();
                 go=false;
             }
-
+        
+        if(app.$data.session.finished) return;
+            
         if(go)
             switch (this.randomNumber(1, 3)){
                 case 1:

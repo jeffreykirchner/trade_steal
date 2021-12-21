@@ -381,7 +381,7 @@ var app = Vue.createApp({
 
         $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
         $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
-        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(10000 , 1000)); {%endif%}
+        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
 
     },
 
