@@ -246,7 +246,9 @@ class Session(models.Model):
                          "Good One Consumption", "Good Two Consumption", "Earnings ¢"])
 
         session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
-                                                                        .order_by('session_period__period_number', 'session_player__parameter_set_player__location')
+                                                                        .order_by('session_period__period_number', 
+                                                                                  'session_player__parameter_set_player__town', 
+                                                                                  'session_player__parameter_set_player__location')
 
         for p in session_player_periods.all():
             p.write_summary_download_csv(writer)
