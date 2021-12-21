@@ -350,7 +350,7 @@ class SessionPlayer(models.Model):
         self.save()
         session_player_period.save()
 
-    def json(self):
+    def json(self, get_chat=True):
         '''
         json object of model
         '''
@@ -381,7 +381,9 @@ class SessionPlayer(models.Model):
 
             "group_number" : self.get_current_group_number(),
 
-            "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)],
+            "chat_all" : [c.json_for_subject() for c in self.session_player_chats_c.filter(chat_type=main.globals.ChatTypes.ALL)
+                                                                                   .order_by('-timestamp')[:100:-1]
+                         ] if get_chat else [],
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "notices" : [n.json() for n in self.session_player_notices_b.all()],
@@ -410,7 +412,9 @@ class SessionPlayer(models.Model):
             "chat_individual" : [c.json_for_subject() for c in  main.models.SessionPlayerChat.objects \
                                                                             .filter(chat_type=main.globals.ChatTypes.INDIVIDUAL) \
                                                                             .filter(Q(Q(session_player_recipients=session_player) & Q(session_player=self)) |
-                                                                                    Q(Q(session_player_recipients=self) & Q(session_player=session_player))                       )],
+                                                                                    Q(Q(session_player_recipients=self) & Q(session_player=session_player)))
+                                                                            .order_by('-timestamp')[:100:-1]
+                                ],
 
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 

@@ -38,6 +38,9 @@ takeUpdateChat(messageData){
 
     if(result.chat_type=="All")
     {
+        if(session_player.chat_all.length >= 100)
+            session_player.chat_all.shift();
+
         session_player.chat_all.push(chat);
         if(app.$data.chat_recipients != "all")
         {
@@ -63,6 +66,10 @@ takeUpdateChat(messageData){
         {
             if(session_players[i].id == target)
             {
+                
+                if(session_players[i].chat_individual.length >= 100)
+                    session_players[i].chat_individual.shift();
+
                 session_players[i].chat_individual.push(chat);
 
                 if(i != app.$data.chat_recipients_index)
