@@ -247,6 +247,9 @@ var app = Vue.createApp({
             let result = messageData.status;
             let chat = result.chat;
             let town = result.town;
+
+            if(app.$data.session.chat_all[town].length>=100)
+                app.$data.session.chat_all[town].shift();
             
             app.$data.session.chat_all[town].push(chat);
             app.updateChatDisplay(false);

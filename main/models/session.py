@@ -316,7 +316,8 @@ class Session(models.Model):
         for i in range(self.parameter_set.town_count):
             chat[str(i+1)] = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
                                                        .filter(session_player__in=self.session_players.all())\
-                                                       .filter(session_player__parameter_set_player__town=i+1)                                                       
+                                                       .filter(session_player__parameter_set_player__town=i+1)
+                                                       .order_by('-timestamp')[:100:-1]                                                   
                              ]
 
         return{
