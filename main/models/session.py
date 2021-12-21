@@ -268,7 +268,12 @@ class Session(models.Model):
         for p in session_player_chats.all():
             p.write_action_download_csv(writer)
         
-        session_player_moves = main.models.SessionPlayerMove.objects.filter(session_player_source__in=self.session_players.all())
+        session_player_moves = main.models.SessionPlayerMove.objects.filter(session_player_source__in=self.session_players.all()) \
+                                                                    .select_related("session_player_source") \
+                                                                    .select_related("session_player_source__parameter_set_player") \
+                                                                    .select_related("session_player_target") \
+                                                                    .select_related("session_period") \
+                                                                    .select_related("session_period__session")
 
         for p in session_player_moves.all():
             p.write_action_download_csv(writer)
