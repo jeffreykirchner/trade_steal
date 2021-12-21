@@ -386,7 +386,7 @@ class SessionPlayer(models.Model):
                          ] if get_chat else [],
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
-            "notices" : [n.json() for n in self.session_player_notices_b.all()],
+            "notices" : [n.json() for n in self.session_player_notices_b.all()] if get_chat else [],
         }
     
     def json_for_subject(self, session_player):
