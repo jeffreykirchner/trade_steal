@@ -75,6 +75,8 @@ var app = Vue.createApp({
                     current_town : "1",
 
                     chat_list_to_display : [],                //list of chats to display on screen
+
+                    data_downloading : false,                   //show spinner when data downloading
                 }},
     methods: {
 

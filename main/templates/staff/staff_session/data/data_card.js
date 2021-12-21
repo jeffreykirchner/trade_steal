@@ -2,6 +2,7 @@
 */
 downloadSummaryData(){
     app.$data.working = true;
+    this.data_downloading = true;
     app.sendMessage("download_summary_data", {});
 },
 
@@ -19,12 +20,15 @@ takeDownloadSummaryData(messageData){
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+
+    this.data_downloading = false;
 },
 
 /**send download summary data
 */
 downloadActionsData(){
     app.$data.working = true;
+    this.data_downloading = true;
     app.sendMessage("download_action_data", {});
 },
 
@@ -42,12 +46,15 @@ takeDownloadActionData(messageData){
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+
+    this.data_downloading = false;
 },
 
 /**send download recruiter data
 */
 downloadRecruiterData(){
     app.$data.working = true;
+    this.data_downloading = true;
     app.sendMessage("download_recruiter_data", {});
 },
 
@@ -65,12 +72,15 @@ takeDownloadRecruiterData(messageData){
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+
+    this.data_downloading = false;
 },
 
 /**send download payment data
 */
 downloadPaymentData(){
     app.$data.working = true;
+    this.data_downloading = true;
     app.sendMessage("download_payment_data", {});
 },
 
@@ -88,5 +98,7 @@ takeDownloadPaymentData(messageData){
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+
+    this.data_downloading = false;
 },
 
