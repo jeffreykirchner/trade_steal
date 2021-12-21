@@ -89,9 +89,7 @@ class SessionPlayerChat(models.Model):
             "sender_id" : self.session_player.id,    
             "text" : self.text,
         }
-
-    
-
+        
     #return json object of class
     def json_for_staff(self):
         '''
