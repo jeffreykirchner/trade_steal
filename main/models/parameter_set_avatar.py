@@ -17,7 +17,7 @@ class ParameterSetAvatar(models.Model):
     '''
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_avatars_a")
-    avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE, related_name="parameter_set_avatars_b")
+    avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE, related_name="parameter_set_avatars_b", null=True, blank=True)
     
     grid_location_row = models.IntegerField(verbose_name='Grid Location Row', default=1)         #row location on choice grid
     grid_location_col = models.IntegerField(verbose_name='Rid Location Column', default=1)       #col location on choice grid
@@ -32,6 +32,13 @@ class ParameterSetAvatar(models.Model):
         verbose_name = 'Parameter Set Avatar'
         verbose_name_plural = 'Parameter Set Avatars'
         ordering = ['grid_location_row', 'grid_location_col']
+        constraints = [
+            models.UniqueConstraint(fields=['parameter_set', 
+                                            'grid_location_row', 
+                                            'grid_location_col'], name='unique_parameter_set_avatar'),
+           
+        ]
+
 
     def from_dict(self, source):
         '''
@@ -57,10 +64,9 @@ class ParameterSetAvatar(models.Model):
         '''
 
         return{
-
             "id" : self.id,
             
-            "avatar" : self.avatar.json(),
+            "avatar" : self.avatar.json() if self.avatar else None,
             "grid_location_row" : self.grid_location_row,
             "grid_location_col" : self.grid_location_col,           
         }

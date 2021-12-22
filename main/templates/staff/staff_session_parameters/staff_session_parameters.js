@@ -127,6 +127,9 @@ var app = Vue.createApp({
                 case "download_parameters":
                     app.takeDownloadParameters(messageData);
                     break;
+                case "update_parameterset_avatar":
+                    app.takeUpdateParametersetAvatar(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -302,6 +305,7 @@ var app = Vue.createApp({
         $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
         $('#editParametersetPlayerGroupModal').on("hidden.bs.modal", this.hideEditParametersetPlayerGroup);
         $('#editParametersetGoodModal').on("hidden.bs.modal", this.hideEditParametersetGood);
+        $('#editAvatarsModal').on("hidden.bs.modal", this.hideEditParametersetAvatar);
     },
 
 }).mount('#app');

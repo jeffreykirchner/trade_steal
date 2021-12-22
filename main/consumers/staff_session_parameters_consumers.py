@@ -17,6 +17,7 @@ from main.forms import SessionForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetTypeForm
 from main.forms import ParameterSetGoodForm
+from main.forms import ParameterSetAvatarForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPlayerGroupForm
 
@@ -27,6 +28,7 @@ from main.models import ParameterSetPlayer
 from main.models import ParameterSetPlayerGroup
 
 import main
+from main.models.parameter_set_avatar import ParameterSetAvatar
 
 class StaffSessionParametersConsumer(SocketConsumerMixin):
     '''
@@ -207,6 +209,22 @@ class StaffSessionParametersConsumer(SocketConsumerMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def update_parameterset_avatar(self, event):
+        '''
+        update a parameterset avatar
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_parameterset_avatar)(event["message_text"])
+        #message_data["session"] = await get_session(event["message_text"]["sessionID"])
+
+        message = {}
+        message["messageType"] = "update_parameterset_avatar"
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
     #consumer updates
     async def update_connection_status(self, event):
         '''
@@ -260,7 +278,8 @@ def take_update_parameterset(data):
         #print("valid form")                
         form.save() 
 
-        session.parameter_set.update_group_counts()             
+        session.parameter_set.update_group_counts()
+        session.parameter_set.update_choice_avatar_counts()        
 
         return {"value" : "success"}                      
                                 
@@ -520,4 +539,37 @@ def take_download_parameters(data):
     session = Session.objects.get(id=session_id)
    
     return {"status" : "success", "parameter_set":session.parameter_set.json()}                      
+
+def take_update_parameterset_avatar(data):
+    '''
+    update parameterset avatar
+    '''   
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Update parameterset avatar: {data}")
+
+    session_id = data["sessionID"]
+    parameterset_avatar_id = data["parameterset_avatar_id"]
+    form_data = data["formData"]
+
+    try:        
+        parameter_set_avatar = ParameterSetAvatar.objects.get(id=parameterset_avatar_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_parameterset_good paramterset_avatar, not found ID: {parameterset_avatar_id}")
+        return
+    
+    form_data_dict = {}
+
+    for field in form_data:            
+        form_data_dict[field["name"]] = field["value"]
+
+    form = ParameterSetAvatarForm(form_data_dict, instance=parameter_set_avatar)
+
+    if form.is_valid():
+        #print("valid form")             
+        form.save()              
+
+        return {"value" : "success", "result" : parameter_set_avatar.parameter_set.json()}                      
                                 
+    logger.info("Invalid parameterset avatar form")
+    return {"value" : "fail", "errors" : dict(form.errors.items())}

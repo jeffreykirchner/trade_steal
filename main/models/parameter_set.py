@@ -216,18 +216,21 @@ class ParameterSet(models.Model):
 
         player.save()
 
-    def add_new_avatar(self):
+    def update_choice_avatar_counts(self):
         '''
-        add new parameter set avatar
+        update choice grid avatar counts
         '''
-        parameter_set_avatar = main.models.ParameterSetAvatar()
 
-        parameter_set_avatar.parameter_set = self
-        parameter_set_avatar.avatar = main.models.avatars.objects.first()
-        parameter_set_avatar.row = 1
-        parameter_set_avatar.col = 1
+        # remove extra avatars
+        parameter_set_avatars = main.models.ParameterSetAvatar.objects.filter(grid_location_row__gt=self.avatar_grid_row_count)
+        parameter_set_avatars.delete()
 
-        parameter_set_avatar.save()
+        parameter_set_avatars = main.models.ParameterSetAvatar.objects.filter(grid_location_col__gt=self.avatar_grid_col_count)
+        parameter_set_avatars.delete()
+
+        for r in range(self.avatar_grid_row_count):
+            for c in range(self.avatar_grid_col_count):
+                main.models.ParameterSetAvatar.objects.get_or_create(parameter_set=self, grid_location_row=r+1, grid_location_col=c+1)
 
     def update_group_counts(self):
         '''
