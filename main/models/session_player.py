@@ -16,6 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from main.models import Session
 from main.models import ParameterSetPlayer
+from main.models import Avatar
 
 from main.globals import round_half_away_from_zero
 
@@ -27,6 +28,7 @@ class SessionPlayer(models.Model):
     '''
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="session_players")
     parameter_set_player = models.ForeignKey(ParameterSetPlayer, on_delete=models.CASCADE, related_name="session_players_paramterset")
+    avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE, related_name="session_players_b", null=True, blank=True)
 
     good_one_house = models.DecimalField(verbose_name = 'Good one in house', decimal_places=0, default=0, max_digits=3)
     good_two_house =  models.DecimalField(verbose_name = 'Good two in house', decimal_places=0, default=0, max_digits=3)
@@ -387,6 +389,8 @@ class SessionPlayer(models.Model):
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "notices" : [n.json() for n in self.session_player_notices_b.all()] if get_chat else [],
+
+            "avatar" : self.avatar.json() if self.avatar else None,
         }
     
     def json_for_subject(self, session_player):
@@ -419,6 +423,8 @@ class SessionPlayer(models.Model):
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "parameter_set_player" : self.parameter_set_player.json_for_subject(),
+
+            "avatar" : self.avatar.json() if self.avatar else None,
         }
 
     def json_min(self, session_player_notice=None):

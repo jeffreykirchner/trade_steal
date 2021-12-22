@@ -12,14 +12,15 @@ from django.dispatch import receiver
 
 from main import globals
 
+from main.models import Avatar
+
 import main
 
 #experiment session parameters
 class ParameterSet(models.Model):
     '''
     parameter set
-    '''
-
+    '''    
     period_count = models.IntegerField(verbose_name='Number of periods', default=20)                          #number of periods in the experiment
     period_length_production = models.IntegerField(verbose_name='Period Length, Production', default=10)      #production phase length in seconds
     period_length_trade = models.IntegerField(verbose_name='Period Length, Trade', default=90)                #trade phase length in seconds
@@ -28,9 +29,15 @@ class ParameterSet(models.Model):
     private_chat = models.BooleanField(default=True, verbose_name = 'Private Chat')                           #if true subjects can privately chat one on one
     town_count = models.IntegerField(verbose_name='Town Count', default=1)                                    #number of different towns
     good_count = models.IntegerField(verbose_name='Number of Goods', default=2)                               #number of goods available to all towns
+    
     show_avatars = models.BooleanField(default=False, verbose_name = 'Show Avatars')                          #if true show avatar next to field
+    avatar_assignment_mode = models.CharField(max_length=100, 
+                                              choices=globals.AvatarModes.choices, 
+                                              default=globals.AvatarModes.NONE)                               #type of avatar assignment mode
+    avatar_grid_row_count = models.IntegerField(verbose_name='Avatar Grid Row Count', default=3)
+    avatar_grid_col_count = models.IntegerField(verbose_name='Avatar Grid Col Count', default=3)
 
-    test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                 #if true subject screens will do random auto testing
+    test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
 
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -61,8 +68,12 @@ class ParameterSet(models.Model):
             self.town_count = new_ps.get("town_count")
             self.good_count = new_ps.get("good_count")
             self.show_avatars = new_ps.get("show_avatars")
+            self.avatar_assignment_mode = new_ps.get("avatar_assignment_mode")
 
             self.save()
+
+            #available avatars
+
 
             #parameter set types
             new_parameter_set_types = new_ps.get("parameter_set_types")
@@ -186,7 +197,7 @@ class ParameterSet(models.Model):
         add a new player of type subject_type
         '''
 
-        #8 players max
+        #24 players max
         if self.parameter_set_players.all().count() >= 24:
             return
 
@@ -204,6 +215,19 @@ class ParameterSet(models.Model):
         player.avatar = main.models.Avatar.objects.first()
 
         player.save()
+
+    def add_new_avatar(self):
+        '''
+        add new parameter set avatar
+        '''
+        parameter_set_avatar = main.models.ParameterSetAvatar()
+
+        parameter_set_avatar.parameter_set = self
+        parameter_set_avatar.avatar = main.models.avatars.objects.first()
+        parameter_set_avatar.row = 1
+        parameter_set_avatar.col = 1
+
+        parameter_set_avatar.save()
 
     def update_group_counts(self):
         '''
@@ -250,11 +274,17 @@ class ParameterSet(models.Model):
 
             "allow_stealing" : "True" if self.allow_stealing else "False",
             "private_chat" : "True" if self.private_chat else "False",
+
             "show_avatars" : "True" if self.show_avatars else "False",
+            "avatar_assignment_mode" : self.avatar_assignment_mode,
+            "avatar_grid_row_count" : self.avatar_grid_row_count,
+            "avatar_grid_col_count" : self.avatar_grid_col_count,
 
             "parameter_set_goods" : [p.json() for p in self.parameter_set_goods.all()],
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
             "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
+
+            "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
 
             "test_mode" : "True" if self.test_mode else "False",
         }

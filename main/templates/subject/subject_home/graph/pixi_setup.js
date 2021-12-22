@@ -386,8 +386,17 @@ setupSingleAvatar(index){
 
     let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'avatar');
     
-    let sprite = PIXI.Sprite.from(app.$data.avatar_sheet.textures[session_players[index].parameter_set_player.avatar.file_name]);
+    let sprite = null;
 
+    if(session_players[index].avatar)
+    {
+        sprite = PIXI.Sprite.from(app.$data.avatar_sheet.textures[session_players[index].avatar.file_name]);
+    }
+    else
+    {
+        sprite = PIXI.Sprite.from(app.$data.avatar_sheet.textures[session_players[index].parameter_set_player.avatar.file_name]);
+    }
+    
     container.x = pt.x;
     container.y = pt.y;
 

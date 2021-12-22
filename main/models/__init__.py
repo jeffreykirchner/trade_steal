@@ -8,6 +8,7 @@ from .avatar import Avatar
 from .parameter_set import ParameterSet
 from .parameter_set_type import ParameterSetType
 from .parameter_set_good import ParameterSetGood
+from .parameter_set_avatar import ParameterSetAvatar
 from .parameter_set_player import ParameterSetPlayer
 from .parameter_set_player_group import ParameterSetPlayerGroup
 

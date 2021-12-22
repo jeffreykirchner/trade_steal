@@ -3,6 +3,7 @@ staff view
 '''
 import logging
 import uuid
+import json
 
 from django.views import View
 from django.shortcuts import render
@@ -10,6 +11,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
+from django.core.serializers.json import DjangoJSONEncoder
 
 from main.decorators import user_is_owner
 
@@ -62,6 +64,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "page_key" : f'session-{session.id}',
                                "parameters" : parameters,
                                "session" : session,
+                               "session_json":json.dumps(session.json(), cls=DjangoJSONEncoder),
                                })
     
     @method_decorator(login_required)

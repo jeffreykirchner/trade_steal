@@ -3,6 +3,7 @@ build globals
 '''
 
 from .parameter_sets import SubjectType
+from .parameter_sets import AvatarModes
 
 from .sessions import ContainerTypes
 from .sessions import ChatTypes

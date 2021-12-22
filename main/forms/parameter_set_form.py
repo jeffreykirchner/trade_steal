@@ -6,6 +6,8 @@ from django import forms
 
 from main.models import ParameterSet
 
+from main.globals import AvatarModes
+
 class ParameterSetForm(forms.ModelForm):
     '''
     Parameterset edit form
@@ -62,6 +64,20 @@ class ParameterSetForm(forms.ModelForm):
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.show_avatars",}))
     
+    avatar_assignment_mode = forms.ChoiceField(label='Avatar Assignment',
+                                       choices=AvatarModes.choices,
+                                       widget=forms.Select(attrs={"v-model":"session.parameter_set.avatar_assignment_mode",}))
+    
+    avatar_grid_row_count = forms.IntegerField(label='Avatar Grid Row Count',
+                                                min_value=1,
+                                                widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.avatar_grid_row_count",
+                                                                                "min":"1"}))
+    
+    avatar_grid_col_count = forms.IntegerField(label='Avatar Grid Column Count',
+                                                min_value=1,
+                                                widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.avatar_grid_col_count",
+                                                                                "min":"1"}))
+
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.test_mode",}))
@@ -70,4 +86,5 @@ class ParameterSetForm(forms.ModelForm):
         model=ParameterSet
         fields =['town_count','good_count', 'period_count', 'period_length_production' ,
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
-                 'private_chat', 'show_avatars', 'test_mode']
+                 'private_chat', 'show_avatars', 'avatar_assignment_mode', 'avatar_grid_row_count', 
+                 'avatar_grid_col_count', 'test_mode']

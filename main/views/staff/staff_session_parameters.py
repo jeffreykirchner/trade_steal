@@ -11,6 +11,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
+from django.core.serializers.json import DjangoJSONEncoder
 
 from main.decorators import user_is_owner
 
@@ -20,6 +21,7 @@ from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetGoodForm
 from main.forms import ParameterSetTypeForm
+from main.forms import ParameterSetAvatarForm
 from main.forms import ParameterSetPlayerForm
 from main.forms import ParameterSetPlayerGroupForm
 
@@ -68,6 +70,10 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         parameterset_good_form_ids=[]
         for i in ParameterSetGoodForm():
             parameterset_good_form_ids.append(i.html_name)
+        
+        parameterset_avatar_form_ids=[]
+        for i in ParameterSetAvatarForm():
+            parameterset_avatar_form_ids.append(i.html_name)
 
         return render(request=request,
                       template_name=self.template_name,
@@ -76,11 +82,13 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "id" : session.id,
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_type_form" : ParameterSetTypeForm(),
+                               "parameter_set_avatar_form" : ParameterSetAvatarForm(),
                                "parameter_set_player_form" : parameterset_player_form,
                                "parameter_set_good_form" : ParameterSetGoodForm(),
                                "parameter_set_player_group_form" : ParameterSetPlayerGroupForm(),
                                "parameterset_form_ids" : parameterset_form_ids,
                                "parameterset_type_form_ids" : parameterset_type_form_ids,
+                               "parameterset_avatar_form_ids" : parameterset_avatar_form_ids,
                                "parameterset_player_form_ids" : parameterset_player_form_ids,
                                "parameterset_player_group_form_ids" : parameterset_player_group_form_ids,
                                "parameterset_good_form_ids" : parameterset_good_form_ids,
@@ -88,7 +96,9 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',
                                "number_of_player_types" : range(4),
-                               "session" : session})
+                               "session" : session,
+                               "session_json":json.dumps(session.json(), cls=DjangoJSONEncoder)
+                               })
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):

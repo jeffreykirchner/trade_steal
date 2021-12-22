@@ -13,29 +13,7 @@ var app = Vue.createApp({
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
                     sessionID : {{session.id}},
-                    session : {
-                        current_period : 1,
-                        started : false,
-                        locked : true,
-                        start_date : "---",
-                        current_period : 0,
-                        finished : false,                        
-                        parameter_set : {
-                            id : 0,
-                            period_count : 1,
-                            period_length_production : 0,
-                            period_length_trade : 0,
-                            break_period_frequency : 0,
-                            good_a_label : "",
-                            good_b_label : "",
-                            good_a_rgb_color : '#000000',
-                            good_b_rgb_color : '#000000',
-                            parameter_set_players : [],
-                            parameter_set_types : [],                               
-                        },
-                        session_periods : [],
-                        session_players : [],
-                    },
+                    session : {{session_json|safe}},
                    
                     valuecost_modal_label:'Edit Value or Cost',
                     current_parameterset_type:{                       //json attached to parameterset type edit modal
@@ -70,12 +48,19 @@ var app = Vue.createApp({
                         label : 0,
                         rgb_color :0,
                     },
+                    current_parameter_set_avatar:{
+                        id : 0,
+                        grid_location_row : 0,
+                        grid_location_col : 0,
+                        avatar : {id:0},
+                    },
 
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
                     parameterset_type_form_ids: {{parameterset_type_form_ids|safe}},
                     parameterset_player_form_ids: {{parameterset_player_form_ids|safe}},
                     parameterset_player_group_form_ids: {{parameterset_player_group_form_ids|safe}},
                     parameterset_good_form_ids: {{parameterset_good_form_ids|safe}},
+                    parameterset_avatar_form_ids: {{parameterset_avatar_form_ids|safe}},
 
                     upload_file: null,
                     upload_file_name:'Choose File',
@@ -231,6 +216,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session_parameters/control/control.js"%}
         {%include "staff/staff_session_parameters/player_types/player_type.js"%}
         {%include "staff/staff_session_parameters/players/players.js"%}
+        {%include "staff/staff_session_parameters/avatars/avatars.js"%}
     
         /** clear form error messages
         */
@@ -271,6 +257,13 @@ var app = Vue.createApp({
             }
 
             s = app.$data.parameterset_good_form_ids;
+            for(var i in s)
+            {
+                $("#id_" + s[i]).attr("class","form-control");
+                $("#id_errors_" + s[i]).remove();
+            }
+
+            s = app.$data.parameterset_avatar_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");

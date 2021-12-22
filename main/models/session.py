@@ -19,9 +19,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 import main
 
-from main.models import ParameterSet
+from main.models import ParameterSet, avatar
 
 from main.globals import PeriodPhase
+from main.globals import AvatarModes
 
 #experiment sessoin
 class Session(models.Model):
@@ -92,8 +93,21 @@ class Session(models.Model):
 
         self.save()
 
+        if self.parameter_set.avatar_assignment_mode == AvatarModes.PRE_ASSIGNED:
+            self.pre_assign_avatars()
+
         for i in self.session_players.all():
             i.start()
+    
+    def pre_assign_avatars(self):
+        '''
+        asign avatars based on parameter set player
+        '''
+
+        for i in self.session_players.all():
+            i.avatar = i.parameter_set_player.avatar
+            i.save()
+
     
     def reset_experiment(self):
         '''
