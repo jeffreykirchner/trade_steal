@@ -52,6 +52,13 @@
         margin-top: 10px;
         background-color: ghostwhite;
     }
+
+    .image_grid {
+        max-width: 100%; 
+        height: auto;
+    }
+
+    {{sprite_sheet_css|safe}}
    
 </style>
 
@@ -60,7 +67,7 @@
 {% block content %}
 
 <!-- modals -->
-
+{%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid_modal.html"%}
 
 <!-- cards -->
 <div class="row justify-content-lg-center mt-4" v-cloak>

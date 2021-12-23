@@ -1,0 +1,43 @@
+{% load crispy_forms_tags %}
+<!--Edit Period Modal -->
+<div class="modal fade " 
+     id="avatarChoiceGridModal" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="endGameModal" 
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="fw-bold">Choose an avatar</span>
+                Look at the people below. Which one looks the most like you? We imagine that none of them looks exactly like you, but which one is the closest?
+            </div>
+            <div class="modal-body">
+                
+        
+                
+                <div class="row"                    
+                     v-for="r in session.parameter_set.avatar_grid_row_count">
+                    <div class="col"
+                         v-for="c in session.parameter_set.avatar_grid_col_count"
+                         v-html="get_grid_image_html(r, c)">
+                        
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "sendAvatarChoice()"
+                        title="Submit Choice"                        
+                        v-bind:disabled="reconnecting || working">
+                    Submit <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

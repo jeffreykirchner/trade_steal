@@ -13,6 +13,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
+from django.templatetags.static import static
 
 from main.models import SessionPlayer
 
@@ -20,6 +21,8 @@ from main.forms import SessionForm
 from main.forms import EndGameForm
 from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
+
+from main.globals import generate_css_sprite_sheet
 
 class SubjectHomeView(View):
     '''
@@ -50,10 +53,13 @@ class SubjectHomeView(View):
         for i in EndGameForm():
             end_game_form_ids.append(i.html_name)
 
+        sprite_sheet_css = generate_css_sprite_sheet('main/static/avatars.json', static('avatars.png'))
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
                                "player_key" :  session_player.player_key,
+                               "sprite_sheet_css" : sprite_sheet_css,
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "end_game_form" : EndGameForm(),

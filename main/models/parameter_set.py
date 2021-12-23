@@ -308,7 +308,13 @@ class ParameterSet(models.Model):
             "break_period_frequency" : self.break_period_frequency,
             "allow_stealing" : "True" if self.allow_stealing else "False",
             "private_chat" : "True" if self.private_chat else "False",
+            
             "show_avatars" : "True" if self.show_avatars else "False",
+            "avatar_assignment_mode" : self.avatar_assignment_mode,
+            "avatar_grid_row_count" : self.avatar_grid_row_count,
+            "avatar_grid_col_count" : self.avatar_grid_col_count,
+
+            "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
 
             "test_mode" : self.test_mode,
         }

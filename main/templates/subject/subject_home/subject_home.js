@@ -197,6 +197,7 @@ var app = Vue.createApp({
             app.calcWaste();
             setTimeout(app.updateNoticeDisplayScroll, 250);
 
+            // if game is finished show modal
             if(app.$data.session.finished)
             {
                 var myModal = new bootstrap.Modal(document.getElementById('endGameModal'), {
@@ -205,6 +206,14 @@ var app = Vue.createApp({
                 
                 myModal.toggle();
             }
+
+            //if no avatar, show choice grid
+
+            var myModal = new bootstrap.Modal(document.getElementById('avatarChoiceGridModal'), {
+                keyboard: false
+                })
+            
+            myModal.toggle();
         },
 
         /** update start status
@@ -312,6 +321,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/earnings/earnings_card.js"%}
         {%include "subject/subject_home/summary/summary_card.js"%}
         {%include "subject/subject_home/test_mode/test_mode.js"%}
+        {%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid.js"%}
     
         /** clear form error messages
         */
