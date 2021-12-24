@@ -36,6 +36,7 @@ class ParameterSet(models.Model):
                                               default=globals.AvatarModes.NONE)                               #type of avatar assignment mode
     avatar_grid_row_count = models.IntegerField(verbose_name='Avatar Grid Row Count', default=3)
     avatar_grid_col_count = models.IntegerField(verbose_name='Avatar Grid Col Count', default=3)
+    avatar_grid_text =  models.CharField(verbose_name='Avatar Grid Text', max_length = 300, default="Choose an avatar that best represents you.")
 
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
 
@@ -282,6 +283,7 @@ class ParameterSet(models.Model):
             "avatar_assignment_mode" : self.avatar_assignment_mode,
             "avatar_grid_row_count" : self.avatar_grid_row_count,
             "avatar_grid_col_count" : self.avatar_grid_col_count,
+            "avatar_grid_text" : self.avatar_grid_text,
 
             "parameter_set_goods" : [p.json() for p in self.parameter_set_goods.all()],
             "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
@@ -313,6 +315,7 @@ class ParameterSet(models.Model):
             "avatar_assignment_mode" : self.avatar_assignment_mode,
             "avatar_grid_row_count" : self.avatar_grid_row_count,
             "avatar_grid_col_count" : self.avatar_grid_col_count,
+            "avatar_grid_text" : self.avatar_grid_text,
 
             "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
 

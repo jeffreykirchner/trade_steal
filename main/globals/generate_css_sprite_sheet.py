@@ -21,6 +21,9 @@ def generate_css_sprite_sheet(file, static_image_url):
             frame = data['frames'][d]
 
             s = f'#{d}{{\n \
+                        background-repeat: no-repeat; \
+                        background-size: contain; \
+                        background-position: center; \
                         background: url(/static/avatars.png) -{frame["frame"]["x"]}px -{frame["frame"]["y"]}px;\n \
                         width:{frame["frame"]["w"]}px;\n \
                         height:{frame["frame"]["h"]}px;\n \

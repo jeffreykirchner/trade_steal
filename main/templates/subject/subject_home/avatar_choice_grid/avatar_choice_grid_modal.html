@@ -10,26 +10,35 @@
 
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
+
             <div class="modal-header">
                 <span class="fw-bold">Choose an avatar</span>
-                Look at the people below. Which one looks the most like you? We imagine that none of them looks exactly like you, but which one is the closest?
             </div>
-            <div class="modal-body">
+
+            <div class="modal-body">  
                 
+                <div class="row justify-content-center">
+                    <div class="col text-center" v-html="session.parameter_set.avatar_grid_text">
+    
+                    </div>
+                </div>
         
-                
-                <div class="row"                    
+                <div class="row justify-content-center mt-4"                    
                      v-for="r in session.parameter_set.avatar_grid_row_count">
-                    <div class="col"
+                    <div class="col-auto text-center"
+                         v-on:click="take_choice_grid_click(r,c)"
+                         v-bind:style="[{'height' : '13vh'},
+                                        (r==avatar_choice_grid_selected_row && c==avatar_choice_grid_selected_col) ? {'border-style':'double'}:{}]"
                          v-for="c in session.parameter_set.avatar_grid_col_count"
                          v-html="get_grid_image_html(r, c)">
                         
                     </div>
-                </div>
-                
+                </div>                
+
             </div>
+
             <div class="modal-footer">
-                
+                Click on your selection then press submit. &nbsp; &nbsp;
                 <button type="button"
                         class="btn btn-outline-primary"
                         v-on:click = "sendAvatarChoice()"
@@ -38,6 +47,7 @@
                     Submit <i class="fas fa-sign-in-alt"></i>
                 </button>
             </div>
+
         </div>
     </div>
 </div>

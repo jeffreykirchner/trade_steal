@@ -65,6 +65,10 @@ var app = Vue.createApp({
                     potential_earnings : 0,
 
                     end_game_modal_visible : false,
+
+                    avatar_choice_grid_selected_row : 0,
+                    avatar_choice_grid_selected_col : 0,
+
                 }},
     methods: {
 
