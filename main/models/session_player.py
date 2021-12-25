@@ -162,6 +162,8 @@ class SessionPlayer(models.Model):
         self.good_one_production_rate = 50
         self.good_two_production_rate = 50
 
+        self.avatar = None
+
         self.save()
     
     def start(self):

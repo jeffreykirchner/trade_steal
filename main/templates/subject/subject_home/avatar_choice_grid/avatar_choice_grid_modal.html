@@ -43,7 +43,7 @@
                         class="btn btn-outline-primary"
                         v-on:click = "sendAvatarChoice()"
                         title="Submit Choice"                        
-                        v-bind:disabled="reconnecting || working">
+                        v-bind:disabled="reconnecting || working || session.started===false || session.finished">
                     Submit <i class="fas fa-sign-in-alt"></i>
                 </button>
             </div>

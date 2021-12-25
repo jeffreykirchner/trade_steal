@@ -18,7 +18,7 @@ from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
 from main.forms import EndGameForm
 
-from main.models import Session
+from main.models import Session, avatar
 from main.models import SessionPlayer
 from main.models import SessionPlayerMove
 from main.models import SessionPlayerChat
@@ -158,6 +158,28 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         take name and id number
         '''
         result = await sync_to_async(take_name)(self.session_id, self.session_player_id, event["message_text"])
+        message_data = {}
+        message_data["status"] = result
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+        if result["value"] == "success":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "update_name",
+                 "data": result,
+                 "sender_channel_name": self.channel_name},
+            )
+
+    async def avatar(self, event):
+        '''
+        take avatar number
+        '''
+        result = await sync_to_async(take_avatar)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
         message_data["status"] = result
 
@@ -346,7 +368,15 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
     async def update_name(self, event):
         '''
-        send end game notice to staff screens
+        no group broadcast of name to subjects
+        '''
+
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Eng game update")
+    
+    async def update_avatar(self, event):
+        '''
+        no group broadcast of avatar to subjects
         '''
 
         # logger = logging.getLogger(__name__) 
@@ -354,8 +384,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     
 
 #local sync functions  
-
-
 def take_get_session_subject(session_player_id):
     '''
     get session info for subject
@@ -842,4 +870,38 @@ def take_name(session_id, session_player_id, data):
                                 
     logger.info("Invalid session form")
     return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
+
+
+def take_avatar(session_id, session_player_id, data):
+    '''
+    take name and student id at end of game
+    '''
+
+    logger = logging.getLogger(__name__) 
+    logger.info(f"Take avatar: {session_id} {session_player_id} {data}")
+
+    try:       
+        row = data.get("row")
+        col = data.get("col")
+
+        session = Session.objects.get(id=session_id)
+        session_player = session.session_players.get(id=session_player_id)
+
+        parameter_set_avatar = session.parameter_set.parameter_set_avatars_a.get(grid_location_row=row, grid_location_col=col)
+
+        if parameter_set_avatar.avatar == None:
+            logger.warning(f"blank avatar choosen : {session_player_id}")
+            return {"value" : "fail", "errors" : {}, "message" : "Avatar Error"}
+
+        session_player.avatar = parameter_set_avatar.avatar        
+        session_player.save()
+
+    except ObjectDoesNotExist:
+        logger.warning(f"take_avatar : {session_player_id}")
+        return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+    
+    return {"value" : "success",
+            "result" : {"id" : session_player_id,
+                        "avatar" : session_player.avatar.json(), 
+                        }}                      
      

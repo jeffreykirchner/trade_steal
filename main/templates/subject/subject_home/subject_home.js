@@ -127,6 +127,9 @@ var app = Vue.createApp({
                 case "name":
                     app.takeName(messageData);
                     break;
+                case "avatar":
+                    app.takeAvatar(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -212,12 +215,17 @@ var app = Vue.createApp({
             }
 
             //if no avatar, show choice grid
+            if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
+                this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
+                this.session_player.avatar == null)
 
-            var myModal = new bootstrap.Modal(document.getElementById('avatarChoiceGridModal'), {
-                keyboard: false
-                })
-            
-            myModal.toggle();
+            {
+                var myModal = new bootstrap.Modal(document.getElementById('avatarChoiceGridModal'), {
+                    keyboard: false
+                    })
+                
+                myModal.toggle();
+            }
         },
 
         /** update start status

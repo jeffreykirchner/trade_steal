@@ -48,3 +48,35 @@ take_choice_grid_click(r, c){
     this.avatar_choice_grid_selected_row = r;
     this.avatar_choice_grid_selected_col = c;
 },
+
+/**
+ * send avatar choice
+ */
+sendAvatar(){
+
+    if(this.working) return;
+    if(this.avatar_choice_grid_selected_row == 0) return;
+    if(this.avatar_choice_grid_selected_col == 0) return;
+    
+    app.$data.working = true;
+    app.sendMessage("avatar", {"row" : this.avatar_choice_grid_selected_row,
+                               "col" : this.avatar_choice_grid_selected_col,
+                            });             
+},
+
+/** take result of moving goods
+*/
+takeAvatar(messageData){
+    //app.$data.cancelModal=false;
+    //app.clearMainFormErrors();
+
+    if(messageData.status.value == "success")
+    {
+        this.session_players.avatar = messageData.status.result.avatar;         
+    } 
+    else
+    {
+        
+    }
+},
+
