@@ -27,3 +27,11 @@ class PeriodPhase(models.TextChoices):
     '''
     PRODUCTION = 'Production', _('Production')
     TRADE = 'Trade', _('Trade')
+
+class ExperimentPhase(models.TextChoices):
+    '''
+    avatar asignment modes
+    '''
+    SELECTION = 'Selection', _('Selection')
+    INSTRUCTIONS = 'Instructions', _('Instructions')
+    RUN = 'Run', _('Run')

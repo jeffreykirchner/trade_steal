@@ -30,6 +30,9 @@ get_grid_image_html(r, c){
  */
 take_choice_grid_click(r, c){
 
+    if(this.working) return;
+    if(this.session_player.avatar != null) return;
+
     let parameter_set_avatars = this.session.parameter_set.parameter_set_avatars;
 
     //check for blank
@@ -55,8 +58,11 @@ take_choice_grid_click(r, c){
 sendAvatar(){
 
     if(this.working) return;
+
     if(this.avatar_choice_grid_selected_row == 0) return;
     if(this.avatar_choice_grid_selected_col == 0) return;
+
+    if(this.session_player.avatar != null) return;
     
     app.$data.working = true;
     app.sendMessage("avatar", {"row" : this.avatar_choice_grid_selected_row,
@@ -72,7 +78,7 @@ takeAvatar(messageData){
 
     if(messageData.status.value == "success")
     {
-        this.session_players.avatar = messageData.status.result.avatar;         
+        this.session_player.avatar = messageData.status.result.avatar;         
     } 
     else
     {

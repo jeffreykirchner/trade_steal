@@ -23,6 +23,7 @@ from main.models import ParameterSet, avatar
 
 from main.globals import PeriodPhase
 from main.globals import AvatarModes
+from main.globals import ExperimentPhase
 
 #experiment sessoin
 class Session(models.Model):
@@ -40,6 +41,7 @@ class Session(models.Model):
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
 
     started =  models.BooleanField(default=False)                                #starts session and filll in session
+    current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
     current_period = models.IntegerField(default=0)                              #current period of the session
     current_period_phase = models.CharField(max_length=100, choices=PeriodPhase.choices, default=PeriodPhase.PRODUCTION)         #current phase of current period
     time_remaining = models.IntegerField(default=0)                              #time remaining in current phase of current period
@@ -107,8 +109,7 @@ class Session(models.Model):
         for i in self.session_players.all():
             i.avatar = i.parameter_set_player.avatar
             i.save()
-
-    
+ 
     def reset_experiment(self):
         '''
         reset the experiment
@@ -349,6 +350,7 @@ class Session(models.Model):
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,
+            "current_experiment_phase":self.current_experiment_phase,
             "current_period":self.current_period,
             "current_period_phase":self.current_period_phase,
             "time_remaining":self.time_remaining,
@@ -368,6 +370,7 @@ class Session(models.Model):
         
         return{
             "started":self.started,
+            "current_experiment_phase":self.current_experiment_phase,
             "current_period":self.current_period,
             "current_period_phase":self.current_period_phase,
             "time_remaining":self.time_remaining,

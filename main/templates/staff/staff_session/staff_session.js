@@ -133,6 +133,9 @@ var app = Vue.createApp({
                 case "download_payment_data":
                     app.takeDownloadPaymentData(messageData);
                     break;
+                case "update_avatar":
+                    app.takeUpdateAvatar(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)

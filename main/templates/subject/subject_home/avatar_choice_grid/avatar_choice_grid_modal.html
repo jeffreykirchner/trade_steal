@@ -38,14 +38,19 @@
             </div>
 
             <div class="modal-footer">
-                Click on your selection then press submit. &nbsp; &nbsp;
-                <button type="button"
-                        class="btn btn-outline-primary"
-                        v-on:click = "sendAvatarChoice()"
-                        title="Submit Choice"                        
-                        v-bind:disabled="reconnecting || working || session.started===false || session.finished">
-                    Submit <i class="fas fa-sign-in-alt"></i>
-                </button>
+                <span v-if="session_player.avatar == null">
+                    Click on your selection then press submit. &nbsp; &nbsp;
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            v-on:click = "sendAvatar()"
+                            title="Submit Choice"                        
+                            v-bind:disabled="reconnecting || working || session.started===false || session.finished">
+                        Submit <i class="fas fa-sign-in-alt"></i>
+                    </button>
+                </span>
+                <span v-else>
+                    Waiting for others.
+                </span>
             </div>
 
         </div>

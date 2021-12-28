@@ -81,6 +81,10 @@ class ParameterSetForm(forms.ModelForm):
                             widget=forms.TextInput(attrs={"v-model":"session.parameter_set.avatar_grid_text",
                                                           })) 
 
+    show_instructions = forms.ChoiceField(label='Show Instructions',
+                                       choices=((True, 'Yes'), (False,'No' )),
+                                       widget=forms.Select(attrs={"v-model":"session.parameter_set.show_instructions",}))
+
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.test_mode",}))
@@ -90,4 +94,4 @@ class ParameterSetForm(forms.ModelForm):
         fields =['town_count','good_count', 'period_count', 'period_length_production' ,
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
                  'private_chat', 'show_avatars', 'avatar_assignment_mode', 'avatar_grid_row_count', 
-                 'avatar_grid_col_count', 'avatar_grid_text', 'test_mode']
+                 'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'test_mode']

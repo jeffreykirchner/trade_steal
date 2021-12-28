@@ -8,6 +8,7 @@ from .parameter_sets import AvatarModes
 from .sessions import ContainerTypes
 from .sessions import ChatTypes
 from .sessions import PeriodPhase
+from .sessions import ExperimentPhase
 
 from .round_half_away_from_zero import round_half_away_from_zero
 

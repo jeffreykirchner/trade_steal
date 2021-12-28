@@ -60,6 +60,25 @@ takeUpdateName(messageData){
     }
  },
 
+ /** take name and student id
+* @param messageData {json} session day in json format
+*/
+takeUpdateAvatar(messageData){
+           
+    if(messageData.status.value == "success")
+    {
+        let result = messageData.status.result;
+
+        session_player = app.findSessionPlayer(result.id);
+
+        if(session_player)
+        {
+            session_player.avatar = result.avatar;
+            this.setupSingleAvatar(this.findSessionPlayerIndex(result.id))
+        }       
+    }
+ },
+
  /**
   * update subject earnings
   *  @param messageData {json} session day in json format
@@ -99,3 +118,20 @@ takeUpdateName(messageData){
 
     return null;
  },
+
+  /**
+  * return session player index that has specified id
+  */
+findSessionPlayerIndex(id){
+
+    let session_players = app.$data.session.session_players;
+    for(let i=0; i<session_players.length; i++)
+    {
+        if(session_players[i].id == id)
+        {
+            return i;
+        }
+    }
+
+    return null;
+},

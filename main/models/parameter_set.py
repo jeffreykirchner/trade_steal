@@ -30,6 +30,7 @@ class ParameterSet(models.Model):
     town_count = models.IntegerField(verbose_name='Town Count', default=1)                                    #number of different towns
     good_count = models.IntegerField(verbose_name='Number of Goods', default=2)                               #number of goods available to all towns
     
+    show_instructions = models.BooleanField(default=True, verbose_name = 'Show Instructions')                #if true show instructions
     show_avatars = models.BooleanField(default=False, verbose_name = 'Show Avatars')                          #if true show avatar next to field
     avatar_assignment_mode = models.CharField(max_length=100, 
                                               choices=globals.AvatarModes.choices, 
@@ -278,6 +279,7 @@ class ParameterSet(models.Model):
 
             "allow_stealing" : "True" if self.allow_stealing else "False",
             "private_chat" : "True" if self.private_chat else "False",
+            "show_instructions" : "True" if self.show_instructions else "False",
 
             "show_avatars" : "True" if self.show_avatars else "False",
             "avatar_assignment_mode" : self.avatar_assignment_mode,
@@ -310,6 +312,7 @@ class ParameterSet(models.Model):
             "break_period_frequency" : self.break_period_frequency,
             "allow_stealing" : "True" if self.allow_stealing else "False",
             "private_chat" : "True" if self.private_chat else "False",
+            "show_instructions" : "True" if self.show_instructions else "False",
             
             "show_avatars" : "True" if self.show_avatars else "False",
             "avatar_assignment_mode" : self.avatar_assignment_mode,

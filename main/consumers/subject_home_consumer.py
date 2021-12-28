@@ -192,7 +192,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         if result["value"] == "success":
             await self.channel_layer.group_send(
                 self.room_group_name,
-                {"type": "update_name",
+                {"type": "update_avatar",
                  "data": result,
                  "sender_channel_name": self.channel_name},
             )
