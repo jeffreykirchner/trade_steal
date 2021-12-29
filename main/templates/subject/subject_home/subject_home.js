@@ -217,7 +217,7 @@ var app = Vue.createApp({
             //if no avatar, show choice grid
             if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
                 this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
-                this.session_player.avatar == null)
+                this.session.current_experiment_phase == "Selection")
 
             {
                 var myModal = new bootstrap.Modal(document.getElementById('avatarChoiceGridModal'), {
@@ -225,6 +225,11 @@ var app = Vue.createApp({
                     })
                 
                 myModal.toggle();
+
+                if(this.session_player.avatar != null)
+                {
+                    this.take_choice_grid_label(this.session_player.avatar.label)
+                }
             }
         },
 

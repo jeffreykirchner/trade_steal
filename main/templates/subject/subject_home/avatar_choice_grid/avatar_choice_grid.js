@@ -53,6 +53,27 @@ take_choice_grid_click(r, c){
 },
 
 /**
+ * handle choice grid click
+ */
+ take_choice_grid_label(label){
+
+    let parameter_set_avatars = this.session.parameter_set.parameter_set_avatars;
+
+    //check for blank
+    for(let i=0; i<parameter_set_avatars.length;i++)
+    {
+
+        if(parameter_set_avatars[i].avatar && parameter_set_avatars[i].avatar.label == label)
+        {
+            this.avatar_choice_grid_selected_row = parameter_set_avatars[i].grid_location_row;
+            this.avatar_choice_grid_selected_col = parameter_set_avatars[i].grid_location_col;
+
+            return
+        }
+    }
+},
+
+/**
  * send avatar choice
  */
 sendAvatar(){

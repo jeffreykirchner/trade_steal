@@ -382,7 +382,20 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # logger = logging.getLogger(__name__) 
         # logger.info("Eng game update")
     
+    async def update_next_phase(self, event):
+        '''
+        update session phase
+        '''
 
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''

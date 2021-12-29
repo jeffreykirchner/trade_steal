@@ -42,9 +42,22 @@
                         v-on:click = "startTimer()"
                         title="Start/Stop period timer"
                         v-bind:class="[(session.timer_running) ? 'btn-outline-warning' : 'btn-outline-success' , 'btn']"
-                        v-bind:disabled="reconnecting || working || session.started===false || session.finished">
+                        v-bind:disabled="reconnecting || working || session.started===false || session.finished || session.current_experiment_phase!='Run'">
                     <span v-if="session.timer_running">Stop Timmer <i class="far fa-clock"></i></span>
                     <span v-else>Start Timmer <i class="far fa-clock"></i></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- next experiment phase -->
+        <div class="row mt-2" v-show="session.started && session.current_experiment_phase!='Run'">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "next_experiment_phase()"
+                        title="Move to next phase"
+                        v-bind:disabled="reconnecting || working">
+                    <span v-html="move_to_next_phase_text"></span>
                 </button>
             </div>
         </div>
@@ -61,19 +74,6 @@
                 </button>
             </div>
         </div>
-
-        <!-- next period -->
-        <!-- <div class="row mt-2" v-show="session.started">
-            <div class="col-md text-center">
-                <button type="button"
-                        class="btn btn-outline-primary"
-                        v-on:click = "next_period()"
-                        title="Move to next period"
-                        v-bind:disabled="reconnecting || working || session.started===false || session.finished">
-                    <span v-html="move_to_next_period_text"></span>
-                </button>
-            </div>
-        </div> -->
         
     </div>                    
 </div> 

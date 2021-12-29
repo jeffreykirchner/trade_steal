@@ -21,7 +21,7 @@ var app = Vue.createApp({
                     session_player_move_two_form_ids: {{session_player_move_two_form_ids|safe}},
                     session_player_move_three_form_ids: {{session_player_move_three_form_ids|safe}},
 
-                    move_to_next_period_text : 'Move to next period <i class="fas fa-fast-forward"></i>',
+                    move_to_next_phase_text : 'Start Next Experiment Phase',
 
                     pixi_loaded : false,             //true when pixi is loaded
                     pixi_transfer_line : null,       //transfer line between two pixi containers  
@@ -88,8 +88,11 @@ var app = Vue.createApp({
                 case "reset_experiment":
                     app.takeResetExperiment(messageData);
                     break;
-                case "next_period":
-                    app.takeNextPeriod(messageData);
+                case "next_phase":
+                    app.takeNextPhase(messageData);
+                    break; 
+                case "update_next_phase":
+                    app.takeUpdateNextPhase(messageData);
                     break; 
                 case "update_move_goods":
                     app.takeUpdateGoods(messageData);
@@ -195,25 +198,30 @@ var app = Vue.createApp({
                 setTimeout(app.setupPixiPlayers, 250);
             
             app.updateChatDisplay(true);
+            app.updatePhaseButtonText();
         },
 
        
         /**update text of move on button based on current state
          */
-        updateMoveOnButtonText(){
-            if(app.$data.session.finished)
+        updatePhaseButtonText(){
+            if(this.session.finished)
             {
-                app.$data.move_to_next_period_text = '** Experiment complete **';
+                this.move_to_next_phase_text = '** Experiment complete **';
             }
-            else if(app.$data.session.started)
+            else if(this.session.current_experiment_phase == "Run")
             {
-                if(app.$data.session.current_period == app.$data.session.parameter_set.number_of_periods)
+                this.move_to_next_phase_text = 'Running ...';
+            }
+            else if(this.session.started)
+            {
+                if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
                 {
-                    app.$data.move_to_next_period_text = 'Complete experiment <i class="fas fa-flag-checkered"></i>';
+                    this.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
                 }
                 else
                 {
-                    app.$data.move_to_next_period_text = 'Move to next period <i class="fas fa-fast-forward"></i>';
+                    this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
                 }
             }
         },

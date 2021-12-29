@@ -20,6 +20,8 @@ from main.forms import SessionPlayerMoveThreeForm
 
 from main.models import Session
 
+from main.globals import ExperimentPhase
+
 class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
@@ -136,20 +138,28 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "sender_channel_name": self.channel_name},
                 )
 
-    async def next_period(self, event):
+    async def next_phase(self, event):
         '''
-        force advance to next period in experiment
+        advance to next phase in experiment
         '''
         #update subject count
         message_data = {}
-        message_data["data"] = await sync_to_async(take_next_period)(self.session_id, event["message_text"])
+        message_data["status"] = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        if message_data["status"]["value"] == "fail":
+            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        else:
+            #send message to client pages
+            await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {"type": "update_next_phase",
+                    "sender_channel_name": self.channel_name},
+                )
 
     async def start_timer(self, event):
         '''
@@ -471,6 +481,20 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def update_next_phase(self, event):
+        '''
+        update session phase
+        '''
+
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
 #local async function
 
 #local sync functions    
@@ -577,29 +601,33 @@ def take_reset_connections(session_id, data):
     
     return {"value" : value, "started" : session.started}
 
-def take_next_period(session_id, data):
+def take_next_phase(session_id, data):
     '''
-    advance to next period in the experiment
+    advance to next phase in the experiment
     '''   
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Advance to Next Period: {data}")
+    logger.info(f"Advance to Next Phase: {data}")
 
     #session_id = data["sessionID"]
     session = Session.objects.get(id=session_id)
 
-    if session.current_period == session.parameter_set.get_number_of_periods():
-        session.finished = True
-    else:
-        session.current_period += 1
+    if session.current_experiment_phase == ExperimentPhase.SELECTION:
+        if session.parameter_set.show_instructions:
+            session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS
+        else:
+            session.current_experiment_phase == ExperimentPhase.RUN
+
+    elif session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
+        session.current_experiment_phase == ExperimentPhase.RUN
 
     session.save()
 
     status = "success"
     
-    return {"status" : status,
-            "current_period" : session.current_period,
-            "finished" : session.finished}
+    return {"value" : status,
+            "current_experiment_phase" : session.current_experiment_phase,
+            }
 
 def take_start_timer(session_id, data):
     '''

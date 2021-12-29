@@ -69,9 +69,9 @@ takeResetConnections(messageData){
     app.takeGetSession(messageData);
 },
 
-/**advance to next period
+/**advance to next phase
 */
-next_period(){
+next_experiment_phase(){
     if (app.$data.session.current_period == app.$data.session.parameter_set.number_of_periods)
     {
         if (!confirm('Complete experiment?')) {
@@ -86,24 +86,30 @@ next_period(){
     }
 
     app.$data.working = true;
-    app.sendMessage("next_period", {});
+    app.sendMessage("next_phase", {});
 },
 
 /** take next period response
  * @param messageData {json}
 */
-takeNextPeriod(messageData){
+takeNextPhase(messageData){
     
-    app.$data.session.current_period = messageData.data.current_period;
-    app.$data.session.finished = messageData.data.finished;
+    this.session.current_experiment_phase = messageData.data.current_experiment_phase;
 
-    app.updateMoveOnButtonText();
+    app.updatePhaseButtonText();
 
-    if(app.$data.session.finished)
-    {
-        app.$data.session.current_period = 1;
-    }
 },
+
+/** take next period response
+ * @param messageData {json}
+*/
+takeUpdateNextPhase(messageData){
+    
+    app.$data.session.current_experiment_phase = messageData.data.current_experiment_phase;
+
+    app.updatePhaseButtonText();
+},
+
 
 /**
  * start the period timer
