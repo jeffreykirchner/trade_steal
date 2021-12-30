@@ -130,19 +130,22 @@ var app = Vue.createApp({
                 case "avatar":
                     app.takeAvatar(messageData);
                     break;
+                case "update_next_phase":
+                    app.takeUpdateNextPhase(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
             {
                 if(!app.$data.session.started)
                 {
-                    app.$data.show_parameters = true;
+                   this.show_parameters = true;
                 }
             }
 
-            app.$data.first_load_done = true;
+            this.first_load_done = true;
 
-            app.working = false;
+            this.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
         },
 
@@ -327,6 +330,31 @@ var app = Vue.createApp({
             app.calcWaste();
         },
 
+        /** take next period response
+         * @param messageData {json}
+        */
+        takeUpdateNextPhase(messageData){
+            app.destroyPixiPlayers();
+
+            this.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
+            this.session.session_players = messageData.status.session_players;
+            this.session_player = messageData.status.session_player;
+
+            setTimeout(app.setupPixiPlayers, 250);
+
+            app.updateChatDisplay();
+            app.calcWaste();
+
+            $('#avatarChoiceGridModal').modal('hide');
+        },
+
+        /** hide choice grid modal modal
+        */
+        hideChoiceGridModal(){
+            
+            
+        },
+
         //do nothing on when enter pressed for post
         onSubmit(){
             //do nothing
@@ -417,6 +445,7 @@ var app = Vue.createApp({
 
         $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
         $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
+        $('#avatarChoiceGridModal').on("hidden.bs.modal", this.hideChoiceGridModal);
         {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
 
     },

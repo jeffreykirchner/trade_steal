@@ -72,18 +72,10 @@ takeResetConnections(messageData){
 /**advance to next phase
 */
 next_experiment_phase(){
-    if (app.$data.session.current_period == app.$data.session.parameter_set.number_of_periods)
-    {
-        if (!confirm('Complete experiment?')) {
-            return;
-        }
-    }
-    else
-    {
-        if (!confirm('Advance to next period?')) {
-            return;
-        }
-    }
+   
+    if (!confirm('Continue to the next phase of the experiment?')) {
+        return;
+    }    
 
     app.$data.working = true;
     app.sendMessage("next_phase", {});
@@ -94,9 +86,8 @@ next_experiment_phase(){
 */
 takeNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.data.current_experiment_phase;
-
-    app.updatePhaseButtonText();
+    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    this.updatePhaseButtonText();
 
 },
 
@@ -105,9 +96,8 @@ takeNextPhase(messageData){
 */
 takeUpdateNextPhase(messageData){
     
-    app.$data.session.current_experiment_phase = messageData.data.current_experiment_phase;
-
-    app.updatePhaseButtonText();
+    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    this.updatePhaseButtonText();
 },
 
 

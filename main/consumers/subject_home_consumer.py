@@ -387,15 +387,17 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update session phase
         '''
 
+        result = await sync_to_async(take_update_groups)(self.session_id, self.session_player_id)
+
         message_data = {}
-        message_data["status"] = event["data"]
+        message_data["status"] = result
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-        
+
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''
@@ -884,7 +886,6 @@ def take_name(session_id, session_player_id, data):
     logger.info("Invalid session form")
     return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
 
-
 def take_avatar(session_id, session_player_id, data):
     '''
     take name and student id at end of game
@@ -917,4 +918,25 @@ def take_avatar(session_id, session_player_id, data):
             "result" : {"id" : session_player_id,
                         "avatar" : session_player.avatar.json(), 
                         }}                      
-     
+
+def take_update_next_phase(session_id, session_player_id):
+    '''
+    return information about next phase of experiment
+    '''
+
+    logger = logging.getLogger(__name__) 
+
+    try:
+        session = Session.objects.get(id=session_id)
+        session_player = SessionPlayer.objects.get(id=session_player_id)
+
+        group_list = session_player.get_current_group_list()
+
+        return {"value" : "success",
+                "session" : session_player.session.json_for_subject(session_player),
+                "session_player" : session_player.json(),
+                "session_players" : [p.json_for_subject(session_player) for p in group_list]}
+
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_next_phase: session not found, session {session_id}, session_player_id {session_player_id}")
+        return {"value" : "fail", "result" : {}, "message" : "Update next phase error"}
