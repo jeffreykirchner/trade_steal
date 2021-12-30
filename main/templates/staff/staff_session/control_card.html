@@ -17,7 +17,7 @@
                         v-on:click = "start_experiment()"
                         title="Start experiment"
                         v-bind:disabled="reconnecting || working || session.started">
-                    Start experiment <i class="far fa-play-circle"></i>
+                    Start session <i class="far fa-play-circle"></i>
                 </button>
             </div>
         </div>
@@ -36,7 +36,7 @@
         </div>
 
         <!-- start timer -->
-        <div class="row" v-show="session.started">
+        <div class="row" v-show="session.started  && session.current_experiment_phase=='Run'">
             <div class="col-md text-center">
                 <button type="button"                        
                         v-on:click = "startTimer()"

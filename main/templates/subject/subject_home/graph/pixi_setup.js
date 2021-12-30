@@ -372,6 +372,7 @@ setupSingleAvatar(index){
     let session_player = session_players[index];
 
     if(session_players[index].parameter_set_player.town.toString() != app.$data.current_town) return;
+    if(!session_players[index].avatar && !session_players[index].parameter_set_player.avatar) return;
 
     if(session_player.avatarContainer)
     {

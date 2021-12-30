@@ -72,7 +72,7 @@
                                                        (session.parameter_set.good_count==2) ? {'text-decoration': 'line-through'}:{}]">[[p.good_three.label]]</span>
                             </td>
                             <td v-on:click="showEditParametersetPlayer(index)" class="text-nowrap player_table_cell">
-                                [[p.avatar.label]]
+                                [[p.avatar ? p.avatar.label:'None']]
                             </td>
                             <td style="background-color:rgb(240, 240, 240);">
                                

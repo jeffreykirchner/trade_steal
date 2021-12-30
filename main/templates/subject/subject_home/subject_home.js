@@ -248,9 +248,12 @@ var app = Vue.createApp({
         */
         takeUpdateResetExperiment(messageData){
             app.takeGetSession(messageData);
-            app.$data.production_slider_one = 50;
-            app.$data.production_slider_two = 50;
-            app.$data.production_slider=0;
+
+            this.production_slider_one = 50;
+            this.production_slider_two = 50;
+            this.production_slider = 0;
+            this.avatar_choice_grid_selected_row = 0;
+            this.avatar_choice_grid_selected_col = 0;
 
             $('#endGameModal').modal('hide');
             this.closeMoveModal();
@@ -334,6 +337,8 @@ var app = Vue.createApp({
          * @param messageData {json}
         */
         takeUpdateNextPhase(messageData){
+            $('#avatarChoiceGridModal').modal('hide');
+
             app.destroyPixiPlayers();
 
             this.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
@@ -343,16 +348,13 @@ var app = Vue.createApp({
             setTimeout(app.setupPixiPlayers, 250);
 
             app.updateChatDisplay();
-            app.calcWaste();
-
-            $('#avatarChoiceGridModal').modal('hide');
+            app.calcWaste();            
         },
 
         /** hide choice grid modal modal
         */
         hideChoiceGridModal(){
-            
-            
+    
         },
 
         //do nothing on when enter pressed for post

@@ -54,7 +54,7 @@ class ParameterSetPlayerForm(forms.ModelForm):
                                         widget=forms.Select(attrs={"v-model":"current_parameter_set_player.good_three.id"}))
     
     avatar = forms.ModelChoiceField(label='Avatar',
-                                    empty_label=None,
+                                    required=False,
                                     queryset=Avatar.objects.all(),
                                     widget=forms.Select(attrs={"v-model":"current_parameter_set_player.avatar.id"}))
 

@@ -25,7 +25,7 @@ class ParameterSetPlayer(models.Model):
 
     parameter_set_type = models.ForeignKey(ParameterSetType, on_delete=models.CASCADE, related_name="parameter_set_players_d")
 
-    avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE, related_name="parameter_set_players_e") 
+    avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE, related_name="parameter_set_players_e", null=True, blank=True) 
 
     id_label = models.CharField(verbose_name='ID Label', max_length = 2, default="1")      #id label shown on screen to subjects
     location = models.IntegerField(verbose_name='Location number (1-24)', default=1)       #location number of 1 to 8
