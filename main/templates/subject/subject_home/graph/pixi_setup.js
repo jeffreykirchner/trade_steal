@@ -403,11 +403,23 @@ setupSingleAvatar(index){
 
     sprite.x = 0;
     sprite.y = 0;   
-    container.addChild(sprite)
+    container.addChild(sprite);
+
+    let scale = (app.$data.canvas_width/11) / container.width;
+
+    //house label texture
+    let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
+        fontWeight:'bold',
+        fontSize: 75 * (scale/.19),
+        align : 'center'});
+
+    label.anchor.set(0.5);
+    label.x = sprite.width - 25;
+    label.y = 35;
+
+    container.addChild(label);
 
     container.pivot.set(container.width/2, container.height/2);
-
-    scale = (app.$data.canvas_width/11) / container.width;
 
     container.scale.set(scale, scale);
 

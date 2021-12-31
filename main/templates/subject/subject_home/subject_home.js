@@ -65,6 +65,7 @@ var app = Vue.createApp({
                     potential_earnings : 0,
 
                     end_game_modal_visible : false,
+                    avatar_choice_modal_visible : false,
 
                     avatar_choice_grid_selected_row : 0,
                     avatar_choice_grid_selected_col : 0,
@@ -220,7 +221,8 @@ var app = Vue.createApp({
             //if no avatar, show choice grid
             if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
                 this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
-                this.session.current_experiment_phase == "Selection")
+                this.session.current_experiment_phase == "Selection" &&
+                !this.avatar_choice_modal_visible)
 
             {
                 var myModal = new bootstrap.Modal(document.getElementById('avatarChoiceGridModal'), {
@@ -228,6 +230,8 @@ var app = Vue.createApp({
                     })
                 
                 myModal.toggle();
+
+                this.avatar_choice_modal_visible=true;
 
                 if(this.session_player.avatar != null)
                 {
@@ -354,7 +358,7 @@ var app = Vue.createApp({
         /** hide choice grid modal modal
         */
         hideChoiceGridModal(){
-    
+            this.avatar_choice_modal_visible=false;
         },
 
         //do nothing on when enter pressed for post
