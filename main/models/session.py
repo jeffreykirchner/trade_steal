@@ -128,6 +128,7 @@ class Session(models.Model):
         self.finished = False
         self.current_period = 1
         self.current_period_phase = PeriodPhase.PRODUCTION
+        self.current_experiment_phase = ExperimentPhase.RUN
         self.time_remaining = self.parameter_set.period_length_production
         self.timer_running = False
 

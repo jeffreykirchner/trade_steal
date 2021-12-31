@@ -205,15 +205,19 @@ var app = Vue.createApp({
         /**update text of move on button based on current state
          */
         updatePhaseButtonText(){
-            if(this.session.finished)
+            if(this.session.finished && this.session.current_experiment_phase == "Done")
             {
                 this.move_to_next_phase_text = '** Experiment complete **';
+            }
+            else if(this.session.finished && this.session.current_experiment_phase != "Done")
+            {
+                this.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
             }
             else if(this.session.current_experiment_phase == "Run")
             {
                 this.move_to_next_phase_text = 'Running ...';
             }
-            else if(this.session.started)
+            else if(this.session.started && !this.session.finished)
             {
                 if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
                 {
@@ -293,6 +297,8 @@ var app = Vue.createApp({
 
             app.takeUpdateGoods({status : {result : result.session_players}});
             app.takeUpdateEarnings(messageData);
+
+            app.updatePhaseButtonText();
         },
 
         /**

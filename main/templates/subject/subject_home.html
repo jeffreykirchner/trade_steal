@@ -75,7 +75,7 @@
 {%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid_modal.html"%}
 
 <!-- cards -->
-<div class="row justify-content-lg-center mt-4" v-cloak>
+<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
     <div class="col-md-9">
         {%include "subject/subject_home/graph_card.html"%}                
     </div>
@@ -98,5 +98,14 @@
     </div>
 </div>
 
+<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
+    <div class="col-12 fs-4 fw-bold text-center">
+        <br>
+        <br>
+        <br>
+        <br>
+        The session is complete, thank you for your participation!              
+    </div>    
+</div>
 
 {% endblock %}

@@ -622,6 +622,9 @@ def take_next_phase(session_id, data):
     elif session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
         session.current_experiment_phase = ExperimentPhase.RUN
 
+    elif session.current_experiment_phase == ExperimentPhase.RUN:
+        session.current_experiment_phase = ExperimentPhase.DONE
+
     session.save()
 
     status = "success"

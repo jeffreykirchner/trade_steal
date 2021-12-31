@@ -27,6 +27,15 @@
         </div>  
         <div class="row">
             <div class="col text-end pe-1">
+                Period Phase:
+            </div>
+            <div class="col text-start ps-1">
+                <span v-if="session.current_period_phase=='Production'">Production</span>
+                <span v-else>Move</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-end pe-1">
                 Time Remaining:
             </div>
             <div class="col text-start ps-1">
@@ -36,15 +45,6 @@
                 <span v-else>
                      [[session.time_remaining]]
                 </span>               
-            </div>
-        </div>
-        <div class="row">
-            <div class="col text-end pe-1">
-                Period Phase:
-            </div>
-            <div class="col text-start ps-1">
-                <span v-if="session.current_period_phase=='Production'">Production</span>
-                <span v-else>Move</span>
             </div>
         </div>
     </div>                    

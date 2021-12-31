@@ -36,7 +36,7 @@
         </div>
 
         <!-- start timer -->
-        <div class="row" v-show="session.started  && session.current_experiment_phase=='Run'">
+        <div class="row" v-show="session.started  && session.current_experiment_phase=='Run' && !session.finished">
             <div class="col-md text-center">
                 <button type="button"                        
                         v-on:click = "startTimer()"
@@ -50,13 +50,13 @@
         </div>
 
         <!-- next experiment phase -->
-        <div class="row mt-2" v-show="session.started && session.current_experiment_phase!='Run'">
+        <div class="row mt-2" v-show="(session.started && session.current_experiment_phase!='Run') || (session.finished)">
             <div class="col-md text-center">
                 <button type="button"
                         class="btn btn-outline-primary"
                         v-on:click = "next_experiment_phase()"
                         title="Move to next phase"
-                        v-bind:disabled="reconnecting || working">
+                        v-bind:disabled="reconnecting || working || session.current_experiment_phase=='Done'">
                     <span v-html="move_to_next_phase_text"></span>
                 </button>
             </div>
