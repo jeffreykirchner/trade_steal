@@ -22,9 +22,12 @@ import main.routing
 application = ProtocolTypeRouter({
   "http": django_asgi_app,
 
-  "websocket": AllowedHostsOriginValidator(
-        URLRouter(
-            main.routing.websocket_urlpatterns
-        )
-    ),
+  "websocket":
+        AllowedHostsOriginValidator(
+            AuthMiddlewareStack(
+                URLRouter(
+                    main.routing.websocket_urlpatterns
+                )
+            ),
+        ),
 })
