@@ -61,10 +61,13 @@
 
     .image_choice_grid{
         cursor: pointer;
-    },
+    }
 
-    {{sprite_sheet_css|safe}}
-   
+    .instructions{
+        height: 300px;
+        overflow-y:scroll;
+    }
+       
 </style>
 
 {%endblock head%}
@@ -74,7 +77,14 @@
 <!-- modals -->
 {%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid_modal.html"%}
 
-<!-- cards -->
+<!-- instructions -->
+<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
+    <div class="col-md">
+        {%include "subject/subject_home/instructions_card.html"%}
+    </div>
+</div>
+
+<!-- experiment -->
 <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
     <div class="col-md-9">
         {%include "subject/subject_home/graph_card.html"%}                

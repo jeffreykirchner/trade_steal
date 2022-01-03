@@ -5,6 +5,7 @@ from django.contrib import admin
 
 from main.forms import ParametersForm
 from main.forms import SessionFormAdmin
+from main.forms import InstructionFormAdmin
 
 from main.models import Parameters
 from main.models import ParameterSet
@@ -19,6 +20,7 @@ from main.models import SessionPlayerMove
 from main.models import SessionPlayerPeriod
 
 from main.models.avatar import Avatar
+from main.models.instruction import Instruction
 
 class ParametersAdmin(admin.ModelAdmin):
     '''
@@ -60,3 +62,8 @@ admin.site.register(SessionPlayerMove)
 admin.site.register(SessionPlayerPeriod)
 
 admin.site.register(Avatar)
+
+class InstructionAdmin(admin.ModelAdmin):
+    form = InstructionFormAdmin
+
+admin.site.register(Instruction, InstructionAdmin)

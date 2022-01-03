@@ -4,6 +4,7 @@ build models
 from .parameters import Parameters
 
 from .avatar import Avatar
+from .instruction import Instruction
 
 from .parameter_set import ParameterSet
 from .parameter_set_type import ParameterSetType

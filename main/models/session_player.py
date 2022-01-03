@@ -49,6 +49,10 @@ class SessionPlayer(models.Model):
     student_id = models.CharField(verbose_name='Student ID', max_length = 100, default="")              #subject's student ID number
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)      #earnings in cents
 
+    current_instruction = models.IntegerField(verbose_name='Current Instruction', default=0)                     #current instruction page subject is on
+    current_instruction_complete = models.IntegerField(verbose_name='Current Instruction Complete', default=0)   #furthest complete page subject has done
+    instructions_finished = models.BooleanField(verbose_name='Instructions Finished', default=False)             #true once subject has completed instructions
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -393,6 +397,11 @@ class SessionPlayer(models.Model):
             "notices" : [n.json() for n in self.session_player_notices_b.all()] if get_chat else [],
 
             "avatar" : self.avatar.json() if self.avatar else None,
+
+            "current_instruction" : self.current_instruction,
+            "current_instruction_complete" : self.current_instruction_complete,
+            "instructions_finished" : self.instructions_finished,
+
         }
     
     def json_for_subject(self, session_player):

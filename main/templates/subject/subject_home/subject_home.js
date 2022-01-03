@@ -70,6 +70,8 @@ var app = Vue.createApp({
                     avatar_choice_grid_selected_row : 0,
                     avatar_choice_grid_selected_col : 0,
 
+                    instruction_pages : {{instruction_pages|safe}},
+
                 }},
     methods: {
 
@@ -387,6 +389,7 @@ var app = Vue.createApp({
         {%include "subject/subject_home/summary/summary_card.js"%}
         {%include "subject/subject_home/test_mode/test_mode.js"%}
         {%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid.js"%}
+        {%include "subject/subject_home/instructions/instructions_card.js"%}
     
         /** clear form error messages
         */
