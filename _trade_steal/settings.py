@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'main',
     'django.contrib.admin',
     'channels',
+    'tinymce',
 ]
 
 MIDDLEWARE = [

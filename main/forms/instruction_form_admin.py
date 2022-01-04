@@ -3,6 +3,7 @@ instruction form admin screen
 '''
 from django import forms
 from main.models import Instruction
+from tinymce.widgets import TinyMCE
 
 class InstructionFormAdmin(forms.ModelForm):
     '''
@@ -16,9 +17,9 @@ class InstructionFormAdmin(forms.ModelForm):
     label = forms.CharField(label='Page Label',
                             widget=forms.TextInput(attrs={"size":"50"}))
 
-    text = forms.CharField(label='Page Text',
-                           widget=forms.Textarea(attrs={"rows":20, "cols":200}))
+    text_html = forms.CharField(label='Page HTML Text',
+                                widget=TinyMCE(attrs={"rows":20, "cols":200}))
 
     class Meta:
         model=Instruction
-        fields = ('page_number', 'label', 'text')
+        fields = ('page_number', 'label', 'text_html')

@@ -168,12 +168,18 @@ class SessionPlayer(models.Model):
 
         self.avatar = None
 
+        self.current_instruction = 1
+        self.current_instruction_complete = 1
+        self.instructions_finished = False
+
         self.save()
     
     def start(self):
         '''
         start experiment
         '''
+
+        self.reset()
 
         #session player periods
         session_player_periods = []
