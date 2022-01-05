@@ -136,6 +136,13 @@ var app = Vue.createApp({
                 case "update_next_phase":
                     app.takeUpdateNextPhase(messageData);
                     break;
+                case "next_instruction":
+                    app.takeNextInstruction(messageData);
+                    break;
+                case "finish_instructions":
+                    app.takeFinishInstructions(messageData);
+                    break;
+                
             }
 
             if(!app.$data.first_load_done)

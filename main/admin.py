@@ -2,10 +2,12 @@
 admin interface
 '''
 from django.contrib import admin
+from django.contrib import messages
 
 from main.forms import ParametersForm
 from main.forms import SessionFormAdmin
 from main.forms import InstructionFormAdmin
+from main.forms import InstructionSetFormAdmin
 
 from main.models import Parameters
 from main.models import ParameterSet
@@ -20,6 +22,8 @@ from main.models import SessionPlayerMove
 from main.models import SessionPlayerPeriod
 
 from main.models.avatar import Avatar
+
+from main.models.instruction_set import InstructionSet
 from main.models.instruction import Instruction
 
 class ParametersAdmin(admin.ModelAdmin):
@@ -63,7 +67,40 @@ admin.site.register(SessionPlayerPeriod)
 
 admin.site.register(Avatar)
 
-class InstructionAdmin(admin.ModelAdmin):
-    form = InstructionFormAdmin
+#instruction set page
+class InstructionPageInline(admin.TabularInline):
+      '''
+      instruction page admin screen
+      '''
 
-admin.site.register(Instruction, InstructionAdmin)
+      form = InstructionFormAdmin
+      model = Instruction
+
+class InstructionSetAdmin(admin.ModelAdmin):
+    form = InstructionSetFormAdmin
+
+    def duplicate_set(self, request, queryset):
+            '''
+            duplicate instruction set
+            '''
+            if queryset.count() != 1:
+                  self.message_user(request,"Select only one instruction set to copy.", messages.ERROR)
+                  return
+
+            base_instruction_set = queryset.first()
+
+            instruction_set = InstructionSet()
+            instruction_set.save()
+            instruction_set.copy_pages(base_instruction_set.instructions)
+
+            self.message_user(request,f'{base_instruction_set} has been duplicated', messages.SUCCESS)
+
+    duplicate_set.short_description = "Duplicate Instruction Set"
+
+    inlines = [
+        InstructionPageInline,
+      ]
+    
+    actions = [duplicate_set]
+
+admin.site.register(InstructionSet, InstructionSetAdmin)

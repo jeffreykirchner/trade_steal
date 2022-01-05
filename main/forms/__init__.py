@@ -18,6 +18,7 @@ from .session_player_move_two_form import SessionPlayerMoveTwoForm
 from .session_player_move_three_form import SessionPlayerMoveThreeForm
 
 from .session_form_admin import SessionFormAdmin
+from .instruction_set_form_admin import InstructionSetFormAdmin
 from .instruction_form_admin import InstructionFormAdmin
 
 from .end_game_form import EndGameForm

@@ -364,6 +364,24 @@ class SessionPlayer(models.Model):
         self.save()
         session_player_period.save()
 
+    def get_instruction_set(self):
+        '''
+        return a proccessed list of instructions to the subject
+        '''
+
+        instructions = [i.json() for i in self.parameter_set_player.parameter_set.instruction_set.instructions.all()]
+ 
+        for i in instructions:
+            i["text_html"] = i["text_html"].replace("#player_number#", self.parameter_set_player.id_label)
+            i["text_html"] = i["text_html"].replace("#n-1#", str(self.parameter_set_player.parameter_set.get_town_count(self.parameter_set_player.town)-1))
+            i["text_html"] = i["text_html"].replace("#good_one#", self.parameter_set_player.good_one.get_html())
+            i["text_html"] = i["text_html"].replace("#good_two#", self.parameter_set_player.good_two.get_html())
+            i["text_html"] = i["text_html"].replace("#good_three#", self.parameter_set_player.good_three.get_html())
+            i["text_html"] = i["text_html"].replace("#production_length#", str(self.parameter_set_player.parameter_set.period_length_production))
+            i["text_html"] = i["text_html"].replace("#move_length#", str(self.parameter_set_player.parameter_set.period_length_trade))
+
+        return instructions
+
     def json(self, get_chat=True):
         '''
         json object of model

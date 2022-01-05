@@ -139,6 +139,12 @@ var app = Vue.createApp({
                 case "update_avatar":
                     app.takeUpdateAvatar(messageData);
                     break;
+                case "update_next_instruction":
+                    app.takeNextInstruction(messageData);
+                    break;
+                case "update_finish_instructions":
+                    app.takeFinishedInstructions(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)

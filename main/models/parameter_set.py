@@ -7,12 +7,10 @@ from decimal import Decimal
 
 from django.db import models
 from django.db.utils import IntegrityError
-from django.db.models.signals import post_init
-from django.dispatch import receiver
 
 from main import globals
 
-from main.models import Avatar
+from main.models import InstructionSet
 
 import main
 
@@ -21,6 +19,8 @@ class ParameterSet(models.Model):
     '''
     parameter set
     '''    
+    instruction_set = models.ForeignKey(InstructionSet, on_delete=models.CASCADE, related_name="parameter_sets")
+
     period_count = models.IntegerField(verbose_name='Number of periods', default=20)                          #number of periods in the experiment
     period_length_production = models.IntegerField(verbose_name='Period Length, Production', default=10)      #production phase length in seconds
     period_length_trade = models.IntegerField(verbose_name='Period Length, Trade', default=90)                #trade phase length in seconds
@@ -263,6 +263,13 @@ class ParameterSet(models.Model):
                                                             .values('parameter_set_player')
        # return [p.parameter_set_player for p in parameter_set_player_group]
 
+    def get_town_count(self, town_number):
+        '''
+        return number of people in a town
+        '''
+
+        return self.parameter_set_players.filter(town=town_number).count()
+
     def json(self):
         '''
         return json object of model
@@ -280,6 +287,7 @@ class ParameterSet(models.Model):
             "allow_stealing" : "True" if self.allow_stealing else "False",
             "private_chat" : "True" if self.private_chat else "False",
             "show_instructions" : "True" if self.show_instructions else "False",
+            "instruction_set" : self.instruction_set.json_min(),
 
             "show_avatars" : "True" if self.show_avatars else "False",
             "avatar_assignment_mode" : self.avatar_assignment_mode,

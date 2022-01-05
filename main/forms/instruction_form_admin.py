@@ -14,12 +14,9 @@ class InstructionFormAdmin(forms.ModelForm):
                                      min_value=1,
                                      widget=forms.NumberInput(attrs={"min":"1"}))
     
-    label = forms.CharField(label='Page Label',
-                            widget=forms.TextInput(attrs={"size":"50"}))
-
     text_html = forms.CharField(label='Page HTML Text',
-                                widget=TinyMCE(attrs={"rows":20, "cols":200}))
+                                widget=TinyMCE(attrs={"rows":20, "cols":200, "plugins": "link image code"}))
 
     class Meta:
         model=Instruction
-        fields = ('page_number', 'label', 'text_html')
+        fields = ('page_number', 'text_html')

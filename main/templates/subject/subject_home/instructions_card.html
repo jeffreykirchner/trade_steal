@@ -3,15 +3,39 @@
         <span class="align-middle">Instructions</span>       
             
         <span class="float-end">
-             
+            Page [[session_player.current_instruction]] of [[instruction_pages.length]]
         </span>
         
     </div>
     <div class="card-body"> 
         <div class="row instructions">
-            <div class="col-md" v-html = "getInstructionPage(session_player.current_instruction)">
+            <div class="col-md border" v-html = "getInstructionPage(session_player.current_instruction)">
 
             </div>
-        </div>               
+        </div>    
+
+        <div class="row mt-2">
+            <div class="col-md">
+                                <span class="float-end">
+                    <button class="btn btn-outline-primary  me-2"
+                            type="button" 
+                            title="Previous Instruction Page"
+                            v-bind:disabled="reconnecting || working || session_player.current_instruction == 1"
+                            v-on:click="sendNextInstruction(-1)"><i class="far fa-arrow-alt-circle-left"></i> Back</button>
+            
+                    <button class="btn btn-outline-primary"
+                            type="button" 
+                            title="Next Instruction Page"
+                            v-bind:disabled="reconnecting || working || session_player.current_instruction == instruction_pages.length"
+                            v-on:click="sendNextInstruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
+                    
+                    <button class="btn btn-outline-success ms-2"
+                            type="button" 
+                            title="Finished with Instructions"
+                            v-bind:disabled="reconnecting || working || session_player.current_instruction_complete < instruction_pages.length"
+                            v-on:click="sendFinishInstructions()">Start <i class="far fa-check-circle"></i></button>
+                </span>
+            </div>
+        </div>        
     </div>                    
 </div> 

@@ -56,8 +56,6 @@ class SubjectHomeView(View):
 
         # sprite_sheet_css = generate_css_sprite_sheet('main/static/avatars.json', static('avatars.png'))
 
-        instruction_pages = [i.json() for i in Instruction.objects.all()]
-
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
@@ -72,7 +70,7 @@ class SubjectHomeView(View):
                                "session_player_move_three_form_ids" : session_player_move_three_form_ids,
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'session-{session.id}',
-                               "instruction_pages" : json.dumps(instruction_pages, cls=DjangoJSONEncoder),
+                               "instruction_pages" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),
                                "session_player" : session_player,
                                "session_player_json" : json.dumps(session_player.json(), cls=DjangoJSONEncoder),
                                "session" : session,

@@ -62,12 +62,15 @@
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
                                 Second Good Field
-                            </th>
+                            </th>                            
                             <th scope="col" class = "text-center m-1 p-1">
                                 Shareable Login Link
                             </th> 
                             <th scope="col" class = "text-center m-1 p-1">
                                 Connected
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1" v-show="session.current_experiment_phase == 'Instructions'">
+                                Instructions
                             </th>                            
                         </tr>
                     </thead>
@@ -128,6 +131,9 @@
                                 <span v-else style="color: crimson;">
                                     <i class="fas fa-times"></i>
                                 </span>
+                            </td>
+                            <td class="player_table_cell text-nowrap">
+                                [[p.instructions_finished ? "Finished" : "Page " + p.current_instruction.toString()]]
                             </td>                           
                         </tr>
                     </tbody>

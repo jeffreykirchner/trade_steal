@@ -8,6 +8,8 @@ from main.models import ParameterSet
 
 from main.globals import AvatarModes
 
+import  main
+
 class ParameterSetForm(forms.ModelForm):
     '''
     Parameterset edit form
@@ -84,6 +86,11 @@ class ParameterSetForm(forms.ModelForm):
     show_instructions = forms.ChoiceField(label='Show Instructions',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.show_instructions",}))
+    
+    instruction_set = forms.ModelChoiceField(label='Instruction Set',
+                                            empty_label=None,
+                                            queryset=main.models.InstructionSet.objects.all(),
+                                            widget=forms.Select(attrs={"v-model":"session.parameter_set.instruction_set.id"}))
 
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
@@ -94,4 +101,4 @@ class ParameterSetForm(forms.ModelForm):
         fields =['town_count','good_count', 'period_count', 'period_length_production' ,
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
                  'private_chat', 'show_avatars', 'avatar_assignment_mode', 'avatar_grid_row_count', 
-                 'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'test_mode']
+                 'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'instruction_set', 'test_mode']

@@ -8,12 +8,15 @@ from django.db import models
 
 from tinymce.models import HTMLField
 
+from main.models import InstructionSet
+
 class Instruction(models.Model):
     '''
     instruction model
     '''
 
-    label = models.CharField(max_length = 100, default="Page Name", verbose_name="Label")                 #label text
+    instruction_set = models.ForeignKey(InstructionSet, on_delete=models.CASCADE, related_name="instructions")
+
     text_html = HTMLField(default="Text here", verbose_name="Page HTML Text")
     page_number = models.IntegerField(verbose_name='Page Number', default=1)
     
@@ -21,7 +24,7 @@ class Instruction(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.label}"
+        return f"{self.page_number}"
 
     class Meta:
         
@@ -39,7 +42,6 @@ class Instruction(models.Model):
             "id" : self.id,         
 
             "page_number" : self.page_number,
-            "label" : self.label,
             "text_html" : self.text_html,
         }
         

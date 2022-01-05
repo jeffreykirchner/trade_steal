@@ -60,7 +60,7 @@ takeUpdateName(messageData){
     }
  },
 
- /** take name and student id
+/** take name and student id
 * @param messageData {json} session day in json format
 */
 takeUpdateAvatar(messageData){
@@ -74,7 +74,45 @@ takeUpdateAvatar(messageData){
         if(session_player)
         {
             session_player.avatar = result.avatar;
-            this.setupSingleAvatar(this.findSessionPlayerIndex(result.id))
+            this.setupSingleAvatar(this.findSessionPlayerIndex(result.id));
+        }       
+    }
+ },
+
+/** take name and student id
+* @param messageData {json} session day in json format
+*/
+takeNextInstruction(messageData){
+           
+    if(messageData.status.value == "success")
+    {
+        let result = messageData.status.result;
+
+        session_player = this.findSessionPlayer(result.id);
+
+        if(session_player)
+        {
+            session_player.current_instruction = result.current_instruction;
+            session_player.current_instruction_complete = result.current_instruction_complete;
+        }       
+    }
+ },
+
+ /** take name and student id
+* @param messageData {json} session day in json format
+*/
+takeFinishedInstructions(messageData){
+           
+    if(messageData.status.value == "success")
+    {
+        let result = messageData.status.result;
+
+        session_player = this.findSessionPlayer(result.id);
+
+        if(session_player)
+        {
+            session_player.instructions_finished = result.instructions_finished;
+            session_player.current_instruction_complete = result.current_instruction_complete;
         }       
     }
  },
