@@ -72,9 +72,10 @@ class InstructionPageInline(admin.TabularInline):
       '''
       instruction page admin screen
       '''
-
+      extra = 0  
       form = InstructionFormAdmin
       model = Instruction
+      can_delete = True
 
 class InstructionSetAdmin(admin.ModelAdmin):
     form = InstructionSetFormAdmin

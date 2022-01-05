@@ -10,7 +10,7 @@ class InstructionSetFormAdmin(forms.ModelForm):
     instruction set form admin screen
     '''
 
-    label = forms.CharField(label='Avatar Grid Text',
+    label = forms.CharField(label='Instruction Set Name',
                             widget=forms.TextInput(attrs={"width":"300px"}))
 
     class Meta:
