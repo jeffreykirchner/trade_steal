@@ -132,7 +132,7 @@
                                     <i class="fas fa-times"></i>
                                 </span>
                             </td>
-                            <td class="player_table_cell text-nowrap">
+                            <td class="player_table_cell text-nowrap" v-show="session.current_experiment_phase == 'Instructions'">
                                 [[p.instructions_finished ? "Finished" : "Page " + p.current_instruction.toString()]]
                             </td>                           
                         </tr>

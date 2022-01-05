@@ -16,6 +16,8 @@ from django.db.models import Q
 
 from main.consumers import SocketConsumerMixin
 
+import main
+
 from main.models import Session
 from main.models import parameter_set
 from main.models.parameter_set import ParameterSet
@@ -133,7 +135,7 @@ def create_new_session(auth_user):
     
     session = Session()
 
-    parameter_set = ParameterSet()
+    parameter_set = ParameterSet(instruction_set=main.models.InstructionSet.objects.first())
     parameter_set.save()
     parameter_set.setup()
 
