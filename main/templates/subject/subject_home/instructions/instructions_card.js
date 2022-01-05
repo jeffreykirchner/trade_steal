@@ -37,6 +37,9 @@ takeNextInstruction(messageData){
         
         this.session_player.current_instruction = result.current_instruction;
         this.session_player.current_instruction_complete = result.current_instruction_complete;
+
+        this.processInstructionPage();
+        this.instructionDisplayScroll();
     } 
     else
     {
@@ -60,5 +63,34 @@ sendFinishInstructions(){
  * finish instructions
  */
 takeFinishInstructions(messageData){
+    if(messageData.status.value == "success")
+    {
+        result = messageData.status.result;       
+        
+        this.session_player.instructions_finished = result.instructions_finished;
+        this.session_player.current_instruction_complete = result.current_instruction_complete;
+    } 
+    else
+    {
+        
+    }
+},
 
+/**
+ * process instruction page
+ */
+processInstructionPage(){
+    this.session_player.current_instruction_complete = this.session_player.current_instruction;
+},
+
+/**
+ * scroll instruction into view
+ */
+instructionDisplayScroll(){
+    
+    document.getElementById("instructions_frame").scrollIntoView();
+    
+    // setTimeout(() => {
+    //     window.scrollBy(0, -100);
+    //     }, 200);
 },

@@ -1,4 +1,4 @@
-<div class="card" v-show="first_load_done">                  
+<div class="card" v-show="first_load_done" id="instructions_card">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">Instructions</span>       
             
@@ -9,31 +9,47 @@
     </div>
     <div class="card-body"> 
         <div class="row instructions">
-            <div class="col-md border" v-html = "getInstructionPage(session_player.current_instruction)">
+            <div id="instructions_frame" class="col-md border" v-html = "getInstructionPage(session_player.current_instruction)">
 
             </div>
         </div>    
 
         <div class="row mt-2">
             <div class="col-md">
-                                <span class="float-end">
+                <button class="btn btn-outline-secondary ms-2"
+                        type="button" 
+                        title="Simulate Production"                        
+                        v-bind:disabled="reconnecting || working"
+                        v-on:click="">Simulate Production <i class="fas fa-sync-alt"></i></button>
+
+                <span class="float-end">
+
+                    <!-- previous button -->
                     <button class="btn btn-outline-primary  me-2"
                             type="button" 
                             title="Previous Instruction Page"
                             v-bind:disabled="reconnecting || working || session_player.current_instruction == 1"
                             v-on:click="sendNextInstruction(-1)"><i class="far fa-arrow-alt-circle-left"></i> Back</button>
             
+                    <!-- next button -->
                     <button class="btn btn-outline-primary"
                             type="button" 
                             title="Next Instruction Page"
                             v-bind:disabled="reconnecting || working || session_player.current_instruction == instruction_pages.length"
                             v-on:click="sendNextInstruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
                     
+                    <!-- start button -->
                     <button class="btn btn-outline-success ms-2"
                             type="button" 
                             title="Finished with Instructions"
-                            v-bind:disabled="reconnecting || working || session_player.current_instruction_complete < instruction_pages.length"
+                            v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instruction_pages.length"
+                            v-bind:disabled="reconnecting || working"
                             v-on:click="sendFinishInstructions()">Start <i class="far fa-check-circle"></i></button>
+
+                    <!-- waiting -->
+                    <span class="ms-2" v-show="session_player.instructions_finished" tabindex="-1">
+                        Waiting for others.
+                    </span>
                 </span>
             </div>
         </div>        

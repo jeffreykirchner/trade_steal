@@ -204,7 +204,13 @@ var app = Vue.createApp({
             else
             {
                 
-            }                       
+            }            
+            
+            if(this.session.current_experiment_phase == 'Instructions')
+            {
+                this.processInstructionPage();
+                this.instructionDisplayScroll();
+            }
 
             if(this.session.current_experiment_phase != 'Done')
             {
@@ -215,9 +221,12 @@ var app = Vue.createApp({
                     setTimeout(app.setupPixiPlayers, 250);
                 }
                 
-                app.updateChatDisplay();
+                if(this.session.current_experiment_phase != 'Instructions')
+                {
+                    app.updateChatDisplay();               
+                    setTimeout(app.updateNoticeDisplayScroll, 250);
+                }
                 app.calcWaste();
-                setTimeout(app.updateNoticeDisplayScroll, 250);
 
                 // if game is finished show modal
                 if(app.$data.session.finished)

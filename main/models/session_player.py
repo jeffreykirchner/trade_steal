@@ -373,12 +373,16 @@ class SessionPlayer(models.Model):
  
         for i in instructions:
             i["text_html"] = i["text_html"].replace("#player_number#", self.parameter_set_player.id_label)
-            i["text_html"] = i["text_html"].replace("#n-1#", str(self.parameter_set_player.parameter_set.get_town_count(self.parameter_set_player.town)-1))
+            i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.get_town_count(self.parameter_set_player.town)-1))
             i["text_html"] = i["text_html"].replace("#good_one#", self.parameter_set_player.good_one.get_html())
             i["text_html"] = i["text_html"].replace("#good_two#", self.parameter_set_player.good_two.get_html())
             i["text_html"] = i["text_html"].replace("#good_three#", self.parameter_set_player.good_three.get_html())
             i["text_html"] = i["text_html"].replace("#production_length#", str(self.parameter_set_player.parameter_set.period_length_production))
             i["text_html"] = i["text_html"].replace("#move_length#", str(self.parameter_set_player.parameter_set.period_length_trade))
+            i["text_html"] = i["text_html"].replace("#good_one_count#", str(self.parameter_set_player.parameter_set_type.good_one_amount))
+            i["text_html"] = i["text_html"].replace("#good_two_count#", str(self.parameter_set_player.parameter_set_type.good_two_amount))
+            i["text_html"] = i["text_html"].replace("#good_earnings#", str(max(self.parameter_set_player.parameter_set_type.good_one_amount, self.parameter_set_player.parameter_set_type.good_two_amount)))
+            i["text_html"] = i["text_html"].replace("#break_period#", str(self.parameter_set_player.parameter_set.break_period_frequency))
 
         return instructions
 
