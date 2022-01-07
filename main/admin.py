@@ -3,6 +3,7 @@ admin interface
 '''
 from django.contrib import admin
 from django.contrib import messages
+from django.conf import settings
 
 from main.forms import ParametersForm
 from main.forms import SessionFormAdmin
@@ -25,6 +26,8 @@ from main.models.avatar import Avatar
 
 from main.models.instruction_set import InstructionSet
 from main.models.instruction import Instruction
+
+admin.site.site_header = settings.ADMIN_SITE_HEADER
 
 class ParametersAdmin(admin.ModelAdmin):
     '''
