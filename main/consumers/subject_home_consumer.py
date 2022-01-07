@@ -6,6 +6,8 @@ from asgiref.sync import sync_to_async
 import logging
 import copy
 import json
+from copy import copy
+from copy import deepcopy
 
 from django.core.exceptions import  ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
@@ -350,7 +352,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update running, phase and time status
         '''
 
-        event_data = copy.deepcopy(event["data"])
+        event_data = deepcopy(event["data"])
 
         #if new period is starting, update local info
         if event_data["result"]["do_group_update"]:
@@ -1021,7 +1023,7 @@ def take_next_instruction(session_id, session_player_id, data):
         if direction == 1:
             #advance furthest instruction complete
             if session_player.current_instruction_complete < session_player.current_instruction:
-                session_player.current_instruction_complete = session_player.current_instruction
+                session_player.current_instruction_complete = copy(session_player.current_instruction)
 
             if session_player.current_instruction < session.parameter_set.instruction_set.instructions.count():
                 session_player.current_instruction += 1

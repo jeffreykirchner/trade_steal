@@ -245,6 +245,8 @@ setupSingleHouse(index){
  */
 createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
 
+    amount = Math.round(amount);
+
     let goodOneLabel = new PIXI.Text(amount,{fontFamily : 'Arial',
                                             fontWeight:'bold',
                                             fontSize: 100,

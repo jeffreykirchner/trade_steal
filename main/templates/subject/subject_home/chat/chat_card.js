@@ -1,14 +1,15 @@
 sendChat(){
 
-    if(app.$data.working) return;
-    if(app.$data.chat_text.trim() == "") return;
-    if(app.$data.chat_text.trim().length > 200) return;
+    if(this.working) return;
+    if(this.chat_text.trim() == "") return;
+    if(this.chat_text.trim().length > 200) return;
     
-    app.$data.working = true;
-    app.sendMessage("chat", {"recipients" : app.$data.chat_recipients,
-                             "text" : app.$data.chat_text.trim(),
+    this.working = true;
+    app.sendMessage("chat", {"recipients" : this.chat_recipients,
+                             "text" : this.chat_text.trim(),
                             });
-    app.$data.chat_text="";                   
+
+    this.chat_text="";                   
 },
 
 /** take result of moving goods
