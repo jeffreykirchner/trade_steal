@@ -47,7 +47,7 @@ class ParameterSetPlayer(models.Model):
             models.CheckConstraint(check=~Q(good_two=F('good_three')) , name='good_thee_unique')
         ]
 
-    def from_dict(self, source):
+    def from_dict(self, source, parameter_set_type_pk_map, parameter_set_goods_pk_map):
         '''
         copy source values into this period
         source : dict object of period
@@ -59,12 +59,16 @@ class ParameterSetPlayer(models.Model):
         self.location = source.get("location")
         self.town = source.get("town")
 
-        self.good_one.id = source.get("good_one")["id"]
-        self.good_two.id = source.get("good_two")["id"]
-        self.good_three.id = source.get("good_three")["id"]
+        self.good_one = main.models.ParameterSetGood.objects.get(id=parameter_set_goods_pk_map.get(source.get("good_one")["id"]))
+        self.good_two = main.models.ParameterSetGood.objects.get(id=parameter_set_goods_pk_map.get(source.get("good_two")["id"]))
+        self.good_three = main.models.ParameterSetGood.objects.get(id=parameter_set_goods_pk_map.get(source.get("good_three")["id"]))
 
         if source.get("avatar"):
-            self.avatar.id = source.get("avatar")["id"]
+            self.avatar = main.models.Avatar.objects.get(id=source.get("avatar")["id"])
+        else:
+            self.avatar = None
+
+        self.parameter_set_type = main.models.ParameterSetType.objects.get(id=parameter_set_type_pk_map[source.get("parameter_set_type")["id"]])
 
         self.save()
 

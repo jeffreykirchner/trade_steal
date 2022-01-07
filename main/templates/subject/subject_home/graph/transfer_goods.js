@@ -65,26 +65,26 @@ hideTransferModal:function(){
 
 sendMoveGoods(){
     
-    if(app.$data.working == true) return;
-    if(!app.$data.pixi_transfer_source) return;
-    if(!app.$data.pixi_transfer_target) return; 
+    if(this.working == true) return;
+    if(!this.pixi_transfer_source) return;
+    if(!this.pixi_transfer_target) return; 
 
-    if(app.$data.pixi_transfer_source.name.type == "house" &&
-       app.$data.session.parameter_set.good_count == 3)
+    if(this.pixi_transfer_source.name.type == "house" &&
+       this.session.parameter_set.good_count == 3)
     {
-        form_data = $("#moveThreeGoodsForm").serializeArray();
+        var form_data = $("#moveThreeGoodsForm").serializeArray();
     }
     else
     {
-        form_data = $("#moveTwoGoodsForm").serializeArray();
+        var form_data = $("#moveTwoGoodsForm").serializeArray();
     }
 
-    app.$data.working = true;
-    app.sendMessage("move_goods", {"sourceType" : app.$data.pixi_transfer_source.name.type.toString(),
-                                   "sourceID" : app.$data.pixi_transfer_source.name.user_id.toString(),
+    this.working = true;
+    app.sendMessage("move_goods", {"sourceType" : this.pixi_transfer_source.name.type.toString(),
+                                   "sourceID" :  this.pixi_transfer_source.name.user_id.toString(),
 
-                                   "targetType" : app.$data.pixi_transfer_target.name.type.toString(),
-                                   "targetID" : app.$data.pixi_transfer_target.name.user_id.toString(),
+                                   "targetType" : this.pixi_transfer_target.name.type.toString(),
+                                   "targetID" : this.pixi_transfer_target.name.user_id.toString(),
 
                                    "formData" : form_data,});
 },
@@ -111,13 +111,17 @@ takeMoveGoods(messageData){
  * close and reset the move modals
  */
 closeMoveModal(){
-    $('#moveTwoGoodsModal').modal('hide');
-    $('#moveThreeGoodsModal').modal('hide');
+    let e1 = document.getElementById('moveTwoGoodsModal');
+    let modal = bootstrap.Modal.getInstance(e1);
+    if(modal) modal.hide();
 
+    let e2 = document.getElementById('moveThreeGoodsModal');
+    let modal2 = bootstrap.Modal.getInstance(e2);
+    if(modal2) modal2.hide();
 
-    app.$data.transfer_good_one_amount = 0;  
-    app.$data.transfer_good_two_amount = 0;  
-    app.$data.transfer_good_three_amount = 0;
+    this.transfer_good_one_amount = 0;  
+    this.transfer_good_two_amount = 0;  
+    this.transfer_good_three_amount = 0;
 },
 
 /** take updated data from goods being moved by another player
@@ -133,13 +137,13 @@ takeUpdateMoveGoods(messageData){
 takeUpdateGoods(messageData){
     results = messageData.status.result;
 
-    let session_player = app.$data.session_player;
+    let session_player = this.session_player;
 
     for(let r=0; r<results.length; r++){
         player_id = results[r].id;
         
         //update session player
-        if(app.$data.is_subject)
+        if(this.is_subject)
         {
             if(player_id == session_player.id)
             {
@@ -163,37 +167,32 @@ takeUpdateGoods(messageData){
             }
         }
 
-        //update player list in session 
-        for(let p=0; p<app.$data.session.session_players.length; p++)
+        player = this.findSessionPlayer(player_id);
+
+        if(player)
         {
-            player = app.$data.session.session_players[p];
+            player.good_one_house = results[r].good_one_house;
+            player.good_two_house = results[r].good_two_house;
+            player.good_three_house = results[r].good_three_house;
 
-            if(player.id == player_id)
-            {
-                player.good_one_house = results[r].good_one_house;
-                player.good_two_house = results[r].good_two_house;
-                player.good_three_house = results[r].good_three_house;
+            player.good_one_field = results[r].good_one_field;
+            player.good_two_field = results[r].good_two_field;               
 
-                player.good_one_field = results[r].good_one_field;
-                player.good_two_field = results[r].good_two_field;               
+            player_index = this.findSessionPlayerIndex(player_id);
 
-                app.setupSingleHouse(p);
-                app.setupSingleField(p);
-
-                break;
-            }
-        }
-        
+            app.setupSingleHouse(player_index);
+            app.setupSingleField(player_index);
+        }        
     }
 
-    if(app.$data.is_subject) app.calcWaste();
+    if(this.is_subject) app.calcWaste();
 },
 
 /**
  * scroll notice text to the bottom
  */
 updateNoticeDisplayScroll(){
-    if(app.$data.session_player.notices.length==0) return;
+    if(this.session_player.notices.length==0) return;
 
     var elmnt = document.getElementById("notice_id_" + app.$data.session_player.notices[app.$data.session_player.notices.length-1].id.toString());
     elmnt.scrollIntoView(); 

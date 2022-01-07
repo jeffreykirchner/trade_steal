@@ -1,7 +1,7 @@
 {%include "subject/subject_home/graph/move_two_goods_modal.html"%}
 {%include "subject/subject_home/graph/move_three_goods_modal.html"%}
 
-<div class="card">                  
+<div class="card" id="graph_card">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">Town: Person [[session_player.parameter_set_player.id_label]]</span>
 
@@ -128,13 +128,13 @@
                            placeholder="Chat Text" 
                            v-model="chat_text"
                            aria-label="Chat Text" 
-                           v-on:keyup.enter="sendChat()"
+                           v-on:keyup.enter="(session.current_experiment_phase == 'Instructions') ? simulateChatInstructions() : sendChat()"
                            aria-describedby="button-addon2">
                     <button class="btn btn-outline-primary"
                             type="button" 
                             id="button-addon2" 
                             v-bind:disabled="reconnecting || working || session.started===false || session.finished"
-                            v-on:click="sendChat()"> @ [[chat_button_label]]</button>
+                            v-on:click="(session.current_experiment_phase == 'Instructions') ? simulateChatInstructions() : sendChat()"> @ [[chat_button_label]]</button>
                   </div>
             </div>
         </div>

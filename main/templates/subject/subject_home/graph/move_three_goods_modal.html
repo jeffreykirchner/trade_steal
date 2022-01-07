@@ -29,7 +29,7 @@
                 
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "sendMoveGoods()"
+                        v-on:click = "(session.current_experiment_phase == 'Instructions') ? simulateGoodTransferInstructions() : sendMoveGoods()"
                         title="Move Goods"
                         v-bind:disabled="reconnecting || working || session.current_period_phase == 'Production'">
                     Move Goods <i class="fas fa-sign-in-alt"></i>

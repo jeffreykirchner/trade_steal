@@ -206,12 +206,6 @@ var app = Vue.createApp({
                 
             }            
             
-            if(this.session.current_experiment_phase == 'Instructions')
-            {
-                this.processInstructionPage();
-                this.instructionDisplayScroll();
-            }
-
             if(this.session.current_experiment_phase != 'Done')
             {
                 if(!app.$data.pixi_loaded)
@@ -255,6 +249,12 @@ var app = Vue.createApp({
                     }
                 }
             }
+
+            if(this.session.current_experiment_phase == 'Instructions')
+            {
+                setTimeout(this.processInstructionPage, 1000);
+                this.instructionDisplayScroll();
+            }
         },
 
         /** update start status
@@ -290,21 +290,21 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
-            app.$data.session.started = result.started;
-            app.$data.session.current_period = result.current_period;
-            app.$data.session.current_period_phase = result.current_period_phase;
-            app.$data.session.time_remaining = result.time_remaining;
-            app.$data.session.timer_running = result.timer_running;
-            app.$data.session.finished = result.finished;
+            this.session.started = result.started;
+            this.session.current_period = result.current_period;
+            this.session.current_period_phase = result.current_period_phase;
+            this.session.time_remaining = result.time_remaining;
+            this.session.timer_running = result.timer_running;
+            this.session.finished = result.finished;
 
             app.takeUpdateGoods({status : {result : result.session_players}});
 
             //update subject earnings
-            app.$data.session_player.earnings = result.session_player_earnings.earnings;
+            this.session_player.earnings = result.session_player_earnings.earnings;
 
             if(notice_list.length > 0)
             {
-                app.$data.session_player.notices.push(notice_list[0]);
+                this.session_player.notices.push(notice_list[0]);
                 setTimeout(app.updateNoticeDisplayScroll, 250);
             }
 
@@ -472,6 +472,23 @@ var app = Vue.createApp({
                 if(session_players[i].id == id)
                 {
                     return session_players[i];
+                }
+            }
+
+            return null;
+        },
+
+        /**
+         * return session player index that has specified id
+         */
+        findSessionPlayerIndex(id){
+
+            let session_players = app.$data.session.session_players;
+            for(let i=0; i<session_players.length; i++)
+            {
+                if(session_players[i].id == id)
+                {
+                    return i;
                 }
             }
 
