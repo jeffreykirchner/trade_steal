@@ -30,7 +30,7 @@ class ParameterSetGood(models.Model):
             models.UniqueConstraint(fields=['parameter_set', 'rgb_color'], name='unique_parameter_set_good_rgb'),
         ]
 
-    def from_dict(self, source):
+    def from_dict(self, source, parameter_set_goods_pk_map):
         '''
         copy source values into this
         source : dict object of this
@@ -42,6 +42,8 @@ class ParameterSetGood(models.Model):
         self.rgb_color = source.get("rgb_color")
         
         self.save()
+
+        parameter_set_goods_pk_map[source.get("id")] = self.id
 
         return message
 

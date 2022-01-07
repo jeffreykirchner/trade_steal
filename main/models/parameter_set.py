@@ -64,29 +64,38 @@ class ParameterSet(models.Model):
             self.period_count = new_ps.get("period_count")
             self.period_length_production = new_ps.get("period_length_production")
             self.period_length_trade = new_ps.get("period_length_trade")
+
             self.break_period_frequency = new_ps.get("break_period_frequency")
             self.allow_stealing = new_ps.get("allow_stealing")
             self.private_chat = new_ps.get("private_chat")
+
             self.town_count = new_ps.get("town_count")
             self.good_count = new_ps.get("good_count")
+            self.show_instructions = new_ps.get("show_instructions")
+
             self.show_avatars = new_ps.get("show_avatars")
             self.avatar_assignment_mode = new_ps.get("avatar_assignment_mode")
 
+            self.avatar_grid_row_count = new_ps.get("avatar_grid_row_count")
+            self.avatar_grid_col_count = new_ps.get("avatar_grid_col_count")
+            self.avatar_grid_text = new_ps.get("avatar_grid_text")
+
             self.save()
 
-            #available avatars
+            #map of old pk to new pk
+            parameter_set_type_pk_map = {}
+            parameter_set_goods_pk_map = {}
 
-
-            #parameter set types
+            #parameter set types           
             new_parameter_set_types = new_ps.get("parameter_set_types")
             for new_p in new_parameter_set_types:
                 p = self.parameter_set_types.get(subject_type=new_p.get("subject_type"))
-                p.from_dict(new_p)
+                p.from_dict(new_p, parameter_set_type_pk_map)
             
             #parameter set goods
             new_parameter_set_goods = new_ps.get("parameter_set_goods")
             for index, p in enumerate(self.parameter_set_goods.all()) :
-                p.from_dict(new_parameter_set_goods[index])
+                p.from_dict(new_parameter_set_goods[index], parameter_set_goods_pk_map)
             
             #parameter set players
             parameter_set_goods = self.parameter_set_goods.all()
@@ -114,17 +123,15 @@ class ParameterSet(models.Model):
             self.update_group_counts()
 
             new_parameter_set_players = new_ps.get("parameter_set_players")
-            counter=0
-            for p in self.parameter_set_players.all():                
-                p.from_dict(new_parameter_set_players[counter])
-                counter+=1
+            for index, p in enumerate(self.parameter_set_players.all()):                
+                p.from_dict(new_parameter_set_players[index], parameter_set_type_pk_map, parameter_set_goods_pk_map)
 
-            #parameter set goods
-            new_parameter_set_goods = new_ps.get("parameter_set_goods")
-            counter=0
-            for g in self.parameter_set_goods.all():                
-                g.from_dict(new_parameter_set_goods[counter])
-                counter+=1            
+            #parameter set avatars
+            self.update_choice_avatar_counts()
+            new_parameter_set_avatars = new_ps.get("parameter_set_avatars")
+            for index, p in enumerate(new_parameter_set_avatars):
+                a=self.parameter_set_avatars_a.get(grid_location_row=p["grid_location_row"], grid_location_col=p["grid_location_col"])
+                a.from_dict(p)
 
         except IntegrityError as exp:
             message = f"Failed to load parameter set: {exp}"

@@ -49,7 +49,9 @@ class ParameterSetAvatar(models.Model):
         message = "Parameters loaded successfully."
 
         if source.get("avatar"):
-            self.avatar.id = source.get("avatar")["id"]
+            self.avatar = main.models.Avatar.objects.get(id=source.get("avatar")["id"])
+        else:
+            self.avatar = None
         
         self.grid_location_row = source.get("grid_location_row")
         self.grid_location_col = source.get("grid_location_col")

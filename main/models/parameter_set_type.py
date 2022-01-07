@@ -46,7 +46,7 @@ class ParameterSetType(models.Model):
         ordering = ['id']
 
 
-    def from_dict(self, source):
+    def from_dict(self, source, parameter_set_type_pk_map):
         '''
         copy source values into this
         source : dict object of this
@@ -68,6 +68,8 @@ class ParameterSetType(models.Model):
         self.good_two_production_3 = source.get("good_two_production_3")
 
         self.save()
+
+        parameter_set_type_pk_map[source.get("id")] = self.id
 
         return message
 
