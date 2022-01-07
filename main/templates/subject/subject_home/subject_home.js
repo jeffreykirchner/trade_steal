@@ -206,12 +206,6 @@ var app = Vue.createApp({
                 
             }            
             
-            if(this.session.current_experiment_phase == 'Instructions')
-            {
-                this.processInstructionPage();
-                this.instructionDisplayScroll();
-            }
-
             if(this.session.current_experiment_phase != 'Done')
             {
                 if(!app.$data.pixi_loaded)
@@ -254,6 +248,12 @@ var app = Vue.createApp({
                         this.take_choice_grid_label(this.session_player.avatar.label)
                     }
                 }
+            }
+
+            if(this.session.current_experiment_phase == 'Instructions')
+            {
+                setTimeout(this.processInstructionPage, 1000);
+                this.instructionDisplayScroll();
             }
         },
 

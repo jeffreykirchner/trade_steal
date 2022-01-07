@@ -65,26 +65,26 @@ hideTransferModal:function(){
 
 sendMoveGoods(){
     
-    if(app.$data.working == true) return;
-    if(!app.$data.pixi_transfer_source) return;
-    if(!app.$data.pixi_transfer_target) return; 
+    if(this.working == true) return;
+    if(!this.pixi_transfer_source) return;
+    if(!this.pixi_transfer_target) return; 
 
-    if(app.$data.pixi_transfer_source.name.type == "house" &&
-       app.$data.session.parameter_set.good_count == 3)
+    if(this.pixi_transfer_source.name.type == "house" &&
+       this.session.parameter_set.good_count == 3)
     {
-        form_data = $("#moveThreeGoodsForm").serializeArray();
+        var form_data = $("#moveThreeGoodsForm").serializeArray();
     }
     else
     {
-        form_data = $("#moveTwoGoodsForm").serializeArray();
+        var form_data = $("#moveTwoGoodsForm").serializeArray();
     }
 
-    app.$data.working = true;
-    app.sendMessage("move_goods", {"sourceType" : app.$data.pixi_transfer_source.name.type.toString(),
-                                   "sourceID" : app.$data.pixi_transfer_source.name.user_id.toString(),
+    this.working = true;
+    app.sendMessage("move_goods", {"sourceType" : this.pixi_transfer_source.name.type.toString(),
+                                   "sourceID" :  this.pixi_transfer_source.name.user_id.toString(),
 
-                                   "targetType" : app.$data.pixi_transfer_target.name.type.toString(),
-                                   "targetID" : app.$data.pixi_transfer_target.name.user_id.toString(),
+                                   "targetType" : this.pixi_transfer_target.name.type.toString(),
+                                   "targetID" : this.pixi_transfer_target.name.user_id.toString(),
 
                                    "formData" : form_data,});
 },

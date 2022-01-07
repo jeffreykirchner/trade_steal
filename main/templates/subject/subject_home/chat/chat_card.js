@@ -35,7 +35,7 @@ takeUpdateChat(messageData){
     
     let result = messageData.status;
     let chat = result.chat;
-    let session_player = app.$data.session_player;
+    let session_player = this.session_player;
 
     if(result.chat_type=="All")
     {
@@ -43,7 +43,7 @@ takeUpdateChat(messageData){
             session_player.chat_all.shift();
 
         session_player.chat_all.push(chat);
-        if(app.$data.chat_recipients != "all")
+        if(this.chat_recipients != "all")
         {
             session_player.new_chat_message = true;
         }
@@ -51,7 +51,7 @@ takeUpdateChat(messageData){
     else
     {
         var sesson_player_target =  result.sesson_player_target;
-        var session_players = app.$data.session.session_players;
+        var session_players = this.session.session_players;
 
         var target = -1;
         if(sesson_player_target == session_player.id)
@@ -109,30 +109,30 @@ updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
  */
 updateChatDisplay(){
 
-    if(app.$data.chat_recipients=="all")
+    if(this.chat_recipients=="all")
     {
-        app.$data.chat_list_to_display=Array.from(app.$data.session_player.chat_all);
+        this.chat_list_to_display=Array.from(this.session_player.chat_all);
     }
     else
     {
-        app.$data.chat_list_to_display=Array.from(app.$data.session.session_players[app.$data.chat_recipients_index].chat_individual);
+        this.chat_list_to_display=Array.from(this.session.session_players[this.chat_recipients_index].chat_individual);
     }
 
     //add spacers
-    for(let i=app.$data.chat_list_to_display.length;i<12;i++)
+    for(let i=this.chat_list_to_display.length;i<12;i++)
     {
-        app.$data.chat_list_to_display.unshift({id:i*-1, text:"|", sender_id:app.$data.session_player.id})
+        this.chat_list_to_display.unshift({id:i*-1, text:"|", sender_id:this.session_player.id})
     }
 
     //scroll to view
-    if(app.$data.chat_list_to_display.length>0)
+    if(this.chat_list_to_display.length>0)
     {
         Vue.nextTick(() => {app.updateChatDisplayScroll()});        
     }
 },
 
 updateChatDisplayScroll(){
-    var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
+    var elmnt = document.getElementById("chat_id_" + this.chat_list_to_display[this.chat_list_to_display.length-1].id.toString());
     elmnt.scrollIntoView(); 
 },
 

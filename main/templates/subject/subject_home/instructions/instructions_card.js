@@ -93,7 +93,7 @@ processInstructionPage(){
             if(this.session_player.current_instruction_complete < this.session_player.current_instruction)
             {
                 this.session.current_period_phase = 'Trade';
-                if(this.pixi_loaded) this.simulate_clear_goods_instructions();
+                this.setup_page_3_instructions();
             }
             
             return;
@@ -157,12 +157,12 @@ simulate_do_period_production(){
     good_one_field = this.simulate_do_period_production_function(parameter_set_type.good_one_production_1,
                                                             parameter_set_type.good_one_production_2,
                                                             parameter_set_type.good_one_production_3,
-                                                            this.production_slider_one);
+                                                            this.session_player.good_one_production_rate);
 
     good_two_field = this.simulate_do_period_production_function(parameter_set_type.good_two_production_1,
                                                             parameter_set_type.good_two_production_2,
                                                             parameter_set_type.good_two_production_3,
-                                                            this.production_slider_two);
+                                                            this.session_player.good_two_production_rate);
     let result = [];
 
     result.push({
@@ -194,6 +194,31 @@ simulate_do_period_production(){
         }
     }
 
+},
+
+/**
+ * setup page 3 instructions
+ */
+setup_page_3_instructions(){
+
+    this.simulate_clear_goods_instructions();
+
+    let result = [];
+
+    result.push({
+        id : this.session_player.id,
+
+        good_one_house : 0,
+        good_two_house : 0,
+        good_three_house : 0,
+
+        good_one_field : 10,
+        good_two_field :10,
+
+        notice : null,
+    })
+    
+    app.takeUpdateGoods({status : {result : result}});
 },
 
 /**
@@ -240,6 +265,70 @@ simulate_do_period_production_function(good_production_1, good_production_2, goo
  * simulate goods transfer on page 3
  */
 simulateGoodTransferInstructions(){
+    this.clearMainFormErrors();
+
+    if(this.pixi_transfer_source.name.type.toString() != "field" ||
+       this.pixi_transfer_target.name.type.toString() != "house" ||
+       this.pixi_transfer_source.name.user_id != this.session_player.id ||
+       this.pixi_transfer_target.name.user_id != this.session_player.id) 
+    {
+        let errors = {transfer_good_one_amount_2g:["For practice, please transfer from your house to your field."]};
+        this.displayErrors(errors);
+        return;
+    }
+
+    let form_data = $("#moveTwoGoodsForm").serializeArray();
+
+    let transfer_good_one_amount_2g = Number(this.transfer_good_one_amount);
+    let transfer_good_two_amount_2g = Number(this.transfer_good_two_amount);
+
+    if(!Number.isInteger(transfer_good_one_amount_2g) || 
+        parseInt(transfer_good_one_amount_2g) < 0)
+    {
+        let errors = {transfer_good_one_amount_2g:["Invalid entry."]};
+        this.displayErrors(errors);
+        return;
+    }
+
+    if(!Number.isInteger(transfer_good_two_amount_2g) || 
+        parseInt(transfer_good_two_amount_2g) < 0)
+    {
+        let errors = {transfer_good_two_amount_2g:["Invalid entry."]};
+        this.displayErrors(errors);
+        return;
+    }
+
+    if(parseInt(transfer_good_one_amount_2g) > this.session_player.good_one_field)
+    {
+        let errors = {transfer_good_one_amount_2g:["There are not enough goods on your field."]};
+        this.displayErrors(errors);
+        return;
+    }
+
+    if(parseInt(transfer_good_two_amount_2g) > this.session_player.good_two_field)
+    {
+        let errors = {transfer_good_two_amount_2g:["There are not enough goods on your field."]};
+        this.displayErrors(errors);
+        return;
+    }
+
+    let result = [];
+
+    result.push({
+        id : this.session_player.id,
+
+        good_one_house : this.session_player.good_one_house + parseInt(transfer_good_one_amount_2g),
+        good_two_house : this.session_player.good_two_house + parseInt(transfer_good_two_amount_2g),
+        good_three_house : 0,
+
+        good_one_field : this.session_player.good_one_field - parseInt(transfer_good_one_amount_2g),
+        good_two_field : this.session_player.good_two_field - parseInt(transfer_good_two_amount_2g),
+
+        notice : null,
+    });
+    
+    app.takeUpdateGoods({status : {result : result}});
+
     if(this.session_player.current_instruction == 3)
     {
         this.session_player.current_instruction_complete=3;
@@ -252,6 +341,19 @@ simulateGoodTransferInstructions(){
  * simulate goods transfer on page 4
  */
  simulateChatInstructions(){
+    if(this.chat_text.trim() == "") return;
+    if(this.chat_text.trim().length > 200) return;
+
+    if(this.chat_recipients != "all") return;
+
+    messageData = {status : {chat: {text : this.chat_text.trim(),
+                                    sender_label : this.session_player.parameter_set_player.id_label,
+                                    sender_id : this.session_player.id,
+                                    id : randomNumber(1, 1000000)},
+                            chat_type:"All"}}
+
+    app.takeUpdateChat(messageData);
+
     if(this.session_player.current_instruction == 4)
     {
         this.session_player.current_instruction_complete=4;
@@ -259,3 +361,25 @@ simulateGoodTransferInstructions(){
 
     this.chat_text="";
 },
+
+// {
+//     "id": 479,
+//     "sender_label": "1",
+//     "sender_id": 538,
+//     "text": "asd"
+// }
+// let result = messageData.status;
+// let chat = result.chat;
+// let session_player = this.session_player;
+
+// if(result.chat_type=="All")
+// {
+//     if(session_player.chat_all.length >= 100)
+//         session_player.chat_all.shift();
+
+//     session_player.chat_all.push(chat);
+//     if(this.chat_recipients != "all")
+//     {
+//         session_player.new_chat_message = true;
+//     }
+// }
