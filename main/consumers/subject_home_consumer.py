@@ -306,7 +306,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         if message_data['status']['chat_type'] == "Individual" and \
            message_data['status']['sesson_player_target'] != self.session_player_id and \
-           message_data['status']['chat']['send_id'] != self.session_player_id:
+           message_data['status']['chat']['sender_id'] != self.session_player_id:
 
            return
 

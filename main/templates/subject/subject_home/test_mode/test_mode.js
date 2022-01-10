@@ -153,7 +153,7 @@ doTestModeRun()
     if(go)
         if(this.chat_text != "")
         {
-            this.sendChat();
+            document.getElementById("send_chat_id").click();
             go=false;
         }
 
@@ -195,6 +195,17 @@ doTestModeRun()
  * test mode chat
  */
 doTestModeChat(){
+
+    session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length)];
+
+    if(session_player_local.id == this.session_player.id)
+    {
+        document.getElementById("chat_all_id").click();
+    }
+    else
+    {
+        document.getElementById('chat_invididual_' + session_player_local.id + '_id').click();
+    }
 
     this.chat_text = this.randomString(5, 20);
 },
