@@ -354,11 +354,11 @@ var app = Vue.createApp({
         takeUpdateGroups(messageData){
             app.destroyPixiPlayers();
 
-            app.$data.session.session_players = messageData.status.result.session_players;
+            this.session.session_players = messageData.status.result.session_players;
 
             setTimeout(app.setupPixiPlayers, 250);
 
-            app.updateChatDisplay();
+            document.getElementById("chat_all_id").click();
             app.calcWaste();
         },
 

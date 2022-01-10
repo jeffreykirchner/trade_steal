@@ -63,23 +63,31 @@ takeUpdateChat(messageData){
             target = sesson_player_target;
         }
 
-        for(let i=0; i<session_players.length; i++)
+        session_player = app.findSessionPlayer(target);
+        session_player_index = app.findSessionPlayerIndex(target);
+
+        if(session_player)
         {
-            if(session_players[i].id == target)
+            if(session_player.chat_individual.length >= 100)
+               session_player.chat_individual.shift();
+
+            session_player.chat_individual.push(chat);
+
+            if(session_player_index != this.chat_recipients_index)
             {
-                
-                if(session_players[i].chat_individual.length >= 100)
-                    session_players[i].chat_individual.shift();
-
-                session_players[i].chat_individual.push(chat);
-
-                if(i != app.$data.chat_recipients_index)
-                {
-                    session_players[i].new_chat_message = true;
-                }
-                break;
+                session_player.new_chat_message = true;
             }
-        }        
+        }
+
+        // for(let i=0; i<session_players.length; i++)
+        // {
+        //     if(session_players[i].id == target)
+        //     {
+                
+                
+        //         break;
+        //     }
+        // }        
     }
 
     app.updateChatDisplay();
@@ -89,19 +97,19 @@ takeUpdateChat(messageData){
 *    @param messageData {json} session day in json format
 */
 updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
-    app.$data.chat_recipients = chat_recipients;
-    app.$data.chat_button_label = chat_button_label;
-    app.$data.chat_recipients_index = chat_recipients_index;
+    this.chat_recipients = chat_recipients;
+    this.chat_button_label = chat_button_label;
+    this.chat_recipients_index = chat_recipients_index;
 
     app.updateChatDisplay();
 
-    if(app.$data.chat_recipients=="all")
+    if(this.chat_recipients=="all")
     {
-        app.$data.session_player.new_chat_message = false;
+        this.session_player.new_chat_message = false;
     }
     else
     {
-        app.$data.session.session_players[chat_recipients_index].new_chat_message = false;
+        this.session.session_players[chat_recipients_index].new_chat_message = false;
     }
 },
 

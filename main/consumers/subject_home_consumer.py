@@ -243,7 +243,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                  "sender_channel_name": self.channel_name},
             )
 
-
     #consumer updates
     async def update_start_experiment(self, event):
         '''
@@ -298,14 +297,18 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
-        if self.group_number != event['sender_group']:
+        if self.group_number != event['sender_group'] or \
+           self.town_number != event['sender_town'] or \
+           self.channel_name == event['sender_channel_name']:
+
             return
         
-        if self.town_number != event['sender_town']:
-            return
 
-        if self.channel_name == event['sender_channel_name']:
-            return
+        if message_data['status']['chat_type'] == "Individual" and \
+           message_data['status']['sesson_player_target'] != self.session_player_id and \
+           message_data['status']['chat']['send_id'] != self.session_player_id:
+
+           return
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
