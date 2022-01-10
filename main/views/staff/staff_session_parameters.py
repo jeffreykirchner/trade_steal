@@ -160,7 +160,7 @@ def upload_parameter_set(v, session):
     ps = session.parameter_set
 
     logger.info(v)
-    v = eval(v)
+    v = eval(v.replace("null", "None"))
     #logger.info(v)       
 
     message = ps.from_dict(v)

@@ -90,11 +90,11 @@
                     <input type="radio"
                         class="btn-check" 
                         name="btnradio" 
-                        id="btnradioall" 
+                        id="chat_all_id" 
                         autocomplete="off" 
                         v-on:click="updateChatRecipients('all', 'Everyone', -1)" 
                         checked>
-                    <label class="btn btn-outline-secondary" for="btnradioall">
+                    <label class="btn btn-outline-secondary" for="chat_all_id">
                         Everyone
                         <span v-if=session_player.new_chat_message>*</span>
                     </label>
@@ -104,13 +104,13 @@
                         <input type="radio"
                             class="btn-check" 
                             name="btnradio" 
-                            v-bind:id="'btnradio' + index" 
+                            v-bind:id="'chat_invididual_' + p.id + '_id'" 
                             autocomplete="off" 
                             v-if="p.id != session_player.id"
                             v-on:click="updateChatRecipients(p.id, 'Person ' + p.parameter_set_player.id_label, index)">
                         <label class="btn btn-outline-secondary"
                                v-if="p.id != session_player.id"
-                               v-bind:for="'btnradio' + index">
+                               v-bind:for="'chat_invididual_' + p.id + '_id'">
                             [[p.parameter_set_player.id_label]]
                             <span v-if=p.new_chat_message>*</span>
                         </label>
@@ -127,12 +127,12 @@
                            class="form-control" 
                            placeholder="Chat Text" 
                            v-model="chat_text"
-                           aria-label="Chat Text" 
+                           aria-label="Chat Text"                           
                            v-on:keyup.enter="(session.current_experiment_phase == 'Instructions') ? simulateChatInstructions() : sendChat()"
-                           aria-describedby="button-addon2">
+                           aria-describedby="send_chat_id">
                     <button class="btn btn-outline-primary"
                             type="button" 
-                            id="button-addon2" 
+                            id="send_chat_id" 
                             v-bind:disabled="reconnecting || working || session.started===false || session.finished"
                             v-on:click="(session.current_experiment_phase == 'Instructions') ? simulateChatInstructions() : sendChat()"> @ [[chat_button_label]]</button>
                   </div>
