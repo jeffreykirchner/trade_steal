@@ -5,9 +5,15 @@
         </span>       
 
         <span class="float-end"> 
-            <a href='{%url "staff_session_parameters" session.id %}' class='link-primary' title='Open parameter set'>Edit Parameters</a>
+            <a href='{%url "staff_session_subject_earnings" session.id %}' class='link-primary me-4' title='Open parameter set'>
+                Print Earnings                
+            </a>
 
-            <button type="button" class="btn btn-link ps-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Subject List')">
+            <a href='{%url "staff_session_parameters" session.id %}' class='link-primary' title='Open parameter set'>
+                [[session.started ? 'View': 'Edit']] Parameters                
+            </a>
+
+            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Subject List')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>          
