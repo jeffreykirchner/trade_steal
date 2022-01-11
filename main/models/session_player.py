@@ -494,6 +494,13 @@ class SessionPlayer(models.Model):
             "id" : self.id, 
             "earnings" : self.earnings,
         }
+    
+    def get_earnings_in_dollars(self):
+        '''
+        return earnings in dollar format
+        '''
+
+        return f'${(self.earnings/100):.2f}'
 
 
         
