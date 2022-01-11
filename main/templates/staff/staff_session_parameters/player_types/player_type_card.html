@@ -4,7 +4,13 @@
         <div class="card-header fw-bold">                
             <span class="align-middle">
                 Player Type [[session.parameter_set.parameter_set_types[{{i}}].subject_type]] Settings
-            </span>               
+            </span>    
+            
+            <span class="float-end">
+                <button type="button" class="btn btn-link ps-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Parameters Types')">
+                    <i class="far fa-question-circle"></i> 
+                </button>
+            </span>
         </div>
         <div class="card-body">        
             

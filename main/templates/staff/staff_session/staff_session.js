@@ -13,6 +13,7 @@ var app = Vue.createApp({
                     working : false,
                     is_subject : false,
                     first_load_done : false,          //true after software is loaded for the first time
+                    helpText : "Loading ...",
                     sessionID : {{session.id}},
                     sessionKey : "{{session.session_key}}",
                     other_color : 0xD3D3D3,
@@ -144,6 +145,9 @@ var app = Vue.createApp({
                     break;
                 case "update_finish_instructions":
                     app.takeFinishedInstructions(messageData);
+                    break;
+                case "help_doc":
+                    app.takeLoadHelpDoc(messageData);
                     break;
             }
 
@@ -333,6 +337,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
+        {%include "js/help_doc.js"%}
     
         /** clear form error messages
         */

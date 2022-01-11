@@ -28,10 +28,9 @@ takeUpdateSession(messageData){
 */
 showEditSession:function(){
     app.clearMainFormErrors();
-    app.$data.cancelModal=true;
-    app.$data.sessionBeforeEdit = Object.assign({}, app.$data.session);
+    this.cancelModal=true;
+    this.sessionBeforeEdit = Object.assign({}, this.session);
 
-    
     var myModal = new bootstrap.Modal(document.getElementById('editSessionModal'), {
         keyboard: false
         })
@@ -42,9 +41,9 @@ showEditSession:function(){
 /** hide edit session modal
 */
 hideEditSession:function(){
-    if(app.$data.cancelModal)
+    if(this.cancelModal)
     {
-        Object.assign(app.$data.session, app.$data.sessionBeforeEdit);
-        app.$data.sessionBeforeEdit=null;
+        Object.assign(this.session, this.sessionBeforeEdit);
+        this.sessionBeforeEdit=null;
     }
 },

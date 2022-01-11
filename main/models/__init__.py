@@ -4,6 +4,7 @@ build models
 from .parameters import Parameters
 
 from .avatar import Avatar
+from .help_docs import  HelpDocs
 
 from .instruction_set import InstructionSet
 from .instruction import Instruction

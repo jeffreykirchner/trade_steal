@@ -12,6 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 
 from main.consumers import SocketConsumerMixin
+from main.consumers import StaffSubjectUpdateMixin
 
 from main.forms import SessionForm
 from main.forms import ParameterSetForm
@@ -30,7 +31,7 @@ from main.models import ParameterSetPlayerGroup
 import main
 from main.models.parameter_set_avatar import ParameterSetAvatar
 
-class StaffSessionParametersConsumer(SocketConsumerMixin):
+class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
     '''    
