@@ -4,10 +4,13 @@
             Subjects ([[session.session_players.length]])
         </span>       
 
-        <span class="float-end pe-2 ps-2"> 
-            <a href='{%url "staff_session_parameters" session.id %}' class='link-primary'>Edit Parameters</a>
-        </span> 
-                
+        <span class="float-end"> 
+            <a href='{%url "staff_session_parameters" session.id %}' class='link-primary' title='Open parameter set'>Edit Parameters</a>
+
+            <button type="button" class="btn btn-link ps-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Subject List')">
+                <i class="far fa-question-circle"></i> 
+            </button>
+        </span>          
     </div>
     <div class="card-body" >        
 

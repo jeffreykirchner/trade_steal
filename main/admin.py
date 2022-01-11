@@ -22,7 +22,8 @@ from main.models import SessionPlayerChat
 from main.models import SessionPlayerMove
 from main.models import SessionPlayerPeriod
 
-from main.models.avatar import Avatar
+from main.models import Avatar
+from main.models import  HelpDocs
 
 from main.models.instruction_set import InstructionSet
 from main.models.instruction import Instruction
@@ -108,3 +109,5 @@ class InstructionSetAdmin(admin.ModelAdmin):
     actions = [duplicate_set]
 
 admin.site.register(InstructionSet, InstructionSetAdmin)
+
+admin.site.register(HelpDocs)

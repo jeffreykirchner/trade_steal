@@ -130,6 +130,9 @@ var app = Vue.createApp({
                 case "update_parameterset_avatar":
                     app.takeUpdateParametersetAvatar(messageData);
                     break;
+                case "help_doc":
+                    app.takeLoadHelpDoc(messageData);
+                    break;
             }
 
             if(!app.$data.first_load_done)
@@ -220,6 +223,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session_parameters/player_types/player_type.js"%}
         {%include "staff/staff_session_parameters/players/players.js"%}
         {%include "staff/staff_session_parameters/avatars/avatars.js"%}
+        {%include "js/help_doc.js"%}
     
         /** clear form error messages
         */

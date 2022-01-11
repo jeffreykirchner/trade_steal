@@ -3,7 +3,9 @@
         <span class="align-middle">Control</span>       
             
         <span class="float-end">
-             
+            <button type="button" class="btn btn-link ps-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Control')">
+                <i class="far fa-question-circle"></i> 
+            </button>
         </span>
         
     </div>
@@ -70,7 +72,7 @@
                         v-on:click = "reset_experiment()"
                         title="Reset experiment"
                         v-bind:disabled="reconnecting || working || session.started===false || session.locked">
-                    Reset experiment <i class="far fa-trash-alt"></i>
+                    Reset Experiment <i class="far fa-trash-alt"></i>
                 </button>
             </div>
         </div>

@@ -42,7 +42,7 @@ class ParameterSetForm(forms.ModelForm):
                                                                                   "step":"1",
                                                                                   "min":"1"}))
     
-    period_length_trade = forms.IntegerField(label='Trade Length (seconds)',
+    period_length_trade = forms.IntegerField(label='Move Length (seconds)',
                                              min_value=1,
                                              widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.period_length_trade",
                                                                              "step":"1",

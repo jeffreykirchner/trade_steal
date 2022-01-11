@@ -756,5 +756,3 @@ def take_download_payment_data(session_id):
     session = Session.objects.get(id=session_id)
 
     return {"value" : "success", "result" : session.get_download_payment_csv()}
-
-

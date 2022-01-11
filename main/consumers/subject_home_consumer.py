@@ -72,7 +72,6 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         move goods between two containers
         '''
-        #update subject count
         result = await sync_to_async(take_move_goods)(self.session_id, self.session_player_id, event["message_text"])
 
         message_data = {}
