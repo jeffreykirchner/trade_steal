@@ -165,7 +165,7 @@ var app = Vue.createApp({
         */
         sendMessage(messageType, messageText) {            
 
-            app.$data.chatSocket.send(JSON.stringify({
+            this.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
@@ -174,7 +174,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         sendGetSession(){
-            app.sendMessage("get_session",{"playerKey" : app.$data.playerKey});
+            app.sendMessage("get_session", {"playerKey" : this.playerKey});
         },
         
         /** take create new session

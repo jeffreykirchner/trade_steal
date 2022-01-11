@@ -31,6 +31,8 @@ from main.globals import ChatTypes
 from main.globals import PeriodPhase
 from main.globals import round_half_away_from_zero
 
+from main.decorators import check_sesison_started_ws
+
 class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
@@ -39,7 +41,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     group_number = 0        #group number player subject is in
     town_number = 0         #town number subject is in 
     session_player_id = 0   #session player id number
-
+    
     async def get_session(self, event):
         '''
         return a list of sessions
@@ -93,7 +95,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                  'sender_group' : self.group_number,
                  "sender_town" : self.town_number,},
             )
-        
+   
     async def chat(self, event):
         '''
         take chat from client
