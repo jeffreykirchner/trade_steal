@@ -22,7 +22,8 @@
                 <div class="container">
                     <div class="one">
                         <canvas class="one" key="sd_graph" id="sd_graph_id" style="border-style: solid;border-width: 1px;"></canvas>
-                    </div>               
+                    </div>   
+
                     <div class="two border">
                         
                         <div class="d-flex flex-column">
@@ -31,16 +32,25 @@
                                 <div class="text-start ps-2 pe-2" 
                                      v-bind:style= "[(c.text=='|') ? {'opacity': '0'}:{}]"
                                      v-bind:id="'chat_id_' + c.id">
-
                                     
                                      <span v-if="c.chat_type=='All'"><span class="fw-bold">[[c.sender_label]]:</span> [[c.text]]</span>
                                      <span v-else><span class="fw-bold">[[c.sender_label]]<i class="fas fa-xs fa-arrow-right"></i><span v-html='c.session_player_recipients[0]'></span>:</span> [[c.text]]</span>
                                 </div>
 
                             </div>
-                        </div>
-                          
+                        </div>                          
                         
+                    </div>
+
+                    <!-- notices -->
+                    <div class="three border">
+                        <div class="d-flex flex-column">
+                            <span class="text-center fs-5" ><u>Notices</u></span>  
+
+                            <div class="p-1" v-for="(n, index) in notice_list_to_display" v-bind:key="n.id">
+                                <span v-html="'<b>@' + n.session_player_label + ':</b> ' + n.text" v-bind:id="'notice_id_' + n.id"></span>
+                            </div>
+                        </div>                        
                     </div>
                 </div>
 
