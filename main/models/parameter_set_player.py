@@ -119,6 +119,8 @@ class ParameterSetPlayer(models.Model):
         return json object of model
         '''
 
+        session_player = self.session_players_paramterset.first()
+        
         return{
 
             "id" : self.id,
@@ -134,6 +136,8 @@ class ParameterSetPlayer(models.Model):
             "good_three" : self.good_three.json(),
 
             "avatar" : self.avatar.json() if self.avatar else None,
+
+            "session_player_number" : session_player.player_number if session_player else "---",
 
             "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
         }
