@@ -72,10 +72,27 @@ sendMoveGoods(){
     if(this.pixi_transfer_source.name.type == "house" &&
        this.session.parameter_set.good_count == 3)
     {
+        if(this.transfer_good_one_amount == 0 && 
+           this.transfer_good_two_amount == 0 &&
+           this.transfer_good_three_amount == 0)
+        {
+            let errors = {transfer_good_one_amount_3g:["Invalid Entry."]};
+            this.displayErrors(errors);
+            return;
+        }
+
         var form_data = $("#moveThreeGoodsForm").serializeArray();
     }
     else
     {
+         if(this.transfer_good_one_amount == 0 && 
+            this.transfer_good_two_amount == 0)
+         {
+             let errors = {transfer_good_one_amount_2g:["Invalid Entry."]};
+             this.displayErrors(errors);
+             return;
+         }
+
         var form_data = $("#moveTwoGoodsForm").serializeArray();
     }
 

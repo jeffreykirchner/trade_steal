@@ -64,6 +64,25 @@
             </div>
         </div>
 
+        <!-- end early -->
+        <div class="row mt-2" v-show="session.started && !session.locked">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        v-on:click = "endEarly()"
+                        title="End the experiment after this period."
+                        v-bind:disabled="reconnecting || 
+                                         working || 
+                                         session.started===false || 
+                                         session.locked || 
+                                         session.current_period===session.parameter_set.period_count"
+                    >
+                        <span v-if="session.current_period!=session.parameter_set.period_count">End Early <i class="far fa-hand-paper"></i></span>
+                        <span v-else>***Final Period***</span>
+                </button>
+            </div>
+        </div>
+
         <!-- reset experiment -->
         <div class="row mt-2" v-show="session.started && !session.locked">
             <div class="col-md text-center">

@@ -145,13 +145,13 @@ var app = Vue.createApp({
                 
             }
 
-            if(!app.$data.first_load_done)
-            {
-                if(!app.$data.session.started)
-                {
-                   this.show_parameters = true;
-                }
-            }
+            // if(!app.$data.first_load_done)
+            // {
+            //     if(!app.$data.session.started)
+            //     {
+            //        this.show_parameters = true;
+            //     }
+            // }
 
             this.first_load_done = true;
 

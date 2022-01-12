@@ -100,7 +100,6 @@ takeUpdateNextPhase(messageData){
     this.updatePhaseButtonText();
 },
 
-
 /**
  * start the period timer
 */
@@ -126,4 +125,22 @@ startTimer(){
 */
 takeStartTimer(messageData){
     app.takeUpdateTime(messageData);
+},
+
+/**reset experiment, remove all bids, asks and trades
+*/
+endEarly(){
+    if (!confirm('End the experiment after this period completes?')) {
+        return;
+    }
+
+    app.$data.working = true;
+    app.sendMessage("end_early", {});
+},
+
+/** take reset experiment response
+ * @param messageData {json}
+*/
+takeEndEarly(messageData){
+   this.session.parameter_set.period_count = messageData.status.result;
 },

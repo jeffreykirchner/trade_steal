@@ -9,6 +9,7 @@ var app = Vue.createApp({
     data() {return {chatSocket : "",
                     reconnecting : true,
                     working : false,
+                    helpText : "Loading ...",
                     sessions : [],
                     createSessionButtonText : 'Create Session <i class="fas fa-plus"></i>',
                     dateSortButtonText: 'Date <i class="fas fa-sort"></i>',

@@ -21,6 +21,9 @@
                     <thead>
                         <tr>
                             <th scope="col" class = "m-1 p-1">
+                                Client #
+                            </th>
+                            <th scope="col" class = "text-center m-1 p-1">
                                 Town
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
@@ -55,6 +58,9 @@
                     </thead>
                     <tbody id="player_list">
                         <tr v-for="(p, index) in session.parameter_set.parameter_set_players" v-bind:key="p.id">
+                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
+                                [[p.session_player_number]]
+                            </td>
                             <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
                                 [[p.town]]
                             </td>
@@ -99,6 +105,8 @@
                                         v-on:click="sendAddParameterSetPlayer()">
                                        Add <i class="fas fa-plus"></i>
                                 </button>
+                            </td>
+                            <td>
                             </td>
                             <td>
                             </td>

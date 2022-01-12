@@ -12,6 +12,7 @@ var app = Vue.createApp({
                     reconnecting : true,
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
+                    helpText : "Loading ...",
                     sessionID : {{session.id}},
                     session : {{session_json|safe}},
                    
@@ -66,7 +67,7 @@ var app = Vue.createApp({
                     upload_file_name:'Choose File',
                     uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
                     uploadParametersetMessaage:'',
-                    show_parameters:false,
+                    // show_parameters:false,
                     import_parameters_message : "",
 
                 }},
@@ -135,13 +136,13 @@ var app = Vue.createApp({
                     break;
             }
 
-            if(!app.$data.first_load_done)
-            {
-                if(!app.$data.session.started)
-                {
-                    app.$data.show_parameters = true;
-                }
-            }
+            // if(!app.$data.first_load_done)
+            // {
+            //     if(!app.$data.session.started)
+            //     {
+            //         app.$data.show_parameters = true;
+            //     }
+            // }
 
             app.$data.first_load_done = true;
 

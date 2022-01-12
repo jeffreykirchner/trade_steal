@@ -151,15 +151,18 @@ var app = Vue.createApp({
                 case "help_doc":
                     app.takeLoadHelpDoc(messageData);
                     break;
+                case "end_early":
+                    app.takeEndEarly(messageData);
+                    break;
             }
 
-            if(!app.$data.first_load_done)
-            {
-                if(!app.$data.session.started)
-                {
-                    app.$data.show_parameters = true;
-                }
-            }
+            // if(!app.$data.first_load_done)
+            // {
+            //     if(!app.$data.session.started)
+            //     {
+            //         this.show_parameters = true;
+            //     }
+            // }
 
             app.$data.first_load_done = true;
 
