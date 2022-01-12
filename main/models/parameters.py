@@ -13,10 +13,10 @@ class Parameters(models.Model):
     contact_email =  models.CharField(max_length = 1000, default="JohnSmith@abc.edu")       #primary contact for subjects
     experiment_time_zone = models.CharField(max_length = 1000, default="US/Pacific")        #time zone the experiment is in
 
-    site_url = models.CharField(max_length = 200, default="http://localhost:8000")       #site URL used for display in emails
-    test_email_account = models.CharField(max_length=1000, default="")                     #email account used for debug mode emails
+    site_url = models.CharField(max_length = 200, default="http://localhost:8000")         #site URL used for display in emails
 
-    channel_key = models.UUIDField(default=uuid.uuid4, verbose_name = 'Channel Key')     #unique channel to communicate on
+    avatar_sprite_sheet = models.CharField(max_length = 200, default="avatars.json")          #sprite sheet with avatar images
+    graph_sprite_sheet = models.CharField(max_length = 200, default="sprite_sheet.json")      #site sheet with graph images
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)

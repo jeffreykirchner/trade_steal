@@ -154,6 +154,9 @@ var app = Vue.createApp({
                 case "end_early":
                     app.takeEndEarly(messageData);
                     break;
+                case "update_production_time":
+                    app.takeUpdateProductionTime(messageData);
+                    break;
             }
 
             // if(!app.$data.first_load_done)

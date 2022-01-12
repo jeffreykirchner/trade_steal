@@ -58,20 +58,14 @@
                                 Type
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
-                                First Good House
+                                House
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
-                                Second Good House
-                            </th>
-                            <th scope="col" class = "text-center m-1 p-1" v-show="session.parameter_set.good_count == 3">
-                                Third Good House
+                                Field
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
-                                First Good Field
-                            </th>
-                            <th scope="col" class = "text-center m-1 p-1">
-                                Second Good Field
-                            </th>                            
+                                Production Rate
+                            </th>                       
                             <th scope="col" class = "text-center m-1 p-1">
                                 Shareable Login Link
                             </th> 
@@ -117,18 +111,16 @@
                             </td>
                             <td class="player_table_cell text-nowrap">
                                 <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_house]]</span>
+                                <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">&nbsp;&nbsp;[[p.good_two_house]]</span>
+                                <span v-bind:style = "{color : p.parameter_set_player.good_three.rgb_color}" v-show="session.parameter_set.good_count == 3">&nbsp;&nbsp;[[p.good_three_house]]</span>
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.good_two_house]]</span>
-                            </td>
-                            <td class="player_table_cell text-nowrap" v-show="session.parameter_set.good_count == 3">
-                                <span v-bind:style = "{color : p.parameter_set_player.good_three.rgb_color}">[[p.good_three_house]]</span>
-                            </td>
-                            <td class="player_table_cell text-nowrap">
-                                <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_field]]</span>
-                            </td>
-                            <td class="player_table_cell text-nowrap">
+                                <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_field]]</span>&nbsp;&nbsp;
                                 <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.good_two_field]]</span>
+                            </td>
+                            <td class="player_table_cell text-nowrap">
+                                <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_production_rate]]%</span> / 
+                                <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.good_two_production_rate]]%</span>
                             </td>                            
                             <td class="player_table_cell text-nowrap">
                                 <a v-bind:href="p.login_link">Login Link</a>

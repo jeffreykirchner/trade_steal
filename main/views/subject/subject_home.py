@@ -2,7 +2,6 @@
 staff view
 '''
 import logging
-import uuid
 import json
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -13,10 +12,9 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
-from django.templatetags.static import static
 
 from main.models import SessionPlayer
-from main.models import Instruction
+from main.models import Parameters
 
 from main.forms import SessionForm
 from main.forms import EndGameForm
@@ -56,10 +54,14 @@ class SubjectHomeView(View):
 
         # sprite_sheet_css = generate_css_sprite_sheet('main/static/avatars.json', static('avatars.png'))
 
+        parameters = Parameters.objects.first()
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
                                "player_key" :  session_player.player_key,
+                               "avatar_sprite_sheet" : parameters.avatar_sprite_sheet,
+                               "graph_sprite_sheet" : parameters.graph_sprite_sheet,
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "end_game_form" : EndGameForm(),

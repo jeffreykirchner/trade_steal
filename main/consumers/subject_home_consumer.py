@@ -156,6 +156,14 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # Send reply to sending channel
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+        if result["value"] == "success":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "update_production_time",
+                 "data": result,
+                 "sender_channel_name": self.channel_name},
+            )
+
     async def name(self, event):
         '''
         take name and id number
@@ -460,6 +468,14 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     async def update_finish_instructions(self, event):
         '''
         no group broadcast of avatar to current instruction
+        '''
+
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Eng game update")
+
+    async def update_production_time(self, event):
+        '''
+        no production update on clients
         '''
 
         # logger = logging.getLogger(__name__) 
@@ -880,8 +896,11 @@ def take_production_time(session_id, session_player_id, data):
 
         session_player.save()
 
-        return {"value" : "success", "result" : {"good_one_production_rate" : session_player.good_one_production_rate,
-                                                 "good_two_production_rate" : session_player.good_two_production_rate }} 
+        return {"value" : "success", 
+                "result" : {"good_one_production_rate" : session_player.good_one_production_rate,
+                            "good_two_production_rate" : session_player.good_two_production_rate,
+                            "id" : session_player_id }} 
+                            
     except ObjectDoesNotExist:      
         return {"value" : "fail", "result" : {}, "message" : "Invalid player."} 
 
