@@ -272,7 +272,8 @@ simulateGoodTransferInstructions(){
        this.pixi_transfer_source.name.user_id != this.session_player.id ||
        this.pixi_transfer_target.name.user_id != this.session_player.id) 
     {
-        let errors = {transfer_good_one_amount_2g:["For practice, please transfer from your house to your field."]};
+        let errors = {transfer_good_one_amount_2g:["For practice, please transfer from your house to your field."],
+                      transfer_good_one_amount_3g:["For practice, please transfer from your house to your field."]};
         this.displayErrors(errors);
         return;
     }
@@ -281,6 +282,14 @@ simulateGoodTransferInstructions(){
 
     let transfer_good_one_amount_2g = Number(this.transfer_good_one_amount);
     let transfer_good_two_amount_2g = Number(this.transfer_good_two_amount);
+
+    if(transfer_good_one_amount_2g == 0 && transfer_good_two_amount_2g == 0)
+    {
+
+        let errors = {transfer_good_one_amount_2g:["Invalid Entry."],};
+        this.displayErrors(errors);
+        return;
+    }
 
     if(!Number.isInteger(transfer_good_one_amount_2g) || 
         parseInt(transfer_good_one_amount_2g) < 0)
