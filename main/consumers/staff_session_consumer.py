@@ -315,6 +315,20 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def end_early(self, event):
+        '''
+        set the current period as the last period
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_end_early)(self.session_id)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -756,3 +770,15 @@ def take_download_payment_data(session_id):
     session = Session.objects.get(id=session_id)
 
     return {"value" : "success", "result" : session.get_download_payment_csv()}
+
+def take_end_early(session_id):
+    '''
+    make the current period the last period
+    '''
+
+    session = Session.objects.get(id=session_id)
+
+    session.parameter_set.period_count = session.current_period
+    session.parameter_set.save()
+
+    return {"value" : "success", "result" : session.parameter_set.period_count}

@@ -180,7 +180,7 @@ class Session(models.Model):
         #check session over
         if self.time_remaining == 0 and \
            self.current_period_phase == PeriodPhase.TRADE and \
-           self.current_period == self.parameter_set.period_count:
+           self.current_period >= self.parameter_set.period_count:
 
             self.do_period_consumption()
             self.finished = True
