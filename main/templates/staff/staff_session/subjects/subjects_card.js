@@ -126,7 +126,7 @@ takeFinishedInstructions(messageData){
     if(messageData.status.value == "success")
     {
         let session_player_earnings = messageData.status.result.session_player_earnings;
-        let session_players = app.$data.session.session_players;
+        let session_players = this.session.session_players;
 
         for(let i=0; i<session_player_earnings.length; i++)
         {
@@ -172,4 +172,19 @@ findSessionPlayerIndex(id){
     }
 
     return null;
+},
+
+/**
+ * take update subjects production
+ */
+takeUpdateProductionTime(messageData){
+
+    if(messageData.status.value == "success")
+    {
+       
+        session_player = app.findSessionPlayer(messageData.status.result.id);
+        
+        session_player.good_one_production_rate = messageData.status.result.good_one_production_rate; 
+        session_player.good_two_production_rate = messageData.status.result.good_two_production_rate;    
+    }
 },
