@@ -49,7 +49,8 @@ var app = Vue.createApp({
 
                     current_town : "1",
 
-                    chat_list_to_display : [],                //list of chats to display on screen
+                    chat_list_to_display : [],                  //list of chats to display on screen
+                    notice_list_to_display : [],                  //list of chats to display on screen
 
                     data_downloading : false,                   //show spinner when data downloading
                 }},
@@ -97,6 +98,7 @@ var app = Vue.createApp({
                     break; 
                 case "update_move_goods":
                     app.takeUpdateGoods(messageData);
+                    app.takeUpdateNotice(messageData);
                     break;  
                 case "update_reset_experiment":
                     app.takeUpdateResetExperiment(messageData);
@@ -209,9 +211,9 @@ var app = Vue.createApp({
             
             app.updateChatDisplay(true);
             app.updatePhaseButtonText();
+            app.updateNoticeDisplay(true);        
         },
 
-       
         /**update text of move on button based on current state
          */
         updatePhaseButtonText(){
@@ -249,10 +251,10 @@ var app = Vue.createApp({
             let chat = result.chat;
             let town = result.town;
 
-            if(app.$data.session.chat_all[town].length>=100)
-                app.$data.session.chat_all[town].shift();
+            if(this.session.chat_all[town].length>=100)
+                this.session.chat_all[town].shift();
             
-            app.$data.session.chat_all[town].push(chat);
+            this.session.chat_all[town].push(chat);
             app.updateChatDisplay(false);
         },
 
@@ -261,16 +263,16 @@ var app = Vue.createApp({
          */
         updateChatDisplay(force_scroll){
             
-            app.$data.chat_list_to_display=Array.from(app.$data.session.chat_all[parseInt(app.$data.current_town)]);
+            this.chat_list_to_display=Array.from(this.session.chat_all[parseInt(this.current_town)]);
 
             //add spacers
-            for(let i=app.$data.chat_list_to_display.length;i<18;i++)
+            for(let i=this.chat_list_to_display.length;i<18;i++)
             {
-                app.$data.chat_list_to_display.unshift({id:i*-1,sender_label:"", text:"|", sender_id:0, chat_type:'All'})
+                this.chat_list_to_display.unshift({id:i*-1,sender_label:"", text:"|", sender_id:0, chat_type:'All'})
             }
 
             //scroll to view
-            if(app.$data.chat_list_to_display.length>0)
+            if(this.chat_list_to_display.length>0)
             {
                 Vue.nextTick(() => {app.updateChatDisplayScroll(force_scroll)});        
             }
@@ -285,6 +287,55 @@ var app = Vue.createApp({
             {
                 var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
                 elmnt.scrollIntoView(); 
+            }
+        },
+
+        /**
+         * update chat displayed based on town chosen
+         */
+        updateNoticeDisplay(forceScroll){            
+            this.notice_list_to_display=Array.from(this.session.notices[parseInt(this.current_town)]);
+            setTimeout(function() {  app.updateNoticeDisplayScrollStaff(forceScroll); }, 250);
+        },
+
+        /**
+         * show applicable notices.
+         */
+        takeUpdateNotice(messageData){
+
+            let result = messageData.status.result;
+
+            for(i=0;i<result.length;i++)
+            {
+                if(result[i].notice)
+                {
+                    session_player = app.findSessionPlayer(result[0].id);
+                    town = session_player.parameter_set_player.town; 
+                    notice = result[i].notice;
+                    if(notice.show_on_staff)
+                    {
+                        if(this.session.notices[town].length >= 100)
+                            this.session.notices[town].shift();
+                        
+                        this.session.notices[town].push(notice);
+                        this.updateNoticeDisplay(false);
+                         //scroll to view
+                       
+                    }
+                }
+            }
+
+            
+        },
+
+        updateNoticeDisplayScrollStaff(force_scroll){
+            if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
+            {
+                if(this.notice_list_to_display.length==0) return;
+            
+                var elmnt = document.getElementById("notice_id_" + this.notice_list_to_display[this.notice_list_to_display.length-1].id.toString());
+                elmnt.scrollIntoView();
+                
             }
         },
 
@@ -325,6 +376,7 @@ var app = Vue.createApp({
             app.destroyPixiPlayers();
             app.setupPixiPlayers();
             app.updateChatDisplay(true);
+            app.updateNoticeDisplay(true);
         },
         //do nothing on when enter pressed for post
         onSubmit(){

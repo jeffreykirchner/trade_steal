@@ -707,6 +707,7 @@ def take_move_goods(session_id, session_player_id, data):
                 session_player_notice_1.session_player = session_player
                 session_player_notice_1.text = f"You {transfer_string}"
                 session_player_notice_1.text = session_player_notice_1.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "your")
+                session_player_notice_1.show_on_staff = True
                 session_player_notice_1.save()
 
                 #record notice for source player if source does not match mover

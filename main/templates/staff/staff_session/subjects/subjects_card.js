@@ -145,7 +145,7 @@ takeFinishedInstructions(messageData){
   */
  findSessionPlayer(id){
 
-    let session_players = app.$data.session.session_players;
+    let session_players = this.session.session_players;
     for(let i=0; i<session_players.length; i++)
     {
         if(session_players[i].id == id)

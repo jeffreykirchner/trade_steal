@@ -17,7 +17,8 @@ class SessionPlayerNotice(models.Model):
     session_period = models.ForeignKey(SessionPeriod, on_delete=models.CASCADE, related_name="session_player_notices_a")
     session_player = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_notices_b")
 
-    text = models.CharField(max_length = 1000, default="", verbose_name="Notice Text")          #chat text
+    text = models.CharField(max_length = 1000, default="", verbose_name="Notice Text")                 #notice text
+    show_on_staff = models.BooleanField(default=False, verbose_name = 'Show Notice on Staff Screen')   #if true, show notice on staff screen as well as subject screen 
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -43,4 +44,6 @@ class SessionPlayerNotice(models.Model):
             "id" : self.id,   
             "session_player_id" : self.session_player.id, 
             "text" : self.text,  
+            "show_on_staff" : self.show_on_staff,
+            "session_player_label" : self.session_player.parameter_set_player.id_label,
         }
