@@ -5,8 +5,8 @@
  */
 setupPixi(){    
     app.resetPixiApp();
-    PIXI.Loader.shared.add("{% static 'sprite_sheet.json' %}")
-                      .add("{% static 'avatars.json' %}")
+    PIXI.Loader.shared.add("{% static graph_sprite_sheet %}")
+                      .add("{% static avatar_sprite_sheet %}")
                       .load(app.setupPixiSheets);
 },
 

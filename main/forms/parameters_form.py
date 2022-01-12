@@ -21,8 +21,12 @@ class ParametersForm(forms.ModelForm):
     experiment_time_zone = forms.ChoiceField(label="Study Timezone",
                                              choices=[(tz, tz) for tz in pytz.all_timezones])
 
-    channel_key = forms.CharField(label='Socket channel for general site.',
-                                  widget=forms.TextInput(attrs={"size":"125"}))
+    avatar_sprite_sheet = forms.CharField(label='Avatar Sprite Sheet',
+                               widget=forms.TextInput(attrs={"size":"125"}))
+    
+    graph_sprite_sheet = forms.CharField(label='Graph Sprite Sheet',
+                               widget=forms.TextInput(attrs={"size":"125"}))
+
 
     class Meta:
         model=Parameters

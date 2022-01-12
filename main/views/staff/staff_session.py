@@ -37,7 +37,7 @@ class StaffSessionView(SingleObjectMixin, View):
         handle get requests
         '''
         
-        parameters=Parameters.objects.first()
+        parameters = Parameters.objects.first()
 
         session = self.get_object()
 
@@ -49,10 +49,13 @@ class StaffSessionView(SingleObjectMixin, View):
         for i in SessionPlayerMoveThreeForm():
             session_player_move_three_form_ids.append(i.html_name)
 
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
                                "player_key" :  session.channel_key,
+                               "avatar_sprite_sheet" : parameters.avatar_sprite_sheet,
+                               "graph_sprite_sheet" : parameters.graph_sprite_sheet,
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "session_player_move_two_form" : SessionPlayerMoveTwoForm(),
