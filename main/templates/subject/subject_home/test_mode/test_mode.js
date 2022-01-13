@@ -196,9 +196,9 @@ doTestModeRun()
  */
 doTestModeChat(){
 
-    session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length)];
+    session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length-1)];
 
-    if(session_player_local.id == this.session_player.id)
+    if(session_player_local.id == this.session_player.id || this.session.current_experiment_phase == "Instructions")
     {
         document.getElementById("chat_all_id").click();
     }
