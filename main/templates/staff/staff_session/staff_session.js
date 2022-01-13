@@ -19,8 +19,7 @@ var app = Vue.createApp({
                     other_color : 0xD3D3D3,
                     session : {{session_json|safe}},
 
-                    session_player_move_two_form_ids: {{session_player_move_two_form_ids|safe}},
-                    session_player_move_three_form_ids: {{session_player_move_three_form_ids|safe}},
+                    staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 
                     move_to_next_phase_text : 'Start Next Experiment Phase',
 
@@ -50,9 +49,14 @@ var app = Vue.createApp({
                     current_town : "1",
 
                     chat_list_to_display : [],                  //list of chats to display on screen
-                    notice_list_to_display : [],                  //list of chats to display on screen
+                    notice_list_to_display : [],                //list of chats to display on screen
 
                     data_downloading : false,                   //show spinner when data downloading
+
+                    staffEditNameEtcForm : {name : "", student_id : "", email : "", id : -1},
+                    sendMessageModalForm : {subject : "", text : ""},
+
+                    emailResult : "",                          //result of sending invitation emails
                 }},
     methods: {
 
@@ -157,18 +161,12 @@ var app = Vue.createApp({
                 case "update_production_time":
                     app.takeUpdateProductionTime(messageData);
                     break;
+                case "update_subject":
+                    app.takeUpdateSubject(messageData);
+                    break;
             }
 
-            // if(!app.$data.first_load_done)
-            // {
-            //     if(!app.$data.session.started)
-            //     {
-            //         this.show_parameters = true;
-            //     }
-            // }
-
-            app.$data.first_load_done = true;
-
+            this.first_load_done = true;
             app.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
         },
@@ -177,10 +175,9 @@ var app = Vue.createApp({
         *    @param messageType {string} type of message sent to server
         *    @param messageText {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {
-            
+        sendMessage(messageType, messageText) {            
 
-            app.$data.chatSocket.send(JSON.stringify({
+            this.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
@@ -407,14 +404,7 @@ var app = Vue.createApp({
                 $("#id_errors_" + item).remove();
             }
 
-            s = app.$data.session_player_move_two_form_ids;
-            for(var i in s)
-            {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
-            }
-
-            s = app.$data.session_player_move_three_form_ids;
+            s = app.$data.staff_edit_name_etc_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
@@ -447,8 +437,8 @@ var app = Vue.createApp({
 
     mounted(){
 
-        $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
-        $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
+        $('#editSubjectModal').on("hidden.bs.modal", this.hideEditSubject);
+        $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession);
     },
 
 }).mount('#app');

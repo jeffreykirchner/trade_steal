@@ -78,41 +78,44 @@
 
 <!-- modals -->
 {%include "help_modal.html"%}
+{%include "staff/staff_session/session/edit_session_modal.html"%}
+{%include "staff/staff_session/subjects/edit_subject_modal.html"%}
+{%include "staff/staff_session/control/sendInvitationModal.html"%}
 
 <!-- cards -->
 <div class="row justify-content-lg-center" v-cloak>
     <div class="col-md">
-        {%include "staff/staff_session/subjects_card.html"%}                
+        {%include "staff/staff_session/subjects/subjects_card.html"%}                
     </div>    
 </div>
 
 <div class="row justify-content-lg-center mt-4" v-cloak>
     <div class="col-md-9">
-        {%include "staff/staff_session/graph_card.html"%}                
+        {%include "staff/staff_session/graph/graph_card.html"%}                
     </div>
     <div class="col-md-3">
        
         <div class="row">
             <div class="col">
-                {%include "staff/staff_session/session_card.html"%}
+                {%include "staff/staff_session/session/session_card.html"%}
             </div>
         </div>
 
         <div class="row mt-2">
             <div class="col">
-                {%include "staff/staff_session/control_card.html"%} 
+                {%include "staff/staff_session/control/control_card.html"%} 
             </div>
         </div>
         
         <div class="row mt-2">
             <div class="col">
-                {%include "staff/staff_session/summary_card.html"%}
+                {%include "staff/staff_session/summary/summary_card.html"%}
             </div>                
         </div>
 
         <div class="row mt-2">
             <div class="col">
-                {%include "staff/staff_session/data_card.html"%}
+                {%include "staff/staff_session/data/data_card.html"%}
             </div>                
         </div>
                                            

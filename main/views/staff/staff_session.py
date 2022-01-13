@@ -21,6 +21,7 @@ from main.models import Parameters
 from main.forms import SessionForm
 from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
+from main.forms import StaffEditNameEtcForm
 
 class StaffSessionView(SingleObjectMixin, View):
     '''
@@ -41,14 +42,9 @@ class StaffSessionView(SingleObjectMixin, View):
 
         session = self.get_object()
 
-        session_player_move_two_form_ids=[]
-        for i in SessionPlayerMoveTwoForm():
-            session_player_move_two_form_ids.append(i.html_name)
-
-        session_player_move_three_form_ids=[]
-        for i in SessionPlayerMoveThreeForm():
-            session_player_move_three_form_ids.append(i.html_name)
-
+        staff_edit_name_etc_form_ids=[]
+        for i in StaffEditNameEtcForm():
+            staff_edit_name_etc_form_ids.append(i.html_name)
 
         return render(request=request,
                       template_name=self.template_name,
@@ -58,10 +54,8 @@ class StaffSessionView(SingleObjectMixin, View):
                                "graph_sprite_sheet" : parameters.graph_sprite_sheet,
                                "id" : session.id,
                                "session_form" : SessionForm(),
-                               "session_player_move_two_form" : SessionPlayerMoveTwoForm(),
-                               "session_player_move_two_form_ids" : session_player_move_two_form_ids,
-                               "session_player_move_three_form" : SessionPlayerMoveThreeForm(),
-                               "session_player_move_three_form_ids" : session_player_move_three_form_ids,
+                               "staff_edit_name_etc_form" : StaffEditNameEtcForm(),
+                               "staff_edit_name_etc_form_ids" : staff_edit_name_etc_form_ids,
                                "websocket_path" : self.websocket_path,
                                "town_count_range" : range(session.parameter_set.town_count),
                                "page_key" : f'session-{session.id}',

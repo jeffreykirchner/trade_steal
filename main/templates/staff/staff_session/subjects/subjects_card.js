@@ -188,3 +188,66 @@ takeUpdateProductionTime(messageData){
         session_player.good_two_production_rate = messageData.status.result.good_two_production_rate;    
     }
 },
+
+
+/** send session update form   
+*/
+sendUpdateSubject(){
+    this.cancelModal = false;
+    this.working = true;
+    app.sendMessage("update_subject",
+                   {"formData" : this.staffEditNameEtcForm});
+},
+
+/** take update subject response
+ * @param messageData {json} result of update, either sucess or fail with errors
+*/
+takeUpdateSubject(messageData){
+    app.clearMainFormErrors();
+
+    if(messageData.status.value == "success")
+    {            
+        $('#editSubjectModal').modal('hide');    
+
+        let session_player = app.findSessionPlayer(messageData.status.session_player.id);
+        session_player.name = messageData.status.session_player.name;
+        session_player.student_id = messageData.status.session_player.student_id;
+        session_player.email = messageData.status.session_player.email;
+    } 
+    else
+    {
+        app.$data.cancelModal=true;                           
+        app.displayErrors(messageData.status.errors);
+    } 
+},
+
+/** show edit subject modal
+*/
+showEditSubject:function(id){
+    app.clearMainFormErrors();
+    this.cancelModal=true;
+
+    this.staffEditNameEtcForm.id = id;
+
+    let session_player = app.findSessionPlayer(id);
+
+    this.staffEditNameEtcForm.name = session_player.name;
+    this.staffEditNameEtcForm.student_id = session_player.student_id;
+    this.staffEditNameEtcForm.email = session_player.email;
+    
+    var myModal = new bootstrap.Modal(document.getElementById('editSubjectModal'), {
+        keyboard: false
+        })
+
+    myModal.toggle();
+},
+
+/** hide edit subject modal
+*/
+hideEditSubject:function(){
+    if(this.cancelModal)
+    {
+       
+       
+    }
+},

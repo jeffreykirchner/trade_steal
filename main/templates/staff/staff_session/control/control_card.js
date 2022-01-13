@@ -144,3 +144,62 @@ endEarly(){
 takeEndEarly(messageData){
    this.session.parameter_set.period_count = messageData.status.result;
 },
+
+/** send invitations
+*/
+sendSendInvitations(){
+
+    if(this.sendMessageModalForm.subject == "" || this.sendMessageModalForm.text == "")
+    {
+        this.emailResult = "Error: Please enter a subject and email body.";
+        return;
+    }
+
+    this.cancelModal = false;
+    this.working = true;
+    this.emailResult = "";
+    app.sendMessage("send_invitations",
+                   {"formData" : this.sendMessageModalForm});
+},
+
+/** take update subject response
+ * @param messageData {json} result of update, either sucess or fail with errors
+*/
+takeSendInvitations(messageData){
+    app.clearMainFormErrors();
+
+    if(messageData.status.value == "success")
+    {           
+        this.emailResult = messageData.status.result;
+    } 
+    else
+    {
+        this.emailResult = messageData.status.result;
+    } 
+},
+
+/** show edit subject modal
+*/
+showEditSubject:function(id){
+
+    this.cancelModal=true;
+
+    this.sendMessageModalForm.subject = session_player.name;
+    this.sendMessageModalForm.text = session_player.student_id;
+    
+    var myModal = new bootstrap.Modal(document.getElementById('sendMessageModal'), {
+        keyboard: false
+        })
+
+    myModal.toggle();
+},
+
+/** hide edit subject modal
+*/
+hideEditSubject:function(){
+    if(this.cancelModal)
+    {
+       
+       
+    }
+},

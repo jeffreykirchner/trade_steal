@@ -10,17 +10,19 @@ import asyncio
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
+from django.urls import reverse
 
 from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
 
 from main.forms import SessionForm
-from main.forms import SessionPlayerMoveTwoForm
-from main.forms import SessionPlayerMoveThreeForm
+from main.forms import StaffEditNameEtcForm
 
 from main.models import Session
+from main.models import Parameters
 
 from main.globals import ExperimentPhase
+from main.globals import send_mass_email_service
 
 class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
@@ -323,6 +325,34 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_end_early)(self.session_id)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_subject(self, event):
+        '''
+        set the name etc info of a subjec from staff screen
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_update_subject)(self.session_id,  event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def send_invitations(self, event):
+        '''
+        send invitations to subjects
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_send_invitations)(self.session_id,  event["message_text"])
 
         message = {}
         message["messageType"] = event["type"]
@@ -799,3 +829,70 @@ def take_end_early(session_id):
     session.parameter_set.save()
 
     return {"value" : "success", "result" : session.parameter_set.period_count}
+
+def take_update_subject(session_id, data):
+    '''
+    take update subject info from staff screen
+    param: data {json} incoming form and session data
+    '''
+
+    logger = logging.getLogger(__name__)
+    logger.info(f'take_update_subject: {data}')
+
+    #session_id = data["sessionID"]
+    form_data = dict(data["formData"])
+
+    try:        
+        session = Session.objects.get(id=session_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_update_session_form session, not found: {session_id}")
+        return {"status":"fail", "message":"session not found"}
+
+    form = StaffEditNameEtcForm(form_data)
+
+    if form.is_valid():
+
+        session_player = session.session_players.get(id=form_data["id"])
+        session_player.name = form.cleaned_data["name"]
+        session_player.student_id = form.cleaned_data["student_id"]
+        session_player.email = form.cleaned_data["email"]
+
+        session_player.save()              
+
+        return {"value":"success", "session_player" : session_player.json()}                      
+                                
+    logger.info("Invalid session form")
+    return {"status":"fail", "errors":dict(form.errors.items())}
+
+def take_send_invitations(session_id, data):
+    '''
+    send login link to subjects in session
+    '''
+    logger = logging.getLogger(__name__)
+    logger.info(f'take_send_invitations: {data}')
+
+    try:        
+        session = Session.objects.get(id=session_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_send_invitations session, not found: {session_id}")
+        return {"status":"fail", "message":"session not found"}
+
+    p = Parameters.objects.first()
+    message_text = data["invitation_text"]
+
+    message_text = message_text.replace("[contact email]", p.contact_email)
+
+    session.invitation_text = message_text
+    session.save()
+
+    user_list = []
+    for session_subject in session.session_subjects.exclude(email=None).exclude(email=""):
+        user_list.append({"email" : session_subject.email,
+                          "variables": [{"name" : "log in link",
+                                         "text" : reverse('subject_home', kwargs={'player_key': session_subject.player_key})
+                                        }] 
+                         })
+
+    memo = f'Trade Steal: Session {session_id}, send invitations'
+
+    return send_mass_email_service(user_list, p.invitation_subject, None , message_text, memo)

@@ -16,6 +16,7 @@ from .parameter_set_player_group_form import ParameterSetPlayerGroupForm
 
 from .session_player_move_two_form import SessionPlayerMoveTwoForm
 from .session_player_move_three_form import SessionPlayerMoveThreeForm
+from .session_player_name_etc_form import StaffEditNameEtcForm
 
 from .session_form_admin import SessionFormAdmin
 from .instruction_set_form_admin import InstructionSetFormAdmin
