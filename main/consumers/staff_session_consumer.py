@@ -11,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.urls import reverse
+from django.db.utils import IntegrityError
 
 from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
@@ -856,8 +857,11 @@ def take_update_subject(session_id, data):
         session_player.name = form.cleaned_data["name"]
         session_player.student_id = form.cleaned_data["student_id"]
         session_player.email = form.cleaned_data["email"]
-
-        session_player.save()              
+        
+        try:
+            session_player.save()              
+        except IntegrityError as e:
+            return {"value":"fail", "errors" : {f"email":["Email must be unique within session."]}}  
 
         return {"value":"success", "session_player" : session_player.json()}                      
                                 
@@ -880,12 +884,12 @@ def take_send_invitations(session_id, data):
     p = Parameters.objects.first()
     message = data["formData"]
 
-    message_text = message["text"]
-    message_text = message_text.replace("[contact email]", p.contact_email)
-
-    session.invitation_text = message_text
+    session.invitation_text =  message["text"]
     session.invitation_subject =  message["subject"]
     session.save()
+
+    message_text = message["text"]
+    message_text = message_text.replace("[contact email]", p.contact_email)
 
     user_list = []
     for session_subject in session.session_players.exclude(email=None).exclude(email=""):
