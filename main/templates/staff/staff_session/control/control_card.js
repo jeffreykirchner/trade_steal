@@ -180,12 +180,12 @@ takeSendInvitations(messageData){
 
 /** show edit subject modal
 */
-showEditSubject:function(id){
+showSendInvitations(){
 
     this.cancelModal=true;
 
-    this.sendMessageModalForm.subject = session_player.name;
-    this.sendMessageModalForm.text = session_player.student_id;
+    this.sendMessageModalForm.subject = this.session.name;
+    this.sendMessageModalForm.text = this.session;
     
     var myModal = new bootstrap.Modal(document.getElementById('sendMessageModal'), {
         keyboard: false
@@ -196,10 +196,21 @@ showEditSubject:function(id){
 
 /** hide edit subject modal
 */
-hideEditSubject:function(){
+hideSendInvitations(){
     if(this.cancelModal)
     {
        
        
     }
+},
+
+/**
+ * fill invitation with default values
+ */
+fillDefaultInvitation(){
+    this.sendMessageModalForm.subject = this.emailDefaultSubject;
+    
+    tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);
+
+
 },

@@ -53,7 +53,8 @@ class Session(models.Model):
     shared = models.BooleanField(default=False)                                  #shared session parameter sets can be imported by other users
     locked = models.BooleanField(default=False)                                  #locked models cannot be deleted
 
-    invitation_text = HTMLField(default="", verbose_name="Invitation Text")
+    invitation_text = HTMLField(default="", verbose_name="Invitation Text")       #inviataion email subject and text
+    invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
 
     soft_delete =  models.BooleanField(default=False)                            #hide session if true
 

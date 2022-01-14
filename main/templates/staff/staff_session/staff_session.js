@@ -57,6 +57,8 @@ var app = Vue.createApp({
                     sendMessageModalForm : {subject : "", text : ""},
 
                     emailResult : "",                          //result of sending invitation emails
+                    emailDefaultSubject : "{{parameters.invitation_subject}}",
+                    emailDefaultText : `{{parameters.invitation_text|safe}}`,
                 }},
     methods: {
 

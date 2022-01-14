@@ -19,8 +19,7 @@ from main.models import Session
 from main.models import Parameters
 
 from main.forms import SessionForm
-from main.forms import SessionPlayerMoveTwoForm
-from main.forms import SessionPlayerMoveThreeForm
+from main.forms import SessionInvitationForm
 from main.forms import StaffEditNameEtcForm
 
 class StaffSessionView(SingleObjectMixin, View):
@@ -54,6 +53,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "graph_sprite_sheet" : parameters.graph_sprite_sheet,
                                "id" : session.id,
                                "session_form" : SessionForm(),
+                               "session_invitation_form" : SessionInvitationForm(),
                                "staff_edit_name_etc_form" : StaffEditNameEtcForm(),
                                "staff_edit_name_etc_form_ids" : staff_edit_name_etc_form_ids,
                                "websocket_path" : self.websocket_path,

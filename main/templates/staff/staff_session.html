@@ -2,13 +2,26 @@
 {% load crispy_forms_tags %}
 
 {%block head%}
+
 <script type="text/javascript">
 
     $(document).ready(function(){
         {%include "staff/staff_session/staff_session.js"%}
+
+        tinyMCE.init({
+            mode: "textareas",
+            theme: "silver",
+            plugins: "spellchecker,directionality,paste,searchreplace",
+            directionality: "{{ directionality }}",
+            spellchecker_languages : "{{ spellchecker_languages }}",
+            spellchecker_rpc_url : "{{ spellchecker_rpc_url }}"
+        });
     });
 
+    
+
 </script>
+
 <style>
 
     canvas {

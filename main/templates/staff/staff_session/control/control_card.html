@@ -96,5 +96,17 @@
             </div>
         </div>
         
+        <!-- send invitations -->
+        <div class="row mt-2" v-show="session.started && !session.locked">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "showSendInvitations()"
+                        title="Send Invitations by Email"
+                        v-bind:disabled="reconnecting || working">
+                    Send Invitations <i class="far fa-envelope"></i>
+                </button>
+            </div>
+        </div>
     </div>                    
 </div> 
