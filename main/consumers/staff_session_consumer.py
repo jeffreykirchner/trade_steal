@@ -875,24 +875,31 @@ def take_send_invitations(session_id, data):
         session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
         logger.warning(f"take_send_invitations session, not found: {session_id}")
-        return {"status":"fail", "message":"session not found"}
+        return {"status":"fail", "result":"session not found"}
 
     p = Parameters.objects.first()
-    message_text = data["invitation_text"]
+    message = data["formData"]
 
+    message_text = message["text"]
     message_text = message_text.replace("[contact email]", p.contact_email)
 
     session.invitation_text = message_text
+    session.invitation_subject =  message["subject"]
     session.save()
 
     user_list = []
-    for session_subject in session.session_subjects.exclude(email=None).exclude(email=""):
+    for session_subject in session.session_players.exclude(email=None).exclude(email=""):
         user_list.append({"email" : session_subject.email,
                           "variables": [{"name" : "log in link",
-                                         "text" : reverse('subject_home', kwargs={'player_key': session_subject.player_key})
+                                         "text" : p.site_url + reverse('subject_home', kwargs={'player_key': session_subject.player_key})
                                         }] 
                          })
 
     memo = f'Trade Steal: Session {session_id}, send invitations'
 
-    return send_mass_email_service(user_list, p.invitation_subject, None , message_text, memo)
+    result = send_mass_email_service(user_list, session.invitation_subject, session.invitation_text , session.invitation_text, memo)
+
+    return {"value" : "success",
+            "result" : {"email_result" : result,
+                        "invitation_subject" : session.invitation_subject,
+                        "invitation_text" : session.invitation_text }}

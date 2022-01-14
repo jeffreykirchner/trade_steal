@@ -385,6 +385,8 @@ class Session(models.Model):
             "session_players":[i.json(False) for i in self.session_players.all()],
             "chat_all" : chat,
             "notices" : notices,
+            "invitation_text" : self.invitation_text,
+            "invitation_subject" : self.invitation_subject,
         }
     
     def json_for_subject(self, session_player):

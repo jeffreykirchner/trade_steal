@@ -149,6 +149,8 @@ takeEndEarly(messageData){
 */
 sendSendInvitations(){
 
+    this.sendMessageModalForm.text = tinymce.get("id_invitation_subject").getContent();
+
     if(this.sendMessageModalForm.subject == "" || this.sendMessageModalForm.text == "")
     {
         this.emailResult = "Error: Please enter a subject and email body.";
@@ -157,7 +159,8 @@ sendSendInvitations(){
 
     this.cancelModal = false;
     this.working = true;
-    this.emailResult = "";
+    this.emailResult = "Sending ...";
+
     app.sendMessage("send_invitations",
                    {"formData" : this.sendMessageModalForm});
 },
@@ -170,7 +173,10 @@ takeSendInvitations(messageData){
 
     if(messageData.status.value == "success")
     {           
-        this.emailResult = messageData.status.result;
+        this.emailResult = "Result: " + messageData.status.result.email_result.mail_count.toString() + " messages sent.";
+
+        this.session.invitation_subject = messageData.status.result.invitation_subject;
+        this.session.invitation_text = messageData.status.result.invitation_text;
     } 
     else
     {
@@ -184,8 +190,10 @@ showSendInvitations(){
 
     this.cancelModal=true;
 
-    this.sendMessageModalForm.subject = this.session.name;
-    this.sendMessageModalForm.text = this.session;
+    this.sendMessageModalForm.subject = this.session.invitation_subject;
+    this.sendMessageModalForm.text = this.session.invitation_text;
+
+    tinymce.get("id_invitation_subject").setContent(this.sendMessageModalForm.text);
     
     var myModal = new bootstrap.Modal(document.getElementById('sendMessageModal'), {
         keyboard: false
@@ -197,11 +205,7 @@ showSendInvitations(){
 /** hide edit subject modal
 */
 hideSendInvitations(){
-    if(this.cancelModal)
-    {
-       
-       
-    }
+    this.emailResult = "";
 },
 
 /**
@@ -211,6 +215,4 @@ fillDefaultInvitation(){
     this.sendMessageModalForm.subject = this.emailDefaultSubject;
     
     tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);
-
-
 },

@@ -166,6 +166,9 @@ var app = Vue.createApp({
                 case "update_subject":
                     app.takeUpdateSubject(messageData);
                     break;
+                case "send_invitations":
+                    app.takeSendInvitations(messageData);
+                    break;
             }
 
             this.first_load_done = true;
@@ -441,6 +444,7 @@ var app = Vue.createApp({
 
         $('#editSubjectModal').on("hidden.bs.modal", this.hideEditSubject);
         $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession);
+        $('#sendMessageModal').on("hidden.bs.modal", this.hideSendInvitations);
     },
 
 }).mount('#app');

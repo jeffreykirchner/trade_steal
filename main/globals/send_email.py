@@ -7,6 +7,7 @@ import requests
 import sys
 
 from django.conf import settings
+from django.utils.html import strip_tags
 
 def send_mass_email_service(user_list, message_subject, message_text, message_text_html, memo):
     '''
@@ -37,7 +38,7 @@ def send_mass_email_service(user_list, message_subject, message_text, message_te
 
     data = {"user_list" : user_list,
             "message_subject" : message_subject,
-            "message_text" : message_text,
+            "message_text" : strip_tags(message_text).replace("&nbsp;", " "),
             "message_text_html" : message_text_html,
             "memo" : memo}
     
