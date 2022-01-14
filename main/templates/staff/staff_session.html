@@ -9,12 +9,18 @@
         {%include "staff/staff_session/staff_session.js"%}
 
         tinyMCE.init({
-            mode: "textareas",
+            selector: "textarea",
+            height : "400",
             theme: "silver",
-            plugins: "spellchecker,directionality,paste,searchreplace",
+            plugins: "directionality,paste,searchreplace,code",
             directionality: "{{ directionality }}",
-            spellchecker_languages : "{{ spellchecker_languages }}",
-            spellchecker_rpc_url : "{{ spellchecker_rpc_url }}"
+        });
+
+        // Prevent Bootstrap dialog from blocking focusin
+        document.addEventListener('focusin', (e) => {
+        if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+            e.stopImmediatePropagation();
+        }
         });
     });
 

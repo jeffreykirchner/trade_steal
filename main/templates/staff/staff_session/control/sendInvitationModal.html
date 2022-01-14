@@ -1,5 +1,5 @@
 {% load crispy_forms_tags %}
-<div class="modal fade" id="sendMessageModal" data-bs-backdrop="static"  data-bs-keyboard="false" tabindex="-1" aria-labelledby="sendMessageModal" aria-hidden="true">
+<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -17,7 +17,9 @@
                 <hr>                
                 <div class="row">
                     <div class="col">
-                        <span v-html="'email addresses here'"></span>
+                        <span v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                            <span v-if="p.email != ''">[[p.email]] [[(session.session_players.length-1>index) ? ', ':'']]</span>
+                        </span>
                     </div>
                 </div>               
                 <div class="row">
@@ -28,7 +30,7 @@
             </div>
             <div class="modal-footer">   
                 <button type="button" 
-                        title="Send email invitations."
+                        title="Fill with default subject and body."
                         class="btn btn-outline-secondary" 
                         v-on:click = "fillDefaultInvitation()" 
                         v-bind:disabled = "reconnecting || working">                        
