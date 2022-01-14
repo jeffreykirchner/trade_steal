@@ -83,9 +83,15 @@ LOGGING = {
     },
 }
 
+#esi portal
 ESI_AUTH_URL = os.environ['ESI_AUTH_URL']
 ESI_AUTH_ACCOUNT_URL = os.environ['ESI_AUTH_ACCOUNT_URL']
 ESI_AUTH_PASSWORD_RESET_URL = os.environ['ESI_AUTH_PASSWORD_RESET_URL']
 ESI_AUTH_USERNAME = os.environ['ESI_AUTH_USERNAME']
 ESI_AUTH_PASS = os.environ['ESI_AUTH_PASS']
 ESI_AUTH_APP = os.environ['ESI_AUTH_APP']
+
+#email service
+EMAIL_MS_HOST = os.environ['EMAIL_MS_HOST']
+EMAIL_MS_USER_NAME = os.environ['EMAIL_MS_USER_NAME']
+EMAIL_MS_PASSWORD = os.environ['EMAIL_MS_PASSWORD']

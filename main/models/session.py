@@ -3,6 +3,7 @@ session model
 '''
 
 from datetime import datetime
+from tinymce.models import HTMLField
 
 import logging
 import uuid
@@ -51,6 +52,9 @@ class Session(models.Model):
 
     shared = models.BooleanField(default=False)                                  #shared session parameter sets can be imported by other users
     locked = models.BooleanField(default=False)                                  #locked models cannot be deleted
+
+    invitation_text = HTMLField(default="", verbose_name="Invitation Text")       #inviataion email subject and text
+    invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
 
     soft_delete =  models.BooleanField(default=False)                            #hide session if true
 
@@ -381,6 +385,8 @@ class Session(models.Model):
             "session_players":[i.json(False) for i in self.session_players.all()],
             "chat_all" : chat,
             "notices" : notices,
+            "invitation_text" : self.invitation_text,
+            "invitation_subject" : self.invitation_subject,
         }
     
     def json_for_subject(self, session_player):

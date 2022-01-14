@@ -2,13 +2,32 @@
 {% load crispy_forms_tags %}
 
 {%block head%}
+
 <script type="text/javascript">
 
     $(document).ready(function(){
         {%include "staff/staff_session/staff_session.js"%}
+
+        tinyMCE.init({
+            selector: "textarea",
+            height : "400",
+            theme: "silver",
+            plugins: "directionality,paste,searchreplace,code",
+            directionality: "{{ directionality }}",
+        });
+
+        // Prevent Bootstrap dialog from blocking focusin
+        document.addEventListener('focusin', (e) => {
+        if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+            e.stopImmediatePropagation();
+        }
+        });
     });
 
+    
+
 </script>
+
 <style>
 
     canvas {
@@ -78,41 +97,44 @@
 
 <!-- modals -->
 {%include "help_modal.html"%}
+{%include "staff/staff_session/session/edit_session_modal.html"%}
+{%include "staff/staff_session/subjects/edit_subject_modal.html"%}
+{%include "staff/staff_session/control/sendInvitationModal.html"%}
 
 <!-- cards -->
 <div class="row justify-content-lg-center" v-cloak>
     <div class="col-md">
-        {%include "staff/staff_session/subjects_card.html"%}                
+        {%include "staff/staff_session/subjects/subjects_card.html"%}                
     </div>    
 </div>
 
 <div class="row justify-content-lg-center mt-4" v-cloak>
     <div class="col-md-9">
-        {%include "staff/staff_session/graph_card.html"%}                
+        {%include "staff/staff_session/graph/graph_card.html"%}                
     </div>
     <div class="col-md-3">
        
         <div class="row">
             <div class="col">
-                {%include "staff/staff_session/session_card.html"%}
+                {%include "staff/staff_session/session/session_card.html"%}
             </div>
         </div>
 
         <div class="row mt-2">
             <div class="col">
-                {%include "staff/staff_session/control_card.html"%} 
+                {%include "staff/staff_session/control/control_card.html"%} 
             </div>
         </div>
         
         <div class="row mt-2">
             <div class="col">
-                {%include "staff/staff_session/summary_card.html"%}
+                {%include "staff/staff_session/summary/summary_card.html"%}
             </div>                
         </div>
 
         <div class="row mt-2">
             <div class="col">
-                {%include "staff/staff_session/data_card.html"%}
+                {%include "staff/staff_session/data/data_card.html"%}
             </div>                
         </div>
                                            

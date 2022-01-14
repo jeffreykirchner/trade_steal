@@ -13,3 +13,5 @@ from .sessions import ExperimentPhase
 from .round_half_away_from_zero import round_half_away_from_zero
 
 from .generate_css_sprite_sheet import generate_css_sprite_sheet
+
+from .send_email import send_mass_email_service

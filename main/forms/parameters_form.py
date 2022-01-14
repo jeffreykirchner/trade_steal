@@ -4,7 +4,7 @@ paramters model form
 import pytz
 
 from django import forms
-from django.forms import ModelChoiceField
+from tinymce.widgets import TinyMCE
 
 from main.models import Parameters
 
@@ -26,6 +26,12 @@ class ParametersForm(forms.ModelForm):
     
     graph_sprite_sheet = forms.CharField(label='Graph Sprite Sheet',
                                widget=forms.TextInput(attrs={"size":"125"}))
+
+    invitation_subject = forms.CharField(label='Invitation Subject',
+                               widget=forms.TextInput(attrs={"size":"125"}))
+    
+    invitation_text = forms.CharField(label='Invitation Text',
+                                      widget=TinyMCE(attrs={"rows":20, "cols":200, "plugins": "link image code"}))
 
 
     class Meta:

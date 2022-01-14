@@ -1,8 +1,8 @@
 /** send session update form   
 */
 sendUpdateSession(){
-    app.$data.cancelModal = false;
-    app.$data.working = true;
+    this.cancelModal = false;
+    this.working = true;
     app.sendMessage("update_session",{"formData" : $("#sessionForm").serializeArray()});
 },
 
@@ -19,7 +19,7 @@ takeUpdateSession(messageData){
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        this.cancelModal=true;                           
         app.displayErrors(messageData.errors);
     } 
 },

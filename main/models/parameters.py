@@ -1,8 +1,8 @@
 '''
 site parameters
 '''
-import uuid
 from django.db import models
+from tinymce.models import HTMLField
 
 #gloabal parameters for site
 class Parameters(models.Model):
@@ -17,6 +17,9 @@ class Parameters(models.Model):
 
     avatar_sprite_sheet = models.CharField(max_length = 200, default="avatars.json")          #sprite sheet with avatar images
     graph_sprite_sheet = models.CharField(max_length = 200, default="sprite_sheet.json")      #site sheet with graph images
+
+    invitation_text = HTMLField(default="", verbose_name="Invitation Text")
+    invitation_subject =  models.CharField(max_length = 200, default="", verbose_name="Invitation Subject")
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)

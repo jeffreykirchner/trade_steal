@@ -19,8 +19,9 @@ from main.consumers import SocketConsumerMixin
 import main
 
 from main.models import Session
-from main.models import parameter_set
-from main.models.parameter_set import ParameterSet
+from main.models import ParameterSet
+from main.models import Parameters
+
 # from main.globals import create_new_session_parameterset
 
 class StaffHomeConsumer(SocketConsumerMixin):
@@ -133,6 +134,8 @@ def create_new_session(auth_user):
     create an emtpy session and return it
     '''
     
+    p = Parameters.objects.first()
+
     session = Session()
 
     parameter_set = ParameterSet(instruction_set=main.models.InstructionSet.objects.first())
@@ -143,6 +146,9 @@ def create_new_session(auth_user):
     session.start_date = datetime.now(pytz.UTC)
     session.creator = auth_user
     session.current_period = 1
+
+    session.invitation_subject = p.invitation_subject
+    session.invitation_text = p.invitation_text
 
     session.save()
     session.update_player_count()
