@@ -2,16 +2,19 @@
 websocket session list
 '''
 from asgiref.sync import sync_to_async
+from asgiref.sync import async_to_sync
 
 import json
 import logging
 import asyncio
+import time
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.urls import reverse
 from django.db.utils import IntegrityError
+from channels.layers import get_channel_layer
 
 from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
@@ -224,7 +227,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             logger.info(f"continue_timer timer off")
             return
 
-        await asyncio.sleep(1)
+        # await asyncio.sleep(1)
 
         if not self.timer_running:
             logger.info(f"continue_timer timer off")
@@ -253,13 +256,18 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
             #if session is not over continue
             if not timer_result["end_game"]:
-                await self.channel_layer.send(
-                    self.channel_name,
-                    {
-                        'type': "continue_timer",
-                        'message_text': {},
-                    }
-                )
+
+                # await self.channel_layer.send(
+                #     self.channel_name,
+                #     {
+                #         'type': "continue_timer",
+                #         'message_text': {},
+                #     }
+                # )
+
+                loop = asyncio.get_event_loop()
+                loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
+
         
         logger.info(f"continue_timer end")
 
@@ -768,6 +776,24 @@ def take_start_timer(session_id, data):
 
     return {"value" : "success", "result" : session.json_for_timmer()}
 
+async def take_continue_timer(session_id, channel_name):
+    '''
+    continue the timmer 
+    '''
+    logger = logging.getLogger(__name__)
+    #logger.info(f"take_continue_timer before sleep")
+
+    #await asyncio.sleep(1)
+
+    #logger.info(f"take_continue_timer after sleep")
+
+    channel_layer = get_channel_layer()
+
+    await channel_layer.send(channel_name, {
+        "type": "continue_timer",
+        "message_text": {},
+    })
+
 def take_do_period_timer(session_id):
     '''
     do period timer actions
@@ -968,4 +994,3 @@ def take_email_list(session_id, data):
     return {"value" : "success",
             "result" : result}
     
-
