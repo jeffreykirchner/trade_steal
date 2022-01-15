@@ -69,6 +69,8 @@ sendMoveGoods(){
     if(!this.pixi_transfer_source) return;
     if(!this.pixi_transfer_target) return; 
 
+    app.clearMainFormErrors();
+
     if(this.pixi_transfer_source.name.type == "house" &&
        this.session.parameter_set.good_count == 3)
     {
