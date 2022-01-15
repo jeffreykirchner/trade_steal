@@ -157,9 +157,9 @@ takeFinishedInstructions(messageData){
     return null;
  },
 
-  /**
-  * return session player index that has specified id
-  */
+/**
+ * return session player index that has specified id
+ */
 findSessionPlayerIndex(id){
 
     let session_players = app.$data.session.session_players;
@@ -189,30 +189,33 @@ takeUpdateProductionTime(messageData){
     }
 },
 
-
 /** send session update form   
 */
-sendUpdateSubject(){
+sendEmailList(){
     this.cancelModal = false;
     this.working = true;
-    app.sendMessage("update_subject",
-                   {"formData" : this.staffEditNameEtcForm});
+
+    app.sendMessage("email_list",
+                   {"csv_data" : this.csv_email_list});
 },
 
 /** take update subject response
  * @param messageData {json} result of update, either sucess or fail with errors
 */
-takeUpdateSubject(messageData){
+takeUpdateEmailList(messageData){
     app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
     {            
-        $('#editSubjectModal').modal('hide');    
+        $('#uploadEmailModal').modal('hide');    
 
-        let session_player = app.findSessionPlayer(messageData.status.session_player.id);
-        session_player.name = messageData.status.session_player.name;
-        session_player.student_id = messageData.status.session_player.student_id;
-        session_player.email = messageData.status.session_player.email;
+        result = messageData.status.result;
+
+        for(i=0; i<result.length; i++)
+        {
+            let session_player = app.findSessionPlayer(result[i].id);
+            session_player.email = (result[i].email);
+        }
     } 
     else
     {
@@ -223,19 +226,13 @@ takeUpdateSubject(messageData){
 
 /** show edit subject modal
 */
-showEditSubject:function(id){
+showSendEmailList(){
     app.clearMainFormErrors();
     this.cancelModal=true;
 
-    this.staffEditNameEtcForm.id = id;
-
-    let session_player = app.findSessionPlayer(id);
-
-    this.staffEditNameEtcForm.name = session_player.name;
-    this.staffEditNameEtcForm.student_id = session_player.student_id;
-    this.staffEditNameEtcForm.email = session_player.email;
+    this.csv_email_list = "";
     
-    var myModal = new bootstrap.Modal(document.getElementById('editSubjectModal'), {
+    var myModal = new bootstrap.Modal(document.getElementById('uploadEmailModal'), {
         keyboard: false
         })
 
@@ -244,10 +241,11 @@ showEditSubject:function(id){
 
 /** hide edit subject modal
 */
-hideEditSubject:function(){
+hideSendEmailList(){
+    this.csv_email_list = "";
+
     if(this.cancelModal)
-    {
-       
+    {      
        
     }
 },

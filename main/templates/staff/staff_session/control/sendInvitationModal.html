@@ -14,9 +14,16 @@
                     </div>            
                 </div> 
                 {% endfor %}
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        Tags: [contact email] [log in link]
+                    </div>
+                </div>
                 <hr>                
                 <div class="row">
                     <div class="col">
+                        Email list: 
                         <span v-for="(p, index) in session.session_players" v-bind:key="p.id">
                             <span v-if="p.email != ''">[[p.email]][[(session.session_players.length-1>index) ? ', ':'']]</span>
                         </span>

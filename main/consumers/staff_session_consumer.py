@@ -11,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.urls import reverse
+from django.db.utils import IntegrityError
 
 from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
@@ -339,6 +340,20 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_subject)(self.session_id,  event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def email_list(self, event):
+        '''
+        take csv email list and load in to session players
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_email_list)(self.session_id,  event["message_text"])
 
         message = {}
         message["messageType"] = event["type"]
@@ -856,8 +871,11 @@ def take_update_subject(session_id, data):
         session_player.name = form.cleaned_data["name"]
         session_player.student_id = form.cleaned_data["student_id"]
         session_player.email = form.cleaned_data["email"]
-
-        session_player.save()              
+        
+        try:
+            session_player.save()              
+        except IntegrityError as e:
+            return {"value":"fail", "errors" : {f"email":["Email must be unique within session."]}}  
 
         return {"value":"success", "session_player" : session_player.json()}                      
                                 
@@ -869,7 +887,7 @@ def take_send_invitations(session_id, data):
     send login link to subjects in session
     '''
     logger = logging.getLogger(__name__)
-    logger.info(f'take_send_invitations: {data}')
+    logger.info(f'take_send_invitations: {session_id} {data}')
 
     try:        
         session = Session.objects.get(id=session_id)
@@ -880,12 +898,12 @@ def take_send_invitations(session_id, data):
     p = Parameters.objects.first()
     message = data["formData"]
 
-    message_text = message["text"]
-    message_text = message_text.replace("[contact email]", p.contact_email)
-
-    session.invitation_text = message_text
+    session.invitation_text =  message["text"]
     session.invitation_subject =  message["subject"]
     session.save()
+
+    message_text = message["text"]
+    message_text = message_text.replace("[contact email]", p.contact_email)
 
     user_list = []
     for session_subject in session.session_players.exclude(email=None).exclude(email=""):
@@ -903,3 +921,51 @@ def take_send_invitations(session_id, data):
             "result" : {"email_result" : result,
                         "invitation_subject" : session.invitation_subject,
                         "invitation_text" : session.invitation_text }}
+
+def take_email_list(session_id, data):
+    '''
+    take uploaded csv server from list and load emails into session players
+    '''
+
+    logger = logging.getLogger(__name__)
+    logger.info(f'take_email_list: {session_id} {data}')
+
+    try:        
+        session = Session.objects.get(id=session_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_send_invitations session, not found: {session_id}")
+        return {"status":"fail", "result":"session not found"}
+    
+    raw_list = data["csv_data"]
+
+    raw_list = raw_list.splitlines()
+
+    for i in range(len(raw_list)):
+        raw_list[i] = raw_list[i].split(',')
+    
+    u_list = []
+
+    for i in raw_list:
+        for j in i:
+            if "@" in j:
+                u_list.append(j)
+    
+    session.session_players.update(email=None)
+
+    for i in u_list:
+        p = session.session_players.filter(email=None).first()
+
+        if(p):
+            p.email = i
+            p.save()
+        else:
+            break
+    
+    result = []
+    for p in session.session_players.all():
+        result.append({"id" : p.id, "email" : p.email})
+    
+    return {"value" : "success",
+            "result" : result}
+    
+

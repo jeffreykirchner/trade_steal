@@ -59,6 +59,8 @@ var app = Vue.createApp({
                     emailResult : "",                          //result of sending invitation emails
                     emailDefaultSubject : "{{parameters.invitation_subject}}",
                     emailDefaultText : `{{parameters.invitation_text|safe}}`,
+
+                    csv_email_list : "",           //csv email list
                 }},
     methods: {
 
@@ -168,6 +170,9 @@ var app = Vue.createApp({
                     break;
                 case "send_invitations":
                     app.takeSendInvitations(messageData);
+                    break;
+                case "email_list":
+                    app.takeUpdateEmailList(messageData);
                     break;
             }
 
@@ -445,6 +450,7 @@ var app = Vue.createApp({
         $('#editSubjectModal').on("hidden.bs.modal", this.hideEditSubject);
         $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession);
         $('#sendMessageModal').on("hidden.bs.modal", this.hideSendInvitations);
+        $('#uploadEmailModal').on("hidden.bs.modal", this.hideSendEmailList);
     },
 
 }).mount('#app');

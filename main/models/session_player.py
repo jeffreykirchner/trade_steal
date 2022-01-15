@@ -47,7 +47,7 @@ class SessionPlayer(models.Model):
 
     name = models.CharField(verbose_name='Full Name', max_length = 100, default="")                     #subject's full name
     student_id = models.CharField(verbose_name='Student ID', max_length = 100, default="")              #subject's student ID number
-    email =  models.EmailField(verbose_name='Email Address', max_length = 100, blank=True)              #subject's email address
+    email =  models.EmailField(verbose_name='Email Address', max_length = 100, blank=True, null=True)              #subject's email address
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)                         #earnings in cents
 
     current_instruction = models.IntegerField(verbose_name='Current Instruction', default=0)                     #current instruction page subject is on
@@ -66,10 +66,12 @@ class SessionPlayer(models.Model):
         verbose_name_plural = 'Session Players'
         ordering = ['parameter_set_player__town', 'parameter_set_player__location']
         constraints = [
-              models.CheckConstraint(check=RawSQL('good_one_production_rate+good_two_production_rate=100',
+            models.CheckConstraint(check=RawSQL('good_one_production_rate+good_two_production_rate=100',
                                                   (),
                                                   output_field=models.BooleanField(),),                                                                       
                                      name='production_total_equals_100'),
+            
+            models.UniqueConstraint(fields=['session', 'email'], name='unique_email_session_player', condition=~Q(email="")),
         ]
 
     def check_good_available_at_location(self, good_location, parameter_set_good):
