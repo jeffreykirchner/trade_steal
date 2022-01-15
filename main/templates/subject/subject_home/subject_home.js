@@ -411,27 +411,27 @@ var app = Vue.createApp({
         */
         clearMainFormErrors(){
             
-            for(var item in app.$data.session)
+            for(var item in this.session)
             {
                 $("#id_" + item).attr("class","form-control");
                 $("#id_errors_" + item).remove();
             }
 
-            s = app.$data.session_player_move_two_form_ids;
+            s = this.session_player_move_two_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
                 $("#id_errors_" + s[i]).remove();
             }
 
-            s = app.$data.session_player_move_three_form_ids;
+            s = this.session_player_move_three_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
                 $("#id_errors_" + s[i]).remove();
             }
 
-            s = app.$data.end_game_form_ids;
+            s = this.end_game_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");
