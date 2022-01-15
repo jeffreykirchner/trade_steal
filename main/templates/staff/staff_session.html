@@ -9,7 +9,7 @@
         {%include "staff/staff_session/staff_session.js"%}
 
         tinyMCE.init({
-            selector: "textarea",
+            target: document.getElementById('id_invitation_subject'),
             height : "400",
             theme: "silver",
             plugins: "directionality,paste,searchreplace,code",
@@ -99,6 +99,7 @@
 {%include "help_modal.html"%}
 {%include "staff/staff_session/session/edit_session_modal.html"%}
 {%include "staff/staff_session/subjects/edit_subject_modal.html"%}
+{%include "staff/staff_session/subjects/upload_email_list.html"%}
 {%include "staff/staff_session/control/sendInvitationModal.html"%}
 
 <!-- cards -->
