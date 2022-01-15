@@ -266,7 +266,15 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 # )
 
                 loop = asyncio.get_event_loop()
-                loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
+                #loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
+                loop.call_later(1, asyncio.create_task, 
+                                self.channel_layer.send(
+                                    self.channel_name,
+                                    {
+                                        'type': "continue_timer",
+                                        'message_text': {},
+                                    }
+                                ))
 
         
         logger.info(f"continue_timer end")
@@ -775,24 +783,6 @@ def take_start_timer(session_id, data):
         session.save()
 
     return {"value" : "success", "result" : session.json_for_timmer()}
-
-async def take_continue_timer(session_id, channel_name):
-    '''
-    continue the timmer 
-    '''
-    logger = logging.getLogger(__name__)
-    #logger.info(f"take_continue_timer before sleep")
-
-    #await asyncio.sleep(1)
-
-    #logger.info(f"take_continue_timer after sleep")
-
-    channel_layer = get_channel_layer()
-
-    await channel_layer.send(channel_name, {
-        "type": "continue_timer",
-        "message_text": {},
-    })
 
 def take_do_period_timer(session_id):
     '''
