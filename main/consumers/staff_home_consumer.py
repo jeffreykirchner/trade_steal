@@ -41,7 +41,7 @@ class StaffHomeConsumer(SocketConsumerMixin):
 
         message_text = event["message_text"]
 
-        status = await delete_session(message_text["id"], self.user)
+        status = await sync_to_async(delete_session)(message_text["id"], self.user)
 
         logger.info(f"Delete Session success: {status}")
 
@@ -121,7 +121,27 @@ class StaffHomeConsumer(SocketConsumerMixin):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
 
-    #consumer updates
+    async def get_sessions_admin(self, event):
+        '''
+        return a list of all sessions
+        '''
+        logger = logging.getLogger(__name__) 
+        logger.info(f"Get Sessions Admin {event}")   
+
+        self.user = self.scope["user"]
+        logger.info(f"User {self.user}")     
+
+        #build response
+        message_data = {}
+        message_data["sessions_admin"] = await sync_to_async(get_session_list_admin_json)(self.user)
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+   
     async def update_connection_status(self, event):
         '''
         handle connection status update from group member
@@ -181,7 +201,6 @@ def get_session_list_admin_json(usr):
     else:
         return []
 
-@sync_to_async
 def delete_session(id_, user):
     '''
     delete specified session
@@ -210,19 +229,18 @@ def delete_session(id_, user):
         logger.warning(f"Delete Session, not found: {id}")
         return False
 
-@sync_to_async
-def get_session(id_):
-    '''
-    return session with specified id
-    param: id_ {int} session id
-    '''
-    session = None
-    logger = logging.getLogger(__name__)
+# @sync_to_async
+# def get_session(id_):
+#     '''
+#     return session with specified id
+#     param: id_ {int} session id
+#     '''
+#     session = None
+#     logger = logging.getLogger(__name__)
 
-    try:        
-        session = Session.objects.get(id=id_)
-        return session.json()
-    except ObjectDoesNotExist:
-        logger.warning(f"get_session session, not found: {id_}")
-        return {}
-    
+#     try:        
+#         session = Session.objects.get(id=id_)
+#         return session.json()
+#     except ObjectDoesNotExist:
+#         logger.warning(f"get_session session, not found: {id_}")
+#         return {}

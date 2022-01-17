@@ -10,6 +10,13 @@
 
 </script>
 
+<style>
+    .table_header{
+        font-weight:bold;
+        font-size: 16px;
+    }
+</style>
+
 {%endblock head%}
 
 {% block content %}
@@ -18,4 +25,12 @@
         {%include "staff/staff_home/sessions_card.html"%}                   
     </div>
 </div>
+
+{%if request.user.is_superuser%}
+<div class="row justify-content-lg-center" v-cloak>
+    <div class="col col-md-8 mt-4">
+        {%include "staff/staff_home/sessions_full_admin_card.html"%}                   
+    </div>
+</div>
+{%endif%}
 {% endblock %}
