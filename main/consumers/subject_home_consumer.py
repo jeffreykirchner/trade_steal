@@ -33,6 +33,8 @@ from main.globals import round_half_away_from_zero
 
 from main.decorators import check_sesison_started_ws
 
+import main
+
 class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
     websocket session list
@@ -516,17 +518,14 @@ def take_move_goods(session_id, session_player_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Move goods: {session_id} {session_player_id} {data}")
 
-    #session_id = data["sessionID"]
-    #uuid = data["uuid"]
-
-    form_data = data["formData"]
-    
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
-
     try:
+        form_data = data["formData"]
+    
+        form_data_dict = {}
+
+        for field in form_data:            
+            form_data_dict[field["name"]] = field["value"]
+
         logger.info(f'form_data_dict : {form_data_dict}')       
 
         source_type = data["sourceType"]
@@ -554,6 +553,10 @@ def take_move_goods(session_id, session_player_id, data):
             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session complete."]},
                     "message" : "Move Error"}
         
+        if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
+            return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session is not running."]},
+                    "message" : "Move Error"}
+        
         if session.current_period_phase == PeriodPhase.PRODUCTION:
              return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers during production phase."]},
                      "message" : "Move Error"}
@@ -565,7 +568,9 @@ def take_move_goods(session_id, session_player_id, data):
         
     except KeyError:
             logger.warning(f"take_move_goods session, setup form: {session_id}")
-            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}
+            return {"value" : "fail",
+                    "errors" : {f"transfer_good_one_amount_2g":[f"Move failed."], f"transfer_good_one_amount_3g":[f"Move failed."]}, 
+                    "message" : "Move Error",}
 
     if form.is_valid():
         #print("valid form") 
@@ -579,11 +584,15 @@ def take_move_goods(session_id, session_player_id, data):
                 #check that stealing is allowed
                 if not session.parameter_set.allow_stealing and source_session_player != session_player:
                     return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Invalid source."]},
-                            "message" : "Move Error"}
+                            "message" : "Invalid source."}
 
                 good_one_amount = form.cleaned_data[f"transfer_good_one_amount_{form_type}"]
                 good_two_amount = form.cleaned_data[f"transfer_good_two_amount_{form_type}"]
                 good_three_amount = 0
+
+                if good_one_amount == 0 and good_two_amount == 0:
+                    return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Nothing to transfer."]},
+                            "message" : "Move error."}
 
                 #check that target can accept goods
                 if good_one_amount > 0:
@@ -606,17 +615,17 @@ def take_move_goods(session_id, session_player_id, data):
                 #handle source
                 if source_type == "house":
                     if round_half_away_from_zero(source_session_player.good_one_house, 0) < good_one_amount:
-                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
+                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                     
                     #check enough good two
                     if round_half_away_from_zero(source_session_player.good_two_house, 0) < good_two_amount:
-                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
+                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
 
                     if round_half_away_from_zero(session.parameter_set.good_count, 0) == 3:
                         if source_session_player.good_three_house < good_three_amount:
-                            return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_three.label}."]},
+                            return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_three.label}."]},
                                     "message" : "Move Error"}
 
                         source_session_player.good_three_house -= good_three_amount
@@ -636,12 +645,12 @@ def take_move_goods(session_id, session_player_id, data):
                 else:
                     #check enough good one
                     if round_half_away_from_zero(source_session_player.good_one_field, 0) < good_one_amount:
-                        return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
+                        return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                     
                     #check enough good two
                     if round_half_away_from_zero(source_session_player.good_two_field, 0) < good_two_amount:
-                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Source does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
+                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
                     
                     source_session_player.good_one_field -= good_one_amount
