@@ -35,11 +35,41 @@ class TestSubjectConsumer(TestCase):
         session_player_1 = session.session_players.all()[0]
         session_player_2 = session.session_players.all()[1]
 
-        v = {'recipients': 'all', 'text': 'asdf'}
+        v_all = {'recipients': 'all', 'text': 'asdf'}
+        v_one_to_two = {'recipients': session_player_2.id, 'text': 'zxcvb'}
 
-        result = take_chat(session.id, session_player_1.id, v)
+        #check started
+        result = take_chat(session.id, session_player_1.id, v_all)
         self.assertEqual("fail", result["value"])
         self.assertEqual("Session not started.", result["result"]["message"])
+
+        session.start_experiment()
+
+        #check session running
+        result = take_chat(session.id, session_player_1.id, v_all)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Session not running.", result["result"]["message"])
+
+        session.current_experiment_phase = ExperimentPhase.RUN
+        session.save()
+
+        #check private chat
+        result = take_chat(session.id, session_player_1.id, v_one_to_two)
+        self.assertEqual("success", result["value"])
+        session_player_chat = main.models.SessionPlayerChat.objects.get(id=result["result"]["chat_for_subject"]["id"])
+        self.assertEqual(v_one_to_two["text"], session_player_chat.text)
+
+        session.parameter_set.private_chat = False
+        session.parameter_set.save()
+
+        result = take_chat(session.id, session_player_1.id, v_one_to_two)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Private chat not allowed.", result["result"]["message"])
+
+        #check public chat
+        session.parameter_set.private_chat = False
+        session.parameter_set.save()
+
 
     def test_move_goods(self):
         '''

@@ -815,7 +815,7 @@ def take_chat(session_id, session_player_id, data):
         if not session.parameter_set.private_chat:
             logger.warning(f"take chat: private chat not enabled :{session_id} {session_player_id} {data}")
             return {"value" : "fail",
-                    "result" : {}}
+                    "result" : {"message" : "Private chat not allowed."}}
 
         session_player_chat.chat_type = ChatTypes.INDIVIDUAL
 
@@ -840,7 +840,7 @@ def take_chat(session_id, session_player_id, data):
         else:
             session_player_chat.delete()
             logger.warning(f"take chat: chat at none group member : {session_id} {session_player_id} {data}")
-            return {"value" : "fail", "result" : {}}
+            return {"value" : "fail", "result" : {"Player not in group."}}
 
         result["sesson_player_target"] = sesson_player_target.id
 
