@@ -48,8 +48,8 @@ resetPixiApp(){
 /** load pixi sprite sheets
 */
 setupPixiSheets(){
-    app.$data.house_sheet = PIXI.Loader.shared.resources["{% static 'sprite_sheet.json' %}"].spritesheet;
-    app.$data.avatar_sheet = PIXI.Loader.shared.resources["{% static 'avatars.json' %}"].spritesheet;
+    app.$data.house_sheet = PIXI.Loader.shared.resources["{% static parameters.graph_sprite_sheet %}"].spritesheet;
+    app.$data.avatar_sheet = PIXI.Loader.shared.resources["{% static parameters.avatar_sprite_sheet %}"].spritesheet;
     app.$data.house_sprite = new PIXI.Sprite(app.$data.house_sheet.textures["House0000"]);
 
     app.$data.grid_x = 11;

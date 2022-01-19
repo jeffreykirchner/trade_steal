@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
 
 from main.models import Parameters
 from main.forms import LoginForm
@@ -143,7 +144,7 @@ def login_function_esi_auth(username, password):
 
             user = get_user_model().objects.create_user(username=profile['global_id'],
                                                 email=profile['email'],
-                                                password=password,                                         
+                                                password=get_random_string(22),                                         
                                                 first_name=profile['first_name'],
                                                 last_name=profile['last_name'])
             
@@ -151,7 +152,6 @@ def login_function_esi_auth(username, password):
         else:
             user = users.first()
             user.email = profile['email']
-            user.password = password
             user.first_name = profile['first_name']
             user.last_name = profile['last_name']
 

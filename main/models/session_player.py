@@ -165,7 +165,7 @@ class SessionPlayer(models.Model):
         self.earnings = 0
         self.name = ""
         self.student_id = ""
-        self.email = ""
+        self.email = None
 
         self.good_one_production_rate = 50
         self.good_two_production_rate = 50

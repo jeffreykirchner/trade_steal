@@ -93,7 +93,7 @@
                                 [[p.name=="" ? "---" : p.name]]
                             </td>
                             <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
-                                [[p.email=="" ? "---" : p.email]]
+                                [[(!p.email || p.email=="") ? "---" : p.email]]
                             </td>
                             <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
                                 [[p.student_id=="" ? "---" : p.student_id]]
