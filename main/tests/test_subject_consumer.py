@@ -14,6 +14,7 @@ from main.globals import ChatTypes
 
 from main.consumers import take_move_goods
 from main.consumers import take_chat
+from main.consumers import take_production_time
 
 import main
 
@@ -25,6 +26,72 @@ class TestSubjectConsumer(TestCase):
     def setUp(self):
         logger = logging.getLogger(__name__)
     
+    def test_production(self):
+        '''
+        test production
+        '''
+
+        logger = logging.getLogger(__name__)
+
+        session = main.models.Session.objects.first()
+        session_player_1 = session.session_players.get(player_number=1)
+
+        session.current_experiment_phase = ExperimentPhase.RUN
+        session.save()
+
+        v = {'production_slider_one': 31, 'production_slider_two': 69}
+
+        #try valid values period one during production
+        result = take_production_time(session.id, session_player_1.id, v)
+        self.assertEqual("success", result["value"])
+        
+        #no updates during production phase
+        session.current_period = 2
+        session.save()
+
+        result = take_production_time(session.id, session_player_1.id, v)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Not updates during production.", result["message"])
+
+        #valid values during trade after period 1
+        session.current_period_phase = PeriodPhase.TRADE
+        session.save()
+
+        result = take_production_time(session.id, session_player_1.id, v)
+        self.assertEqual("success", result["value"])
+
+        #values not equal to 100
+        v1 = deepcopy(v)
+        v1['production_slider_one'] = 33
+        result = take_production_time(session.id, session_player_1.id, v1)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Invalid values.", result["message"])
+
+        #values not equal to 100
+        v1 = deepcopy(v)
+        v1['production_slider_one'] = -100
+        v1['production_slider_two'] = 200
+        result = take_production_time(session.id, session_player_1.id, v1)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Invalid values.", result["message"])
+
+        #junk
+        v1 = deepcopy(v)
+        v1['production_slider_one'] = "a"
+        v1['production_slider_two'] = 100
+        result = take_production_time(session.id, session_player_1.id, v1)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Invalid values.", result["message"])
+
+        v1 = deepcopy(v)
+        v1['production_slider_one'] = 50.5
+        v1['production_slider_two'] = 49.5
+        result = take_production_time(session.id, session_player_1.id, v1)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Invalid values.", result["message"])
+
+
+
     def test_chat(self):
         '''
         test chat
@@ -100,6 +167,11 @@ class TestSubjectConsumer(TestCase):
         self.assertIn(session_player_3, session_player_chat.session_player_recipients.all())
         self.assertNotIn(session_player_9, session_player_chat.session_player_recipients.all())
 
+        #junk
+        result = take_chat(session.id, session_player_2.id, {})
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Invalid chat.", result["result"]["message"])
+
     def test_move_goods(self):
         '''
         test move goods
@@ -110,7 +182,6 @@ class TestSubjectConsumer(TestCase):
         session = main.models.Session.objects.first()
         session_player_1 = session.session_players.get(player_number=1)
         session_player_2 = session.session_players.get(player_number=2)
-
 
         v = {}
         v["sourceType"] = "field"
