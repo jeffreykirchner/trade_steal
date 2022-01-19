@@ -8,8 +8,9 @@ import logging
 
 from django.test import TestCase
 
-from main.globals import  PeriodPhase
+from main.globals import PeriodPhase
 from main.globals import ExperimentPhase
+from main.globals import ChatTypes
 
 from main.consumers import take_move_goods
 from main.consumers import take_chat
@@ -32,8 +33,10 @@ class TestSubjectConsumer(TestCase):
         logger = logging.getLogger(__name__)
 
         session = main.models.Session.objects.first()
-        session_player_1 = session.session_players.all()[0]
-        session_player_2 = session.session_players.all()[1]
+        session_player_1 = session.session_players.get(player_number=1)
+        session_player_2 = session.session_players.get(player_number=2)
+        session_player_3 = session.session_players.get(player_number=3)
+        session_player_9 = session.session_players.get(player_number=9)
 
         v_all = {'recipients': 'all', 'text': 'asdf'}
         v_one_to_two = {'recipients': session_player_2.id, 'text': 'zxcvb'}
@@ -58,6 +61,10 @@ class TestSubjectConsumer(TestCase):
         self.assertEqual("success", result["value"])
         session_player_chat = main.models.SessionPlayerChat.objects.get(id=result["result"]["chat_for_subject"]["id"])
         self.assertEqual(v_one_to_two["text"], session_player_chat.text)
+        self.assertEqual(ChatTypes.INDIVIDUAL, session_player_chat.chat_type)
+        self.assertEqual(session_player_1.id, session_player_chat.session_player.id)
+        self.assertIn(session_player_2, session_player_chat.session_player_recipients.all())
+        self.assertNotIn(session_player_3, session_player_chat.session_player_recipients.all())
 
         session.parameter_set.private_chat = False
         session.parameter_set.save()
@@ -67,9 +74,31 @@ class TestSubjectConsumer(TestCase):
         self.assertEqual("Private chat not allowed.", result["result"]["message"])
 
         #check public chat
-        session.parameter_set.private_chat = False
+        session.parameter_set.private_chat = True
         session.parameter_set.save()
 
+        result = take_chat(session.id, session_player_2.id, v_all)
+        self.assertEqual("success", result["value"])
+        session_player_chat = main.models.SessionPlayerChat.objects.get(id=result["result"]["chat_for_subject"]["id"])
+        self.assertEqual(v_all["text"], session_player_chat.text)
+        self.assertEqual(ChatTypes.ALL, session_player_chat.chat_type)
+        self.assertEqual(session_player_2.id, session_player_chat.session_player.id)
+        self.assertIn(session_player_1, session_player_chat.session_player_recipients.all())
+        self.assertNotIn(session_player_3, session_player_chat.session_player_recipients.all())
+
+        #advance period and update groups
+        session.current_period = 14
+        session.save()
+
+        result = take_chat(session.id, session_player_2.id, v_all)
+        self.assertEqual("success", result["value"])
+        session_player_chat = main.models.SessionPlayerChat.objects.get(id=result["result"]["chat_for_subject"]["id"])
+        self.assertEqual(v_all["text"], session_player_chat.text)
+        self.assertEqual(ChatTypes.ALL, session_player_chat.chat_type)
+        self.assertEqual(session_player_2.id, session_player_chat.session_player.id)
+        self.assertIn(session_player_1, session_player_chat.session_player_recipients.all())
+        self.assertIn(session_player_3, session_player_chat.session_player_recipients.all())
+        self.assertNotIn(session_player_9, session_player_chat.session_player_recipients.all())
 
     def test_move_goods(self):
         '''
@@ -79,8 +108,8 @@ class TestSubjectConsumer(TestCase):
         logger = logging.getLogger(__name__)
 
         session = main.models.Session.objects.first()
-        session_player_1 = session.session_players.all()[0]
-        session_player_2 = session.session_players.all()[1]
+        session_player_1 = session.session_players.get(player_number=1)
+        session_player_2 = session.session_players.get(player_number=2)
 
 
         v = {}
@@ -123,7 +152,7 @@ class TestSubjectConsumer(TestCase):
         #check transfer works
         result = take_move_goods(session.id, session_player_1.id, v)
         self.assertEqual("success", result["value"])
-        session_player_1 = session.session_players.all()[0]
+        session_player_1 = session.session_players.get(player_number=1)
         self.assertEqual(Decimal('99'), session_player_1.good_one_field)
         self.assertEqual(Decimal('98'), session_player_1.good_two_field)
         self.assertEqual(Decimal('1'), session_player_1.good_one_house)
@@ -155,8 +184,8 @@ class TestSubjectConsumer(TestCase):
         v1["targetID"] = session_player_2.id
         result = take_move_goods(session.id, session_player_2.id, v1)
         self.assertEqual("success", result["value"])
-        session_player_1 = session.session_players.all()[0]
-        session_player_2 = session.session_players.all()[1]
+        session_player_1 = session.session_players.get(player_number=1)
+        session_player_2 = session.session_players.get(player_number=2)
         self.assertEqual(Decimal('98'), session_player_1.good_one_field)
         self.assertEqual(Decimal('96'), session_player_1.good_two_field)
         self.assertEqual(Decimal('1'), session_player_2.good_one_house)
@@ -173,8 +202,8 @@ class TestSubjectConsumer(TestCase):
         v1["targetType"] = "house"
         result = take_move_goods(session.id, session_player_1.id, v1)
         self.assertEqual("success", result["value"])
-        session_player_1 = session.session_players.all()[0]
-        session_player_2 = session.session_players.all()[1]
+        session_player_1 = session.session_players.get(player_number=1)
+        session_player_2 = session.session_players.get(player_number=2)
         self.assertEqual(Decimal('0'), session_player_1.good_one_house)
         self.assertEqual(Decimal('0'), session_player_1.good_two_house)
         self.assertEqual(Decimal('2'), session_player_2.good_one_house)
