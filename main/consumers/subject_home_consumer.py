@@ -801,10 +801,13 @@ def take_chat(session_id, session_player_id, data):
     session_player_chat.session_period = session.get_current_session_period()
 
     if not session.started:
-        return  {"value" : "fail", "result" : {}}
+        return  {"value" : "fail", "result" : {"message" : "Session not started."}, }
         
     if session.finished:
-        return {"value" : "fail", "result" : {}}
+        return {"value" : "fail", "result" : {"message" : "Session finished."}}
+
+    if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
+            return {"value" : "fail", "result" : {"message" : "Session not running."}}
 
     if recipients == "all":
         session_player_chat.chat_type = ChatTypes.ALL
@@ -812,7 +815,7 @@ def take_chat(session_id, session_player_id, data):
         if not session.parameter_set.private_chat:
             logger.warning(f"take chat: private chat not enabled :{session_id} {session_player_id} {data}")
             return {"value" : "fail",
-                    "result" : {"message" : "Private chat not enabled"}}
+                    "result" : {}}
 
         session_player_chat.chat_type = ChatTypes.INDIVIDUAL
 

@@ -12,6 +12,7 @@ from main.globals import  PeriodPhase
 from main.globals import ExperimentPhase
 
 from main.consumers import take_move_goods
+from main.consumers import take_chat
 
 import main
 
@@ -23,8 +24,26 @@ class TestSubjectConsumer(TestCase):
     def setUp(self):
         logger = logging.getLogger(__name__)
     
+    def test_chat(self):
+        '''
+        test chat
+        '''
+
+        logger = logging.getLogger(__name__)
+
+        session = main.models.Session.objects.first()
+        session_player_1 = session.session_players.all()[0]
+        session_player_2 = session.session_players.all()[1]
+
+        v = {'recipients': 'all', 'text': 'asdf'}
+
+        result = take_chat(session.id, session_player_1.id, v)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Session not started.", result["result"]["message"])
+
     def test_move_goods(self):
         '''
+        test move goods
         '''
 
         logger = logging.getLogger(__name__)
