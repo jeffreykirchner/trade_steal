@@ -20,7 +20,7 @@ from main.forms import SessionPlayerMoveTwoForm
 from main.forms import SessionPlayerMoveThreeForm
 from main.forms import EndGameForm
 
-from main.models import Session, avatar
+from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerMove
 from main.models import SessionPlayerChat
@@ -786,8 +786,11 @@ def take_chat(session_id, session_player_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"take chat: {session_id} {session_player_id} {data}")
 
-    recipients = data["recipients"] 
-    chat_text = data["text"]
+    try:
+        recipients = data["recipients"] 
+        chat_text = data["text"]
+    except KeyError:
+         return {"value" : "fail", "result" : {"message" : "Invalid chat."}}
 
     result = {}
     #result["recipients"] = []
@@ -880,14 +883,20 @@ def take_production_time(session_id, session_player_id, data):
     logger.info(f"take production time: {session_id} {session_player_id} {data}")
 
     try:
-        good_one_production_rate =  data["production_slider_one"]
-        good_two_production_rate = data["production_slider_two"]
+        good_one_production_rate = int(data["production_slider_one"])
+        good_two_production_rate = int(data["production_slider_two"])
     except KeyError:
         message = "Invalid values."
         logger.warning(f"take production time: {message}")
         return {"value" : "fail", "result" : {}, "message" : message}
-    
-    if good_one_production_rate + good_two_production_rate != 100:
+    except ValueError:
+        message = "Invalid values."
+        logger.warning(f"take production time: {message}")
+        return {"value" : "fail", "result" : {}, "message" : message}
+
+    if good_one_production_rate + good_two_production_rate != 100 or \
+       good_one_production_rate < 0 or good_two_production_rate < 0:
+
         message = "Invalid values."
         logger.warning(f"take production time: {message}")
         return {"value" : "fail", "result" : {}, "message" : message}
