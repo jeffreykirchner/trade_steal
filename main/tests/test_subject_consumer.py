@@ -15,6 +15,7 @@ from main.globals import ChatTypes
 from main.consumers import take_move_goods
 from main.consumers import take_chat
 from main.consumers import take_production_time
+from main.consumers import take_name
 
 import main
 
@@ -25,6 +26,25 @@ class TestSubjectConsumer(TestCase):
 
     def setUp(self):
         logger = logging.getLogger(__name__)
+    
+    def test_name(self):
+        '''
+        test name and id entry
+        '''
+
+        logger = logging.getLogger(__name__)
+        session = main.models.Session.objects.first()
+        session_player_1 = session.session_players.get(player_number=1)
+        session_player_2 = session.session_players.get(player_number=2)
+        session_player_3 = session.session_players.get(player_number=3)
+
+        v = {'formData': [{'name': 'name', 'value': 'joe is the name'}, {'name': 'student_id', 'value': '123456789'}]}
+
+        #session not finished
+        result = take_name(session.id, session_player_1.id, v)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Session not complete.", result["errors"]["name"][0])
+
     
     def test_production(self):
         '''
@@ -89,8 +109,6 @@ class TestSubjectConsumer(TestCase):
         result = take_production_time(session.id, session_player_1.id, v1)
         self.assertEqual("fail", result["value"])
         self.assertEqual("Invalid values.", result["message"])
-
-
 
     def test_chat(self):
         '''

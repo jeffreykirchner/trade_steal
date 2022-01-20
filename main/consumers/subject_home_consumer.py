@@ -951,40 +951,36 @@ def take_name(session_id, session_player_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Take name: {session_id} {session_player_id} {data}")
 
-    form_data = data["formData"]
-    
     form_data_dict = {}
 
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
-
     try:
-        session = Session.objects.get(id=session_id)
-        session_player = session.session_players.get(id=session_player_id)
+        form_data = data["formData"]
 
-        logger.info(f'form_data_dict : {form_data_dict}')       
+        for field in form_data:            
+            form_data_dict[field["name"]] = field["value"]
 
-        form = EndGameForm(form_data_dict)
-        
-        if not session.finished:
-            return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
-                    "message" : "Move Error"}
-        
     except KeyError:
-            logger.warning(f"take_name , setup form: {session_player_id}")
-            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}
+        logger.warning(f"take_name , setup form: {session_player_id}")
+        return {"value" : "fail", "errors" : {f"name":["Invalid Entry."]}}
+    
+    session = Session.objects.get(id=session_id)
+    session_player = session.session_players.get(id=session_player_id)
 
+    if not session.finished:
+        return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
+                "message" : "Session not complete."}
+
+    logger.info(f'form_data_dict : {form_data_dict}')       
+
+    form = EndGameForm(form_data_dict)
+        
     if form.is_valid():
         #print("valid form") 
 
-        try:        
-            session_player.name = form.cleaned_data["name"]
-            session_player.student_id = form.cleaned_data["student_id"]
+        session_player.name = form.cleaned_data["name"]
+        session_player.student_id = form.cleaned_data["student_id"]
 
-            session_player.save()
-        except ObjectDoesNotExist:
-            logger.warning(f"take_name : {session_player_id}")
-            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+        session_player.save()    
         
         return {"value" : "success",
                 "result" : {"id" : session_player_id,
