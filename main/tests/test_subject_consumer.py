@@ -44,7 +44,44 @@ class TestSubjectConsumer(TestCase):
         result = take_name(session.id, session_player_1.id, v)
         self.assertEqual("fail", result["value"])
         self.assertEqual("Session not complete.", result["errors"]["name"][0])
+        session_player_1 = session.session_players.get(player_number=1)
+        self.assertEqual("", session_player_1.name)
 
+        session.finished = True
+        session.save()
+
+        #session finished
+        result = take_name(session.id, session_player_1.id, v)
+        self.assertEqual("success", result["value"])
+        session_player_1 = session.session_players.get(player_number=1)
+        self.assertEqual("Joe Is The Name", session_player_1.name)
+
+        #no name
+        v1 = deepcopy(v)
+        v1["formData"][0]['value'] = ""
+
+        result = take_name(session.id, session_player_2.id, v1)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("This field is required.", result["errors"]["name"][0])
+        session_player_2 = session.session_players.get(player_number=2)
+        self.assertEqual("", session_player_2.name)
+
+        #blank name
+        v1 = deepcopy(v)
+        v1["formData"][0]['value'] = "  "
+
+        result = take_name(session.id, session_player_2.id, v1)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("This field is required.", result["errors"]["name"][0])
+        session_player_2 = session.session_players.get(player_number=2)
+        self.assertEqual("", session_player_2.name)
+
+        #junk
+        result = take_name(session.id, session_player_2.id, {})
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Invalid Entry.", result["errors"]["name"][0])
+        session_player_2 = session.session_players.get(player_number=2)
+        self.assertEqual("", session_player_2.name)
     
     def test_production(self):
         '''

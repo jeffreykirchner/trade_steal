@@ -6,6 +6,7 @@ from asgiref.sync import sync_to_async
 import logging
 import copy
 import json
+import string
 from copy import copy
 from copy import deepcopy
 
@@ -979,6 +980,8 @@ def take_name(session_id, session_player_id, data):
 
         session_player.name = form.cleaned_data["name"]
         session_player.student_id = form.cleaned_data["student_id"]
+
+        session_player.name = string.capwords(session_player.name)
 
         session_player.save()    
         
