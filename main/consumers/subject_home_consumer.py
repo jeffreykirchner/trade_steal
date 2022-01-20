@@ -1008,18 +1008,21 @@ def take_avatar(session_id, session_player_id, data):
         session = Session.objects.get(id=session_id)
         session_player = session.session_players.get(id=session_player_id)
 
+        if not session.started:
+           return {"value" : "fail", "errors" : {}, "message" : "Session not started."}
+
         parameter_set_avatar = session.parameter_set.parameter_set_avatars_a.get(grid_location_row=row, grid_location_col=col)
 
         if parameter_set_avatar.avatar == None:
             logger.warning(f"blank avatar choosen : {session_player_id}")
-            return {"value" : "fail", "errors" : {}, "message" : "Avatar Error"}
+            return {"value" : "fail", "errors" : {}, "message" : "Avatar is blank."}
 
         session_player.avatar = parameter_set_avatar.avatar        
         session_player.save()
 
     except ObjectDoesNotExist:
         logger.warning(f"take_avatar : {session_player_id}")
-        return {"value" : "fail", "errors" : {}, "message" : "Avatar Choice Error"}       
+        return {"value" : "fail", "errors" : {}, "message" : "Avatar choice error."}       
     
     return {"value" : "success",
             "result" : {"id" : session_player_id,
@@ -1077,8 +1080,11 @@ def take_next_instruction(session_id, session_player_id, data):
         session_player.save()
 
     except ObjectDoesNotExist:
-        logger.warning(f"take_next_instruction : {session_player_id}")
-        return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+        logger.warning(f"take_next_instruction not found: {session_player_id}")
+        return {"value" : "fail", "errors" : {}, "message" : "Instruction Error."} 
+    except KeyError:
+        logger.warning(f"take_next_instruction key error: {session_player_id}")
+        return {"value" : "fail", "errors" : {}, "message" : "Instruction Error."}       
     
     return {"value" : "success",
             "result" : {"current_instruction" : session_player.current_instruction,

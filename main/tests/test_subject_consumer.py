@@ -16,6 +16,10 @@ from main.consumers import take_move_goods
 from main.consumers import take_chat
 from main.consumers import take_production_time
 from main.consumers import take_name
+from main.consumers import take_avatar
+from main.consumers import take_avatar
+from main.consumers import take_next_instruction
+from main.consumers import take_finish_instructions
 
 import main
 
@@ -27,9 +31,102 @@ class TestSubjectConsumer(TestCase):
     def setUp(self):
         logger = logging.getLogger(__name__)
     
+    def test_next_instruction(self):
+        '''
+        take next instruction
+        '''
+
+        v_forward = {'direction': 1}
+        v_back = {'direction': -1}
+
+        session = main.models.Session.objects.first()
+        session_player_1 = session.session_players.get(player_number=1)
+
+        #go back from page one
+        result = take_next_instruction(session.id, session_player_1.id, v_back)
+        self.assertEqual("success", result["value"])
+        session_player_1 = session.session_players.get(player_number=1)
+        self.assertEqual(1, session_player_1.current_instruction)
+
+        #go forward from page one
+        result = take_next_instruction(session.id, session_player_1.id, v_forward)
+        self.assertEqual("success", result["value"])
+        session_player_1 = session.session_players.get(player_number=1)
+        self.assertEqual(2, session_player_1.current_instruction)
+
+        #go forward from last pasge
+        session_player_1.current_instruction = session.parameter_set.instruction_set.instructions.all().count()
+        session_player_1.save()
+        result = take_next_instruction(session.id, session_player_1.id, v_forward)
+        self.assertEqual("success", result["value"])
+        session_player_1 = session.session_players.get(player_number=1)
+        self.assertEqual(session.parameter_set.instruction_set.instructions.all().count(), session_player_1.current_instruction)
+
+        #junk
+        result = take_next_instruction(session.id, session_player_1.id, {})
+        self.assertEqual("fail", result["value"]) 
+        self.assertEqual("Instruction Error.", result["message"])   
+
+    def test_finish_instructions(self):
+        '''
+        test subject finished with instructions
+        '''
+
+        v = {}
+
+        session = main.models.Session.objects.first()
+        session_player_1 = session.session_players.get(player_number=1)
+
+        result = take_finish_instructions(session.id, session_player_1.id, v)
+        self.assertEqual("success", result["value"])
+        session_player_1 = session.session_players.get(player_number=1)
+        self.assertEqual(True, session_player_1.instructions_finished)
+    
+    def test_avatar_choice(self):
+        '''
+        test avatar choice grid
+        '''
+
+        logger = logging.getLogger(__name__)
+        session = main.models.Session.objects.first()
+        session_player_1 = session.session_players.get(player_number=1)
+        session_player_2 = session.session_players.get(player_number=2)
+
+        v = {'row': 3, 'col': 5}
+
+        #session not finished
+        result = take_avatar(session.id, session_player_1.id, v)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Session not started.", result["message"])
+
+        session.start_experiment()
+
+        #session started
+        result = take_avatar(session.id, session_player_1.id, v)
+        self.assertEqual("success", result["value"])
+        session_player_1 = session.session_players.get(player_number=1)
+        self.assertEqual(session_player_1.avatar,
+                         session.parameter_set.parameter_set_avatars_a.get(grid_location_row=v['row'], grid_location_col=v['col']).avatar)
+
+        #blank choice
+        v1 = deepcopy(v)
+        v1['row'] = 2
+        result = take_avatar(session.id, session_player_2.id, v1)
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Avatar is blank.", result["message"])
+        session_player_2 = session.session_players.get(player_number=2)
+        self.assertEqual(None, session_player_2.avatar)
+
+        #junk
+        result = take_avatar(session.id, session_player_2.id, {})
+        self.assertEqual("fail", result["value"])
+        self.assertEqual("Avatar choice error.", result["message"])
+        session_player_2 = session.session_players.get(player_number=2)
+        self.assertEqual(None, session_player_2.avatar)
+
     def test_name(self):
         '''
-        test name and id entry
+        test name and id entrys
         '''
 
         logger = logging.getLogger(__name__)
@@ -39,7 +136,7 @@ class TestSubjectConsumer(TestCase):
         session_player_3 = session.session_players.get(player_number=3)
 
         v = {'formData': [{'name': 'name', 'value': 'joe is the name'}, {'name': 'student_id', 'value': '123456789'}]}
-
+        
         #session not finished
         result = take_name(session.id, session_player_1.id, v)
         self.assertEqual("fail", result["value"])
