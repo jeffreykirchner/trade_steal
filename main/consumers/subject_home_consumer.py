@@ -6,6 +6,7 @@ from asgiref.sync import sync_to_async
 import logging
 import copy
 import json
+import string
 from copy import copy
 from copy import deepcopy
 
@@ -951,40 +952,38 @@ def take_name(session_id, session_player_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Take name: {session_id} {session_player_id} {data}")
 
-    form_data = data["formData"]
-    
     form_data_dict = {}
 
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
-
     try:
-        session = Session.objects.get(id=session_id)
-        session_player = session.session_players.get(id=session_player_id)
+        form_data = data["formData"]
 
-        logger.info(f'form_data_dict : {form_data_dict}')       
+        for field in form_data:            
+            form_data_dict[field["name"]] = field["value"]
 
-        form = EndGameForm(form_data_dict)
-        
-        if not session.finished:
-            return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
-                    "message" : "Move Error"}
-        
     except KeyError:
-            logger.warning(f"take_name , setup form: {session_player_id}")
-            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}
+        logger.warning(f"take_name , setup form: {session_player_id}")
+        return {"value" : "fail", "errors" : {f"name":["Invalid Entry."]}}
+    
+    session = Session.objects.get(id=session_id)
+    session_player = session.session_players.get(id=session_player_id)
 
+    if not session.finished:
+        return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
+                "message" : "Session not complete."}
+
+    logger.info(f'form_data_dict : {form_data_dict}')       
+
+    form = EndGameForm(form_data_dict)
+        
     if form.is_valid():
         #print("valid form") 
 
-        try:        
-            session_player.name = form.cleaned_data["name"]
-            session_player.student_id = form.cleaned_data["student_id"]
+        session_player.name = form.cleaned_data["name"]
+        session_player.student_id = form.cleaned_data["student_id"]
 
-            session_player.save()
-        except ObjectDoesNotExist:
-            logger.warning(f"take_name : {session_player_id}")
-            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+        session_player.name = string.capwords(session_player.name)
+
+        session_player.save()    
         
         return {"value" : "success",
                 "result" : {"id" : session_player_id,
@@ -1009,18 +1008,21 @@ def take_avatar(session_id, session_player_id, data):
         session = Session.objects.get(id=session_id)
         session_player = session.session_players.get(id=session_player_id)
 
+        if not session.started:
+           return {"value" : "fail", "errors" : {}, "message" : "Session not started."}
+
         parameter_set_avatar = session.parameter_set.parameter_set_avatars_a.get(grid_location_row=row, grid_location_col=col)
 
         if parameter_set_avatar.avatar == None:
             logger.warning(f"blank avatar choosen : {session_player_id}")
-            return {"value" : "fail", "errors" : {}, "message" : "Avatar Error"}
+            return {"value" : "fail", "errors" : {}, "message" : "Avatar is blank."}
 
         session_player.avatar = parameter_set_avatar.avatar        
         session_player.save()
 
     except ObjectDoesNotExist:
         logger.warning(f"take_avatar : {session_player_id}")
-        return {"value" : "fail", "errors" : {}, "message" : "Avatar Choice Error"}       
+        return {"value" : "fail", "errors" : {}, "message" : "Avatar choice error."}       
     
     return {"value" : "success",
             "result" : {"id" : session_player_id,
@@ -1078,8 +1080,11 @@ def take_next_instruction(session_id, session_player_id, data):
         session_player.save()
 
     except ObjectDoesNotExist:
-        logger.warning(f"take_next_instruction : {session_player_id}")
-        return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+        logger.warning(f"take_next_instruction not found: {session_player_id}")
+        return {"value" : "fail", "errors" : {}, "message" : "Instruction Error."} 
+    except KeyError:
+        logger.warning(f"take_next_instruction key error: {session_player_id}")
+        return {"value" : "fail", "errors" : {}, "message" : "Instruction Error."}       
     
     return {"value" : "success",
             "result" : {"current_instruction" : session_player.current_instruction,
