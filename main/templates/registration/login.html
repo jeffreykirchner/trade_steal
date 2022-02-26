@@ -34,7 +34,7 @@
 
 <!-- login card -->
 <div class="row justify-content-center"> 
-  <div class="col col-sm-6">
+  <div class="col col-md-6">
 
     <div class="card">
       
@@ -47,20 +47,20 @@
         <form id="login_form" v-on:submit.prevent="onSubmit">
           {% csrf_token %}        
           <div class="row">
-            <div class = "col col-sm-8 offset-sm-2">  
+            <div class = "col-md-8 offset-md-2">  
               {{form.username|as_crispy_field}}          
             </div>            
           </div>  
 
           <div class="row">
-            <div class = "col col-sm-8 offset-sm-2">
+            <div class = "col-md-8 offset-md-2">
               {{form.password|as_crispy_field}}
             </div>
           </div>            
         </form>
 
         <div class="row mt-3">
-            <div class="col col-sm-8 offset-sm-2">
+            <div class="col-md-8 offset-sm-2">
                 <button type="button" v-on:click='login()' class="btn btn-outline-primary">
                   <span v-html ="loginButtonText"></span>
                 </button> 
