@@ -262,6 +262,11 @@ var app = Vue.createApp({
         */
         takeUpdateStartExperiment(messageData){
             app.takeGetSession(messageData);
+
+            if(app.session.current_experiment_phase == "Instructions")
+            {
+                setTimeout(app.instructionDisplayScroll, 250);
+            }
         },
 
         /** update reset status
