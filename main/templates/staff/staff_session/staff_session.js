@@ -299,6 +299,8 @@ var app = Vue.createApp({
          */
         updateChatDisplayScroll(force_scroll){
 
+            if(!app.session.timer_running) return;
+
             if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
             {
                 var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());

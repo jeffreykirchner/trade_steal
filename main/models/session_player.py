@@ -172,6 +172,15 @@ class SessionPlayer(models.Model):
 
         self.avatar = None
 
+        self.reset_instructions()
+
+        self.save()
+    
+    def reset_instructions(self):
+        '''
+        reset instruction progress
+        '''
+
         self.current_instruction = 1
         self.current_instruction_complete = 1
         self.instructions_finished = False
@@ -183,7 +192,8 @@ class SessionPlayer(models.Model):
         start experiment
         '''
 
-        self.reset()
+        #self.reset()
+        self.reset_instructions()
 
         #session player periods
         session_player_periods = []
