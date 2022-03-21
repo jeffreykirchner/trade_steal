@@ -2,5 +2,5 @@
  * timer stopped warning
  */
 timerWarning(){
-    app.timer_warning = true;
+    if(app.session.timer_running) app.timer_warning = true;
 },
