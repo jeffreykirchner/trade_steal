@@ -61,6 +61,9 @@ var app = Vue.createApp({
                     emailDefaultText : `{{parameters.invitation_text|safe}}`,
 
                     csv_email_list : "",           //csv email list
+
+                    timer_warning : false,
+                    timer_warning_timeout : null,
                 }},
     methods: {
 
@@ -373,6 +376,14 @@ var app = Vue.createApp({
             app.takeUpdateEarnings(messageData);
 
             app.updatePhaseButtonText();
+
+            if(app.timer_warning_timeout)
+            {
+                clearTimeout(app.timer_warning_timeout);
+                app.timer_warning = false;
+            }
+            
+            app.timer_warning_timeout = setTimeout(app.timerWarning, 5000);
         },
 
         /**
