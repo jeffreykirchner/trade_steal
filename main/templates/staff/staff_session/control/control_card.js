@@ -44,6 +44,12 @@ takeResetExperiment(messageData){
     app.change_town_view()
     app.chat_list_to_display=[];
     app.takeGetSession(messageData);
+
+    if(app.timer_warning_timeout)
+    {
+        clearTimeout(app.timer_warning_timeout);
+        app.timer_warning = false;
+    }
 },
 
 resetConnections(){

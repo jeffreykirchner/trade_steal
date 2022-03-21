@@ -30,7 +30,7 @@ class PeriodPhase(models.TextChoices):
 
 class ExperimentPhase(models.TextChoices):
     '''
-    avatar asignment modes
+    experiment phases
     '''
     SELECTION = 'Selection', _('Selection')
     INSTRUCTIONS = 'Instructions', _('Instructions')

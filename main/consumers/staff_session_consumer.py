@@ -8,6 +8,7 @@ import json
 import logging
 import asyncio
 import time
+import re
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
@@ -957,7 +958,7 @@ def take_email_list(session_id, data):
     raw_list = raw_list.splitlines()
 
     for i in range(len(raw_list)):
-        raw_list[i] = raw_list[i].split(',')
+        raw_list[i] =  re.split(r',|\t', raw_list[i])
     
     u_list = []
 
@@ -966,7 +967,8 @@ def take_email_list(session_id, data):
             if "@" in j:
                 u_list.append(j)
     
-    session.session_players.update(email=None)
+    if len(raw_list)>0:
+        session.session_players.update(email=None)
 
     for i in u_list:
         p = session.session_players.filter(email=None).first()

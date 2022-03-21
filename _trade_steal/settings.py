@@ -46,7 +46,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = '_trade_steal.urls'
-ADMIN_SITE_HEADER = 'Trade Steal Administration'
+ADMIN_SITE_HEADER = 'Exchange and Specialization Administration'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 TEMPLATES = [

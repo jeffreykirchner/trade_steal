@@ -34,7 +34,7 @@
                 <span v-else>Move</span>
             </div>
         </div>
-        <div class="row">
+        <div class="row" v-bind:style="[timer_warning ? {'color':'red'}:{}]">
             <div class="col text-end pe-1">
                 Time Remaining:
             </div>
