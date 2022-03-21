@@ -249,7 +249,7 @@ var app = Vue.createApp({
             {
                 if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
                 {
-                    this.move_to_next_phase_text = 'Show Instrutions <i class="fas fa-map"></i>';
+                    this.move_to_next_phase_text = 'Show Instructions <i class="fas fa-map"></i>';
                 }
                 else
                 {
@@ -382,7 +382,7 @@ var app = Vue.createApp({
                 clearTimeout(app.timer_warning_timeout);
                 app.timer_warning = false;
             }
-            
+
             app.timer_warning_timeout = setTimeout(app.timerWarning, 5000);
         },
 
