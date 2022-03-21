@@ -383,7 +383,11 @@ var app = Vue.createApp({
             setTimeout(app.setupPixiPlayers, 250);
 
             app.updateChatDisplay();
-            app.calcWaste();            
+            app.calcWaste();    
+            if(app.session.current_experiment_phase == "Instructions")
+            {
+                setTimeout(app.instructionDisplayScroll, 300);
+            }        
         },
 
         /** hide choice grid modal modal
