@@ -231,10 +231,10 @@ class ParameterSet(models.Model):
         '''
 
         # remove extra avatars
-        parameter_set_avatars = main.models.ParameterSetAvatar.objects.filter(grid_location_row__gt=self.avatar_grid_row_count)
+        parameter_set_avatars = self.parameter_set_avatars_a.filter(grid_location_row__gt=self.avatar_grid_row_count)
         parameter_set_avatars.delete()
 
-        parameter_set_avatars = main.models.ParameterSetAvatar.objects.filter(grid_location_col__gt=self.avatar_grid_col_count)
+        parameter_set_avatars = self.parameter_set_avatars_a.filter(grid_location_col__gt=self.avatar_grid_col_count)
         parameter_set_avatars.delete()
 
         for r in range(self.avatar_grid_row_count):
