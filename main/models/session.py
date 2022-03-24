@@ -119,6 +119,8 @@ class Session(models.Model):
         '''
         asign avatars based on parameter set player
         '''
+        logger = logging.getLogger(__name__)
+        logger.info("pre_assign_avatars")
 
         for i in self.session_players.all():
             i.avatar = i.parameter_set_player.avatar

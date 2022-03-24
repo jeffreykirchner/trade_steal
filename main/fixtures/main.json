@@ -343,7 +343,7 @@
             "good_count": 2,
             "show_instructions": true,
             "show_avatars": true,
-            "avatar_assignment_mode": "Pre-Assigned",
+            "avatar_assignment_mode": "Subject Select",
             "avatar_grid_row_count": 5,
             "avatar_grid_col_count": 6,
             "avatar_grid_text": "Choose an avatar that best represents you.",
