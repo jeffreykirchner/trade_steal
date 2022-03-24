@@ -101,6 +101,9 @@ class TestSubjectConsumer(TestCase):
 
         session.start_experiment()
 
+        session_player_2 = session.session_players.get(player_number=2)
+        self.assertEqual(None, session_player_2.avatar)
+
         #session started
         result = take_avatar(session.id, session_player_1.id, v)
         self.assertEqual("success", result["value"])
