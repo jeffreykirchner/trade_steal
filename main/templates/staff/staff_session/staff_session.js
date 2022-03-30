@@ -347,6 +347,8 @@ var app = Vue.createApp({
         },
 
         updateNoticeDisplayScrollStaff(force_scroll){
+            if(!app.session.timer_running) return;
+            
             if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
             {
                 if(this.notice_list_to_display.length==0) return;
