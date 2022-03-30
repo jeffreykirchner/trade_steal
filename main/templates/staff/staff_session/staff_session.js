@@ -31,20 +31,20 @@ var app = Vue.createApp({
                     pixi_transfer_source_modal_string : "",   //source string shown on transfer modal
                     pixi_transfer_target_modal_string : "" ,  //target string shown on transfer modal
 
-                    transfer_source_modal_string : "",   //source string shown on transfer modal
-                    transfer_target_modal_string : "" ,  //target string shown on transfer modal
+                    transfer_source_modal_string : "",     //source string shown on transfer modal
+                    transfer_target_modal_string : "" ,    //target string shown on transfer modal
 
-                    transfer_modal_good_one_rgb : 0x000000,   //good one color shown on transfer modal
-                    transfer_modal_good_two_rgb : 0x000000 ,  //good two color shown on transfer modal
+                    transfer_modal_good_one_rgb : 0x000000,     //good one color shown on transfer modal
+                    transfer_modal_good_two_rgb : 0x000000 ,    //good two color shown on transfer modal
                     transfer_modal_good_three_rgb : 0x000000 ,  //good three color shown on transfer modal
 
-                    transfer_modal_good_one_name : "",   //good one name shown on transfer modal
-                    transfer_modal_good_two_name : "" ,  //good two name shown on transfer modal
+                    transfer_modal_good_one_name : "",     //good one name shown on transfer modal
+                    transfer_modal_good_two_name : "" ,    //good two name shown on transfer modal
                     transfer_modal_good_three_name : "" ,  //good three name shown on transfer modal
 
-                    transfer_good_one_amount : 0, //good one amount to be transfered
-                    transfer_good_two_amount : 0, //good two amount to be transfered
-                    transfer_good_three_amount : 0, //good three amount to be transfered
+                    transfer_good_one_amount : 0,         //good one amount to be transfered
+                    transfer_good_two_amount : 0,         //good two amount to be transfered
+                    transfer_good_three_amount : 0,       //good three amount to be transfered
 
                     current_town : "1",
 
@@ -348,7 +348,7 @@ var app = Vue.createApp({
 
         updateNoticeDisplayScrollStaff(force_scroll){
             if(!app.session.timer_running) return;
-            
+
             if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
             {
                 if(this.notice_list_to_display.length==0) return;

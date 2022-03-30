@@ -3,6 +3,7 @@ sendChat(){
     if(this.working) return;
     if(this.chat_text.trim() == "") return;
     if(this.chat_text.trim().length > 200) return;
+    if(this.chat_recipients=="NONE") return;
     
     this.working = true;
     app.sendMessage("chat", {"recipients" : this.chat_recipients,
@@ -36,6 +37,8 @@ takeUpdateChat(messageData){
     let result = messageData.status;
     let chat = result.chat;
     let session_player = this.session_player;
+
+    if(app.chat_recipients=="NONE") return;
 
     if(result.chat_type=="All")
     {
@@ -97,6 +100,7 @@ takeUpdateChat(messageData){
 *    @param messageData {json} session day in json format
 */
 updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
+
     this.chat_recipients = chat_recipients;
     this.chat_button_label = chat_button_label;
     this.chat_recipients_index = chat_recipients_index;
@@ -116,6 +120,8 @@ updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
 /** update chat displayed on the screen
  */
 updateChatDisplay(){
+
+    if(app.chat_recipients=="NONE") return;
 
     if(this.chat_recipients=="all")
     {

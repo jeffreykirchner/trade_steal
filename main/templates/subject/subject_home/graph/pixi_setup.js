@@ -74,6 +74,7 @@ setupPixiSheets(){
 setupPixiPlayers(){
 
     if(!app.$data.pixi_loaded) return;
+    if(!app.$data.session.parameter_set.show_avatars=="True") return;
 
     let session_players = app.$data.session.session_players;
     let session = app.$data.session;

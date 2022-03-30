@@ -26,6 +26,7 @@ class ParameterSet(models.Model):
     period_length_trade = models.IntegerField(verbose_name='Period Length, Trade', default=90)                #trade phase length in seconds
     break_period_frequency = models.IntegerField(verbose_name='Break Period Fequency (Periods)', default=7)   #every x periods only allow chat, no production or trading
     allow_stealing = models.BooleanField(default=False, verbose_name = 'Allow Stealing')                      #if true subjects can take from other users
+    group_chat = models.BooleanField(default=True, verbose_name = 'Group Chat')                               #if true subjects can chat with everyone in group
     private_chat = models.BooleanField(default=True, verbose_name = 'Private Chat')                           #if true subjects can privately chat one on one
     town_count = models.IntegerField(verbose_name='Town Count', default=1)                                    #number of different towns
     good_count = models.IntegerField(verbose_name='Number of Goods', default=2)                               #number of goods available to all towns
@@ -68,6 +69,7 @@ class ParameterSet(models.Model):
             self.break_period_frequency = new_ps.get("break_period_frequency")
             self.allow_stealing = new_ps.get("allow_stealing")
             self.private_chat = new_ps.get("private_chat")
+            self.group_chat = new_ps.get("group_chat")
 
             self.town_count = new_ps.get("town_count")
             self.good_count = new_ps.get("good_count")
@@ -292,6 +294,7 @@ class ParameterSet(models.Model):
             "break_period_frequency" : self.break_period_frequency,
 
             "allow_stealing" : "True" if self.allow_stealing else "False",
+            "group_chat" : "True" if self.group_chat else "False",
             "private_chat" : "True" if self.private_chat else "False",
             "show_instructions" : "True" if self.show_instructions else "False",
             "instruction_set" : self.instruction_set.json_min(),
@@ -326,6 +329,7 @@ class ParameterSet(models.Model):
 
             "break_period_frequency" : self.break_period_frequency,
             "allow_stealing" : "True" if self.allow_stealing else "False",
+            "group_chat" : "True" if self.group_chat else "False",
             "private_chat" : "True" if self.private_chat else "False",
             "show_instructions" : "True" if self.show_instructions else "False",
             

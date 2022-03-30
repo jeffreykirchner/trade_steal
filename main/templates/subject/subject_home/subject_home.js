@@ -49,9 +49,9 @@ var app = Vue.createApp({
                     current_town : "0",
 
                     chat_text : "",
-                    chat_recipients : "all",
+                    chat_recipients : "{{default_chat_recipient}}",
                     chat_recipients_index : 0,
-                    chat_button_label : "Everyone",
+                    chat_button_label : "{{default_chat_label}}",
                     chat_list_to_display : [],                //list of chats to display on screen
 
                     production_slider : 0,
