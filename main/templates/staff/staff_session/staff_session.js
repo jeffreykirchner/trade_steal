@@ -230,6 +230,22 @@ var app = Vue.createApp({
             app.updateNoticeDisplay(true);        
         },
 
+        /**
+         * handle window resize event
+         */
+         handleResize(){
+
+            setTimeout(function(){
+                let canvas = document.getElementById('sd_graph_id');
+                app.canvas_width = canvas.width;
+                app.canvas_height = canvas.height;
+                app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
+                app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
+
+                app.setupPixiPlayers();
+            }, 250);
+        },
+
         /**update text of move on button based on current state
          */
         updatePhaseButtonText(){
@@ -466,6 +482,8 @@ var app = Vue.createApp({
         $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession);
         $('#sendMessageModal').on("hidden.bs.modal", this.hideSendInvitations);
         $('#uploadEmailModal').on("hidden.bs.modal", this.hideSendEmailList);
+
+        window.addEventListener('resize', this.handleResize);
     },
 
 }).mount('#app');

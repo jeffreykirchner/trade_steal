@@ -24,8 +24,8 @@ resetPixiApp(){
                                                resolution: 1,
                                                view: canvas });
 
-    app.$data.canvas_width = canvas.width;
-    app.$data.canvas_height = canvas.height;
+    app.canvas_width = canvas.width;
+    app.canvas_height = canvas.height;
 
     //add background rectangle
     let background = new PIXI.Graphics();
@@ -57,9 +57,9 @@ setupPixiSheets(){
 
     app.$data.grid_y_padding = 30;
 
-    app.$data.canvas_scale_height = app.$data.canvas_height / app.$data.grid_y;
-    app.$data.canvas_scale_width = app.$data.canvas_width / app.$data.grid_x;
-    app.$data.canvas_scale = app.$data.canvas_scale_height /  app.$data.house_sprite.height;
+    app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
+    app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
+    app.$data.canvas_scale = app.canvas_scale_height /  app.$data.house_sprite.height;
 
     app.$data.pixi_loaded = true;
     app.setupPixiPlayers();
@@ -408,7 +408,7 @@ setupSingleAvatar(index){
     sprite.y = 0;   
     container.addChild(sprite);
 
-    let scale = (app.$data.canvas_width/11) / container.width;
+    let scale = (app.canvas_width/11) / container.width;
 
     //house label texture
     let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
@@ -433,8 +433,8 @@ setupSingleAvatar(index){
  * location grid for layout
  */
 setupGrid(){
-    x = app.$data.canvas_scale_width;
-    y = app.$data.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale);
+    x = app.canvas_scale_width;
+    y = app.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale);
 
     for(let i=0;i<app.$data.grid_x-1; i++)
     {
@@ -447,12 +447,12 @@ setupGrid(){
             
             app.$data.pixi_app.stage.addChild(gr);
 
-            y+=app.$data.canvas_scale_height;
+            y+=app.canvas_scale_height;
             y+=app.$data.grid_y_padding*app.$data.canvas_scale;
         }
 
-        x += app.$data.canvas_scale_width;
-        y = app.$data.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale);
+        x += app.canvas_scale_width;
+        y = app.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale);
     }
 },
  
@@ -493,24 +493,24 @@ getLocationCordinates(index, field_or_house){
     if(index<=4)
     {
         if(field_or_house == "house")
-            x = app.$data.canvas_scale_width * 3;
+            x = app.canvas_scale_width * 3;
         else if (field_or_house == "field")
-            x = app.$data.canvas_scale_width * 2;
+            x = app.canvas_scale_width * 2;
         else
-            x = app.$data.canvas_scale_width * 1;
+            x = app.canvas_scale_width * 1;
 
-        y += index * (app.$data.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale));
+        y += index * (app.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale));
     }
     else
     {
         if(field_or_house == "house")
-            x = app.$data.canvas_scale_width * 8;
+            x = app.canvas_scale_width * 8;
         else if (field_or_house == "field")
-            x = app.$data.canvas_scale_width * 9;
+            x = app.canvas_scale_width * 9;
         else
-            x = app.$data.canvas_scale_width * 10;
+            x = app.canvas_scale_width * 10;
 
-        y += (index-4) * (app.$data.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale));
+        y += (index-4) * (app.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale));
     }    
 
     return {x:x, y:y};

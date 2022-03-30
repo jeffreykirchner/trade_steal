@@ -257,6 +257,22 @@ var app = Vue.createApp({
             }
         },
 
+        /**
+         * handle window resize event
+         */
+        handleResize(){
+
+            setTimeout(function(){
+                let canvas = document.getElementById('sd_graph_id');
+                app.canvas_width = canvas.width;
+                app.canvas_height = canvas.height;
+                app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
+                app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
+
+                app.setupPixiPlayers();
+            }, 250);
+        },
+
         /** update start status
         *    @param messageData {json} session day in json format
         */
@@ -514,6 +530,7 @@ var app = Vue.createApp({
         $('#endGameModal').on("hidden.bs.modal", this.hideEndGameModal);
         {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
 
+        window.addEventListener('resize', this.handleResize);
     },
 
 }).mount('#app');
