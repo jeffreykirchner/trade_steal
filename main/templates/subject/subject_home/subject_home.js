@@ -49,9 +49,9 @@ var app = Vue.createApp({
                     current_town : "0",
 
                     chat_text : "",
-                    chat_recipients : "all",
+                    chat_recipients : "{{default_chat_recipient}}",
                     chat_recipients_index : 0,
-                    chat_button_label : "Everyone",
+                    chat_button_label : "{{default_chat_label}}",
                     chat_list_to_display : [],                //list of chats to display on screen
 
                     production_slider : 0,
@@ -255,6 +255,22 @@ var app = Vue.createApp({
                 setTimeout(this.processInstructionPage, 1000);
                 this.instructionDisplayScroll();
             }
+        },
+
+        /**
+         * handle window resize event
+         */
+        handleResize(){
+
+            setTimeout(function(){
+                let canvas = document.getElementById('sd_graph_id');
+                app.canvas_width = canvas.width;
+                app.canvas_height = canvas.height;
+                app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
+                app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
+
+                app.setupPixiPlayers();
+            }, 250);
         },
 
         /** update start status
@@ -514,6 +530,7 @@ var app = Vue.createApp({
         $('#endGameModal').on("hidden.bs.modal", this.hideEndGameModal);
         {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
 
+        window.addEventListener('resize', this.handleResize);
     },
 
 }).mount('#app');

@@ -56,6 +56,13 @@ class SubjectHomeView(View):
 
         parameters = Parameters.objects.first()
 
+        if session.parameter_set.private_chat:
+            default_chat_recipient = "NONE"
+            default_chat_label = "Select Recipient"
+        else:
+            default_chat_recipient = "all"
+            default_chat_label = "Everyone"
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : session.channel_key,
@@ -77,6 +84,8 @@ class SubjectHomeView(View):
                                "session_player_json" : json.dumps(session_player.json(), cls=DjangoJSONEncoder),
                                "session" : session,
                                "parameters" : parameters,
+                               "default_chat_recipient" : default_chat_recipient,
+                               "default_chat_label" : default_chat_label,
                                "session_json":json.dumps(session.json_for_subject(session_player), cls=DjangoJSONEncoder)})
     
     @method_decorator(login_required)

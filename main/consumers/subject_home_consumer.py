@@ -814,6 +814,11 @@ def take_chat(session_id, session_player_id, data):
             return {"value" : "fail", "result" : {"message" : "Session not running."}}
 
     if recipients == "all":
+        if not session.parameter_set.group_chat:
+            logger.warning(f"take chat: group chat not enabled :{session_id} {session_player_id} {data}")
+            return {"value" : "fail",
+                    "result" : {"message" : "Group chat not allowed."}}
+
         session_player_chat.chat_type = ChatTypes.ALL
     else:
         if not session.parameter_set.private_chat:

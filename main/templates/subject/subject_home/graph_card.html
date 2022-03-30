@@ -41,11 +41,14 @@
 
                     <!-- chat box -->
                     <div class="two border"
+                         v-show="session.parameter_set.private_chat == 'True' || session.parameter_set.group_chat == 'True'"
                          v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]"
                          v-show="session.started">
 
                         <div class="d-flex flex-column">
-                            <div class="p-1" v-for="(c, index) in chat_list_to_display" v-bind:key="c.id">
+
+                            <div class="p-1"
+                                 v-for="(c, index) in chat_list_to_display" v-bind:key="c.id">
 
                                 <div v-if="c.sender_id==session_player.id" 
                                      class="text-end ps-5 pe-2" 
@@ -86,15 +89,21 @@
 
         <div class="row justify-content-center mt-2" v-show="session.started && session.parameter_set.private_chat == 'True'">
             <div class="col-md-4 text-center">       
+
                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group" id="chat_button_group">
+
+
                     <input type="radio"
                         class="btn-check" 
                         name="btnradio" 
                         id="chat_all_id" 
                         autocomplete="off" 
+                        v-show="session.parameter_set.group_chat == 'True'"
                         v-on:click="updateChatRecipients('all', 'Everyone', -1)" 
                         checked>
-                    <label class="btn btn-outline-secondary" for="chat_all_id">
+                    <label class="btn btn-outline-secondary"
+                           for="chat_all_id"
+                           v-show="session.parameter_set.group_chat == 'True'">
                         Everyone
                         <span v-if=session_player.new_chat_message>*</span>
                     </label>
@@ -120,7 +129,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mt-2" v-show="session.started">
+        <div class="row justify-content-center mt-2" v-show="session.started && (session.parameter_set.private_chat == 'True' || session.parameter_set.group_chat == 'True')">
             <div class="col-md-4">                 
                 <div class="input-group">
                     <input type="text" 

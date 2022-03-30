@@ -31,20 +31,20 @@ var app = Vue.createApp({
                     pixi_transfer_source_modal_string : "",   //source string shown on transfer modal
                     pixi_transfer_target_modal_string : "" ,  //target string shown on transfer modal
 
-                    transfer_source_modal_string : "",   //source string shown on transfer modal
-                    transfer_target_modal_string : "" ,  //target string shown on transfer modal
+                    transfer_source_modal_string : "",     //source string shown on transfer modal
+                    transfer_target_modal_string : "" ,    //target string shown on transfer modal
 
-                    transfer_modal_good_one_rgb : 0x000000,   //good one color shown on transfer modal
-                    transfer_modal_good_two_rgb : 0x000000 ,  //good two color shown on transfer modal
+                    transfer_modal_good_one_rgb : 0x000000,     //good one color shown on transfer modal
+                    transfer_modal_good_two_rgb : 0x000000 ,    //good two color shown on transfer modal
                     transfer_modal_good_three_rgb : 0x000000 ,  //good three color shown on transfer modal
 
-                    transfer_modal_good_one_name : "",   //good one name shown on transfer modal
-                    transfer_modal_good_two_name : "" ,  //good two name shown on transfer modal
+                    transfer_modal_good_one_name : "",     //good one name shown on transfer modal
+                    transfer_modal_good_two_name : "" ,    //good two name shown on transfer modal
                     transfer_modal_good_three_name : "" ,  //good three name shown on transfer modal
 
-                    transfer_good_one_amount : 0, //good one amount to be transfered
-                    transfer_good_two_amount : 0, //good two amount to be transfered
-                    transfer_good_three_amount : 0, //good three amount to be transfered
+                    transfer_good_one_amount : 0,         //good one amount to be transfered
+                    transfer_good_two_amount : 0,         //good two amount to be transfered
+                    transfer_good_three_amount : 0,       //good three amount to be transfered
 
                     current_town : "1",
 
@@ -230,6 +230,22 @@ var app = Vue.createApp({
             app.updateNoticeDisplay(true);        
         },
 
+        /**
+         * handle window resize event
+         */
+         handleResize(){
+
+            setTimeout(function(){
+                let canvas = document.getElementById('sd_graph_id');
+                app.canvas_width = canvas.width;
+                app.canvas_height = canvas.height;
+                app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
+                app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
+
+                app.setupPixiPlayers();
+            }, 250);
+        },
+
         /**update text of move on button based on current state
          */
         updatePhaseButtonText(){
@@ -347,6 +363,8 @@ var app = Vue.createApp({
         },
 
         updateNoticeDisplayScrollStaff(force_scroll){
+            if(!app.session.timer_running) return;
+
             if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
             {
                 if(this.notice_list_to_display.length==0) return;
@@ -464,6 +482,8 @@ var app = Vue.createApp({
         $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession);
         $('#sendMessageModal').on("hidden.bs.modal", this.hideSendInvitations);
         $('#uploadEmailModal').on("hidden.bs.modal", this.hideSendEmailList);
+
+        window.addEventListener('resize', this.handleResize);
     },
 
 }).mount('#app');

@@ -353,13 +353,31 @@ simulateGoodTransferInstructions(){
     if(this.chat_text.trim() == "") return;
     if(this.chat_text.trim().length > 200) return;
 
-    if(this.chat_recipients != "all") return;
+    if(this.chat_recipients == "NONE") return;
 
-    messageData = {status : {chat: {text : this.chat_text.trim(),
-                                    sender_label : this.session_player.parameter_set_player.id_label,
-                                    sender_id : this.session_player.id,
-                                    id : randomNumber(1, 1000000)},
-                            chat_type:"All"}}
+    if(this.chat_recipients == "all")
+    {
+        chat_type = "All";
+
+        messageData = {status : {chat: {text : this.chat_text.trim(),
+                                 sender_label : this.session_player.parameter_set_player.id_label,
+                                 sender_id : this.session_player.id,
+                                 id : randomNumber(1, 1000000)},
+                      chat_type:chat_type}}
+    }
+    else
+    {
+        chat_type = "Individual";
+
+        messageData = {status : {chat: {text : this.chat_text.trim(),
+                                        sender_label : this.session_player.parameter_set_player.id_label,
+                                        sender_id : this.session_player.id,
+                                        id : randomNumber(1, 1000000)},
+                                 sesson_player_target : this.chat_recipients,        
+                                 chat_type:chat_type}}
+    }
+
+   
 
     app.takeUpdateChat(messageData);
 
