@@ -97,7 +97,7 @@ doTestMode(){
     if(this.session_player.current_instruction == this.session_player.current_instruction_complete)
     {
 
-        if(this.session_player.current_instruction == 5)
+        if(this.session_player.current_instruction == this.instructions.instruction_pages.length)
             document.getElementById("instructions_start_id").click();
         else
             document.getElementById("instructions_next_id").click();
@@ -105,13 +105,11 @@ doTestMode(){
     }else
     {
         switch (this.session_player.current_instruction)
-        {
-            case 1:
-                break;
-            case 2:
+        {            
+            case this.instructions.action_page_production:
                 document.getElementById("simulate_production_id").click();
                 break;
-            case 3:
+            case this.instructions.action_page_move:
                 if(this.pixi_modal_open)
                 {
                     if(this.session.parameter_set.good_count==2)
@@ -124,7 +122,7 @@ doTestMode(){
                     this.doTestModeMove();
                 }
                 break;
-            case 4:
+            case this.instructions.action_page_chat:
                 if(this.chat_text != "")
                 {
                     document.getElementById("send_chat_id").click();                   
@@ -133,8 +131,6 @@ doTestMode(){
                 {
                     this.doTestModeChat();
                 }
-                break;
-            case 5:
                 break;
         }
     }

@@ -3,7 +3,7 @@
         <span class="align-middle">Instructions</span>       
             
         <span class="float-end">
-            Page [[session_player.current_instruction]] of [[instruction_pages.length]]
+            Page [[session_player.current_instruction]] of [[instructions.instruction_pages.length]]
         </span>
         
     </div>
@@ -21,14 +21,14 @@
                         title="Simulate Production"                 
                         id="simulate_production_id"       
                         v-bind:disabled="reconnecting || working"
-                        v-show="session_player.current_instruction==2 && session_player.current_instruction_complete<=2"
+                        v-show="session_player.current_instruction==instructions.action_page_production && session_player.current_instruction_complete<=instructions.action_page_production"
                         v-on:click="simulateProductionInstructions()">Simulate Production <i class="fas fa-sync-alt"></i></button>
                 
                 <button class="btn btn-outline-secondary ms-2"
                         type="button" 
                         title="Simulate Production"                        
                         v-bind:disabled="reconnecting || working"
-                        v-show="session_player.current_instruction==3 && session_player.current_instruction_complete<=3"
+                        v-show="session_player.current_instruction==instructions.action_page_move && session_player.current_instruction_complete<=instructions.action_page_move"
                         v-on:click="setup_page_3_instructions()">Reset <i class="fas fa-sync-alt"></i></button>
 
                 <span class="float-end">
@@ -50,7 +50,7 @@
                             type="button" 
                             title="Next Instruction Page"
                             id="instructions_next_id"
-                            v-bind:disabled="reconnecting || working || session_player.current_instruction == instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
+                            v-bind:disabled="reconnecting || working || session_player.current_instruction == instructions.instruction_pages.length || session_player.current_instruction_complete<session_player.current_instruction"
                             v-on:click="sendNextInstruction(1)">Next <i class="far fa-arrow-alt-circle-right"></i></button>
                     
                     <!-- start button -->
@@ -58,7 +58,7 @@
                             type="button" 
                             title="Finished with Instructions"
                             id="instructions_start_id"
-                            v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instruction_pages.length"
+                            v-show="!session_player.instructions_finished && session_player.current_instruction_complete == instructions.instruction_pages.length"
                             v-bind:disabled="reconnecting || working"
                             v-on:click="sendFinishInstructions()">Start <i class="far fa-check-circle"></i></button>
 

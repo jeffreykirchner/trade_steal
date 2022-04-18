@@ -383,9 +383,9 @@ class SessionPlayer(models.Model):
         return a proccessed list of instructions to the subject
         '''
 
-        instructions = [i.json() for i in self.parameter_set_player.parameter_set.instruction_set.instructions.all()]
+        instruction_pages = [i.json() for i in self.parameter_set_player.parameter_set.instruction_set.instructions.all()]
  
-        for i in instructions:
+        for i in instruction_pages:
             i["text_html"] = i["text_html"].replace("#player_number#", self.parameter_set_player.id_label)
             i["text_html"] = i["text_html"].replace("#player_count-1#", str(self.parameter_set_player.parameter_set.get_town_count(self.parameter_set_player.town)-1))
             i["text_html"] = i["text_html"].replace("#good_one#", self.parameter_set_player.good_one.get_html())
@@ -397,6 +397,9 @@ class SessionPlayer(models.Model):
             i["text_html"] = i["text_html"].replace("#good_two_count#", str(self.parameter_set_player.parameter_set_type.good_two_amount))
             i["text_html"] = i["text_html"].replace("#good_earnings#", str(max(self.parameter_set_player.parameter_set_type.good_one_amount, self.parameter_set_player.parameter_set_type.good_two_amount)))
             i["text_html"] = i["text_html"].replace("#break_period#", str(self.parameter_set_player.parameter_set.break_period_frequency))
+
+        instructions = self.parameter_set_player.parameter_set.instruction_set.json()
+        instructions["instruction_pages"] = instruction_pages
 
         return instructions
 
