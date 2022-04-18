@@ -11,8 +11,20 @@ class InstructionSetFormAdmin(forms.ModelForm):
     '''
 
     label = forms.CharField(label='Instruction Set Name',
-                            widget=forms.TextInput(attrs={"width":"300px"}))
+                            widget=forms.TextInput(attrs={"width":"100px"}))
+    
+    action_page_production = forms.IntegerField(label='Production Action Page',
+                                                min_value=1,
+                                                widget=forms.NumberInput(attrs={"width":"100px"}))
+    
+    action_page_move = forms.IntegerField(label='Move Action Page',
+                                                min_value=1,
+                                                widget=forms.NumberInput(attrs={"width":"100px"}))
+
+    action_page_chat = forms.IntegerField(label='Chat Action Page',
+                                                min_value=1,
+                                                widget=forms.NumberInput(attrs={"width":"100px"}))
 
     class Meta:
         model=InstructionSet
-        fields = ('label',)
+        fields = ('label','action_page_production', 'action_page_move', 'action_page_chat')

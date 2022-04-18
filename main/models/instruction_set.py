@@ -14,7 +14,11 @@ class InstructionSet(models.Model):
     '''
 
     label = models.CharField(max_length = 100, default="Name Here", verbose_name="Label")                 #label text
-        
+
+    action_page_production = models.IntegerField(verbose_name='Required Action: Production', default=2)   #production page action
+    action_page_move = models.IntegerField(verbose_name='Required Action: Move', default=3)               #move page action
+    action_page_chat = models.IntegerField(verbose_name='Required Action: Chat', default=4)               #chat page action
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -53,6 +57,11 @@ class InstructionSet(models.Model):
             "id" : self.id,         
 
             "label" : self.label,
+
+            "action_page_production" : self.action_page_production,
+            "action_page_move" : self.action_page_move,
+            "action_page_chat" : self.action_page_chat,
+
             "instructions" : [i.json() for i in self.instructions.all()],
         }
     
