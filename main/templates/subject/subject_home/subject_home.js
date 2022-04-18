@@ -70,7 +70,7 @@ var app = Vue.createApp({
                     avatar_choice_grid_selected_row : 0,
                     avatar_choice_grid_selected_col : 0,
 
-                    instruction_pages : {{instruction_pages|safe}},
+                    instructions : {{instructions|safe}},
 
                 }},
     methods: {

@@ -62,7 +62,7 @@ class InstructionSet(models.Model):
             "action_page_move" : self.action_page_move,
             "action_page_chat" : self.action_page_chat,
 
-            "instructions" : [i.json() for i in self.instructions.all()],
+            "instruction_pages" : [i.json() for i in self.instructions.all()],
         }
     
     #return json object of class

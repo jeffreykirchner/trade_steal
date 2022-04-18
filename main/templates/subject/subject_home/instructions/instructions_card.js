@@ -5,11 +5,11 @@
  */
 getInstructionPage(pageNumber){
 
-    for(i=0;i<this.instruction_pages.length;i++)
+    for(i=0;i<this.instructions.instruction_pages.length;i++)
     {
-        if(this.instruction_pages[i].page_number==pageNumber)
+        if(this.instructions.instruction_pages[i].page_number==pageNumber)
         {
-            return this.instruction_pages[i].text_html;
+            return this.instructions.instruction_pages[i].text_html;
         }
     }
 
@@ -82,31 +82,21 @@ takeFinishInstructions(messageData){
 processInstructionPage(){
 
     switch(this.session_player.current_instruction){
-        case 1:
-            
-            break; 
-        case 2:
+        case this.instructions.action_page_production:
             return;
-            break;
-        case 3:
-            
+            break; 
+        case this.instructions.action_page_move:
             if(this.session_player.current_instruction_complete < this.session_player.current_instruction)
             {
                 this.session.current_period_phase = 'Trade';
                 this.setup_page_3_instructions();
             }
+            return;
+            break;
+        case this.instructions.action_page_chat:
+            return;
+            break;
             
-            return;
-            break;
-        case 4:
-            return;
-            break; 
-        case 5:
-           
-            break;
-        case 6:
-            return;
-            break;
     }
 
     if(this.session_player.current_instruction_complete < this.session_player.current_instruction)
@@ -131,7 +121,7 @@ instructionDisplayScroll(){
  */
 simulateProductionInstructions(){
     if(this.session.current_experiment_phase != 'Instructions') return;
-    if(this.session_player.current_instruction != 2) return;
+    if(this.session_player.current_instruction != this.instructions.action_page_production) return;
 
     document.getElementById("graph_card").scrollIntoView();
 
@@ -150,7 +140,7 @@ simulateProductionInstructions(){
 simulate_do_period_production(){
 
     if(this.session.current_experiment_phase != 'Instructions') return;
-    if(this.session_player.current_instruction != 2) return;
+    if(this.session_player.current_instruction !=  this.instructions.action_page_production) return;
 
     let parameter_set_type = this.session_player.parameter_set_player.parameter_set_type;
 
@@ -187,9 +177,9 @@ simulate_do_period_production(){
     }
     else
     {
-        if(this.session_player.current_instruction == 2)
+        if(this.session_player.current_instruction == this.instructions.action_page_production)
         {
-            this.session_player.current_instruction_complete=2;
+            this.session_player.current_instruction_complete=this.instructions.action_page_production;
             this.working = false;
         }
     }
@@ -338,9 +328,9 @@ simulateGoodTransferInstructions(){
     
     app.takeUpdateGoods({status : {result : result}});
 
-    if(this.session_player.current_instruction == 3)
+    if(this.session_player.current_instruction == this.instructions.action_page_move)
     {
-        this.session_player.current_instruction_complete=3;
+        this.session_player.current_instruction_complete=this.instructions.action_page_move;
     }
 
     this.closeMoveModal();
@@ -350,6 +340,8 @@ simulateGoodTransferInstructions(){
  * simulate goods transfer on page 4
  */
  simulateChatInstructions(){
+    if(this.session_player.current_instruction != this.instructions.action_page_chat) return;
+
     if(this.chat_text.trim() == "") return;
     if(this.chat_text.trim().length > 200) return;
 
@@ -381,9 +373,9 @@ simulateGoodTransferInstructions(){
 
     app.takeUpdateChat(messageData);
 
-    if(this.session_player.current_instruction == 4)
+    if(this.session_player.current_instruction == this.instructions.action_page_chat)
     {
-        this.session_player.current_instruction_complete=4;
+        this.session_player.current_instruction_complete= this.instructions.action_page_chat;
     }
 
     this.chat_text="";
