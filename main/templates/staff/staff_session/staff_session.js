@@ -297,17 +297,17 @@ var app = Vue.createApp({
             
             this.chat_list_to_display=Array.from(this.session.chat_all[parseInt(this.current_town)]);
 
-            //add spacers
-            for(let i=this.chat_list_to_display.length;i<18;i++)
-            {
-                this.chat_list_to_display.unshift({id:i*-1,sender_label:"", text:"|", sender_id:0, chat_type:'All'})
-            }
+            // //add spacers
+            // for(let i=this.chat_list_to_display.length;i<18;i++)
+            // {
+            //     this.chat_list_to_display.unshift({id:i*-1,sender_label:"", text:"|", sender_id:0, chat_type:'All'})
+            // }
 
-            //scroll to view
-            if(this.chat_list_to_display.length>0)
-            {
-                Vue.nextTick(() => {app.updateChatDisplayScroll(force_scroll)});        
-            }
+            // //scroll to view
+            // if(this.chat_list_to_display.length>0)
+            // {
+            //     Vue.nextTick(() => {app.updateChatDisplayScroll(force_scroll)});        
+            // }
         },
 
         /**
@@ -315,13 +315,13 @@ var app = Vue.createApp({
          */
         updateChatDisplayScroll(force_scroll){
 
-            if(!app.session.timer_running) return;
+            // if(!app.session.timer_running) return;
 
-            if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
-            {
-                var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
-                elmnt.scrollIntoView(); 
-            }
+            // if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
+            // {
+            //     var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
+            //     elmnt.scrollIntoView(); 
+            // }
         },
 
         /**
@@ -329,7 +329,7 @@ var app = Vue.createApp({
          */
         updateNoticeDisplay(forceScroll){            
             this.notice_list_to_display=Array.from(this.session.notices[parseInt(this.current_town)]);
-            setTimeout(function() {  app.updateNoticeDisplayScrollStaff(forceScroll); }, 250);
+            // setTimeout(function() {  app.updateNoticeDisplayScrollStaff(forceScroll); }, 250);
         },
 
         /**

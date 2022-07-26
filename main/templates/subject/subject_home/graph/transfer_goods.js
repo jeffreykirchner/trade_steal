@@ -211,8 +211,8 @@ takeUpdateGoods(messageData){
  * scroll notice text to the bottom
  */
 updateNoticeDisplayScroll(){
-    if(this.session_player.notices.length==0) return;
+    // if(this.session_player.notices.length==0) return;
 
-    var elmnt = document.getElementById("notice_id_" + app.$data.session_player.notices[app.$data.session_player.notices.length-1].id.toString());
-    elmnt.scrollIntoView(); 
+    // var elmnt = document.getElementById("notice_id_" + app.$data.session_player.notices[app.$data.session_player.notices.length-1].id.toString());
+    // elmnt.scrollIntoView(); 
 },
