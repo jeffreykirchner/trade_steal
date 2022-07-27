@@ -78,11 +78,11 @@ takeResetConnections(messageData){
 /**advance to next phase
 */
 next_experiment_phase(){
-   
+
     if (!confirm('Continue to the next phase of the experiment?')) {
         return;
-    }    
-
+    }
+    
     app.$data.working = true;
     app.sendMessage("next_phase", {});
 },

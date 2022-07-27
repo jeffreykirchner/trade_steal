@@ -392,6 +392,22 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
+    async def anonymize_data(self, event):
+        '''
+        send invitations to subjects
+        '''
+
+        result = await sync_to_async(take_anonymize_data)(self.session_id,  event["message_text"])
+
+        #update all 
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {"type": "update_anonymize_data",
+             "data": result,
+             "sender_channel_name": self.channel_name,},
+        )
+
+   
     #consumer updates
     async def update_start_experiment(self, event):
         '''
@@ -609,6 +625,23 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     async def update_production_time(self, event):
         '''
         send production settings update
+        '''
+
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Eng game update")
+
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_anonymize_data(self, event):
+        '''
+        send anonymize data update to staff sessions
         '''
 
         # logger = logging.getLogger(__name__) 
@@ -951,7 +984,7 @@ def take_email_list(session_id, data):
         session = Session.objects.get(id=session_id)
     except ObjectDoesNotExist:
         logger.warning(f"take_send_invitations session, not found: {session_id}")
-        return {"status":"fail", "result":"session not found"}
+        return {"value":"fail", "result":"session not found"}
     
     raw_list = data["csv_data"]
 
@@ -985,4 +1018,29 @@ def take_email_list(session_id, data):
     
     return {"value" : "success",
             "result" : result}
+
+def take_anonymize_data(session_id, data):
+    '''
+    remove name, email and student id from the data
+    '''
+
+    logger = logging.getLogger(__name__)
+    logger.info(f'take_email_list: {session_id} {data}')
+
+    try:        
+        session = Session.objects.get(id=session_id)
+    except ObjectDoesNotExist:
+        logger.warning(f"take_anonymize_data session, not found: {session_id}")
+        return {"value":"fail", "result":"session not found"}
+
+    result = {}
+
+    session.session_players.all().update(name="---", student_id="---", email="")
+
+    result = session.session_players.all().values('id', 'name', 'student_id', 'email')
+    
+    return {"value" : "success",
+            "result" : list(result)}
+
+
     
