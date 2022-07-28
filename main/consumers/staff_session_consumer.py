@@ -355,14 +355,14 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         set the name etc info of a subjec from staff screen
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_update_subject)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_update_subject)(self.session_id,  event["message_text"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {"type": "update_update_subject",
+             "data": result,
+             "sender_channel_name": self.channel_name,},
+        )
     
     async def email_list(self, event):
         '''
@@ -655,6 +655,23 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+    
+    async def update_update_subject(self, event):
+        '''
+        send anonymize data update to staff sessions
+        '''
+
+        # logger = logging.getLogger(__name__) 
+        # logger.info("Eng game update")
+
+        message_data = {}
+        message_data["status"] = event["data"]
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 #local async function
 
 #local sync functions    
@@ -927,7 +944,11 @@ def take_update_subject(session_id, data):
         except IntegrityError as e:
             return {"value":"fail", "errors" : {f"email":["Email must be unique within session."]}}  
 
-        return {"value":"success", "session_player" : session_player.json()}                      
+        return {"value":"success",
+                "session_player" : {"id":session_player.id,
+                                    "name":session_player.name, 
+                                    "student_id":session_player.student_id,
+                                    "email":session_player.email}}                      
                                 
     logger.info("Invalid session form")
     return {"status":"fail", "errors":dict(form.errors.items())}
