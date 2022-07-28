@@ -168,7 +168,7 @@ var app = Vue.createApp({
                 case "update_production_time":
                     app.takeUpdateProductionTime(messageData);
                     break;
-                case "update_subject":
+                case "update_update_subject":
                     app.takeUpdateSubject(messageData);
                     break;
                 case "send_invitations":

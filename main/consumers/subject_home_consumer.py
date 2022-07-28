@@ -488,6 +488,11 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         no anonmyize data update on client
         '''
+    
+    async def update_update_subject(self, event):
+        '''
+        do not update subject screens when staff updates subject name
+        '''
 
 #local sync functions  
 def take_get_session_subject(session_player_id):
