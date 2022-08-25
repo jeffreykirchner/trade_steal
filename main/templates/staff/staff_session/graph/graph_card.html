@@ -41,11 +41,11 @@
                                      <span v-if="c.chat_type=='All'">
                                         <span class="fw-bold">[[c.sender_label]]:</span> [[c.text]]
                                      </span>
-                                     <span v-else>
-                                        <span class="fw-bold">[[c.sender_label]]
-                                            <i class="fas fa-xs fa-arrow-right"></i><span v-html='c.session_player_recipients[0]'></span>:
+                                     <span v-else>                                        
+                                        <span class="fw-bold">
+                                            [[c.sender_label]]<i class="fas fa-xs fa-arrow-right"></i><span v-html='c.session_player_recipients[0]'></span>:
+                                            [[c.text]]
                                         </span> 
-                                        [[c.text]]
                                     </span>
                                 </div>
 
