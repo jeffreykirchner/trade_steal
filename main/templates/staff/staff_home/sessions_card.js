@@ -20,6 +20,10 @@ takeCreateSession(messageData){
  * @param id : int
  */
 sendDeleteSession(id){
+    if (!confirm('Delete session?')) {
+        return;
+    }
+
     this.working = true;
     app.sendMessage("delete_session",{"id" : id});
 },
