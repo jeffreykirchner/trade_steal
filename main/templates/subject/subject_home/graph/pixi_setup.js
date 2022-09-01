@@ -308,7 +308,7 @@ setupSingleField(index){
     highlight.visible=false;
     container.addChildAt(highlight, 0)
 
-    //house label texture
+    //field id label texture
     let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
                                                                     fontWeight:'bold',
                                                                     fontSize: 48,
@@ -318,6 +318,19 @@ setupSingleField(index){
     label.y = 35;
 
     container.addChild(label);
+
+    //field group label texture
+    if(!app.$data.is_subject){    
+        let label_group = new PIXI.Text("G" + session_player.group_number,{fontFamily : 'Arial',
+                                                                fontWeight:'bold',
+                                                                fontSize: 40,
+                                                                align : 'center'});
+        //label_group.anchor.set(0.5);
+        label_group.x = 10;
+        label_group.y = 8;
+
+        container.addChild(label_group);
+    }
 
     //good one label
     container.addChild(app.createGoodLabel(session_player.good_one_field.toString(),
@@ -360,7 +373,6 @@ setupSingleField(index){
     container.on('pointerup', app.handleFieldPointerUp.bind(this, index))
              .on('pointerover', app.handleFieldPointerOver.bind(this, index))
              .on('pointerout', app.handleFieldPointerOut.bind(this, index));
-    //container.on('pointermove', (event) => { app.handleFieldPointerEnter(i) });
     
     container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
 
