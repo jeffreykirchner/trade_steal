@@ -31,6 +31,8 @@ class ParameterSetType(models.Model):
     good_two_production_2 = models.DecimalField(verbose_name = 'Good Two Production Parameter 2', decimal_places=9, default=0, max_digits=10)
     good_two_production_3 = models.DecimalField(verbose_name = 'Good Two Production Parameter 3', decimal_places=9, default=0, max_digits=10)
 
+    ce_earnings = models.IntegerField(verbose_name = 'Earnings at Completive Equilibrium', default=90)
+
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
 
@@ -67,6 +69,8 @@ class ParameterSetType(models.Model):
         self.good_two_production_2 = source.get("good_two_production_2")
         self.good_two_production_3 = source.get("good_two_production_3")
 
+        self.ce_earnings = source.get("ce_earnings")
+
         self.save()
 
         parameter_set_type_pk_map[source.get("id")] = self.id
@@ -94,4 +98,6 @@ class ParameterSetType(models.Model):
             "good_two_production_1" : self.good_two_production_1.normalize(),
             "good_two_production_2" : self.good_two_production_2.normalize(),
             "good_two_production_3" : self.good_two_production_3.normalize(),
+
+            "ce_earnings" : self.ce_earnings,
         }

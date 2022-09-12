@@ -45,5 +45,6 @@ class SessionPeriod(models.Model):
         return{
             "id" : self.id,
             "period_number" : self.period_number,
+            "efficiency_list" : [p.efficiency for p in self.session_player_periods_a.all()]
         }
         

@@ -4,3 +4,4 @@ _trade_steal_env/*
 *.pyc
 setup.sh
 local_settings.py
+db_dumps
