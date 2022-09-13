@@ -1,0 +1,28 @@
+<div class="card">                  
+    <div class="card-header">                
+        <span class="align-middle">Graph</span>       
+            
+        <span class="float-end">
+            
+
+            <button type="button" 
+                class="btn btn-link ms-1" 
+                title="Show Help Doc" 
+                v-on:click="sendLoadHelpDoc('Staff Session Axis')">
+                <i class="far fa-question-circle"></i> 
+            </button>
+           
+        </span>
+        
+    </div>
+    <div class="card-body">
+        
+        <!-- graph -->
+        <div class="row">
+            <div class="col">
+                <canvas key="efficiency_graph" id="sefficiency_graph" style="border-style: solid;border-width: 1px;"></canvas>
+            </div>
+        </div>
+
+    </div>                    
+</div> 
