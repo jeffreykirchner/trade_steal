@@ -231,6 +231,8 @@ var app = Vue.createApp({
             app.updateChatDisplay(true);
             app.updatePhaseButtonText();
             app.updateNoticeDisplay(true);        
+
+            Vue.nextTick(app.update_graph_canvas());
         },
 
         /**
@@ -436,6 +438,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
+        {%include "staff/staff_session/axis/axis_card.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages

@@ -1,19 +1,13 @@
 /**refresh the supply and demand canvas
 */
-update_sdgraph_canvas:function(){
+update_graph_canvas:function(){
 
-    var el = document.getElementById('sd_graph');
+    var el = document.getElementById('efficiency_graph');
     el.setAttribute('width', el.clientWidth);
     el.setAttribute('height', el.clientHeight);
 
-    period = app.session.parameter_set.periods[app.current_visible_period-1];  //parameter set period
-    period_result = app.session.session_periods[app.current_visible_period-1]; //session results period
-
-    value_list = period.demand;
-    cost_list = period.supply;
-
-    y_max = period.y_scale_max;
-    x_max = period.x_scale_max;
+    y_max = 1;
+    x_max = app.$data.session.session_periods.length;
 
     var marginY=45;    //margin between left side of canvas and Y axis
     var marginX=40;    //margin between bottom of canvas and X axis
@@ -22,62 +16,10 @@ update_sdgraph_canvas:function(){
     //clear canvas
     app.clear_canvas();
 
-    //gains from trade fill
-    if (app.session.started && app.show_gains_from_trade_graph)
-    {
-        app.draw_gain_from_trade_fill("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max, period, period_result.realized_gains_from_trade);
-    }
-
-    //playback gains fill
-    if (app.playback_enabled)
-    {
-        app.draw_playback("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max, 3);
-    }
-
     //axis
-    app.draw_axis("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, y_max, 0, x_max, x_max, "Price ($)", "Units Traded");
+    app.draw_axis("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, y_max, 0, x_max, x_max, "Efficiency", "Period");
 
-    //bids and offers
-    if (app.session.started && app.show_bids_offers_graph)
-    {
-        app.draw_bids_and_offers("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max, period_result);
-    }
-
-    if (app.show_supply_demand_graph)
-    {
-        //supply
-        app.draw_sd_line("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max, 3, value_list, "cornflowerblue");
-
-        //demand
-        app.draw_sd_line("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max, 3, cost_list, "crimson");
-    }
-
-    //equilibrium
-    if (app.show_equilibrium_price_graph)
-    {
-        app.draw_eq_lines("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max, period);
-    }
-
-    //trade line
-    if (app.show_trade_line_graph)
-    {
-        app.draw_trade_line("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max, period_result);
-    }
-
-    //key
-    if (!app.session.finished)
-    {
-        app.draw_key("sd_graph", marginTopAndRight, period_result);
-    }
-
-    //gains from trade key
-    if (app.show_gains_from_trade_graph)
-    {
-        app.draw_grains_from_trade("sd_graph", marginTopAndRight, period_result);
-    }
-
-    //price cap
-    app.draw_price_cap("sd_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max, period);
+    
 },
 
 /** clear canvas of current image to be re-drawn
@@ -205,7 +147,6 @@ draw_axis: function (chartID, marginY, marginX, marginTopAndRight, yMin, yMax, y
     ctx.fillText(xLabel,w/2,h-4);
     ctx.restore();                       
 },
-
 
 /**draw line connecting all the trades
  * @param chartID {string} dom ID name of canvas
