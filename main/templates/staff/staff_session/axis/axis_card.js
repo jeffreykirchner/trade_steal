@@ -19,6 +19,9 @@ update_graph_canvas:function(){
     //axis
     app.draw_axis("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, y_max, 0, x_max, x_max, "Efficiency", "Period");
 
+    //axis
+    app.draw_efficiency_line("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max);
+
     
 },
 
@@ -159,11 +162,9 @@ draw_axis: function (chartID, marginY, marginX, marginTopAndRight, yMin, yMax, y
  * @param xMax {int} ending value on X axis
  * @param period {int} period from 1 to N of which equilibrium lines will be drawn
 */
-draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin, yMax, xMin, xMax, period)
+draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin, yMax, xMin, xMax,)
 {
-    if (period == null)
-        return;
-
+    
     var canvas = document.getElementById(chartID),
         ctx = canvas.getContext('2d');
 
@@ -183,25 +184,37 @@ draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin
 
     ctx.translate(marginY, h-marginX);
 
-    for(i=1; i< period.trade_list.length; i++)
+    ctx.beginPath();
+    
+
+    let session_period = app.$data.session.session_periods[0];
+
+    let x1 = app.convertToX(1, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
+    let y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
+
+    ctx.moveTo(x1, y1);
+
+    for(let i=1; i< app.$data.session.current_period; i++)
     {
-        trade1 = period.trade_list[i-1];
-        trade2 = period.trade_list[i];
 
-        x1 = app.convertToX(i-1, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
-        y1 = app.convertToY(parseFloat(trade1.trade_price), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
+        session_period = app.$data.session.session_periods[i];
 
-        x2 = app.convertToX(i, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
-        y2 = app.convertToY(parseFloat(trade2.trade_price), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
-
-        x3 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
-
-        ctx.beginPath();
-        ctx.moveTo((x1+x2)/2, y1);
-        ctx.lineTo((x2+x3)/2, y2);
-
-        ctx.stroke();
+        x1 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
+        y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
+       
+        if((i+1)%7==0)
+        {
+            ctx.stroke();
+            ctx.beginPath();
+        }
+        else
+        {
+            ctx.lineTo(x1, y1);
+        }
+       
     }
+
+    ctx.stroke();
 
     ctx.restore();
 },

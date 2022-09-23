@@ -3,6 +3,7 @@ session period model
 '''
 
 #import logging
+from statistics import mean
 
 from django.db import models
 
@@ -42,9 +43,13 @@ class SessionPeriod(models.Model):
 
         #current_trade = self.get_current_trade()
 
+        efficiency_list = [p.efficiency for p in self.session_player_periods_a.all()]
+
         return{
             "id" : self.id,
             "period_number" : self.period_number,
-            "efficiency_list" : [p.efficiency for p in self.session_player_periods_a.all()]
+            "efficiency_list" : efficiency_list,
+            "efficiency_mean" : mean(efficiency_list),
+
         }
         
