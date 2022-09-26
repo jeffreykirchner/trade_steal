@@ -394,6 +394,7 @@ class Session(models.Model):
             "notices" : notices,
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
+            "autarky_efficiency" : self.parameter_set.get_autarky_efficiency(),
         }
     
     def json_for_subject(self, session_player):

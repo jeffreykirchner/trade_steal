@@ -7,6 +7,7 @@ from decimal import Decimal
 
 from django.db import models
 from django.db.utils import IntegrityError
+from django.db.models import Sum
 
 from main import globals
 
@@ -278,6 +279,25 @@ class ParameterSet(models.Model):
         '''
 
         return self.parameter_set_players.filter(town=town_number).count()
+    
+    def get_autarky_efficiency(self):
+        '''
+        return efficicency at autarkey
+        '''
+        logger = logging.getLogger(__name__) 
+
+        ce_earnings = 0
+        autarky_earnings = 0
+
+        for i in self.parameter_set_players.all():
+            ce_earnings += i.parameter_set_type.ce_earnings
+            autarky_earnings += i.parameter_set_type.autarky_earnings
+
+        if ce_earnings != 0:
+            return autarky_earnings / ce_earnings
+        
+        return 0
+
 
     def json(self):
         '''
