@@ -45,7 +45,26 @@ class ParametersAdmin(admin.ModelAdmin):
 
     actions = []
 
-admin.site.register(ParameterSet)
+class ParameterSetPlayerInline(admin.TabularInline):
+
+      extra = 0  
+      model = ParameterSetPlayer
+      can_delete = True   
+
+class ParameterSetTypeInline(admin.TabularInline):
+
+      extra = 0  
+      model = ParameterSetType
+      can_delete = False   
+
+@admin.register(ParameterSet)
+class ParameterSetAdmin(admin.ModelAdmin):
+    inlines = [
+        ParameterSetTypeInline, ParameterSetPlayerInline,
+      ]
+
+    list_display = ['period_count', 'period_length_production', 'period_length_trade', 'break_period_frequency', 'allow_stealing', 'group_chat', 'private_chat', 'town_count', 'good_count']
+
 admin.site.register(ParameterSetType)
 admin.site.register(ParameterSetPlayer)
 
@@ -71,7 +90,7 @@ admin.site.register(Avatar)
 #instruction set page
 class InstructionPageInline(admin.TabularInline):
       '''
-      instruction page admin screen
+      instruction page admin screen inline
       '''
       extra = 0  
       form = InstructionFormAdmin
