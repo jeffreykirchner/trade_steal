@@ -17,10 +17,10 @@ update_graph_canvas:function(){
     app.clear_canvas();
 
     //axis
-    app.draw_axis("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, y_max, 0, x_max, x_max, "Efficiency", "Period");
+    app.draw_axis("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, 4, 1, x_max, x_max, "Efficiency", "Period");
 
-    //axis
-    app.draw_efficiency_line("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, 0, x_max);
+    //efficiency
+    app.draw_efficiency_line("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, 1, x_max);
 
     
 },
@@ -194,6 +194,7 @@ draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin
 
     ctx.moveTo(x1, y1);
 
+    //line
     for(let i=1; i< app.$data.session.current_period; i++)
     {
 
@@ -213,8 +214,27 @@ draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin
         }
        
     }
-
     ctx.stroke();
+
+    //dots
+    for(let i=0; i< app.$data.session.current_period; i++)
+    {
+
+        session_period = app.$data.session.session_periods[i];
+
+        x1 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
+        y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
+       
+        if((i+1)%7!=0)        
+        {
+            ctx.beginPath();
+            ctx.arc(x1, y1, 6, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.stroke();
+        }
+       
+    }
 
     ctx.restore();
 },

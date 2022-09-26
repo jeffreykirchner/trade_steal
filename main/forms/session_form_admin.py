@@ -50,7 +50,6 @@ class SessionFormAdmin(forms.ModelForm):
 
     title = forms.CharField(label='Title',
                             widget=forms.TextInput(attrs={"size":"50"}))
-
     
     shared = forms.BooleanField(label='Share parameterset with all.', required=False)
     locked = forms.BooleanField(label='Locked, prevent deletion.', required=False)
