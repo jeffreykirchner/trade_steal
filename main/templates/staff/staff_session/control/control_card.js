@@ -104,6 +104,8 @@ takeUpdateNextPhase(messageData){
     
     this.session.current_experiment_phase = messageData.status.current_experiment_phase;
     this.updatePhaseButtonText();
+    
+    app.takeUpdatePeriod(messageData.status.period_update);
 },
 
 /**
