@@ -190,7 +190,7 @@ class Session(models.Model):
            self.current_period >= self.parameter_set.period_count:
 
             self.do_period_consumption()
-            self.period_update = self.get_current_session_period()
+            period_update = self.get_current_session_period()
             self.finished = True
             end_game = True
 
@@ -209,7 +209,11 @@ class Session(models.Model):
                     self.time_remaining = self.parameter_set.period_length_trade
                 else:
                     self.do_period_consumption()
-                    self.period_update = self.get_current_session_period()
+                    
+                    period_update = self.get_current_session_period()
+                    if period_update:
+                        period_update.update_efficiency()
+
                     self.current_period += 1
                     self.current_period_phase = PeriodPhase.PRODUCTION
                     self.time_remaining = self.parameter_set.period_length_production                         
@@ -231,7 +235,7 @@ class Session(models.Model):
 
         return {"value" : status,
                 "result" : result,
-                "period_update" : period_update,
+                "period_update" : period_update.json() if period_update else None,
                 "notice_list" : notice_list,
                 "end_game" : end_game}
 

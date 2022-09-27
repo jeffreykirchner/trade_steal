@@ -51,11 +51,16 @@ class ParameterSetTypeForm(forms.ModelForm):
     ce_earnings = forms.IntegerField(label='Earnings at Completive Equilibrium (¢)',
                                      min_value=0,
                                      widget=forms.NumberInput(attrs={"v-model":"current_parameterset_type.ce_earnings",
-                                                                     "step":"1"}))                                                                                                                                          
+                                                                     "step":"1"}))  
+
+    autarky_earnings = forms.IntegerField(label='Earnings at Autarky (¢)',
+                                     min_value=0,
+                                     widget=forms.NumberInput(attrs={"v-model":"current_parameterset_type.autarky_earnings",
+                                                                     "step":"1"}))                                                                                                                                        
 
     class Meta:
         model=ParameterSetType
         fields =['good_one_amount', 'good_two_amount',
                  'good_one_production_1','good_one_production_2', 'good_one_production_3',
                  'good_two_production_1','good_two_production_2', 'good_two_production_3',
-                 'ce_earnings']
+                 'ce_earnings', 'autarky_earnings']

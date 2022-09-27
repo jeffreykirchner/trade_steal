@@ -282,7 +282,7 @@ class ParameterSet(models.Model):
     
     def get_autarky_efficiency(self):
         '''
-        return efficicency at autarkey
+        return efficicency at autarky
         '''
         logger = logging.getLogger(__name__) 
 

@@ -165,7 +165,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             await self.channel_layer.group_send(
                     self.room_group_name,
                     {"type": "update_next_phase",
-                    "data": message_data["status"],
+                     "data": message_data["status"],
                      "sender_channel_name": self.channel_name},
                 )
 

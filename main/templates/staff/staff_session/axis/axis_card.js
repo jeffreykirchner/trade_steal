@@ -8,6 +8,7 @@ update_graph_canvas:function(){
 
     y_max = 1;
     x_max = app.$data.session.session_periods.length;
+    x_min = 1;
 
     var marginY=45;    //margin between left side of canvas and Y axis
     var marginX=40;    //margin between bottom of canvas and X axis
@@ -17,7 +18,7 @@ update_graph_canvas:function(){
     app.clear_canvas();
 
     //axis
-    app.draw_axis("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, 4, 1, x_max, x_max, "Efficiency", "Period");
+    app.draw_axis("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, 4, 1, x_max, x_max-x_min, "Efficiency", "Period");
 
     //efficiency
     app.draw_efficiency_line("efficiency_graph", marginY, marginX, marginTopAndRight, 0, y_max, 1, x_max);
@@ -60,21 +61,21 @@ draw_axis: function (chartID, marginY, marginX, marginTopAndRight, yMin, yMax, y
         return;
     }
 
-    var canvas = document.getElementById(chartID),
+    let canvas = document.getElementById(chartID),
         ctx = canvas.getContext('2d');    
 
     ctx.save();
 
-    var xScale = xMax-xMin;
-    var yScale = yMax-yMin;
+    let xScale = xMax-xMin;
+    let yScale = yMax-yMin;
 
-    var w = ctx.canvas.width;
-    var h = ctx.canvas.height;
+    let w = ctx.canvas.width;
+    let h = ctx.canvas.height;
 
-    var tickLength=3;
+    let tickLength=3;
     
-    var xTickValue=xScale/parseFloat(xTickCount);
-    var yTickValue=yScale/parseFloat(yTickCount);
+    let xTickValue=parseFloat(xScale)/parseFloat(xTickCount);
+    let yTickValue=yScale/parseFloat(yTickCount);
 
     ctx.moveTo(0,0);
 
@@ -117,7 +118,7 @@ draw_axis: function (chartID, marginY, marginX, marginTopAndRight, yMin, yMax, y
     ctx.textAlign = "center";
 
     var tempX = marginY;
-    var tempXValue=xMin;                                
+    var tempXValue=parseFloat(xMin);                                
     for(var i=0;i<=xTickCount;i++)
     {                                       
         ctx.moveTo(tempX, h-marginX);                                   
@@ -165,43 +166,67 @@ draw_axis: function (chartID, marginY, marginX, marginTopAndRight, yMin, yMax, y
 draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin, yMax, xMin, xMax,)
 {
     
-    var canvas = document.getElementById(chartID),
+    let canvas = document.getElementById(chartID),
         ctx = canvas.getContext('2d');
 
-    var w =  ctx.canvas.width;
-    var h = ctx.canvas.height;
+    let w = ctx.canvas.width;
+    let h = ctx.canvas.height;
     
-    lineWidth = 3;
+    let lineWidth = 3;
+
+    let session = app.$data.session;
 
     ctx.save();
-
-    ctx.strokeStyle = "dimgrey";
-    ctx.lineWidth = lineWidth;
-    ctx.lineCap = "round";
-    ctx.font="12px Arial";
-    ctx.fillStyle = "black";
-    ctx.textAlign = "center";
-
     ctx.translate(marginY, h-marginX);
 
-    ctx.beginPath();
-    
+    ctx.strokeStyle = "lightgrey";
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = "round";
+    ctx.font="bold 14px Arial";
+    ctx.fillStyle = "lightgrey";
+    ctx.textAlign = "center";
+    ctx.setLineDash([15, 5, 5, 5]);
 
-    let session_period = app.$data.session.session_periods[0];
+    //autarky line
+    let a_x1 = 0;
+    let a_x2 = w-marginTopAndRight-marginY;
+    let a_y = app.convertToY(parseFloat(session.autarky_efficiency), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
 
-    let x1 = app.convertToX(1, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
-    let y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
+    ctx.beginPath(); 
+    ctx.moveTo(a_x1, a_y);
+    ctx.lineTo(a_x2, a_y);
+    ctx.stroke();
+
+    ctx.fillText("Autarky", a_x2/2, a_y-5);
+
+    ctx.strokeStyle = "black";
+    ctx.setLineDash([]);
+
+    ctx.beginPath();    
+
+    if(session.session_periods.length == 0) return;
+    if(session.current_experiment_phase == "Instructions" || 
+       session.current_experiment_phase == "Selection") return;
+
+    let max_period = session.current_period-1;
+    if(session.current_experiment_phase == "Done")  max_period = session.current_period;
+
+
+    //efficiency line
+    let session_period = session.session_periods[0];
+
+    let x1 = app.convertToX(1, xMax, xMin, w-marginY-marginTopAndRight, 0);
+    let y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
 
     ctx.moveTo(x1, y1);
 
-    //line
-    for(let i=1; i< app.$data.session.current_period; i++)
+    for(let i=1; i < max_period; i++)
     {
 
-        session_period = app.$data.session.session_periods[i];
+        session_period = session.session_periods[i];
 
-        x1 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
-        y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
+        x1 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, 0);
+        y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
        
         if((i+1)%7==0)
         {
@@ -217,13 +242,12 @@ draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin
     ctx.stroke();
 
     //dots
-    for(let i=0; i< app.$data.session.current_period; i++)
+    for(let i=0; i< max_period; i++)
     {
+        session_period = session.session_periods[i];
 
-        session_period = app.$data.session.session_periods[i];
-
-        x1 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, lineWidth);
-        y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
+        x1 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, 0);
+        y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
        
         if((i+1)%7!=0)        
         {
@@ -247,15 +271,16 @@ draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin
  * @param markerWidth {int} width of the marker or line in pixels
  */
 convertToX:function(value, maxValue, minValue, canvasWidth, markerWidth){
-    markerWidth=0;
+    
+    let tempT = parseFloat(canvasWidth) / parseFloat(maxValue-minValue);
 
-    tempT = canvasWidth / (maxValue-minValue);
+    let value_adjusted = parseFloat(value - minValue);
 
-    value-=minValue;
+    if(value_adjusted > maxValue) value_adjusted = maxValue;
 
-    if(value>maxValue) value=maxValue;
+    let v = (tempT * value_adjusted - markerWidth/2);
 
-    return (tempT * value - markerWidth/2);
+    return v;
 },
 
 /**convert value to Y cordinate on the graph

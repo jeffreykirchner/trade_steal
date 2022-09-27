@@ -33,6 +33,14 @@ class SessionPeriod(models.Model):
         verbose_name_plural = 'Session Periods'
         ordering = ['period_number']
 
+    def update_efficiency(self):
+        '''
+        calc player efficiency for period
+        '''
+        for p in self.session_player_periods_a.all():
+            p.update_efficiency()
+        
+
     #return json object of class
     def json(self):
         '''
@@ -44,12 +52,14 @@ class SessionPeriod(models.Model):
         #current_trade = self.get_current_trade()
 
         efficiency_list = [p.efficiency for p in self.session_player_periods_a.all()]
+        
+        
 
         return{
             "id" : self.id,
             "period_number" : self.period_number,
-            "efficiency_list" : efficiency_list,
-            "efficiency_mean" : mean(efficiency_list),
+            "efficiency_list" : list(map(lambda v:str(v), efficiency_list)) ,
+            "efficiency_mean" : str(mean(efficiency_list)),
 
         }
         
