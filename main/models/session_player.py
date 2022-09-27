@@ -377,6 +377,7 @@ class SessionPlayer(models.Model):
 
         self.save()
         session_player_period.save()
+        session_player_period.update_efficiency()
 
     def get_instruction_set(self):
         '''

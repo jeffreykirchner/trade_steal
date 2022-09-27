@@ -231,6 +231,8 @@ var app = Vue.createApp({
             app.updateChatDisplay(true);
             app.updatePhaseButtonText();
             app.updateNoticeDisplay(true);        
+
+            Vue.nextTick(app.update_graph_canvas());
         },
 
         /**
@@ -397,6 +399,7 @@ var app = Vue.createApp({
 
             app.takeUpdateGoods({status : {result : result.session_players}});
             app.takeUpdateEarnings(messageData);
+            app.takeUpdatePeriod(messageData.status.period_update);
 
             app.updatePhaseButtonText();
 
@@ -407,6 +410,16 @@ var app = Vue.createApp({
             }
 
             app.timer_warning_timeout = setTimeout(app.timerWarning, 5000);
+        },
+
+        /**
+         * update single session period
+         */
+        takeUpdatePeriod(period_update){
+            if(!period_update) return;
+
+            app.$data.session.session_periods[period_update.period_number-1] = period_update;
+            Vue.nextTick(app.update_graph_canvas());
         },
 
         /**
@@ -436,6 +449,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
+        {%include "staff/staff_session/axis/axis_card.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages

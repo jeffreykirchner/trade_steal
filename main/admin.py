@@ -30,6 +30,7 @@ from main.models.instruction import Instruction
 
 admin.site.site_header = settings.ADMIN_SITE_HEADER
 
+@admin.register(Parameters)
 class ParametersAdmin(admin.ModelAdmin):
     '''
     parameters model admin
@@ -44,25 +45,40 @@ class ParametersAdmin(admin.ModelAdmin):
 
     actions = []
 
-admin.site.register(Parameters, ParametersAdmin)
+class ParameterSetPlayerInline(admin.TabularInline):
 
-admin.site.register(ParameterSet)
+      extra = 0  
+      model = ParameterSetPlayer
+      can_delete = True   
+
+class ParameterSetTypeInline(admin.TabularInline):
+
+      extra = 0  
+      model = ParameterSetType
+      can_delete = False   
+
+@admin.register(ParameterSet)
+class ParameterSetAdmin(admin.ModelAdmin):
+    inlines = [
+        ParameterSetTypeInline, ParameterSetPlayerInline,
+      ]
+
+    list_display = ['period_count', 'period_length_production', 'period_length_trade', 'break_period_frequency', 'allow_stealing', 'group_chat', 'private_chat', 'town_count', 'good_count']
+
 admin.site.register(ParameterSetType)
 admin.site.register(ParameterSetPlayer)
 
+@admin.register(ParameterSetPlayerGroup)
 class ParameterSetPlayerGroupAdmin(admin.ModelAdmin):
 
     list_display = ['parameter_set_player', 'group_number', 'period']
     ordering=['parameter_set_player', 'period']
 
-admin.site.register(ParameterSetPlayerGroup, ParameterSetPlayerGroupAdmin)
-
-
+@admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
     form = SessionFormAdmin
 
-admin.site.register(Session, SessionAdmin)
-
+    readonly_fields = ['parameter_set']
 
 admin.site.register(SessionPlayer)
 admin.site.register(SessionPlayerChat)
@@ -74,13 +90,14 @@ admin.site.register(Avatar)
 #instruction set page
 class InstructionPageInline(admin.TabularInline):
       '''
-      instruction page admin screen
+      instruction page admin screen inline
       '''
       extra = 0  
       form = InstructionFormAdmin
       model = Instruction
       can_delete = True
 
+@admin.register(InstructionSet)
 class InstructionSetAdmin(admin.ModelAdmin):
     form = InstructionSetFormAdmin
 
@@ -107,7 +124,5 @@ class InstructionSetAdmin(admin.ModelAdmin):
       ]
     
     actions = [duplicate_set]
-
-admin.site.register(InstructionSet, InstructionSetAdmin)
 
 admin.site.register(HelpDocs)

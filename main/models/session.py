@@ -182,6 +182,7 @@ class Session(models.Model):
 
         status = "success"
         end_game = False
+        period_update = None
 
         #check session over
         if self.time_remaining == 0 and \
@@ -189,10 +190,12 @@ class Session(models.Model):
            self.current_period >= self.parameter_set.period_count:
 
             self.do_period_consumption()
+            period_update = self.get_current_session_period()
             self.finished = True
             end_game = True
 
         notice_list = []
+        
 
         if not status == "fail" and not end_game:
 
@@ -206,9 +209,14 @@ class Session(models.Model):
                     self.time_remaining = self.parameter_set.period_length_trade
                 else:
                     self.do_period_consumption()
+                    
+                    period_update = self.get_current_session_period()
+                    if period_update:
+                        period_update.update_efficiency()
+
                     self.current_period += 1
                     self.current_period_phase = PeriodPhase.PRODUCTION
-                    self.time_remaining = self.parameter_set.period_length_production     
+                    self.time_remaining = self.parameter_set.period_length_production                         
 
                     if self.current_period % self.parameter_set.break_period_frequency == 0:
                         notice_list = self.add_notice_to_all(f"<center>*** Break period, chat only, no production. ***</center>")           
@@ -227,6 +235,7 @@ class Session(models.Model):
 
         return {"value" : status,
                 "result" : result,
+                "period_update" : period_update.json() if period_update else None,
                 "notice_list" : notice_list,
                 "end_game" : end_game}
 
@@ -389,6 +398,7 @@ class Session(models.Model):
             "notices" : notices,
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
+            "autarky_efficiency" : self.parameter_set.get_autarky_efficiency(),
         }
     
     def json_for_subject(self, session_player):
