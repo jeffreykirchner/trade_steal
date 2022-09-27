@@ -74,9 +74,10 @@ class ParameterSetPlayer(models.Model):
 
         new_period_groups = source.get("period_groups")
         for g in new_period_groups:
-            parameter_set_player_group = self.parameter_set_player_groups.get(period=g["period"])
-            parameter_set_player_group.group_number = g["group_number"]
-            parameter_set_player_group.save()
+            if g["period"] <= self.parameter_set.period_count:
+                parameter_set_player_group = self.parameter_set_player_groups.get(period=g["period"])
+                parameter_set_player_group.group_number = g["group_number"]
+                parameter_set_player_group.save()
 
         return message
 
