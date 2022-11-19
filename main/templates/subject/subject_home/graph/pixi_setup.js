@@ -413,32 +413,33 @@ setupSingleAvatar(index){
         sprite = PIXI.Sprite.from(this.avatar_sheet.textures[session_players[index].parameter_set_player.avatar.file_name]);
     }
     
-    container.x = pt.x;
-    container.y = pt.y;
-
     sprite.x = 0;
     sprite.y = 0;   
     container.addChild(sprite);
 
-    let scale = (app.canvas_width/11) / container.width;
+    let scale = (app.canvas_width/9) / container.width;
 
-    //house label texture
+    container.pivot.set(container.width/2, container.height/2);
+    container.scale.set(scale, scale);
+
+    let container2 = new PIXI.Container();
+    container2.x = pt.x;
+    container2.y = pt.y;
+    container2.addChild(container);
+
+    //avatar label texture
     let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
         fontWeight:'bold',
-        fontSize: 75 * (scale/.19),
+        fontSize: 15,
         align : 'center'});
 
     label.anchor.set(0.5);
-    label.x = sprite.width - 25;
-    label.y = 35;
+    label.x = container2.width/2 -20;
+    label.y = -container2.height/2 + 20;
 
-    container.addChild(label);
+    container2.addChild(label);
 
-    container.pivot.set(container.width/2, container.height/2);
-
-    container.scale.set(scale, scale);
-
-    session_players[index].avatarContainer = container;
+    session_players[index].avatarContainer = container2;
     app.$data.pixi_app.stage.addChild(session_players[index].avatarContainer);
 },
 /**
