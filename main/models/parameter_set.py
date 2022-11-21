@@ -83,6 +83,8 @@ class ParameterSet(models.Model):
             self.avatar_grid_col_count = new_ps.get("avatar_grid_col_count")
             self.avatar_grid_text = new_ps.get("avatar_grid_text")
 
+            self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
+
             self.save()
 
             #map of old pk to new pk
