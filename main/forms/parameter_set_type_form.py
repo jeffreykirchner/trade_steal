@@ -10,12 +10,12 @@ class ParameterSetTypeForm(forms.ModelForm):
     '''
     parameter set type edit form
     '''
-    good_one_amount = forms.CharField(label='Good One Amount to Earn 1¢',
+    good_one_amount = forms.CharField(label='Good One Required Earn ¢ (Max of G1 and G2)',
                                       widget=forms.NumberInput(attrs={"v-model":"current_parameterset_type.good_one_amount",
                                                                       "step":"1",
                                                                       "min":"1"}))
     
-    good_two_amount = forms.CharField(label='Good Two Amount to Earn 1¢',
+    good_two_amount = forms.CharField(label='Good Two Required Earn ¢ (Max of G1 and G2)',
                                       widget=forms.NumberInput(attrs={"v-model":"current_parameterset_type.good_two_amount",
                                                                       "step":"1",
                                                                       "min":"1"}))
@@ -60,7 +60,7 @@ class ParameterSetTypeForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSetType
-        fields =['good_one_amount', 'good_two_amount',
-                 'good_one_production_1','good_one_production_2', 'good_one_production_3',
+        fields =['good_one_production_1','good_one_production_2', 'good_one_production_3',
                  'good_two_production_1','good_two_production_2', 'good_two_production_3',
+                 'good_one_amount', 'good_two_amount',
                  'ce_earnings', 'autarky_earnings']
