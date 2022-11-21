@@ -256,11 +256,11 @@ var app = Vue.createApp({
         updatePhaseButtonText(){
             if(this.session.finished && this.session.current_experiment_phase == "Done")
             {
-                this.move_to_next_phase_text = '** Experiment complete **';
+                this.move_to_next_phase_text = '** Session complete **';
             }
             else if(this.session.finished && this.session.current_experiment_phase != "Done")
             {
-                this.move_to_next_phase_text = 'Complete Expermient <i class="fas fa-flag-checkered"></i>';
+                this.move_to_next_phase_text = 'Complete Session <i class="fas fa-flag-checkered"></i>';
             }
             else if(this.session.current_experiment_phase == "Run")
             {
@@ -274,7 +274,7 @@ var app = Vue.createApp({
                 }
                 else
                 {
-                    this.move_to_next_phase_text = 'Start Expermient <i class="far fa-play-circle"></i>';
+                    this.move_to_next_phase_text = 'Start Session <i class="far fa-play-circle"></i>';
                 }
             }
         },
