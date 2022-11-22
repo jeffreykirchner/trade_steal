@@ -171,6 +171,14 @@ var app = Vue.createApp({
                 }));
         },
 
+        /**
+         * do after session has loaded
+        */
+        doFirstLoad()
+        {
+
+        },
+
         /** send winsock request to get session info
         */
         sendGetSession(){
