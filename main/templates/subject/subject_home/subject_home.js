@@ -71,6 +71,7 @@ var app = Vue.createApp({
                     avatar_choice_grid_selected_col : 0,
 
                     instructions : {{instructions|safe}},
+                    instruction_pages_show_scroll : false,
 
                 }},
     methods: {
@@ -176,7 +177,17 @@ var app = Vue.createApp({
         */
         doFirstLoad()
         {
-
+            Vue.nextTick(() => {
+                document.getElementById('instructions_frame_a').addEventListener('scroll',
+                    function()
+                    {
+                        app.scroll_update();
+                    },
+                    false
+                )    
+                
+                app.scroll_update();
+            })
         },
 
         /** send winsock request to get session info
@@ -255,6 +266,13 @@ var app = Vue.createApp({
                     {
                         this.take_choice_grid_label(this.session_player.avatar.label)
                     }
+                }
+
+                if(!app.first_load_done)
+                {
+                    Vue.nextTick(() => {
+                        app.doFirstLoad();
+                    })
                 }
             }
 
