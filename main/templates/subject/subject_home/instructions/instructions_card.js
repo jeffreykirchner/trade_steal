@@ -113,6 +113,14 @@ processInstructionPage(){
 instructionDisplayScroll(){
     
     document.getElementById("instructions_frame").scrollIntoView();
+
+    Vue.nextTick(() => {
+        if(document.getElementById("instructions_frame"))
+        {  
+           document.getElementById("instructions_frame").scrollIntoView();
+           app.scroll_update();
+        }
+     })
     
 },
 
@@ -381,24 +389,20 @@ simulateGoodTransferInstructions(){
     this.chat_text="";
 },
 
-// {
-//     "id": 479,
-//     "sender_label": "1",
-//     "sender_id": 538,
-//     "text": "asd"
-// }
-// let result = messageData.status;
-// let chat = result.chat;
-// let session_player = this.session_player;
-
-// if(result.chat_type=="All")
-// {
-//     if(session_player.chat_all.length >= 100)
-//         session_player.chat_all.shift();
-
-//     session_player.chat_all.push(chat);
-//     if(this.chat_recipients != "all")
-//     {
-//         session_player.new_chat_message = true;
-//     }
-// }
+scroll_update()
+{
+    var scrollTop = document.getElementById('instructions_frame_a').scrollTop;
+    var scrollHeight = document.getElementById('instructions_frame_a').scrollHeight; // added
+    var offsetHeight = document.getElementById('instructions_frame_a').offsetHeight;
+    // var clientHeight = document.getElementById('box').clientHeight;
+    var contentHeight = scrollHeight - offsetHeight; // added
+    if (contentHeight <= scrollTop) // modified
+    {
+        // Now this is called when scroll end!
+        app.instruction_pages_show_scroll = false;
+    }
+    else
+    {
+        app.instruction_pages_show_scroll = true;
+    }
+},
