@@ -72,15 +72,37 @@ admin.site.register(ParameterSetPlayer)
 class ParameterSetPlayerGroupAdmin(admin.ModelAdmin):
 
     list_display = ['parameter_set_player', 'group_number', 'period']
-    ordering=['parameter_set_player', 'period']
+    ordering=['parameter_set_player', 'period']    
+
+@admin.register(SessionPlayer)
+class SessionPlayerAdmin(admin.ModelAdmin):
+    
+    readonly_fields = ['session', 'parameter_set_player']
+    
+
+class SessionPlayerInline(admin.TabularInline):
+
+    def has_add_permission(self, request, obj=None):
+        return False
+    
+    @admin.display(description='Player ID')
+    def get_parameter_set_player_id_label(self, obj):
+        return obj.parameter_set_player.id_label
+
+    extra = 0  
+    model = SessionPlayer
+    can_delete = False   
+    show_change_link = True
+    fields = ['name', 'email', 'student_id', 'survey_complete']
+    readonly_fields = ('get_parameter_set_player_id_label',)
 
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
     form = SessionFormAdmin
 
     readonly_fields = ['parameter_set']
+    inlines = [SessionPlayerInline]
 
-admin.site.register(SessionPlayer)
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerMove)
 admin.site.register(SessionPlayerPeriod)

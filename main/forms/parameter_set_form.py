@@ -95,6 +95,14 @@ class ParameterSetForm(forms.ModelForm):
                                             empty_label=None,
                                             queryset=main.models.InstructionSet.objects.all(),
                                             widget=forms.Select(attrs={"v-model":"session.parameter_set.instruction_set.id"}))
+    
+    survey_required = forms.ChoiceField(label='Show Survey',
+                                       choices=((True, 'Yes'), (False,'No' )),
+                                       widget=forms.Select(attrs={"v-model":"session.parameter_set.survey_required",}))
+
+    survey_link =  forms.CharField(label='Survey Link',
+                                   required=False,
+                                   widget=forms.TextInput(attrs={"v-model":"session.parameter_set.survey_link",}))
 
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
@@ -105,4 +113,19 @@ class ParameterSetForm(forms.ModelForm):
         fields =['town_count','good_count', 'period_count', 'period_length_production' ,
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
                  'group_chat', 'private_chat', 'show_avatars', 'avatar_assignment_mode', 'avatar_grid_row_count', 
-                 'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'instruction_set', 'test_mode']
+                 'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'instruction_set', 'survey_required', 'survey_link', 'test_mode']
+    
+
+    def clean_survey_link(self):
+        
+        try:
+           survey_link = self.data.get('survey_link')
+           survey_required = self.data.get('survey_required')
+
+           if survey_required == 'True' and not "http" in survey_link:
+               raise forms.ValidationError('Invalid link')
+            
+        except ValueError:
+            raise forms.ValidationError('Invalid Entry')
+
+        return survey_link

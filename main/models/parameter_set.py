@@ -41,6 +41,9 @@ class ParameterSet(models.Model):
     avatar_grid_col_count = models.IntegerField(verbose_name='Avatar Grid Col Count', default=3)
     avatar_grid_text =  models.CharField(verbose_name='Avatar Grid Text', max_length = 300, default="Choose an avatar that best represents you.")
 
+    survey_required = models.BooleanField(default=False, verbose_name="Survey Required")                      #if true show the survey below
+    survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
+
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
 
     timestamp = models.DateTimeField(auto_now_add= True)
@@ -82,6 +85,9 @@ class ParameterSet(models.Model):
             self.avatar_grid_row_count = new_ps.get("avatar_grid_row_count")
             self.avatar_grid_col_count = new_ps.get("avatar_grid_col_count")
             self.avatar_grid_text = new_ps.get("avatar_grid_text")
+
+            self.survey_required = new_ps.get("survey_required")
+            self.survey_link = new_ps.get("survey_link")
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
 
@@ -333,6 +339,9 @@ class ParameterSet(models.Model):
 
             "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
 
+            "survey_required" : "True" if self.survey_required else "False",
+            "survey_link" : self.survey_link,
+
             "test_mode" : "True" if self.test_mode else "False",
         }
     
@@ -362,6 +371,9 @@ class ParameterSet(models.Model):
             "avatar_grid_text" : self.avatar_grid_text,
 
             "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
+
+            "survey_required" : "True" if self.survey_required else "False",
+            "survey_link" : self.survey_link,
 
             "test_mode" : self.test_mode,
         }
