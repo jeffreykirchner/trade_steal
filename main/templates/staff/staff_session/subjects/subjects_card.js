@@ -397,3 +397,13 @@ takeAnonymizeData(messageData){
     
     } 
 },
+
+/** take survey completed by subject
+ * @param message_data {json} result of update, either sucess or fail with errors
+*/
+take_update_survey_complete(message_data){
+    result = message_data.status;
+
+    session_player = app.findSessionPlayer(result.player_id);
+    session_player.survey_complete = true;
+},

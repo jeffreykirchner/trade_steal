@@ -17,6 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from main.models import Session
 from main.models import ParameterSetPlayer
 from main.models import Avatar
+from main.models import Parameters
 
 from main.globals import round_half_away_from_zero
 
@@ -45,14 +46,16 @@ class SessionPlayer(models.Model):
     connecting = models.BooleanField(default=False, verbose_name='Consumer is connecting')              #true when a consumer is connceting
     connected_count = models.IntegerField(verbose_name='Number of consumer connections', default=0)     #number of consumers connected to this subject
 
-    name = models.CharField(verbose_name='Full Name', max_length = 100, default="")                     #subject's full name
-    student_id = models.CharField(verbose_name='Student ID', max_length = 100, default="")              #subject's student ID number
+    name = models.CharField(verbose_name='Full Name', max_length = 100, default="", blank=True, null=True)                     #subject's full name
+    student_id = models.CharField(verbose_name='Student ID', max_length = 100, default="", blank=True, null=True)              #subject's student ID number
     email =  models.EmailField(verbose_name='Email Address', max_length = 100, blank=True, null=True)              #subject's email address
     earnings = models.IntegerField(verbose_name='Earnings in cents', default=0)                         #earnings in cents
 
     current_instruction = models.IntegerField(verbose_name='Current Instruction', default=0)                     #current instruction page subject is on
     current_instruction_complete = models.IntegerField(verbose_name='Current Instruction Complete', default=0)   #furthest complete page subject has done
     instructions_finished = models.BooleanField(verbose_name='Instructions Finished', default=False)             #true once subject has completed instructions
+
+    survey_complete = models.BooleanField(default=False, verbose_name="Survey Complete")                 #subject has completed the survey
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -66,12 +69,12 @@ class SessionPlayer(models.Model):
         verbose_name_plural = 'Session Players'
         ordering = ['parameter_set_player__town', 'parameter_set_player__location']
         constraints = [
-            models.CheckConstraint(check=RawSQL('good_one_production_rate+good_two_production_rate=100',
-                                                  (),
-                                                  output_field=models.BooleanField(),),                                                                       
-                                     name='production_total_equals_100'),
+            # models.CheckConstraint(check=RawSQL('good_one_production_rate+good_two_production_rate=100',
+            #                                       (),
+            #                                       output_field=models.BooleanField(),),                                                                       
+            #                          name='production_total_equals_100'),
             
-            models.UniqueConstraint(fields=['session', 'email'], name='unique_email_session_player', condition=~Q(email="")),
+            # models.UniqueConstraint(fields=['session', 'email'], name='unique_email_session_player', condition=(~Q(email=""))),
         ]
 
     def check_good_available_at_location(self, good_location, parameter_set_good):
@@ -171,6 +174,7 @@ class SessionPlayer(models.Model):
         self.good_two_production_rate = 50
 
         self.avatar = None
+        self.survey_complete = False
 
         self.reset_instructions()
 
@@ -403,6 +407,25 @@ class SessionPlayer(models.Model):
         instructions["instruction_pages"] = instruction_pages
 
         return instructions
+    
+    def get_survey_link(self):
+        '''
+        get survey link
+        '''
+
+        if self.survey_complete:
+            return ""
+        
+        p = Parameters.objects.first()
+
+        link_string = f'{self.session.parameter_set.survey_link}?'
+        link_string += f'session_id={self.session.id}&'
+        link_string += f'player_label={self.parameter_set_player.id_label}&'
+        link_string += f'player_number={self.player_number}&'        
+        link_string += f'player_key={self.player_key}&'
+        link_string += f'server_url={p.site_url}&'
+
+        return link_string
 
     def json(self, get_chat=True):
         '''
@@ -448,6 +471,9 @@ class SessionPlayer(models.Model):
             "current_instruction" : self.current_instruction,
             "current_instruction_complete" : self.current_instruction_complete,
             "instructions_finished" : self.instructions_finished,
+
+            "survey_complete" : self.survey_complete,
+            "survey_link" : self.get_survey_link(),
 
         }
     

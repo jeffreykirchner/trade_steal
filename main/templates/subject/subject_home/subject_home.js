@@ -177,6 +177,14 @@ var app = Vue.createApp({
         */
         doFirstLoad()
         {
+            //if survery required forward to it.
+            if(app.session.parameter_set.survey_required=='True' && 
+               !app.session_player.survey_complete)
+            {
+                window.location.replace(app.session_player.survey_link);
+            }
+
+            //scroll to instructions
             Vue.nextTick(() => {
                 document.getElementById('instructions_frame_a').addEventListener('scroll',
                     function()
