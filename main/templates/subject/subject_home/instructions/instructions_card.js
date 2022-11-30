@@ -230,7 +230,7 @@ simulate_clear_goods_instructions(){
     for(i=0; i<session_players.length;i++)
     {
         result.push({
-            id : session_players[0].id,
+            id : session_players[i].id,
 
             good_one_house : 0,
             good_two_house : 0,
