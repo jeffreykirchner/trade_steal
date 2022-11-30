@@ -494,6 +494,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         do not update subject screens when staff updates subject name
         '''
 
+    async def update_survey_complete(self, event):
+        '''
+        no group broadcast of survey complete
+        '''
+        pass
+
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''

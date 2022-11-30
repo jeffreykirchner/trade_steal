@@ -37,7 +37,7 @@ class SubjectSurveyCompleteView(View):
 
         channel_layer = get_channel_layer()
         data = {"player_id" : session_player.id}
-        # session_player.session.send_message_to_group("update_survey_complete", data)
+        session_player.session.send_message_to_group("update_survey_complete", data)
 
         parameters = Parameters.objects.first()
 
