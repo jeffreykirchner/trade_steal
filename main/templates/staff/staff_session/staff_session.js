@@ -271,14 +271,22 @@ var app = Vue.createApp({
             }
             else if(this.session.started && !this.session.finished)
             {
-                if(this.session.current_experiment_phase == "Selection" && this.session.parameter_set.show_instructions == "True")
+                if(this.session.current_experiment_phase == "Selection")
                 {
-                    this.move_to_next_phase_text = 'Show Instructions <i class="fas fa-map"></i>';
+                    this.move_to_next_phase_text = 'Complete Avatar Selection <i class="far fa-play-circle"></i>';
                 }
-                else
+                else if(this.session.current_experiment_phase == "Instructions" && 
+                        (this.session.parameter_set.avatar_assignment_mode == "Subject Select"))
+                {
+
+                    this.move_to_next_phase_text = 'Start Avatar Selection <i class="far fa-play-circle"></i>';
+                }
+                else if(this.session.current_experiment_phase == "Instructions")
                 {
                     this.move_to_next_phase_text = 'Continue Session <i class="far fa-play-circle"></i>';
                 }
+
+                // && this.session.parameter_set.show_instructions == "True"
             }
         },
 

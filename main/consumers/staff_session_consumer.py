@@ -28,6 +28,7 @@ from main.models import Parameters
 
 from main.globals import ExperimentPhase
 from main.globals import send_mass_email_service
+from main.globals import AvatarModes
 
 class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     '''
@@ -805,13 +806,16 @@ def take_next_phase(session_id, data):
     period_update = None
 
     if session.current_experiment_phase == ExperimentPhase.SELECTION:
-        if session.parameter_set.show_instructions:
-            session.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
+        session.current_experiment_phase = ExperimentPhase.RUN
+        
+    elif session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
+        
+        if session.parameter_set.avatar_assignment_mode == AvatarModes.SUBJECT_SELECT or \
+           session.parameter_set.avatar_assignment_mode == AvatarModes.BEST_MATCH :
+
+            session.current_experiment_phase = ExperimentPhase.SELECTION
         else:
             session.current_experiment_phase = ExperimentPhase.RUN
-
-    elif session.current_experiment_phase == ExperimentPhase.INSTRUCTIONS:
-        session.current_experiment_phase = ExperimentPhase.RUN
 
     elif session.current_experiment_phase == ExperimentPhase.RUN:
         session.current_experiment_phase = ExperimentPhase.DONE
