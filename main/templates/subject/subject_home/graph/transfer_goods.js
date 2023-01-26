@@ -29,21 +29,15 @@ showTransferModal(container){
 
     if(parameter_set.good_count == 2 || app.$data.pixi_transfer_source.name.type == "field")
     {
-        var myModal = new bootstrap.Modal(document.getElementById('moveTwoGoodsModal'), {
-            keyboard: false
-            })
+        app.$data.moveTwoGoodsModal.toggle();
     }
     else
     {
         app.$data.transfer_modal_good_three_rgb = app.$data.pixi_transfer_source.name.good_three_color;
         app.$data.transfer_modal_good_three_name = app.$data.pixi_transfer_source.name.good_c_label;
 
-        var myModal = new bootstrap.Modal(document.getElementById('moveThreeGoodsModal'), {
-            keyboard: false
-            })
+        app.$data.moveThreeGoodsModal.toggle();
     }
-
-    myModal.toggle();
 },
 
 /** hide transfer modal
@@ -130,13 +124,8 @@ takeMoveGoods(messageData){
  * close and reset the move modals
  */
 closeMoveModal(){
-    let e1 = document.getElementById('moveTwoGoodsModal');
-    let modal = bootstrap.Modal.getInstance(e1);
-    if(modal) modal.hide();
-
-    let e2 = document.getElementById('moveThreeGoodsModal');
-    let modal2 = bootstrap.Modal.getInstance(e2);
-    if(modal2) modal2.hide();
+    app.$data.moveTwoGoodsModal.hide();
+    app.$data.moveThreeGoodsModal.hide();
 
     this.transfer_good_one_amount = 0;  
     this.transfer_good_two_amount = 0;  

@@ -73,6 +73,12 @@ var app = Vue.createApp({
                     instructions : {{instructions|safe}},
                     instruction_pages_show_scroll : false,
 
+                    // modals
+                    moveTwoGoodsModal : null,
+                    moveThreeGoodsModal : null,
+                    avatarChoiceGridModal : null,
+                    endGameModal : null,
+
                 }},
     methods: {
 
@@ -177,6 +183,21 @@ var app = Vue.createApp({
         */
         doFirstLoad()
         {
+            // $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
+            // $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
+            // $('#avatarChoiceGridModal').on("hidden.bs.modal", this.hideChoiceGridModal);
+            // $('#endGameModal').on("hidden.bs.modal", this.hideEndGameModal);
+
+            app.$data.moveTwoGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveTwoGoodsModal'), {keyboard: false});
+            app.$data.moveThreeGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveThreeGoodsModal'), {keyboard: false});
+            app.$data.avatarChoiceGridModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarChoiceGridModal'), {keyboard: false});
+            app.$data.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false});
+
+            document.getElementById('moveTwoGoodsModal').addEventListener('hidden.bs.modal', app.hideTransferModal);
+            document.getElementById('moveThreeGoodsModal').addEventListener('hidden.bs.modal', app.hideTransferModal);
+            document.getElementById('avatarChoiceGridModal').addEventListener('hidden.bs.modal', app.hideChoiceGridModal);
+            document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
+
             //if survery required forward to it.
             if(app.session.parameter_set.survey_required=='True' && 
                !app.session_player.survey_complete)
@@ -208,6 +229,8 @@ var app = Vue.createApp({
         *    @param messageData {json} session day in json format
         */
         takeGetSession(messageData){
+
+            app.doFirstLoad();
             
             app.destroyPixiPlayers();
 
@@ -236,16 +259,25 @@ var app = Vue.createApp({
             if(this.session.current_experiment_phase != 'Done')
             {
                 if(!app.$data.pixi_loaded)
-                    setTimeout(app.setupPixi, 250);
+                    Vue.nextTick(() => {
+                        // setTimeout(app.setupPixi, 250);
+                        app.setupPixi();
+                    });
                 else
                 {
-                    setTimeout(app.setupPixiPlayers, 250);
+                    Vue.nextTick(() => {
+                        app.setupPixiPlayers();
+                    });   
+                    // setTimeout(app.setupPixiPlayers, 250);
                 }
                 
                 if(this.session.current_experiment_phase != 'Instructions')
                 {
-                    app.updateChatDisplay();               
-                    setTimeout(app.updateNoticeDisplayScroll, 250);
+                    app.updateChatDisplay();         
+                    Vue.nextTick(() => {
+                        app.updateNoticeDisplayScroll();
+                    });       
+                    // setTimeout(app.updateNoticeDisplayScroll, 250);
                 }
                 app.calcWaste();
 
@@ -255,46 +287,26 @@ var app = Vue.createApp({
                     this.showEndGameModal();
                 }
 
-                //if no avatar, show choice grid
-                if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
-                    this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
-                    this.session.current_experiment_phase == "Selection" &&
-                    !this.avatar_choice_modal_visible)
+                //if no avavtar show choioce grid
+                app.showAvatarChoiceGrid();
 
-                {
-                    var myModal = new bootstrap.Modal(document.getElementById('avatarChoiceGridModal'), {
-                        keyboard: false
-                        })
-                    
-                    myModal.toggle();
-
-                    this.avatar_choice_modal_visible=true;
-
-                    if(this.session_player.avatar != null)
-                    {
-                        this.take_choice_grid_label(this.session_player.avatar.label)
-                    }
-                }
-
-                if(!app.first_load_done)
-                {
-                    Vue.nextTick(() => {
-                        app.doFirstLoad();
-                    })
-                }
             }
 
             if(this.session.current_experiment_phase == 'Instructions')
             {
-                setTimeout(this.processInstructionPage, 1000);
-                this.instructionDisplayScroll();
+                Vue.nextTick(() => {
+                    this.processInstructionPage();
+                    this.instructionDisplayScroll();
+                });
+                // setTimeout(this.processInstructionPage, 1000);
+                
             }
         },
 
         /**
          * handle window resize event
          */
-        handleResize(){
+        handleResize(){                
 
             setTimeout(function(){
                 let canvas = document.getElementById('sd_graph_id');
@@ -315,7 +327,10 @@ var app = Vue.createApp({
 
             if(app.session.current_experiment_phase == "Instructions")
             {
-                setTimeout(app.instructionDisplayScroll, 250);
+                Vue.nextTick(() => {
+                    app.instructionDisplayScroll();
+                });  
+                // setTimeout(app.instructionDisplayScroll, 250);
             }
         },
 
@@ -331,7 +346,7 @@ var app = Vue.createApp({
             this.avatar_choice_grid_selected_row = 0;
             this.avatar_choice_grid_selected_col = 0;
 
-            $('#endGameModal').modal('hide');
+            app.endGameModal.hide();
             this.closeMoveModal();
         },
 
@@ -360,7 +375,11 @@ var app = Vue.createApp({
             if(notice_list.length > 0)
             {
                 this.session_player.notices.push(notice_list[0]);
-                setTimeout(app.updateNoticeDisplayScroll, 250);
+                // setTimeout(app.updateNoticeDisplayScroll, 250);
+                Vue.nextTick(() => {
+                    app.updateNoticeDisplayScroll();
+                }); 
+
             }
 
             //if start production phase close transfer
@@ -378,6 +397,28 @@ var app = Vue.createApp({
         },
 
         /**
+         * if needed show avatar choice grid
+         */
+        showAvatarChoiceGrid(){
+
+            if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
+                this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
+                this.session.current_experiment_phase == "Selection" &&
+                !this.avatar_choice_modal_visible)
+
+            {
+                app.$data.avatarChoiceGridModal.toggle();
+
+                this.avatar_choice_modal_visible=true;
+
+                if(this.session_player.avatar != null)
+                {
+                    this.take_choice_grid_label(this.session_player.avatar.label)
+                }
+            }
+        },
+
+        /**
          * show the end game modal
          */
         showEndGameModal(){
@@ -387,11 +428,7 @@ var app = Vue.createApp({
             this.closeMoveModal();
 
             //show endgame modal
-            var myModal = new bootstrap.Modal(document.getElementById('endGameModal'), {
-                keyboard: false
-                })
-            
-            myModal.toggle();
+            app.$data.endGameModal.toggle();
 
             this.end_game_modal_visible = true;
         },
@@ -421,8 +458,8 @@ var app = Vue.createApp({
          * @param messageData {json}
         */
         takeUpdateNextPhase(messageData){
-            $('#avatarChoiceGridModal').modal('hide');
-            $('#endGameModal').modal('hide');
+            app.$data.avatarChoiceGridModal.hide();
+            app.$data.endGameModal.hide();
 
             app.destroyPixiPlayers();
 
@@ -430,14 +467,21 @@ var app = Vue.createApp({
             this.session.session_players = messageData.status.session_players;
             this.session_player = messageData.status.session_player;
 
-            setTimeout(app.setupPixiPlayers, 250);
+            Vue.nextTick(() => {
+                // setTimeout(app.setupPixiPlayers, 250);
+                app.setupPixiPlayers();
+            });
 
             app.updateChatDisplay();
             app.calcWaste();    
             if(app.session.current_experiment_phase == "Instructions")
             {
-                setTimeout(app.instructionDisplayScroll, 300);
-            }        
+                Vue.nextTick(() => {
+                    app.instructionDisplayScroll();
+                });
+            }    
+            
+            app.showAvatarChoiceGrid();    
         },
 
         /** hide choice grid modal modal
@@ -558,10 +602,6 @@ var app = Vue.createApp({
 
     mounted(){
 
-        $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
-        $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
-        $('#avatarChoiceGridModal').on("hidden.bs.modal", this.hideChoiceGridModal);
-        $('#endGameModal').on("hidden.bs.modal", this.hideEndGameModal);
         {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
 
         window.addEventListener('resize', this.handleResize);

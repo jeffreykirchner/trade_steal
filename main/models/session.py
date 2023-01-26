@@ -110,11 +110,13 @@ class Session(models.Model):
         self.current_period_phase = PeriodPhase.PRODUCTION
         self.time_remaining = self.parameter_set.period_length_production
 
-        if self.parameter_set.avatar_assignment_mode == AvatarModes.SUBJECT_SELECT or \
-           self.parameter_set.avatar_assignment_mode == AvatarModes.BEST_MATCH :
+        # if self.parameter_set.avatar_assignment_mode == AvatarModes.SUBJECT_SELECT or \
+        #    self.parameter_set.avatar_assignment_mode == AvatarModes.BEST_MATCH :
 
-            self.current_experiment_phase = ExperimentPhase.SELECTION
-        elif self.parameter_set.show_instructions:
+        #     self.current_experiment_phase = ExperimentPhase.SELECTION
+        # el   
+        #      
+        if self.parameter_set.show_instructions:
             self.current_experiment_phase = ExperimentPhase.INSTRUCTIONS
         else:
              self.current_experiment_phase = ExperimentPhase.RUN
