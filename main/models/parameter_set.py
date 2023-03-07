@@ -383,6 +383,8 @@ class ParameterSet(models.Model):
 
             "survey_required" : "True" if self.survey_required else "False",
             "survey_link" : self.survey_link,
+
+            "prolific_mode" : "True" if self.prolific_mode else "False", 
             "post_forward_link" : self.post_forward_link,
 
             "test_mode" : self.test_mode,

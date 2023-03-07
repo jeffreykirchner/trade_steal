@@ -21,3 +21,13 @@ takeName(messageData){
         app.displayErrors(messageData.status.errors);
     }
 },
+
+/**
+ * post study link
+ */
+postSessionLink(){
+    if(!app.$data.session.parameter_set.post_forward_link) return;
+    if(app.$data.session.parameter_set.post_forward_link == '') return;
+
+    location.href = app.$data.session.parameter_set.post_forward_link;
+},

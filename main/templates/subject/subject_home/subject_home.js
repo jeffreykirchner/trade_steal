@@ -183,11 +183,6 @@ var app = Vue.createApp({
         */
         doFirstLoad()
         {
-            // $('#moveTwoGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
-            // $('#moveThreeGoodsModal').on("hidden.bs.modal", this.hideTransferModal);
-            // $('#avatarChoiceGridModal').on("hidden.bs.modal", this.hideChoiceGridModal);
-            // $('#endGameModal').on("hidden.bs.modal", this.hideEndGameModal);
-
             app.$data.moveTwoGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveTwoGoodsModal'), {keyboard: false});
             app.$data.moveThreeGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveThreeGoodsModal'), {keyboard: false});
             app.$data.avatarChoiceGridModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarChoiceGridModal'), {keyboard: false});
@@ -260,7 +255,6 @@ var app = Vue.createApp({
             {
                 if(!app.$data.pixi_loaded)
                     Vue.nextTick(() => {
-                        // setTimeout(app.setupPixi, 250);
                         app.setupPixi();
                     });
                 else
@@ -268,7 +262,6 @@ var app = Vue.createApp({
                     Vue.nextTick(() => {
                         app.setupPixiPlayers();
                     });   
-                    // setTimeout(app.setupPixiPlayers, 250);
                 }
                 
                 if(this.session.current_experiment_phase != 'Instructions')
@@ -277,7 +270,6 @@ var app = Vue.createApp({
                     Vue.nextTick(() => {
                         app.updateNoticeDisplayScroll();
                     });       
-                    // setTimeout(app.updateNoticeDisplayScroll, 250);
                 }
                 app.calcWaste();
 
@@ -297,8 +289,7 @@ var app = Vue.createApp({
                 Vue.nextTick(() => {
                     this.processInstructionPage();
                     this.instructionDisplayScroll();
-                });
-                // setTimeout(this.processInstructionPage, 1000);
+                });               
                 
             }
         },
