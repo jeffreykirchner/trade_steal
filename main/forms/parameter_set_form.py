@@ -108,7 +108,7 @@ class ParameterSetForm(forms.ModelForm):
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.prolific_mode",}))
 
-    post_forward_link =  forms.CharField(label='After Session Forward to URL',
+    post_forward_link =  forms.CharField(label='After Session, Forward Subjects to URL',
                                    required=False,
                                    widget=forms.TextInput(attrs={"v-model":"session.parameter_set.post_forward_link",}))
 
@@ -138,3 +138,17 @@ class ParameterSetForm(forms.ModelForm):
             raise forms.ValidationError('Invalid Entry')
 
         return survey_link
+
+    def clean_post_forward_link(self):
+        
+        try:
+           post_forward_link = self.data.get('post_forward_link')
+           prolific_mode = self.data.get('prolific_mode')
+
+           if prolific_mode == 'True' and not "http" in post_forward_link:
+               raise forms.ValidationError('Enter Prolific completion URL')
+            
+        except ValueError:
+            raise forms.ValidationError('Invalid Entry')
+
+        return post_forward_link
