@@ -44,6 +44,9 @@ class ParameterSet(models.Model):
     survey_required = models.BooleanField(default=False, verbose_name="Survey Required")                      #if true show the survey below
     survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
 
+    prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
+    post_forward_link = models.CharField(max_length = 1000, default = '', verbose_name = 'After Study Forwarding Link', blank=True, null=True) #at the completion of the study forward subjects to link
+
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
 
     timestamp = models.DateTimeField(auto_now_add= True)
@@ -88,6 +91,9 @@ class ParameterSet(models.Model):
 
             self.survey_required = new_ps.get("survey_required")
             self.survey_link = new_ps.get("survey_link")
+
+            self.prolific_mode = new_ps.get("prolific_mode")
+            self.post_forward_link = new_ps.get("post_forward_link")
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
 
@@ -342,6 +348,9 @@ class ParameterSet(models.Model):
             "survey_required" : "True" if self.survey_required else "False",
             "survey_link" : self.survey_link,
 
+            "prolific_mode" : "True" if self.prolific_mode else "False", 
+            "post_forward_link" : self.post_forward_link,
+
             "test_mode" : "True" if self.test_mode else "False",
         }
     
@@ -374,6 +383,9 @@ class ParameterSet(models.Model):
 
             "survey_required" : "True" if self.survey_required else "False",
             "survey_link" : self.survey_link,
+
+            "prolific_mode" : "True" if self.prolific_mode else "False", 
+            "post_forward_link" : self.post_forward_link,
 
             "test_mode" : self.test_mode,
         }

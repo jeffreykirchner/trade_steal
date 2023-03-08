@@ -103,6 +103,14 @@ class ParameterSetForm(forms.ModelForm):
     survey_link =  forms.CharField(label='Survey Link',
                                    required=False,
                                    widget=forms.TextInput(attrs={"v-model":"session.parameter_set.survey_link",}))
+    
+    prolific_mode = forms.ChoiceField(label='Prolific Mode',
+                                       choices=((True, 'Yes'), (False,'No' )),
+                                       widget=forms.Select(attrs={"v-model":"session.parameter_set.prolific_mode",}))
+
+    post_forward_link =  forms.CharField(label='After Session, Forward Subjects to URL',
+                                   required=False,
+                                   widget=forms.TextInput(attrs={"v-model":"session.parameter_set.post_forward_link",}))
 
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
@@ -113,7 +121,8 @@ class ParameterSetForm(forms.ModelForm):
         fields =['town_count','good_count', 'period_count', 'period_length_production' ,
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
                  'group_chat', 'private_chat', 'show_avatars', 'avatar_assignment_mode', 'avatar_grid_row_count', 
-                 'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'instruction_set', 'survey_required', 'survey_link', 'test_mode']
+                 'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'instruction_set', 'survey_required', 
+                 'survey_link', 'prolific_mode', 'post_forward_link', 'test_mode']
     
 
     def clean_survey_link(self):
@@ -129,3 +138,17 @@ class ParameterSetForm(forms.ModelForm):
             raise forms.ValidationError('Invalid Entry')
 
         return survey_link
+
+    def clean_post_forward_link(self):
+        
+        try:
+           post_forward_link = self.data.get('post_forward_link')
+           prolific_mode = self.data.get('prolific_mode')
+
+           if prolific_mode == 'True' and not "http" in post_forward_link:
+               raise forms.ValidationError('Enter Prolific completion URL')
+            
+        except ValueError:
+            raise forms.ValidationError('Invalid Entry')
+
+        return post_forward_link
