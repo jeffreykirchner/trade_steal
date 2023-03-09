@@ -107,6 +107,14 @@ class ParameterSetForm(forms.ModelForm):
     prolific_mode = forms.ChoiceField(label='Prolific Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.prolific_mode",}))
+    
+    prolific_study_id =  forms.CharField(label='Prolific Study ID',
+                                   required=False,
+                                   widget=forms.TextInput(attrs={"v-model":"session.parameter_set.prolific_study_id",}))
+
+    prolific_session_id =  forms.CharField(label='Prolific Session ID',
+                                   required=False,
+                                   widget=forms.TextInput(attrs={"v-model":"session.parameter_set.prolific_session_id",}))
 
     post_forward_link =  forms.CharField(label='After Session, Forward Subjects to URL',
                                    required=False,
@@ -122,7 +130,7 @@ class ParameterSetForm(forms.ModelForm):
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
                  'group_chat', 'private_chat', 'show_avatars', 'avatar_assignment_mode', 'avatar_grid_row_count', 
                  'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'instruction_set', 'survey_required', 
-                 'survey_link', 'prolific_mode', 'post_forward_link', 'test_mode']
+                 'survey_link', 'prolific_mode', 'post_forward_link', 'prolific_study_id', 'prolific_session_id', 'test_mode']
     
 
     def clean_survey_link(self):
@@ -138,6 +146,34 @@ class ParameterSetForm(forms.ModelForm):
             raise forms.ValidationError('Invalid Entry')
 
         return survey_link
+
+    def clean_prolific_study_id(self):
+        
+        try:
+           prolific_study_id = self.data.get('prolific_study_id')
+           prolific_mode = self.data.get('prolific_mode')
+
+           if prolific_mode == 'True' and (not prolific_study_id or prolific_study_id ==""):
+               raise forms.ValidationError('Enter Prolific Study ID')
+            
+        except ValueError:
+            raise forms.ValidationError('Invalid Entry')
+
+        return prolific_study_id
+
+    def clean_prolific_session_id(self):
+        
+        try:
+           prolific_session_id = self.data.get('prolific_session_id')
+           prolific_mode = self.data.get('prolific_mode')
+
+           if prolific_mode == 'True' and (not prolific_session_id or prolific_session_id ==""):
+               raise forms.ValidationError('Enter Prolific Session ID')
+            
+        except ValueError:
+            raise forms.ValidationError('Invalid Entry')
+
+        return prolific_session_id
 
     def clean_post_forward_link(self):
         

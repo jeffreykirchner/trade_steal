@@ -14,9 +14,9 @@ from django.views import View
 
 from main.models import Session
 
-class SubjectHomeAutoConnectView(View):
+class SubjectHomeAutoConnectProlificView(View):
     '''
-    class based auto login for subject
+    class based auto login for subject for Prolific
     '''
         
     def get(self, request, *args, **kwargs):

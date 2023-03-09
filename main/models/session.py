@@ -39,8 +39,6 @@ class Session(models.Model):
     collaborators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="sessions_b")
 
     title = models.CharField(max_length = 300, default="*** New Session ***")    #title of session
-    prolific_study_id = models.CharField(max_length = 1000, default = '', verbose_name = 'Prolific Study ID', blank=True, null=True)      #prolific study id
-    prolific_session_id = models.CharField(max_length = 1000, default = '', verbose_name = 'Prolific session ID', blank=True, null=True)  #prolfic session id
 
     start_date = models.DateField(default=now)                                   #date of session start
 
@@ -406,8 +404,6 @@ class Session(models.Model):
         return{
             "id":self.id,
             "title":self.title,
-            "prolific_study_id" : self.prolific_study_id,
-            "prolific_session_id" : self.prolific_session_id,
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,
