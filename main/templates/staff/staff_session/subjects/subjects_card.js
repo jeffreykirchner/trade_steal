@@ -16,6 +16,8 @@
             session_player.connected_count = result.connected_count;
             session_player.name = result.name;
             session_player.student_id = result.student_id;
+            session_player.current_instruction = result.current_instruction;
+            session_player.survey_complete = result.survey_complete;
         }
     }
 },

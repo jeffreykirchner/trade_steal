@@ -30,18 +30,33 @@ class SubjectHomeAutoConnectProlificView(View):
         prolific_session_id = request.GET.get('SESSION_ID', None)
         subject_id = request.GET.get('SUBJECT_ID', None)
 
+        if not prolific_pid:
+            return HttpResponse("<br><br><center><h1>PROLIFIC_PID not found.</h1></center>")
+        
+        if not prolific_session_id:
+            return HttpResponse("<br><br><center><h1>SESSION_ID not found.</h1></center>")
+
         try:
             session = Session.objects.get(session_key=kwargs['session_key'])
         except ObjectDoesNotExist:
-            raise Http404("Session not found.")
+            return HttpResponse("<br><br><center><h1>Session not found.</h1></center>")
 
         try:
             with transaction.atomic():
 
                 first_connect = False
+                session_player = None
 
-                #check is subject already connected
-                session_player = session.session_players.filter(student_id=prolific_pid).first()
+                #if subjct id given direct connect to subject
+                if subject_id:
+                    session_player = session.session_players.filter(player_key=subject_id).first()
+
+                    if not session_player:
+                        return HttpResponse("<br><br><center><h1>Subject ID not found.</h1></center>")
+
+                #check is subject already connected with prolific id
+                if not session_player:
+                    session_player = session.session_players.filter(student_id=prolific_pid).first()
 
                 if not session_player:
                     if session.current_experiment_phase != ExperimentPhase.INSTRUCTIONS:

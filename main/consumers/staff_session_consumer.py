@@ -542,6 +542,8 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         session_player = await SessionPlayer.objects.aget(id=subject_id)
         message_data["status"]["result"]["name"] = session_player.name
         message_data["status"]["result"]["student_id"] = session_player.student_id
+        message_data["status"]["result"]["current_instruction"] = session_player.current_instruction
+        message_data["status"]["result"]["survey_complete"] = session_player.survey_complete
 
         message = {}
         message["messageType"] = event["type"]
