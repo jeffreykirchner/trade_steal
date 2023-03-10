@@ -54,7 +54,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         self.connection_uuid = event["message_text"]["playerKey"]
         self.connection_type = "subject"
-        self.session_id = await sync_to_async(take_get_session_id)(self.connection_uuid)
+        self.session_id = await sync_to_async(take_get_session_id, thread_sensitive=False)(self.connection_uuid)
 
         await self.update_local_info(event)
 
@@ -102,7 +102,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         take chat from client
         '''        
-        result = await sync_to_async(take_chat)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_chat, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
         if result["value"] == "fail":
             await self.send(text_data=json.dumps({'message': result}, cls=DjangoJSONEncoder))
@@ -147,7 +147,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         take update to production time between goods one and two
         '''
         #update subject count
-        result = await sync_to_async(take_production_time)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_production_time, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
         message_data = {}
         message_data["status"] = result
@@ -266,7 +266,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         await self.update_local_info(event)
 
         #get session json object
-        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
 
         message_data = {}
         message_data["status"] = result
@@ -286,7 +286,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         #logger.info(f'update start subjects {self.channel_name}')
 
         #get session json object
-        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
+        result = await sync_to_async(take_get_session_subject, thread_sensitive=False)(self.session_player_id)
 
         message_data = {}
         message_data["status"] = result
@@ -328,7 +328,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         update connection's town and group information
         '''
-        result = await sync_to_async(take_update_local_info)(self.session_id, self.connection_uuid, event)
+        result = await sync_to_async(take_update_local_info, thread_sensitive=False)(self.session_id, self.connection_uuid, event)
 
         logger = logging.getLogger(__name__) 
         logger.info(f"update_local_info {result}")
@@ -410,7 +410,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update groups on client
         '''
 
-        result = await sync_to_async(take_update_groups)(self.session_id, self.session_player_id)
+        result = await sync_to_async(take_update_groups, thread_sensitive=False)(self.session_id, self.session_player_id)
 
         message_data = {}
         message_data["status"] = result
@@ -449,7 +449,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update session phase
         '''
 
-        result = await sync_to_async(take_update_next_phase)(self.session_id, self.session_player_id)
+        result = await sync_to_async(take_update_next_phase, thread_sensitive=False)(self.session_id, self.session_player_id)
 
         message_data = {}
         message_data["status"] = result

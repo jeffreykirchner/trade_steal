@@ -54,7 +54,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "id" : session.id,
                                "session_form" : SessionForm(),
                                "session_invitation_form" : SessionInvitationForm(),
-                               "staff_edit_name_etc_form" : StaffEditNameEtcForm(),
+                               "staff_edit_name_etc_form" : StaffEditNameEtcForm(prolific_mode=session.parameter_set.prolific_mode),
                                "staff_edit_name_etc_form_ids" : staff_edit_name_etc_form_ids,
                                "websocket_path" : self.websocket_path,
                                "town_count_range" : range(session.parameter_set.town_count),

@@ -46,7 +46,7 @@ class ParameterSet(models.Model):
 
     prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
     post_forward_link = models.CharField(max_length = 1000, default = '', verbose_name = 'After Study Forwarding Link', blank=True, null=True) #at the completion of the study forward subjects to link
-
+    
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
 
     timestamp = models.DateTimeField(auto_now_add= True)
@@ -93,6 +93,7 @@ class ParameterSet(models.Model):
             self.survey_link = new_ps.get("survey_link")
 
             self.prolific_mode = new_ps.get("prolific_mode")
+            self.prolific_study_id = new_ps.get("prolific_study_id")
             self.post_forward_link = new_ps.get("post_forward_link")
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])

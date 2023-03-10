@@ -39,8 +39,6 @@ class Session(models.Model):
     collaborators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="sessions_b")
 
     title = models.CharField(max_length = 300, default="*** New Session ***")    #title of session
-    prolific_study_id = models.CharField(max_length = 1000, default = '', verbose_name = 'Prolific Study ID', blank=True, null=True)      #prolific study id
-    prolific_session_id = models.CharField(max_length = 1000, default = '', verbose_name = 'Prolific session ID', blank=True, null=True)  #prolfic session id
 
     start_date = models.DateField(default=now)                                   #date of session start
 
@@ -370,12 +368,15 @@ class Session(models.Model):
 
         writer = csv.writer(output)
 
-        writer.writerow(['Name', 'Student ID', 'Earnings', 'Avatar'])
+        if not self.parameter_set.prolific_mode:
+            writer.writerow(['Session ID', 'Name', 'Student ID', 'Client #', 'Earnings', 'Avatar'])
+        else:
+            writer.writerow(['Session ID', 'Prolific Session ID', 'Prolific Subject ID', 'Client #', 'Earnings', 'Avatar'])
 
         session_players = self.session_players.all()
 
         for p in session_players:
-            writer.writerow([p.name, p.student_id, p.earnings/100, p.avatar.label if p.avatar else 'None'])
+            writer.writerow([self.id, p.name, p.student_id, p.player_number, p.earnings/100, p.avatar.label if p.avatar else 'None'])
 
         return output.getvalue()
 
@@ -406,8 +407,6 @@ class Session(models.Model):
         return{
             "id":self.id,
             "title":self.title,
-            "prolific_study_id" : self.prolific_study_id,
-            "prolific_session_id" : self.prolific_session_id,
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,

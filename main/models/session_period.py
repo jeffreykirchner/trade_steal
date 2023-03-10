@@ -52,14 +52,14 @@ class SessionPeriod(models.Model):
         #current_trade = self.get_current_trade()
 
         efficiency_list = [p.efficiency for p in self.session_player_periods_a.all()]
-        
-        
+
+        efficiency_mean = str(mean(efficiency_list)) if len(efficiency_list) > 0 else 0
 
         return{
             "id" : self.id,
             "period_number" : self.period_number,
             "efficiency_list" : list(map(lambda v:str(v), efficiency_list)) ,
-            "efficiency_mean" : str(mean(efficiency_list)),
+            "efficiency_mean" : efficiency_mean,
 
         }
         
