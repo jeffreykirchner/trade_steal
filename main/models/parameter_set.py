@@ -45,8 +45,6 @@ class ParameterSet(models.Model):
     survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
 
     prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
-    prolific_study_id = models.CharField(max_length = 1000, default = '', verbose_name = 'Prolific Study ID', blank=True, null=True)      #prolific study id
-    prolific_session_id = models.CharField(max_length = 1000, default = '', verbose_name = 'Prolific session ID', blank=True, null=True)  #prolfic session id
     post_forward_link = models.CharField(max_length = 1000, default = '', verbose_name = 'After Study Forwarding Link', blank=True, null=True) #at the completion of the study forward subjects to link
     
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
@@ -96,7 +94,6 @@ class ParameterSet(models.Model):
 
             self.prolific_mode = new_ps.get("prolific_mode")
             self.prolific_study_id = new_ps.get("prolific_study_id")
-            self.prolific_session_id = new_ps.get("prolific_session_id")
             self.post_forward_link = new_ps.get("post_forward_link")
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
@@ -353,8 +350,6 @@ class ParameterSet(models.Model):
             "survey_link" : self.survey_link,
 
             "prolific_mode" : "True" if self.prolific_mode else "False", 
-            "prolific_study_id" : self.prolific_study_id,
-            "prolific_session_id" : self.prolific_session_id,
             "post_forward_link" : self.post_forward_link,
 
             "test_mode" : "True" if self.test_mode else "False",

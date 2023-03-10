@@ -24,6 +24,7 @@ from main.forms import SessionForm
 from main.forms import StaffEditNameEtcForm
 
 from main.models import Session
+from main.models import SessionPlayer
 from main.models import Parameters
 
 from main.globals import ExperimentPhase
@@ -50,7 +51,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         #build response
         message_data = {}
-        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)       
+        message_data["session"] = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)       
 
         self.session_id = message_data["session"]["id"]
 
@@ -178,7 +179,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         logger.info(f"start_timer {event}")
 
-        result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_start_timer, thread_sensitive=False)(self.session_id, event["message_text"])
 
         message_data = {}
         message_data["status"] = result
@@ -235,7 +236,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             logger.info(f"continue_timer timer off")
             return
 
-        timer_result = await sync_to_async(take_do_period_timer)(self.session_id)
+        timer_result = await sync_to_async(take_do_period_timer, thread_sensitive=False)(self.session_id)
 
         # timer_result = await do_period_timer(self.session_id)
 
@@ -534,6 +535,13 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         message_data = {}
         message_data["status"] = event["data"]
+
+        #get subject name and student id
+        subject_id = message_data["status"]["result"]["id"]
+
+        session_player = await SessionPlayer.objects.aget(id=subject_id)
+        message_data["status"]["result"]["name"] = session_player.name
+        message_data["status"]["result"]["student_id"] = session_player.student_id
 
         message = {}
         message["messageType"] = event["type"]
