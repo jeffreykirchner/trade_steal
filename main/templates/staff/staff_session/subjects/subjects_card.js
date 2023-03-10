@@ -218,7 +218,8 @@ takeUpdateEmailList(messageData){
         for(i=0; i<result.length; i++)
         {
             let session_player = app.findSessionPlayer(result[i].id);
-            session_player.email = (result[i].email);
+            session_player.email = result[i].email;
+            session_player.student_id = result[i].student_id;
         }
     } 
     else

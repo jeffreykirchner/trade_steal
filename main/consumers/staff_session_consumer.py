@@ -1047,26 +1047,43 @@ def take_email_list(session_id, data):
     
     u_list = []
 
-    for i in raw_list:
-        for j in i:
-            if "@" in j:
+    if not session.parameter_set.prolific_mode:
+        for i in raw_list:
+            for j in i:
+                if "@" in j:
+                    u_list.append(j)
+        
+        if len(u_list)>0:
+            session.session_players.update(email=None)
+
+        for i in u_list:
+            p = session.session_players.filter(email=None).first()
+
+            if(p):
+                p.email = i
+                p.save()
+            else:
+                break
+    else:
+        for i in raw_list:
+            for j in i:
                 u_list.append(j)
-    
-    if len(raw_list)>0:
-        session.session_players.update(email=None)
 
-    for i in u_list:
-        p = session.session_players.filter(email=None).first()
+        if len(u_list)>0:
+            session.session_players.update(student_id="")
+        
+        for i in u_list:
+            p = session.session_players.filter(student_id='').first()
 
-        if(p):
-            p.email = i
-            p.save()
-        else:
-            break
+            if(p):
+                p.student_id = i
+                p.save()
+            else:
+                break
     
     result = []
     for p in session.session_players.all():
-        result.append({"id" : p.id, "email" : p.email})
+        result.append({"id" : p.id, "email" : p.email,  "student_id" : p.student_id})
     
     return {"value" : "success",
             "result" : result}
