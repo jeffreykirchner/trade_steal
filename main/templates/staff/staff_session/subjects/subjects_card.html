@@ -21,8 +21,14 @@
                 Copy Earnings <i class="fas fa-copy"></i>
             </button>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Upload Email List" v-on:click="showSendEmailList()">
-                Upload Email List <i class="fas fa-upload"></i>
+            <button type="button" class="btn btn-outline-primary ms-4" title="Upload List" v-on:click="showSendEmailList()">
+                <span v-if="session.parameter_set.prolific_mode=='False'">
+                    Upload Email List <i class="fas fa-upload"></i>
+                </span>
+                <span v-else>
+                    Upload Prolific ID List <i class="fas fa-upload"></i>
+                </span>
+                
             </button>
 
             <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Subject List')">
@@ -229,7 +235,15 @@
                     Optional, Study Subject ID (log subject into this slot only):
                 </div>
                 <div class="col-md-9 text-start">
-                    {% verbatim %}&SUBJECT_ID=Study_Subject_ID_Here{% endverbatim %}
+                    {% verbatim %}&SUBJECT_ID=Study Subject ID Here{% endverbatim %}
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-3 text-end">
+                    Optional, Player Type (Omit for any slot):
+                </div>
+                <div class="col-md-9 text-start">
+                    {% verbatim %}&PLAYER_TYPE=One, Two, Three or Four{% endverbatim %}
                 </div>
             </div>
         </div>

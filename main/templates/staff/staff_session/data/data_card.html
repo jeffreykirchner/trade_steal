@@ -41,9 +41,14 @@
                 <button type="button"
                         class="btn btn-outline-primary"
                         v-on:click = "downloadRecruiterData()"
-                        title="Download Recruiter Data"
+                        title="Download Payments"
                         v-bind:disabled="reconnecting || working || session.started==false">
-                    Download Recruiter Payments <i class="fas fa-scroll"></i>
+                    <span v-if="session.parameter_set.prolific_mode=='False'">
+                        Download Recruiter Payments <i class="fas fa-scroll"></i>
+                    </span>
+                    <span v-else>
+                        Download Prolific Payments <i class="fas fa-scroll"></i>
+                    </span>
                 </button>
             </div>
         </div>

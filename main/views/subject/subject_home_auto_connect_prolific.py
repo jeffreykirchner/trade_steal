@@ -29,6 +29,7 @@ class SubjectHomeAutoConnectProlificView(View):
         prolific_pid = request.GET.get('PROLIFIC_PID', None)
         prolific_session_id = request.GET.get('SESSION_ID', None)
         subject_id = request.GET.get('SUBJECT_ID', None)
+        player_type = request.GET.get('PLAYER_TYPE', None)
 
         if not prolific_pid:
             return HttpResponse("<br><br><center><h1>PROLIFIC_PID not found.</h1></center>")
@@ -63,7 +64,12 @@ class SubjectHomeAutoConnectProlificView(View):
                         return HttpResponse("<br><br><center><h1>The session has already started.</h1></center>")
                     
                     first_connect = True
-                    session_player = session.session_players.filter(connecting=False, connected_count=0).first()
+                    session_player = session.session_players.filter(connecting=False, connected_count=0)
+                    
+                    if player_type:
+                        session_player = session_player.filter(parameter_set_player__parameter_set_type__subject_type=player_type)
+                    
+                    session_player = session_player.first()
 
                 if session_player:
                     player_key = session_player.player_key

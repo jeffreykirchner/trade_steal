@@ -67,7 +67,11 @@ takeDownloadRecruiterData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Exchange_Specialization_Recruiter_Data_Session_" + app.$data.session.id +".csv";
+
+    if(app.$data.session.parameter_set.prolific_mode=='False')
+        downloadLink.download = "Exchange_Specialization_Recruiter_Data_Session_" + app.$data.session.id +".csv";
+    else
+        downloadLink.download = "Exchange_Specialization_Prolific_Data_Session_" + app.$data.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();

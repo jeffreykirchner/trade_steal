@@ -166,3 +166,17 @@ class ParameterSetForm(forms.ModelForm):
             raise forms.ValidationError('Invalid Entry')
 
         return post_forward_link
+    
+    def clean_prolific_mode(self):
+        
+        try:
+           prolific_mode = self.data.get('prolific_mode')
+           survey_required = self.data.get('survey_required')
+
+           if prolific_mode == 'True' and survey_required == 'True':
+               raise forms.ValidationError('Prolific mode is not compatible with a pre-survey')
+            
+        except ValueError:
+            raise forms.ValidationError('Invalid Entry')
+
+        return prolific_mode
