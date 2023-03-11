@@ -179,7 +179,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         logger.info(f"start_timer {event}")
 
-        result = await sync_to_async(take_start_timer, thread_sensitive=False)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
 
         message_data = {}
         message_data["status"] = result
@@ -236,7 +236,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
             logger.info(f"continue_timer timer off")
             return
 
-        timer_result = await sync_to_async(take_do_period_timer, thread_sensitive=False)(self.session_id)
+        timer_result = await sync_to_async(take_do_period_timer)(self.session_id)
 
         # timer_result = await do_period_timer(self.session_id)
 
