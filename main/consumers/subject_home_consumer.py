@@ -54,7 +54,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         self.connection_uuid = event["message_text"]["playerKey"]
         self.connection_type = "subject"
-        self.session_id = await sync_to_async(take_get_session_id)(self.connection_uuid)
+        self.session_id = await sync_to_async(take_get_session_id, thread_sensitive=False)(self.connection_uuid)
 
         await self.update_local_info(event)
 
@@ -102,7 +102,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         take chat from client
         '''        
-        result = await sync_to_async(take_chat)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_chat, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
         if result["value"] == "fail":
             await self.send(text_data=json.dumps({'message': result}, cls=DjangoJSONEncoder))
@@ -147,7 +147,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         take update to production time between goods one and two
         '''
         #update subject count
-        result = await sync_to_async(take_production_time)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_production_time, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
         message_data = {}
         message_data["status"] = result
@@ -193,7 +193,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         take avatar number
         '''
-        result = await sync_to_async(take_avatar)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_avatar, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
         message_data["status"] = result
 
@@ -215,7 +215,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         advance instruction page
         '''
-        result = await sync_to_async(take_next_instruction)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_next_instruction, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
         message_data["status"] = result
 
@@ -237,7 +237,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         fisish instructions
         '''
-        result = await sync_to_async(take_finish_instructions)(self.session_id, self.session_player_id, event["message_text"])
+        result = await sync_to_async(take_finish_instructions, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
         message_data = {}
         message_data["status"] = result
 
