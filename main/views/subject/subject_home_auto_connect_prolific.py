@@ -38,15 +38,15 @@ class SubjectHomeAutoConnectProlificView(View):
             return HttpResponse("<br><br><center><h1>SESSION_ID not found.</h1></center>")
 
         try:
-            session = Session.objects.get(session_key=kwargs['session_key'])
-        except ObjectDoesNotExist:
-            return HttpResponse("<br><br><center><h1>Session not found.</h1></center>")
-        
-        if not session.started:
-            return HttpResponse("<br><br><center><h1>The session has not started, refresh your screen when instructed to do so on the Prolific messenger.</h1></center>")
-
-        try:
             with transaction.atomic():
+
+                try:
+                    session = Session.objects.get(session_key=kwargs['session_key'])
+                except ObjectDoesNotExist:
+                    return HttpResponse("<br><br><center><h1>Session not found.</h1></center>")
+                
+                if not session.started:
+                    return HttpResponse("<br><br><center><h1>The session has not started, refresh your screen when instructed to do so on the Prolific messenger.</h1></center>")
 
                 first_connect = False
                 session_player = None
