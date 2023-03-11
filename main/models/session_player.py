@@ -148,14 +148,16 @@ class SessionPlayer(models.Model):
         else:
            return {"status" : "success", "good_number" : good_number}
 
-    def reset(self):
+    def reset(self, full_reset=True):
         '''
         reset player to starting state
         '''
         self.session_player_moves_b.all().delete()
         self.session_player_chats_b.all().delete()
-        self.session_player_periods_b.all().delete()
         self.session_player_notices_b.all().delete()
+
+        if full_reset:
+            self.session_player_periods_b.all().delete()
 
         self.good_one_house = 0
         self.good_two_house = 0
