@@ -51,7 +51,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         #build response
         message_data = {}
-        message_data["session"] = await sync_to_async(take_get_session, thread_sensitive=False)(self.connection_uuid)       
+        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)       
 
         self.session_id = message_data["session"]["id"]
 
