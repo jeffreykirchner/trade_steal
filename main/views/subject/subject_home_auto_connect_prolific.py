@@ -67,7 +67,7 @@ class SubjectHomeAutoConnectProlificView(View):
                         return HttpResponse("<br><br><center><h1>The session has already started.</h1></center>")
                     
                     first_connect = True
-                    session_player = session.session_players.filter(connecting=False, connected_count=0)
+                    session_player = session.session_players.select_for_update().filter(connecting=False, connected_count=0)
                     
                     if player_type:
                         session_player = session_player.filter(parameter_set_player__parameter_set_type__subject_type=player_type)
