@@ -74,7 +74,12 @@
                                 
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
-                                Earnings
+                                <span v-if="session.parameter_set.prolific_mode=='False'">
+                                    Earnings
+                                </span>
+                                <span v-else>
+                                    Bonus<br>Earnings
+                                </span>
                             </th>
                             <th scope="col" class = "text-center m-1 p-1">
                                 Avatar

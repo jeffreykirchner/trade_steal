@@ -38,7 +38,7 @@ takeUpdateChat(messageData){
     let chat = result.chat;
     let session_player = this.session_player;
 
-    if(app.chat_recipients=="NONE") return;
+    // if(app.chat_recipients=="NONE") return;
 
     if(result.chat_type=="All")
     {
@@ -51,7 +51,7 @@ takeUpdateChat(messageData){
             session_player.new_chat_message = true;
         }
     }
-    else
+    else if(result.chat_type=="Individual")
     {
         var sesson_player_target =  result.sesson_player_target;
         var session_players = this.session.session_players;
