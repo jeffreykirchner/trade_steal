@@ -26,7 +26,13 @@
                     </form>
                 </div>
                 <div class="text-center" v-show="session_player.name!='' || session.parameter_set.prolific_mode == 'True'">
-                    <span class="fs-3 mt-4">Earnings: $[[(session_player.earnings/100).toFixed(2)]]<span></span>
+                    <span class="fs-3 mt-4" v-if="session.parameter_set.prolific_mode == 'False'">
+                        Earnings: 
+                    </span>
+                    <span class="fs-3 mt-4" v-else>
+                        Bonus Earnings: 
+                    </span>
+                    <span class="fs-3 mt-4">$[[(session_player.earnings/100).toFixed(2)]]<span></span>
                 </div>
                 
             </div>
