@@ -10,19 +10,19 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='instructionset',
-            name='action_page_chat',
-            field=models.IntegerField(default=4, verbose_name='Required Action: Chat'),
-        ),
-        migrations.AddField(
-            model_name='instructionset',
-            name='action_page_move',
-            field=models.IntegerField(default=3, verbose_name='Required Action: Move'),
-        ),
-        migrations.AddField(
-            model_name='instructionset',
-            name='action_page_production',
-            field=models.IntegerField(default=2, verbose_name='Required Action: Production'),
-        ),
+        # migrations.AddField(
+        #     model_name='instructionset',
+        #     name='action_page_chat',
+        #     field=models.IntegerField(default=4, verbose_name='Required Action: Chat'),
+        # ),
+        # migrations.AddField(
+        #     model_name='instructionset',
+        #     name='action_page_move',
+        #     field=models.IntegerField(default=3, verbose_name='Required Action: Move'),
+        # ),
+        # migrations.AddField(
+        #     model_name='instructionset',
+        #     name='action_page_production',
+        #     field=models.IntegerField(default=2, verbose_name='Required Action: Production'),
+        # ),
     ]
