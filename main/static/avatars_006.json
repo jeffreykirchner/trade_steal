@@ -112,7 +112,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":610,"h":429},
 	"sourceSize": {"w":610,"h":429}
 },
-"CFD-BM-039-029-N_low.jpg":
+"CFD-BF-238-190-N.jpg":
 {
 	"frame": {"x":615,"y":434,"w":610,"h":429},
 	"rotated": false,
@@ -120,7 +120,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":610,"h":429},
 	"sourceSize": {"w":610,"h":429}
 },
-"CFD-BM-045-004-N_low.jpg":
+"CFD-BM-039-029-N_low.jpg":
 {
 	"frame": {"x":1230,"y":434,"w":610,"h":429},
 	"rotated": false,
@@ -128,7 +128,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":610,"h":429},
 	"sourceSize": {"w":610,"h":429}
 },
-"CFD-BM-201-077-N_low.jpg":
+"CFD-BM-045-004-N_low.jpg":
 {
 	"frame": {"x":1845,"y":434,"w":610,"h":429},
 	"rotated": false,
@@ -136,7 +136,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":610,"h":429},
 	"sourceSize": {"w":610,"h":429}
 },
-"CFD-BM-225-154-N_low.jpg":
+"CFD-BM-201-077-N_low.jpg":
 {
 	"frame": {"x":2460,"y":434,"w":610,"h":429},
 	"rotated": false,
@@ -144,7 +144,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":610,"h":429},
 	"sourceSize": {"w":610,"h":429}
 },
-"CFD-BM-238-242-N_low.jpg":
+"CFD-BM-225-154-N_low.jpg":
 {
 	"frame": {"x":3075,"y":434,"w":610,"h":429},
 	"rotated": false,
