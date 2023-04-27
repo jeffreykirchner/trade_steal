@@ -19,6 +19,8 @@ var app = Vue.createApp({
                     session_player : {{session_player_json|safe}}, 
                     session : {{session_json|safe}},
 
+                    tick_tock : 0,
+
                     session_player_move_two_form_ids: {{session_player_move_two_form_ids|safe}},
                     session_player_move_three_form_ids: {{session_player_move_three_form_ids|safe}},
                     end_game_form_ids: {{end_game_form_ids|safe}},
@@ -357,6 +359,8 @@ var app = Vue.createApp({
             this.session.time_remaining = result.time_remaining;
             this.session.timer_running = result.timer_running;
             this.session.finished = result.finished;
+
+            this.tick_tock = this.session.time_remaining % 2;
 
             app.takeUpdateGoods({status : {result : result.session_players}});
 
