@@ -93,7 +93,6 @@ class ParameterSet(models.Model):
             self.survey_link = new_ps.get("survey_link")
 
             self.prolific_mode = new_ps.get("prolific_mode")
-            self.prolific_study_id = new_ps.get("prolific_study_id")
             self.post_forward_link = new_ps.get("post_forward_link")
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
