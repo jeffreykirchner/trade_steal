@@ -2,6 +2,5 @@ logs/*
 _trade_steal_env/*
 .vscode/*
 *.pyc
-setup.sh
 local_settings.py
 db_dumps
