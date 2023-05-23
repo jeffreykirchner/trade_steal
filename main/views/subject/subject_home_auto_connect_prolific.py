@@ -77,7 +77,7 @@ class SubjectHomeAutoConnectProlificView(View):
                 if session_player:
                     player_key = session_player.player_key
                 else:
-                    return HttpResponse("<br><br><center><h1>All connections are full.</h1></center>")
+                    return HttpResponse("<br><br><center><h1>All connections are full.<br><br>Wait a few moments and refresh your screen, a slot may open up.</h1></center>")
                 
                 if first_connect:
                     session_player.reset(full_reset=False)
