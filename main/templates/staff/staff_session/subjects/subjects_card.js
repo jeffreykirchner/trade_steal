@@ -17,6 +17,7 @@
             session_player.name = result.name;
             session_player.student_id = result.student_id;
             session_player.current_instruction = result.current_instruction;
+            session_player.instructions_finished = result.instructions_finished;
             session_player.survey_complete = result.survey_complete;
         }
     }
