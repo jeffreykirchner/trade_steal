@@ -544,6 +544,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["status"]["result"]["student_id"] = session_player.student_id
         message_data["status"]["result"]["current_instruction"] = session_player.current_instruction
         message_data["status"]["result"]["survey_complete"] = session_player.survey_complete
+        message_data["status"]["result"]["instructions_finished"] = session_player.instructions_finished
 
         message = {}
         message["messageType"] = event["type"]
