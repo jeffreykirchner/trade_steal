@@ -62,6 +62,15 @@ class SubjectHomeAutoConnectProlificView(View):
                 if not session_player:
                     session_player = session.session_players.filter(student_id=prolific_pid).first()
 
+                    if session_player:
+                        html_response = f'''<h1><center>
+                                            <br>
+                                            <br>
+                                            <a href="{reverse('subject_home', args=(session_player.player_key,))}">Click to login</a></center>
+                                            </h1></center>
+                                         '''
+                        return HttpResponse(html_response)
+
                 if not session_player:
                     if session.current_experiment_phase != ExperimentPhase.INSTRUCTIONS:
                         return HttpResponse("<br><br><center><h1>The session has already started.</h1></center>")
@@ -91,5 +100,4 @@ class SubjectHomeAutoConnectProlificView(View):
         except ObjectDoesNotExist:
             return HttpResponse("<br><br><center><h1>All connections are full.</h1></center>")
     
-
         return HttpResponseRedirect(reverse('subject_home', args=(player_key,)))
