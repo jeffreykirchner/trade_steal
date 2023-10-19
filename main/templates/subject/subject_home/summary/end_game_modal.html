@@ -51,7 +51,7 @@
                         class="btn btn-outline-primary"
                         v-on:click = "postSessionLink()"
                         title="Press to continue"
-                        v-else-if="session.parameter_set.post_forward_link && session.parameter_set.post_forward_link != ''"
+                        v-else-if="session_player.post_experiment_link != ''"
                         v-bind:disabled="reconnecting || working">
                     Press here to continue <i class="fas fa-sign-in-alt"></i>
                 </button>

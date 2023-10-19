@@ -420,12 +420,35 @@ class SessionPlayer(models.Model):
         
         p = Parameters.objects.first()
 
-        link_string = f'{self.session.parameter_set.survey_link}?'
-        link_string += f'session_id={self.session.id}&'
-        link_string += f'player_label={self.parameter_set_player.id_label}&'
-        link_string += f'player_number={self.player_number}&'        
-        link_string += f'player_key={self.player_key}&'
-        link_string += f'server_url={p.site_url}&'
+
+        # link_string = f'{self.session.parameter_set.survey_link}?'
+        # link_string += f'session_id={self.session.id}&'
+        # link_string += f'player_label={self.parameter_set_player.id_label}&'
+        # link_string += f'player_number={self.player_number}&'        
+        # link_string += f'player_key={self.player_key}&'
+        # link_string += f'server_url={p.site_url}&'
+
+        link_string = self.process_survey_link(self.session.parameter_set.survey_link)
+
+        return link_string
+    
+    def process_survey_link(self, survey_link):
+        '''
+        take survey link and process url parameters
+        '''
+        
+        p = Parameters.objects.first()
+        
+        link_string = f'{survey_link}'
+
+        if("qualtrics" in link_string):
+            link_string += f'?'
+        
+            link_string += f'session_id={self.session.id}&'
+            link_string += f'player_label={self.parameter_set_player.id_label}&'
+            link_string += f'player_number={self.player_number}&'        
+            link_string += f'player_key={self.player_key}&'
+            link_string += f'server_url={p.site_url}&'
 
         return link_string
 
@@ -477,6 +500,7 @@ class SessionPlayer(models.Model):
             "survey_complete" : self.survey_complete,
             "survey_link" : self.get_survey_link(),
 
+            "post_experiment_link" : self.process_survey_link(self.session.parameter_set.post_forward_link),
         }
     
     def json_for_subject(self, session_player):
