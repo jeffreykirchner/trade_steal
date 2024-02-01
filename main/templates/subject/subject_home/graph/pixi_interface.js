@@ -96,7 +96,7 @@ handleContainerDown(container, event){
     if(app.$data.session.finished) return;
 
     container.getChildByName("highlight").visible=true;
-    app.$data.pixi_transfer_source = container;
+    pixi_transfer_source = container;
     app.updatePixiTransfer(event.data.global.x , event.data.global.y);
     app.$data.transfer_in_progress = true;
 },
@@ -117,7 +117,7 @@ setContainerAsTarget(container, event)
 {
     if(pixi_transfer_line.visible && !app.pixi_modal_open)
     {
-        if(container !=  app.$data.pixi_transfer_source)
+        if(container !=  pixi_transfer_source)
         {
             pixi_transfer_target = container;
             container.getChildByName("highlight").visible=true;
@@ -182,7 +182,7 @@ turnOffHighlights(){
  */
 updatePixiTransfer(target_x, target_y){
     transfer_line = pixi_transfer_line;
-    source = app.$data.pixi_transfer_source;
+    source = pixi_transfer_source;
 
     transfer_line.clear();
 

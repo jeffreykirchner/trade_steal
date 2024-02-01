@@ -27,8 +27,8 @@ var app = Vue.createApp({
 
                     pixi_loaded : false,             //true when pixi is loaded
                     // pixi_transfer_line : null,       //transfer line between two pixi containers  
-                    pixi_transfer_source : null,     //source of transfer
-                    pixi_transfer_target : null,     //target of transfer
+                    //pixi_transfer_source : null,     //source of transfer
+                    //pixi_transfer_target : null,     //target of transfer
                     pixi_modal_open : false,         //true whe pixi modal is open
                     pixi_transfer_source_modal_string : "",   //source string shown on transfer modal
                     pixi_transfer_target_modal_string : "" ,  //target string shown on transfer modal

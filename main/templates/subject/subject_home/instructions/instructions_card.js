@@ -265,10 +265,10 @@ simulate_do_period_production_function(good_production_1, good_production_2, goo
 simulateGoodTransferInstructions(){
     this.clearMainFormErrors();
 
-    if(this.pixi_transfer_source.name.type.toString() != "field" ||
-       this.pixi_transfer_target.name.type.toString() != "house" ||
-       this.pixi_transfer_source.name.user_id != this.session_player.id ||
-       this.pixi_transfer_target.name.user_id != this.session_player.id) 
+    if(pixi_transfer_source.name.type.toString() != "field" ||
+       pixi_transfer_target.name.type.toString() != "house" ||
+       pixi_transfer_source.name.user_id != this.session_player.id ||
+       pixi_transfer_target.name.user_id != this.session_player.id) 
     {
         let errors = {transfer_good_one_amount_2g:["For the purposes of the instructions, please transfer items from your field to your house."],
                       transfer_good_one_amount_3g:["For the purposes of the instructions, please transfer items from your field to your house."]};

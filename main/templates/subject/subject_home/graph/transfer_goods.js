@@ -5,8 +5,8 @@ showTransferModal(container){
     if(app.pixi_modal_open) return;
 
     if(!pixi_transfer_line.visible ||
-       container ==  app.$data.pixi_transfer_source ||
-       app.$data.pixi_transfer_source == null ||
+       container ==  pixi_transfer_source ||
+       pixi_transfer_source == null ||
        pixi_transfer_target == null)
     {
         app.turnOffHighlights();
@@ -15,26 +15,26 @@ showTransferModal(container){
 
     parameter_set = app.$data.session.parameter_set;
 
-    app.$data.transfer_source_modal_string = app.$data.pixi_transfer_source.name.modal_label;
+    app.$data.transfer_source_modal_string = pixi_transfer_source.name.modal_label;
     app.$data.transfer_target_modal_string = pixi_transfer_target.name.modal_label;
 
-    app.$data.transfer_modal_good_one_rgb = app.$data.pixi_transfer_source.name.good_one_color;
-    app.$data.transfer_modal_good_two_rgb = app.$data.pixi_transfer_source.name.good_two_color;
+    app.$data.transfer_modal_good_one_rgb = pixi_transfer_source.name.good_one_color;
+    app.$data.transfer_modal_good_two_rgb = pixi_transfer_source.name.good_two_color;
 
-    app.$data.transfer_modal_good_one_name = app.$data.pixi_transfer_source.name.good_a_label;
-    app.$data.transfer_modal_good_two_name = app.$data.pixi_transfer_source.name.good_b_label;
+    app.$data.transfer_modal_good_one_name = pixi_transfer_source.name.good_a_label;
+    app.$data.transfer_modal_good_two_name = pixi_transfer_source.name.good_b_label;
 
     app.$data.pixi_modal_open = true;
     app.$data.cancelModal=true;
 
-    if(parameter_set.good_count == 2 || app.$data.pixi_transfer_source.name.type == "field")
+    if(parameter_set.good_count == 2 || pixi_transfer_source.name.type == "field")
     {
         app.$data.moveTwoGoodsModal.toggle();
     }
     else
     {
-        app.$data.transfer_modal_good_three_rgb = app.$data.pixi_transfer_source.name.good_three_color;
-        app.$data.transfer_modal_good_three_name = app.$data.pixi_transfer_source.name.good_c_label;
+        app.$data.transfer_modal_good_three_rgb = pixi_transfer_source.name.good_three_color;
+        app.$data.transfer_modal_good_three_name = pixi_transfer_source.name.good_c_label;
 
         app.$data.moveThreeGoodsModal.toggle();
     }
@@ -60,12 +60,12 @@ hideTransferModal:function(){
 sendMoveGoods(){
     
     if(this.working == true) return;
-    if(!this.pixi_transfer_source) return;
-    if(!this.pixi_transfer_target) return; 
+    if(!pixi_transfer_source) return;
+    if(!pixi_transfer_target) return; 
 
     app.clearMainFormErrors();
 
-    if(this.pixi_transfer_source.name.type == "house" &&
+    if(pixi_transfer_source.name.type == "house" &&
        this.session.parameter_set.good_count == 3)
     {
         if(this.transfer_good_one_amount == 0 && 
@@ -93,11 +93,11 @@ sendMoveGoods(){
     }
 
     this.working = true;
-    app.sendMessage("move_goods", {"sourceType" : this.pixi_transfer_source.name.type.toString(),
-                                   "sourceID" :  this.pixi_transfer_source.name.user_id.toString(),
+    app.sendMessage("move_goods", {"sourceType" : pixi_transfer_source.name.type.toString(),
+                                   "sourceID" :  pixi_transfer_source.name.user_id.toString(),
 
-                                   "targetType" : this.pixi_transfer_target.name.type.toString(),
-                                   "targetID" : this.pixi_transfer_target.name.user_id.toString(),
+                                   "targetType" : pixi_transfer_target.name.type.toString(),
+                                   "targetID" : pixi_transfer_target.name.user_id.toString(),
 
                                    "formData" : form_data,});
 },
