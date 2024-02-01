@@ -4,7 +4,7 @@
  handleFieldPointerDown(index, event){
     //console.log('Field ' + (index+1).toString() + ' down');
     let session_players = app.$data.session.session_players;
-    app.handleContainerDown(session_players[index].fieldContainer, event);
+    app.handleContainerDown(field_containers[index], event);
 },
 
 /**
@@ -19,7 +19,7 @@ handleFieldPointerUp(index, event){
     }
 
     let session_players = app.$data.session.session_players;
-    app.handleContainerUp(session_players[index].fieldContainer, event);
+    app.handleContainerUp(field_containers[index], event);
 },
 
 /**
@@ -28,7 +28,12 @@ handleFieldPointerUp(index, event){
 handleFieldPointerOver(index, event){
     //console.log('Field ' + (index+1).toString() + ' Over');
     let session_players = app.$data.session.session_players;
-    app.setContainerAsTarget(session_players[index].fieldContainer, event);
+    app.setContainerAsTarget(field_containers[index], event);
+},
+
+handleFieldPointerMove(index, event){
+    //console.log('House ' + (index+1).toString() + ' move');
+    app.handleStagePointerMove(event);
 },
 
 /**
@@ -37,7 +42,7 @@ handleFieldPointerOver(index, event){
 handleFieldPointerOut(index, event){
     //console.log('Field ' + (index+1).toString() + ' Out');
     let session_players = app.$data.session.session_players;
-    app.removeContainerTarget(session_players[index].fieldContainer, event);
+    app.removeContainerTarget(field_containers[index], event);
 },
 
 /**
@@ -46,7 +51,7 @@ handleFieldPointerOut(index, event){
 handleHousePointerDown(index, event){
     //console.log('House ' + (index+1).toString() + ' down');
     let session_players = app.$data.session.session_players;
-    app.handleContainerDown(session_players[index].houseContainer, event);
+    app.handleContainerDown(house_containers[index], event);
 },
 
 /**
@@ -55,7 +60,7 @@ handleHousePointerDown(index, event){
 handleHousePointerUp(index, event){
    //console.log('House ' + (index+1).toString() + ' up');
    let session_players = app.$data.session.session_players;
-   app.handleContainerUp(session_players[index].houseContainer, event);
+   app.handleContainerUp(house_containers[index], event);
 },
 
 /**
@@ -64,7 +69,13 @@ handleHousePointerUp(index, event){
 handleHousePointerOver(index, event){
     //console.log('House ' + (index+1).toString() + ' Over');
     let session_players = app.$data.session.session_players;
-    app.setContainerAsTarget(session_players[index].houseContainer, event);
+    app.setContainerAsTarget(house_containers[index], event);
+   
+},
+
+handleHousePointerMove(index, event){
+    //console.log('House ' + (index+1).toString() + ' move');
+    app.handleStagePointerMove(event);
 },
 
 /**
@@ -73,7 +84,7 @@ handleHousePointerOver(index, event){
 handleHousePointerOut(index, event){
     //console.log('House ' + (index+1).toString() + ' Out');
     let session_players = app.$data.session.session_players;
-    app.removeContainerTarget(session_players[index].houseContainer, event);
+    app.removeContainerTarget(house_containers[index], event);
 },
 
 /**
@@ -87,6 +98,7 @@ handleContainerDown(container, event){
     container.getChildByName("highlight").visible=true;
     app.$data.pixi_transfer_source = container;
     app.updatePixiTransfer(event.data.global.x , event.data.global.y);
+    app.$data.transfer_in_progress = true;
 },
 
 /**
@@ -103,11 +115,11 @@ handleContainerUp(container, event){
 */
 setContainerAsTarget(container, event)
 {
-    if(app.$data.pixi_transfer_line.visible && !app.pixi_modal_open)
+    if(pixi_transfer_line.visible && !app.pixi_modal_open)
     {
         if(container !=  app.$data.pixi_transfer_source)
         {
-            app.$data.pixi_transfer_target = container;
+            pixi_transfer_target = container;
             container.getChildByName("highlight").visible=true;
         }       
     }
@@ -116,9 +128,9 @@ setContainerAsTarget(container, event)
 /**remove container target when pointer moves off of it
 */
 removeContainerTarget(container, event){
-    if(container ==  app.$data.pixi_transfer_target && !app.pixi_modal_open)
+    if(container ==  pixi_transfer_target && !app.pixi_modal_open)
     {
-        app.$data.pixi_transfer_target = null;
+        pixi_transfer_target = null;
         container.getChildByName("highlight").visible=false;
     }
 },
@@ -126,7 +138,7 @@ removeContainerTarget(container, event){
 /**
  *pointer up on stage
  */
- handleStagePointerUp(){
+ handleStagePointerUp(event){
     //console.log('Stage up: ' + event);
     app.turnOffHighlights();
 },
@@ -134,9 +146,10 @@ removeContainerTarget(container, event){
 /**
  * pointer move over stage
  */
- handleStagePointerMove(event){
-    if(app.$data.pixi_transfer_line.visible && !app.pixi_modal_open)
+handleStagePointerMove(event){
+    if(pixi_transfer_line.visible && !app.pixi_modal_open)
     {
+        //console.log('stage move over: ' + event.data.global.x + ' ' + event.data.global.y);
         app.updatePixiTransfer(event.data.global.x, event.data.global.y);
     }
 },
@@ -151,23 +164,24 @@ turnOffHighlights(){
     
     for(let i=0;i<session_players.length;i++)
     {
-        if(session_players[i].houseContainer)
-            if(session_players[i].houseContainer.getChildByName("highlight"))
-                session_players[i].houseContainer.getChildByName("highlight").visible=false;
+        if(house_containers[i])
+            if(house_containers[i].getChildByName("highlight"))
+                house_containers[i].getChildByName("highlight").visible=false;
 
-        if(session_players[i].fieldContainer)
-            if(session_players[i].fieldContainer.getChildByName("highlight"))
-                session_players[i].fieldContainer.getChildByName("highlight").visible=false;
+        if(field_containers[i])
+            if(field_containers[i].getChildByName("highlight"))
+                field_containers[i].getChildByName("highlight").visible=false;
     }
 
-    app.$data.pixi_transfer_line.visible=false;
+    pixi_transfer_line.visible=false;
+    app.$data.transfer_in_progress = false;
 },
 
 /**
  * update transfer line
  */
 updatePixiTransfer(target_x, target_y){
-    transfer_line = app.$data.pixi_transfer_line;
+    transfer_line = pixi_transfer_line;
     source = app.$data.pixi_transfer_source;
 
     transfer_line.clear();

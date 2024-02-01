@@ -231,7 +231,7 @@ doTestModeMove(){
             session_player_source = this.findSessionPlayer(this.session_player.id);            
         }
 
-        source_container = session_player_source.fieldContainer;        
+        source_container =field_containers[session_player_source.id];        
 
         this.transfer_good_one_amount = this.randomNumber(0, session_player_source.good_one_field);
         this.transfer_good_two_amount = this.randomNumber(0, session_player_source.good_two_field);
@@ -247,7 +247,7 @@ doTestModeMove(){
             session_player_source = this.findSessionPlayer(this.session_player.id);  
         }            
 
-        source_container = session_player_source.houseContainer;
+        source_container = house_containers[session_player_source.id];
 
         this.transfer_good_one_amount = this.randomNumber(0, session_player_source.good_one_house);
         this.transfer_good_two_amount = this.randomNumber(0, session_player_source.good_two_house);
@@ -265,7 +265,7 @@ doTestModeMove(){
     else
         session_player_target = this.session.session_players[this.randomNumber(0, this.session.session_players.length-1)];
 
-    let target_container = session_player_target.houseContainer;
+    let target_container = session_player_source[session_player_target.id];
 
     this.handleContainerDown(source_container,
                                 {data: {global: {x:source_container.x, y:source_container.y}}})

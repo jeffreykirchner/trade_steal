@@ -4,10 +4,10 @@ showTransferModal(container){
 
     if(app.pixi_modal_open) return;
 
-    if(!app.$data.pixi_transfer_line.visible ||
+    if(!pixi_transfer_line.visible ||
        container ==  app.$data.pixi_transfer_source ||
        app.$data.pixi_transfer_source == null ||
-       app.$data.pixi_transfer_target == null)
+       pixi_transfer_target == null)
     {
         app.turnOffHighlights();
         return;
@@ -16,7 +16,7 @@ showTransferModal(container){
     parameter_set = app.$data.session.parameter_set;
 
     app.$data.transfer_source_modal_string = app.$data.pixi_transfer_source.name.modal_label;
-    app.$data.transfer_target_modal_string = app.$data.pixi_transfer_target.name.modal_label;
+    app.$data.transfer_target_modal_string = pixi_transfer_target.name.modal_label;
 
     app.$data.transfer_modal_good_one_rgb = app.$data.pixi_transfer_source.name.good_one_color;
     app.$data.transfer_modal_good_two_rgb = app.$data.pixi_transfer_source.name.good_two_color;
