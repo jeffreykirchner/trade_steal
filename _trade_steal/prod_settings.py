@@ -34,6 +34,7 @@ CHANNEL_LAYERS = {
             # 'hosts': [(os.environ['REDIS'])],
             'hosts' :  [("localhost", 6379)],
             'prefix' : 'specialization_and_trade',
+            'capacity': 1500,
         },
     },
 }
