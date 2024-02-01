@@ -42,7 +42,7 @@
                     <!-- chat box -->
                     <div class="two border"
                          v-show="session.parameter_set.private_chat == 'True' || session.parameter_set.group_chat == 'True'"
-                         v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]"
+                         v-bind:style="[(transfer_in_progress) ? {'opacity': '0.25','pointer-events':'none'}:{}]"
                          v-show="session.started">
 
                         <div class="d-flex flex-column">
@@ -73,7 +73,7 @@
 
                     <!-- notices -->
                     <div class="three border"
-                         v-bind:style="[(pixi_transfer_line.visible==true) ? {'opacity': '0.25','pointer-events':'none'}:{}]">
+                         v-bind:style="[(transfer_in_progress) ? {'opacity': '0.25','pointer-events':'none'}:{}]">
                         <div class="d-flex flex-column">
                             <span class="text-center fs-5" ><u>Notices</u></span>  
 

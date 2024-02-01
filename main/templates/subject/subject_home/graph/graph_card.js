@@ -11,19 +11,20 @@ setFieldHouseVisbility(value){
     session_players = app.$data.session.session_players;
     for(let i=0;i<session_players.length;i++)
     {
-        if(session_players[i].houseContainer)
+        if(house_containers[i])
         {
-            session_players[i].houseContainer.visible = value;
+            house_containers[i].visible = value;
         }
 
-        if(session_players[i].fieldContainer)
+        if(field_containers[i])
         {
-            session_players[i].fieldContainer.visible = value;
+            field_containers[i].visible = value;
         }
 
-        if(session_players[i].avatarContainer)
+        if(avatar_containers[i])
         {
-            session_players[i].avatarContainer.visible = value;
+            avatar_containers[i].visible = value;
         }
     }
 },
+
