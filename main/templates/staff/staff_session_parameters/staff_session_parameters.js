@@ -204,7 +204,7 @@ var app = Vue.createApp({
             if(messageData.status == "success")
             {
                 app.takeGetSession(messageData);       
-                $('#editSessionModal').modal('hide');    
+                app.edit_session_modal.hide();
             } 
             else
             {
@@ -303,7 +303,7 @@ var app = Vue.createApp({
     },
 
     mounted(){
-        $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession); 
+        $('#edit_session_modal').on("hidden.bs.modal", this.hideEditSession); 
         $('#importParametersModal').on("hidden.bs.modal", this.hideImportParameters); 
         $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
         $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);

@@ -66,6 +66,12 @@ var app = Vue.createApp({
 
                     timer_warning : false,
                     timer_warning_timeout : null,
+
+                    //modals
+                    edit_subject_modal: null,
+                    edit_session_modal: null,
+                    send_message_modal: null,
+                    upload_email_modal: null,
                 }},
     methods: {
 
@@ -187,9 +193,26 @@ var app = Vue.createApp({
                     break;
             }
 
-            this.first_load_done = true;
             app.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
+        },
+
+        /**
+         * do after session has loaded
+         */
+        do_first_load: function do_first_load()
+        {
+            app.edit_subject_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_subject_modal'), {keyboard: false});
+            app.edit_session_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_session_modal'), {keyboard: false});
+            app.send_message_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('send_message_modal'), {keyboard: false});
+            app.upload_email_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_email_modal'), {keyboard: false});
+
+            document.getElementById('edit_subject_modal').addEventListener('hidden.bs.modal', app.hide_edit_subject);
+            document.getElementById('edit_session_modal').addEventListener('hidden.bs.modal', app.hide_edit_session);
+            document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
+            document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
+
+            app.first_load_done = true;
         },
 
         /** send websocket message to server
@@ -237,7 +260,17 @@ var app = Vue.createApp({
             app.updatePhaseButtonText();
             app.updateNoticeDisplay(true);        
 
-            Vue.nextTick(app.update_graph_canvas());
+            if(!app.first_load_done)
+            {
+                Vue.nextTick(() => {
+                    app.do_first_load();
+                    app.update_graph_canvas()
+                });
+            }
+            else
+            {
+                
+            }
         },
 
         /**
@@ -314,32 +347,6 @@ var app = Vue.createApp({
         updateChatDisplay(force_scroll){
             
             this.chat_list_to_display=Array.from(this.session.chat_all[parseInt(this.current_town)]);
-
-            // //add spacers
-            // for(let i=this.chat_list_to_display.length;i<18;i++)
-            // {
-            //     this.chat_list_to_display.unshift({id:i*-1,sender_label:"", text:"|", sender_id:0, chat_type:'All'})
-            // }
-
-            // //scroll to view
-            // if(this.chat_list_to_display.length>0)
-            // {
-            //     Vue.nextTick(() => {app.updateChatDisplayScroll(force_scroll)});        
-            // }
-        },
-
-        /**
-         * scroll to newest chat element
-         */
-        updateChatDisplayScroll(force_scroll){
-
-            // if(!app.session.timer_running) return;
-
-            // if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
-            // {
-            //     var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
-            //     elmnt.scrollIntoView(); 
-            // }
         },
 
         /**
@@ -504,12 +511,6 @@ var app = Vue.createApp({
     },
 
     mounted(){
-
-        $('#editSubjectModal').on("hidden.bs.modal", this.hideEditSubject);
-        $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession);
-        $('#sendMessageModal').on("hidden.bs.modal", this.hideSendInvitations);
-        $('#uploadEmailModal').on("hidden.bs.modal", this.hideSendEmailList);
-
         window.addEventListener('resize', this.handleResize);
     },
 

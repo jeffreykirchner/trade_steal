@@ -203,11 +203,7 @@ showSendInvitations(){
 
     tinymce.get("id_invitation_subject").setContent(this.sendMessageModalForm.text);
     
-    var myModal = new bootstrap.Modal(document.getElementById('sendMessageModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.send_message_modal.show();
 },
 
 /** hide edit subject modal

@@ -212,7 +212,7 @@ takeUpdateEmailList(messageData){
 
     if(messageData.status.value == "success")
     {            
-        $('#uploadEmailModal').modal('hide');    
+        app.upload_email_modal.hide(); 
 
         result = messageData.status.result;
 
@@ -238,11 +238,7 @@ showSendEmailList(){
 
     this.csv_email_list = "";
     
-    var myModal = new bootstrap.Modal(document.getElementById('uploadEmailModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.upload_email_modal.show(); 
 },
 
 /** hide edit subject modal
@@ -273,7 +269,7 @@ takeUpdateSubject(messageData){
 
     if(messageData.status.value == "success")
     {            
-        $('#editSubjectModal').modal('hide');    
+        app.edit_subject_modal.hide();    
 
         let session_player = app.findSessionPlayer(messageData.status.session_player.id);
         session_player.name = messageData.status.session_player.name;
@@ -301,11 +297,7 @@ showEditSubject(id){
     this.staffEditNameEtcForm.student_id = session_player.student_id;
     this.staffEditNameEtcForm.email = session_player.email;
     
-    var myModal = new bootstrap.Modal(document.getElementById('editSubjectModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.edit_subject_modal.show();  
 },
 
 /** hide edit subject modal
