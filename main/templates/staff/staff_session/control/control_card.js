@@ -1,7 +1,7 @@
 /**start the experiment
 */
 start_experiment(){
-    app.$data.working = true;
+    app.working = true;
     app.sendMessage("start_experiment", {});
 },
 
@@ -33,7 +33,7 @@ reset_experiment(){
         return;
     }
 
-    app.$data.working = true;
+    app.working = true;
     app.sendMessage("reset_experiment", {});
 },
 
@@ -57,7 +57,7 @@ resetConnections(){
         return;
     }
 
-    app.$data.working = true;
+    app.working = true;
     app.sendMessage("reset_connections", {});
 },
 
@@ -83,7 +83,7 @@ next_experiment_phase(){
         return;
     }
     
-    app.$data.working = true;
+    app.working = true;
     app.sendMessage("next_phase", {});
 },
 
@@ -112,11 +112,11 @@ takeUpdateNextPhase(messageData){
  * start the period timer
 */
 startTimer(){
-    app.$data.working = true;
+    app.working = true;
 
     let action = "";
 
-    if(app.$data.session.timer_running)
+    if(app.session.timer_running)
     {
         action = "stop";
     }
@@ -142,7 +142,7 @@ endEarly(){
         return;
     }
 
-    app.$data.working = true;
+    app.working = true;
     app.sendMessage("end_early", {});
 },
 

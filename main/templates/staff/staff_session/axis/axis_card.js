@@ -7,7 +7,7 @@ update_graph_canvas:function(){
     el.setAttribute('height', el.clientHeight);
 
     y_max = 1;
-    x_max = app.$data.session.session_periods.length;
+    x_max = app.session.session_periods.length;
     x_min = 1;
 
     var marginY=45;    //margin between left side of canvas and Y axis
@@ -174,7 +174,7 @@ draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin
     
     let lineWidth = 3;
 
-    let session = app.$data.session;
+    let session = app.session;
 
     ctx.save();
     ctx.translate(marginY, h-marginX);

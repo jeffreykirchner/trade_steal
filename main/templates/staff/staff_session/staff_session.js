@@ -207,7 +207,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         sendGetSession(){
-            app.sendMessage("get_session",{"sessionKey" : app.$data.sessionKey});
+            app.sendMessage("get_session",{"sessionKey" : app.sessionKey});
         },
 
         /** take create new session
@@ -217,9 +217,9 @@ var app = Vue.createApp({
             
             app.destroyPixiPlayers();
 
-            app.$data.session = messageData.session;
+            app.session = messageData.session;
 
-            if(app.$data.session.started)
+            if(app.session.started)
             {
                 
             }
@@ -228,7 +228,7 @@ var app = Vue.createApp({
                 
             }
             
-            if(!app.$data.pixi_loaded)
+            if(!app.pixi_loaded)
                 setTimeout(app.setupPixi, 250);       
             else
                 setTimeout(app.setupPixiPlayers, 250);
@@ -249,8 +249,8 @@ var app = Vue.createApp({
                 let canvas = document.getElementById('sd_graph_id');
                 app.canvas_width = canvas.width;
                 app.canvas_height = canvas.height;
-                app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
-                app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
+                app.canvas_scale_height = app.canvas_height / app.grid_y;
+                app.canvas_scale_width = app.canvas_width / app.grid_x;
 
                 app.setupPixiPlayers();
             }, 250);
@@ -337,7 +337,7 @@ var app = Vue.createApp({
 
             // if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
             // {
-            //     var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
+            //     var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
             //     elmnt.scrollIntoView(); 
             // }
         },
@@ -403,12 +403,12 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
-            app.$data.session.started = result.started;
-            app.$data.session.current_period = result.current_period;
-            app.$data.session.current_period_phase = result.current_period_phase;
-            app.$data.session.time_remaining = result.time_remaining;
-            app.$data.session.timer_running = result.timer_running;
-            app.$data.session.finished = result.finished;
+            app.session.started = result.started;
+            app.session.current_period = result.current_period;
+            app.session.current_period_phase = result.current_period_phase;
+            app.session.time_remaining = result.time_remaining;
+            app.session.timer_running = result.timer_running;
+            app.session.finished = result.finished;
 
             app.takeUpdateGoods({status : {result : result.session_players}});
             app.takeUpdateEarnings(messageData);
@@ -431,7 +431,7 @@ var app = Vue.createApp({
         takeUpdatePeriod(period_update){
             if(!period_update) return;
 
-            app.$data.session.session_periods[period_update.period_number-1] = period_update;
+            app.session.session_periods[period_update.period_number-1] = period_update;
             Vue.nextTick(app.update_graph_canvas());
         },
 
@@ -469,13 +469,13 @@ var app = Vue.createApp({
         */
         clearMainFormErrors(){
             
-            for(var item in app.$data.session)
+            for(var item in app.session)
             {
                 $("#id_" + item).attr("class","form-control");
                 $("#id_errors_" + item).remove();
             }
 
-            s = app.$data.staff_edit_name_etc_form_ids;
+            s = app.staff_edit_name_etc_form_ids;
             for(var i in s)
             {
                 $("#id_" + s[i]).attr("class","form-control");

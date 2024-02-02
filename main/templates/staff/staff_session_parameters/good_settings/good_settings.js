@@ -3,11 +3,11 @@
  showEditParametersetGood:function(good_id, index){
 
     app.clearMainFormErrors();
-    app.$data.cancelModal=true;
-    app.$data.parametersetGoodBeforeEdit = Object.assign({}, app.$data.session.parameter_set.parameter_set_goods[index]);
-    app.$data.parametersetGoodEditIndex = index;
-    app.$data.parametersetGoodBeforeEditIndex = good_id;
-    app.$data.current_parameter_set_good = app.$data.session.parameter_set.parameter_set_goods[index];
+    app.cancelModal=true;
+    app.parametersetGoodBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_goods[index]);
+    app.parametersetGoodEditIndex = index;
+    app.parametersetGoodBeforeEditIndex = good_id;
+    app.current_parameter_set_good = app.session.parameter_set.parameter_set_goods[index];
 
     var myModal = new bootstrap.Modal(document.getElementById('editParametersetGoodModal'), {
         keyboard: false
@@ -19,11 +19,11 @@
 /** hide edit parmeter set good
 */
 hideEditParametersetGood:function(){
-    if(app.$data.cancelModal)
+    if(app.cancelModal)
     {
-        Object.assign(app.$data.session.parameter_set.parameter_set_goods[app.$data.parametersetPlayerBeforeEditIndex],
-                      app.$data.parametersetGoodBeforeEdit);
-        app.$data.parametersetGoodBeforeEdit=null;
+        Object.assign(app.session.parameter_set.parameter_set_goods[app.parametersetPlayerBeforeEditIndex],
+                      app.parametersetGoodBeforeEdit);
+        app.parametersetGoodBeforeEdit=null;
     }
 },
 
@@ -31,9 +31,9 @@ hideEditParametersetGood:function(){
 */
 sendUpdateParametersetGood(){
     
-    app.$data.working = true;
-    app.sendMessage("update_parameterset_good", {"sessionID" : app.$data.sessionID,
-                                                 "parameterset_good_id" : app.$data.current_parameter_set_good.id,
+    app.working = true;
+    app.sendMessage("update_parameterset_good", {"sessionID" : app.sessionID,
+                                                 "parameterset_good_id" : app.current_parameter_set_good.id,
                                                  "formData" : $("#parametersetGoodForm").serializeArray(),});
 },
 
@@ -41,7 +41,7 @@ sendUpdateParametersetGood(){
 */
 takeUpdateParametersetGood(messageData){
 
-    app.$data.cancelModal=false;
+    app.cancelModal=false;
     app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
@@ -52,7 +52,7 @@ takeUpdateParametersetGood(messageData){
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
 },

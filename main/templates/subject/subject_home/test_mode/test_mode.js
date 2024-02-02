@@ -169,7 +169,7 @@ doTestModeRun()
             go=false;
         }
     
-    if(app.$data.session.finished) return;
+    if(app.session.finished) return;
         
     if(go)
         switch (this.randomNumber(1, 3)){

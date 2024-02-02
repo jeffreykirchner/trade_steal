@@ -37,8 +37,8 @@ hideEditParametersetAvatar(){
 */
 sendUpdateParametersetAvatar(){
     
-    app.$data.working = true;
-    app.sendMessage("update_parameterset_avatar", {"sessionID" : app.$data.sessionID,
+    app.working = true;
+    app.sendMessage("update_parameterset_avatar", {"sessionID" : app.sessionID,
                                                    "parameterset_avatar_id" : this.session.parameter_set.parameter_set_avatars[this.paramtersetAvatarBeforeEditIndex].id,
                                                    "formData" : $("#avatarsForm").serializeArray(),});
 },
@@ -46,7 +46,7 @@ sendUpdateParametersetAvatar(){
 /** handle result of updating parameter set
 */
 takeUpdateParametersetAvatar(messageData){
-    //app.$data.cancelModal=false;
+    //app.cancelModal=false;
     //app.clearMainFormErrors();
 
     this.cancelModal=false;
@@ -54,12 +54,12 @@ takeUpdateParametersetAvatar(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.$data.session.parameter_set = messageData.status.result;
+        app.session.parameter_set = messageData.status.result;
         $('#editAvatarsModal').modal('hide');            
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
 },

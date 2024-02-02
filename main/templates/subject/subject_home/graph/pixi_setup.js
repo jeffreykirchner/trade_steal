@@ -23,8 +23,8 @@ resetPixiApp(){
     let canvas = document.getElementById('sd_graph_id');
     //     ctx = canvas.getContext('2d');
 
-    // app.$data.canvas_width = ctx.canvas.width;
-    // app.$data.canvas_height = ctx.canvas.height;
+    // app.canvas_width = ctx.canvas.width;
+    // app.canvas_height = ctx.canvas.height;
 
     pixi_app = new PIXI.Application({resizeTo : canvas,
                                                backgroundColor : 0xFFFFFF,
@@ -74,20 +74,20 @@ resetPixiApp(){
 /** load pixi sprite sheets
 */
 setupPixiSheets(textures){
-    app.$data.house_sheet = textures.graph_sprite_sheet;
-    app.$data.avatar_sheet = textures.avatar_sprite_sheet;
-    app.$data.house_sprite = new PIXI.Sprite(app.$data.house_sheet.textures["House0000"]);
+    app.house_sheet = textures.graph_sprite_sheet;
+    app.avatar_sheet = textures.avatar_sprite_sheet;
+    app.house_sprite = new PIXI.Sprite(app.house_sheet.textures["House0000"]);
 
-    app.$data.grid_x = 11;
-    app.$data.grid_y = 5;
+    app.grid_x = 11;
+    app.grid_y = 5;
 
-    app.$data.grid_y_padding = 30;
+    app.grid_y_padding = 30;
 
-    app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
-    app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
-    app.$data.canvas_scale = app.canvas_scale_height /  app.$data.house_sprite.height;
+    app.canvas_scale_height = app.canvas_height / app.grid_y;
+    app.canvas_scale_width = app.canvas_width / app.grid_x;
+    app.canvas_scale = app.canvas_scale_height /  app.house_sprite.height;
 
-    app.$data.pixi_loaded = true;
+    app.pixi_loaded = true;
     app.setupPixiPlayers();
 
     //layout for testing
@@ -99,12 +99,12 @@ setupPixiSheets(textures){
  */
 setupPixiPlayers(){
 
-    if(!app.$data.pixi_loaded) return;
-    if(!app.$data.session.parameter_set.show_avatars=="True") return;
+    if(!app.pixi_loaded) return;
+    if(!app.session.parameter_set.show_avatars=="True") return;
 
-    let session_players = app.$data.session.session_players;
-    let session = app.$data.session;
-    let session_player = app.$data.session_player;
+    let session_players = app.session.session_players;
+    let session = app.session;
+    let session_player = app.session_player;
 
     //setup pixi houses
     for(let i=0;i<session_players.length;i++)
@@ -119,7 +119,7 @@ setupPixiPlayers(){
     }
 
     //setup pixi avatars
-    if(app.$data.session.parameter_set.show_avatars == "True")
+    if(app.session.parameter_set.show_avatars == "True")
     {
         for(let i=0;i<session_players.length;i++)
         {
@@ -128,17 +128,17 @@ setupPixiPlayers(){
     }
 
     if(app.is_subject)
-        app.setFieldHouseVisbility(app.$data.session.started);
+        app.setFieldHouseVisbility(app.session.started);
 },
 
 /**setup house container for player
  * @param index : int
  */
 setupSingleHouse(index){
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     let session_player = session_players[index];
 
-    if(session_players[index].parameter_set_player.town.toString() != app.$data.current_town) return;
+    if(session_players[index].parameter_set_player.town.toString() != app.current_town) return;
 
     if(house_containers[index])
     {
@@ -149,7 +149,7 @@ setupSingleHouse(index){
     let container = new PIXI.Container();
     
     let parameter_set_player = session_player.parameter_set_player;
-    let parameter_set = app.$data.session.parameter_set;
+    let parameter_set = app.session.parameter_set;
 
     let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'house');
 
@@ -169,18 +169,18 @@ setupSingleHouse(index){
     }
     
     //house texture
-    let sprite = PIXI.Sprite.from(app.$data.house_sheet.textures["House0000"]);
+    let sprite = PIXI.Sprite.from(app.house_sheet.textures["House0000"]);
 
     sprite.x = 0;
     sprite.y = 0;
     sprite.name = "house_texture"
 
     
-    if(typeof app.$data.session_player != 'undefined' && session_players[index].player_number == app.$data.session_player.player_number){
-        sprite.tint = app.$data.owner_color;
+    if(typeof app.session_player != 'undefined' && session_players[index].player_number == app.session_player.player_number){
+        sprite.tint = app.owner_color;
     }
     else{
-        sprite.tint = app.$data.other_color;
+        sprite.tint = app.other_color;
     }
 
     container.addChild(sprite)
@@ -248,8 +248,8 @@ setupSingleHouse(index){
                       good_b_label : parameter_set_player.good_two.label,
                       good_c_label : parameter_set_player.good_three.label,};
 
-    if(app.$data.is_subject)  //only subject screen can move items
-        if(app.$data.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.$data.session_player.id)
+    if(app.is_subject)  //only subject screen can move items
+        if(app.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.session_player.id)
             container.on('pointerdown', app.handleHousePointerDown.bind(this, index));
 
     container.on('pointerup', app.handleHousePointerUp.bind(this, index))
@@ -257,7 +257,7 @@ setupSingleHouse(index){
              .on('pointerout', app.handleHousePointerOut.bind(this, index))
              .on('pointermove', app.handleHousePointerMove.bind(this, index));
 
-    container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
+    container.scale.set(app.canvas_scale, app.canvas_scale);
 
     house_containers[index] = container;
     pixi_app.stage.addChild(house_containers[index]);
@@ -295,10 +295,10 @@ createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
  * @param index : int
  */
 setupSingleField(index){
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     let session_player = session_players[index];
 
-    if(session_players[index].parameter_set_player.town.toString() != app.$data.current_town) return;
+    if(session_players[index].parameter_set_player.town.toString() != app.current_town) return;
 
     if(field_containers[index])
     {
@@ -309,20 +309,20 @@ setupSingleField(index){
     let container = new PIXI.Container();
 
     let parameter_set_player = session_player.parameter_set_player;
-    let parameter_set = app.$data.session.parameter_set;
+    let parameter_set = app.session.parameter_set;
 
     let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'field');
 
     //field texture
-    let sprite = PIXI.Sprite.from(app.$data.house_sheet.textures["Field0000"]);
+    let sprite = PIXI.Sprite.from(app.house_sheet.textures["Field0000"]);
 
     sprite.x = 0;
     sprite.y = 0;
-    if(typeof app.$data.session_player != 'undefined' && session_players[index].player_number == app.$data.session_player.player_number){
-        sprite.tint = app.$data.owner_color;
+    if(typeof app.session_player != 'undefined' && session_players[index].player_number == app.session_player.player_number){
+        sprite.tint = app.owner_color;
     }
     else{
-        sprite.tint = app.$data.other_color;
+        sprite.tint = app.other_color;
     }    
     container.addChild(sprite)
 
@@ -347,7 +347,7 @@ setupSingleField(index){
     container.addChild(label);
 
     //field group label texture
-    if(!app.$data.is_subject){    
+    if(!app.is_subject){    
         let label_group = new PIXI.Text("G" + session_player.group_number,{fontFamily : 'Arial',
                                                                 fontWeight:'bold',
                                                                 fontSize: 40,
@@ -393,8 +393,8 @@ setupSingleField(index){
     //container.buttonMode = true;
 
     //prevent stealing    
-    if(app.$data.is_subject)  //only subject screen can move items
-        if(app.$data.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.$data.session_player.id)
+    if(app.is_subject)  //only subject screen can move items
+        if(app.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.session_player.id)
             container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
 
     container.on('pointerup', app.handleFieldPointerUp.bind(this, index))
@@ -402,7 +402,7 @@ setupSingleField(index){
              .on('pointerout', app.handleFieldPointerOut.bind(this, index))
              .on('pointermove', app.handleFieldPointerMove.bind(this, index));
     
-    container.scale.set(app.$data.canvas_scale, app.$data.canvas_scale);
+    container.scale.set(app.canvas_scale, app.canvas_scale);
 
     field_containers[index] = container;
     pixi_app.stage.addChild(field_containers[index]);
@@ -411,10 +411,10 @@ setupSingleField(index){
 /**setup avatar container for player */
 setupSingleAvatar(index){
 
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     let session_player = session_players[index];
 
-    if(session_players[index].parameter_set_player.town.toString() != app.$data.current_town) return;
+    if(session_players[index].parameter_set_player.town.toString() != app.current_town) return;
     if(!session_players[index].avatar && !session_players[index].parameter_set_player.avatar) return;
 
     if(avatar_containers[index])
@@ -426,7 +426,7 @@ setupSingleAvatar(index){
     let container = new PIXI.Container();
 
     let parameter_set_player = session_player.parameter_set_player;
-    let parameter_set = app.$data.session.parameter_set;
+    let parameter_set = app.session.parameter_set;
 
     let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'avatar');
     
@@ -475,11 +475,11 @@ setupSingleAvatar(index){
  */
 setupGrid(){
     x = app.canvas_scale_width;
-    y = app.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale);
+    y = app.canvas_scale_height + (app.grid_y_padding*app.canvas_scale);
 
-    for(let i=0;i<app.$data.grid_x-1; i++)
+    for(let i=0;i<app.grid_x-1; i++)
     {
-        for(let i=0;i<app.$data.grid_y-1; i++)
+        for(let i=0;i<app.grid_y-1; i++)
         {
             const gr  = new PIXI.Graphics();
             gr.beginFill(0x000000);
@@ -489,18 +489,18 @@ setupGrid(){
             pixi_app.stage.addChild(gr);
 
             y+=app.canvas_scale_height;
-            y+=app.$data.grid_y_padding*app.$data.canvas_scale;
+            y+=app.grid_y_padding*app.canvas_scale;
         }
 
         x += app.canvas_scale_width;
-        y = app.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale);
+        y = app.canvas_scale_height + (app.grid_y_padding*app.canvas_scale);
     }
 },
  
 /**destroy house and field containers
  */
 destroyPixiPlayers(){
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     
     for(let i=0;i<session_players.length;i++)
     {
@@ -540,7 +540,7 @@ getLocationCordinates(index, field_or_house){
         else
             x = app.canvas_scale_width * 1;
 
-        y += index * (app.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale));
+        y += index * (app.canvas_scale_height + (app.grid_y_padding*app.canvas_scale));
     }
     else
     {
@@ -551,7 +551,7 @@ getLocationCordinates(index, field_or_house){
         else
             x = app.canvas_scale_width * 10;
 
-        y += (index-4) * (app.canvas_scale_height + (app.$data.grid_y_padding*app.$data.canvas_scale));
+        y += (index-4) * (app.canvas_scale_height + (app.grid_y_padding*app.canvas_scale));
     }    
 
     return {x:x, y:y};

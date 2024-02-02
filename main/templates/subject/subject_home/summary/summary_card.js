@@ -1,6 +1,6 @@
 sendName(){
 
-    app.$data.working = true;
+    app.working = true;
     app.sendMessage("name", {"formData" : $("#endGameForm").serializeArray()});
                      
 },
@@ -13,8 +13,8 @@ takeName(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.$data.session_player.name = messageData.status.result.name; 
-        app.$data.session_player.student_id = messageData.status.result.student_id;                   
+        app.session_player.name = messageData.status.result.name; 
+        app.session_player.student_id = messageData.status.result.student_id;                   
     } 
     else
     {
@@ -27,7 +27,7 @@ takeName(messageData){
  */
 postSessionLink(){
 
-    if(app.$data.session_player.post_experiment_link == '') return;
+    if(app.session_player.post_experiment_link == '') return;
 
-    location.href = app.$data.session_player.post_experiment_link;
+    location.href = app.session_player.post_experiment_link;
 },

@@ -3,7 +3,7 @@
  */
  handleFieldPointerDown(index, event){
     //console.log('Field ' + (index+1).toString() + ' down');
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     app.handleContainerDown(field_containers[index], event);
 },
 
@@ -12,13 +12,13 @@
  */
 handleFieldPointerUp(index, event){
     //console.log('Field ' + (index+1).toString() + ' up');
-    if(app.$data.session.parameter_set.allow_stealing == "False")
+    if(app.session.parameter_set.allow_stealing == "False")
     {
         app.turnOffHighlights();
         return;
     }
 
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     app.handleContainerUp(field_containers[index], event);
 },
 
@@ -27,7 +27,7 @@ handleFieldPointerUp(index, event){
  */
 handleFieldPointerOver(index, event){
     //console.log('Field ' + (index+1).toString() + ' Over');
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     app.setContainerAsTarget(field_containers[index], event);
 },
 
@@ -41,7 +41,7 @@ handleFieldPointerMove(index, event){
  */
 handleFieldPointerOut(index, event){
     //console.log('Field ' + (index+1).toString() + ' Out');
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     app.removeContainerTarget(field_containers[index], event);
 },
 
@@ -50,7 +50,7 @@ handleFieldPointerOut(index, event){
  */
 handleHousePointerDown(index, event){
     //console.log('House ' + (index+1).toString() + ' down');
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     app.handleContainerDown(house_containers[index], event);
 },
 
@@ -59,7 +59,7 @@ handleHousePointerDown(index, event){
  */
 handleHousePointerUp(index, event){
    //console.log('House ' + (index+1).toString() + ' up');
-   let session_players = app.$data.session.session_players;
+   let session_players = app.session.session_players;
    app.handleContainerUp(house_containers[index], event);
 },
 
@@ -68,7 +68,7 @@ handleHousePointerUp(index, event){
  */
 handleHousePointerOver(index, event){
     //console.log('House ' + (index+1).toString() + ' Over');
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     app.setContainerAsTarget(house_containers[index], event);
    
 },
@@ -83,7 +83,7 @@ handleHousePointerMove(index, event){
  */
 handleHousePointerOut(index, event){
     //console.log('House ' + (index+1).toString() + ' Out');
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     app.removeContainerTarget(house_containers[index], event);
 },
 
@@ -93,19 +93,19 @@ handleHousePointerOut(index, event){
 handleContainerDown(container, event){
     app.turnOffHighlights();
 
-    if(app.$data.session.finished) return;
+    if(app.session.finished) return;
 
     container.getChildByName("highlight").visible=true;
     pixi_transfer_source = container;
     app.updatePixiTransfer(event.data.global.x , event.data.global.y);
-    app.$data.transfer_in_progress = true;
+    app.transfer_in_progress = true;
 },
 
 /**
  * handle container mouse up
  */
 handleContainerUp(container, event){
-    if(app.$data.session.finished) return;
+    if(app.session.finished) return;
         
     app.setContainerAsTarget(container, event);
     app.showTransferModal(container, event);
@@ -160,7 +160,7 @@ handleStagePointerMove(event){
 turnOffHighlights(){
     if(app.pixi_modal_open) return;
 
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     
     for(let i=0;i<session_players.length;i++)
     {
@@ -174,7 +174,7 @@ turnOffHighlights(){
     }
 
     pixi_transfer_line.visible=false;
-    app.$data.transfer_in_progress = false;
+    app.transfer_in_progress = false;
 },
 
 /**

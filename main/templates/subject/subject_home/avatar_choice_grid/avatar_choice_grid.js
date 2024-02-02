@@ -85,7 +85,7 @@ sendAvatar(){
 
     if(this.session_player.avatar != null) return;
     
-    app.$data.working = true;
+    app.working = true;
     app.sendMessage("avatar", {"row" : this.avatar_choice_grid_selected_row,
                                "col" : this.avatar_choice_grid_selected_col,
                             });             
@@ -94,7 +94,7 @@ sendAvatar(){
 /** take result of moving goods
 */
 takeAvatar(messageData){
-    //app.$data.cancelModal=false;
+    //app.cancelModal=false;
     //app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
