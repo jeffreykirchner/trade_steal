@@ -142,7 +142,8 @@
                            class="form-control" 
                            placeholder="Chat Text" 
                            v-model="chat_text"
-                           aria-label="Chat Text"                           
+                           aria-label="Chat Text"    
+                           id="id_chat_text"                       
                            v-on:keyup.enter="(session.current_experiment_phase == 'Instructions') ? simulateChatInstructions() : sendChat()"
                            aria-describedby="send_chat_id">
                     <button class="btn btn-outline-primary"
