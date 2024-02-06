@@ -538,10 +538,7 @@ def take_move_goods(session_id, session_player_id, data):
     try:
         form_data = data["formData"]
     
-        form_data_dict = {}
-
-        for field in form_data:            
-            form_data_dict[field["name"]] = field["value"]
+        form_data_dict = form_data
 
         logger.info(f'form_data_dict : {form_data_dict}')       
 

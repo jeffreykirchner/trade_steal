@@ -77,7 +77,9 @@ sendMoveGoods(){
             return;
         }
 
-        var form_data = $("#moveThreeGoodsForm").serializeArray();
+        var form_data = {transfer_good_one_amount_3g: this.transfer_good_one_amount,
+                         transfer_good_two_amount_3g: this.transfer_good_two_amount,
+                         transfer_good_three_amount_3g: this.transfer_good_three_amount};
     }
     else
     {
@@ -89,7 +91,8 @@ sendMoveGoods(){
              return;
          }
 
-        var form_data = $("#moveTwoGoodsForm").serializeArray();
+        var form_data = {transfer_good_one_amount_2g: this.transfer_good_one_amount,
+                         transfer_good_two_amount_2g: this.transfer_good_two_amount};
     }
 
     this.working = true;
