@@ -28,7 +28,7 @@ sendUpdateParametersetType(){
     app.working = true;
     app.sendMessage("update_parameterset_type", {"sessionID" : app.sessionID,
                                                  "parameterset_type_id" : app.current_parameterset_type.id,
-                                                 "formData" : $("#parametersetTypeForm").serializeArray(),});
+                                                 "formData" : app.current_parameterset_type,});
 },
 
 /** handle result of updating parameter set type

@@ -42,9 +42,10 @@ hideEditParametersetPlayer:function(){
 sendUpdateParametersetPlayer(){
     
     app.working = true;
+
     app.sendMessage("update_parameterset_player", {"sessionID" : app.sessionID,
                                                    "paramterset_player_id" : app.current_parameter_set_player.id,
-                                                   "formData" : $("#parametersetPlayerForm").serializeArray(),});
+                                                   "formData" : app.current_parameter_set_player,});
 },
 
 /** handle result of updating parameter set player
@@ -102,7 +103,7 @@ sendUpdateParametersetPlayerGroup(){
     app.working = true;
     app.sendMessage("update_parameterset_player_group", {"sessionID" : app.sessionID,
                                                    "paramterset_player_group_id" : app.current_parameter_set_player_group.id,
-                                                   "formData" : $("#parametersetPlayerGroupForm").serializeArray(),});
+                                                   "formData" : app.current_parameter_set_player_group,});
 },
 
 /** handle result of updating parameter set player group

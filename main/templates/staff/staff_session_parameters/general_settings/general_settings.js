@@ -31,7 +31,7 @@ sendUpdateParameterset(){
     for(i=0;i<app.parameterset_form_ids.length;i++)
     {
         v=app.parameterset_form_ids[i];
-        form_data[v]=app.parameter_set[v];
+        form_data[v]=app.session.parameter_set[v];
     }
 
     app.sendMessage("update_parameterset", {"sessionID" : app.sessionID,
