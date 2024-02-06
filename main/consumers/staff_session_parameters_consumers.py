@@ -339,10 +339,7 @@ def take_update_parameterset_good(data):
         logger.warning(f"take_update_parameterset_good paramterset_good, not found ID: {parameterset_good_id}")
         return
     
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict = form_data
 
     form = ParameterSetGoodForm(form_data_dict, instance=parameter_set_good)
 
@@ -512,10 +509,7 @@ def take_import_parameters(data):
     session_id = data["sessionID"]
     form_data = data["formData"]
     
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict = form_data
 
     source_session = Session.objects.get(id=form_data_dict["session"])
     target_session = Session.objects.get(id=session_id)
@@ -559,10 +553,7 @@ def take_update_parameterset_avatar(data):
         logger.warning(f"take_update_parameterset_good paramterset_avatar, not found ID: {parameterset_avatar_id}")
         return
     
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict = form_data
 
     form = ParameterSetAvatarForm(form_data_dict, instance=parameter_set_avatar)
 

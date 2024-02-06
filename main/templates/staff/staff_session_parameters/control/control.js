@@ -4,7 +4,7 @@ sendImportParameters(){
     
     app.working = true;
     app.sendMessage("import_parameters", {"sessionID" : app.sessionID,
-                                          "formData" : $("#importParametersForm").serializeArray(),});
+                                          "formData" : {session:app.session_import},});
 },
 
 /** show parameters copied from another period 
@@ -29,11 +29,7 @@ takeImportParameters(){
 */
 showImportParameters:function(){
     
-    var myModal = new bootstrap.Modal(document.getElementById('importParametersModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+   app.importParametersModal.show();
 },
 
 /** hide edit session modal
@@ -133,11 +129,7 @@ showUploadParameters:function(upload_mode){
     app.upload_mode = upload_mode;
     app.uploadParametersetMessaage = "";
 
-    var myModal = new bootstrap.Modal(document.getElementById('parameterSetModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.parameterSetModal.show();
 },
 
 /**hide upload parameters modal

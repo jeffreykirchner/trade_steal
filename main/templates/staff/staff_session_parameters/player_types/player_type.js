@@ -8,11 +8,7 @@
     app.parametersetTypeBeforeEditIndex = index;
     app.current_parameterset_type = app.session.parameter_set.parameter_set_types[index];
 
-    var myModal = new bootstrap.Modal(document.getElementById('editParametersetTypeModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.editParametersetTypeModal.show();
 },
 
 /** hide edit parmeter set type
@@ -47,7 +43,7 @@ takeUpdateParametersetType(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editParametersetTypeModal').modal('hide');            
+        app.editParametersetTypeModal.hide();         
     } 
     else
     {

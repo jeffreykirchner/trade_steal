@@ -7,11 +7,7 @@ showEditParameterset:function(){
     app.cancelModal=true;
     app.paramtersetBeforeEdit = Object.assign({}, app.session.parameter_set);
 
-    var myModal = new bootstrap.Modal(document.getElementById('editParametersetModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.editParametersetModal.show();
 },
 
 /** hide edit session modal
@@ -29,8 +25,17 @@ hideEditParameterset:function(){
 sendUpdateParameterset(){
     
     app.working = true;
+
+    let form_data = {}
+
+    for(i=0;i<app.parameterset_form_ids.length;i++)
+    {
+        v=app.parameterset_form_ids[i];
+        form_data[v]=app.parameter_set[v];
+    }
+
     app.sendMessage("update_parameterset", {"sessionID" : app.sessionID,
-                                            "formData" : $("#parametersetForm").serializeArray(),});
+                                            "formData" : form_data,});
 },
 
 /** handle result of updating parameter set
@@ -45,7 +50,7 @@ takeUpdateParameterset(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editParametersetModal').modal('hide');            
+        app.editParametersetModal.hide();           
     } 
     else
     {

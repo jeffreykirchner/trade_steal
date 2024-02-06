@@ -9,11 +9,7 @@
     app.parametersetGoodBeforeEditIndex = good_id;
     app.current_parameter_set_good = app.session.parameter_set.parameter_set_goods[index];
 
-    var myModal = new bootstrap.Modal(document.getElementById('editParametersetGoodModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.editParametersetGoodModal.show();
 },
 
 /** hide edit parmeter set good
@@ -34,7 +30,7 @@ sendUpdateParametersetGood(){
     app.working = true;
     app.sendMessage("update_parameterset_good", {"sessionID" : app.sessionID,
                                                  "parameterset_good_id" : app.current_parameter_set_good.id,
-                                                 "formData" : $("#parametersetGoodForm").serializeArray(),});
+                                                 "formData" : app.current_parameter_set_good,});
 },
 
 /** handle result of updating parameter set good
@@ -47,7 +43,7 @@ takeUpdateParametersetGood(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editParametersetGoodModal').modal('hide');        
+        app.editParametersetGoodModal.hide();       
         location.reload();    
     } 
     else

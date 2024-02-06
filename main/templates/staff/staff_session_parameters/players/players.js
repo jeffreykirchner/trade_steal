@@ -17,11 +17,7 @@
     app.current_parameter_set_player = app.session.parameter_set.parameter_set_players[index];
     
 
-    var myModal = new bootstrap.Modal(document.getElementById('editParametersetPlayerModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.editParametersetPlayerModal.show()
 },
 
 /** hide edit parmeter set player
@@ -63,7 +59,7 @@ takeUpdateParametersetPlayer(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editParametersetPlayerModal').modal('hide');        
+        app.editParametersetPlayerModal.hide();     
     } 
     else
     {
@@ -85,11 +81,7 @@ takeUpdateParametersetPlayer(messageData){
     app.parametersetPlayerGroupBeforeEditIndex = period_id;
     app.current_parameter_set_player_group = app.session.parameter_set.parameter_set_players[player_id].period_groups[period_id];
 
-    var myModal = new bootstrap.Modal(document.getElementById('editParametersetPlayerGroupModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.editParametersetPlayerGroupModal.show();
 },
 
 /** hide edit parmeter set player group
@@ -125,7 +117,7 @@ takeUpdateParametersetPlayerGroup(messageData){
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editParametersetPlayerGroupModal').modal('hide');            
+        app.editParametersetPlayerGroupModal.hide();            
     } 
     else
     {
@@ -168,7 +160,7 @@ takeRemoveParameterSetPlayer(messageData){
     app.cancelModal=false;
     //app.clearMainFormErrors();
     app.takeGetSession(messageData);   
-    $('#editParametersetPlayerModal').modal('hide');
+    app.editParametersetPlayerModal.hide();
 },
 
 /** copy specified period's groups forward to future groups
