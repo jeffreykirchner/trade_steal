@@ -215,7 +215,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 }
             )
         else:
-            logger.warning(f"start_timer: {message}")
+            logger.info(f"start_timer: {message}")
         
         logger.info(f"start_timer complete {event}")
 
