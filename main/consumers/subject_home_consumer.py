@@ -968,9 +968,7 @@ def take_name(session_id, session_player_id, data):
     '''
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"Take name: {session_id} {session_player_id} {data}")
-
-    
+    # logger.info(f"Take name: {session_id} {session_player_id} {data}")
 
     try:
         form_data = data["formData"]
@@ -988,7 +986,7 @@ def take_name(session_id, session_player_id, data):
         return {"value" : "fail", "errors" : {f"name":["Session not complete."]},
                 "message" : "Session not complete."}
 
-    logger.info(f'form_data_dict : {form_data_dict}')       
+    # logger.info(f'form_data_dict : {form_data_dict}')       
 
     form = EndGameForm(form_data_dict)
         
