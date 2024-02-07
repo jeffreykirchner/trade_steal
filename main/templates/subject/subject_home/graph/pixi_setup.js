@@ -10,9 +10,16 @@ setupPixi(){
     //                   .load(app.setupPixiSheets);
 
     PIXI.Assets.add({alias:'graph_sprite_sheet', src:'{% static graph_sprite_sheet %}'});
-    PIXI.Assets.add({alias:'avatar_sprite_sheet', src:'{% static avatar_sprite_sheet %}'});
 
-    const textures_promise = PIXI.Assets.load(['graph_sprite_sheet', 'avatar_sprite_sheet']);
+    let load_list = ['graph_sprite_sheet'];
+
+    if(app.session.parameter_set.show_avatars=="True")
+    {
+        PIXI.Assets.add({alias:'avatar_sprite_sheet', src:'{% static avatar_sprite_sheet %}'});
+        load_list.push('avatar_sprite_sheet');
+    }
+
+    const textures_promise = PIXI.Assets.load(load_list);
 
     textures_promise.then((textures) => {
         app.setupPixiSheets(textures);
