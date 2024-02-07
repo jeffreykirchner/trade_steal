@@ -184,16 +184,16 @@ updatePixiTransfer(target_x, target_y){
     transfer_line = pixi_transfer_line;
     source = pixi_transfer_source;
 
-    if(!source.x) return;
-    if(!source.y) return;
-    if(!transfer_line) return;
-    if(!target_x) return;
-    if(!target_y) return;
+    try {
+        transfer_line.clear();
 
-    transfer_line.clear();
-
-    transfer_line.visible=true;
-    transfer_line.lineStyle({width:10, color:0xF7DC6F, alpha:1, alignment:0.5, cap:PIXI.LINE_CAP.SQUARE});
-    transfer_line.moveTo(target_x, target_y);
-    transfer_line.lineTo(source.x, source.y);
+        transfer_line.visible=true;
+        transfer_line.lineStyle({width:10, color:0xF7DC6F, alpha:1, alignment:0.5, cap:PIXI.LINE_CAP.SQUARE});
+        transfer_line.moveTo(target_x, target_y);
+        transfer_line.lineTo(source.x, source.y);
+      } catch (error) {
+        transfer_line.clear();
+        transfer_line.visible=false;
+        app.turnOffHighlights();
+      }    
 },
