@@ -1,92 +1,93 @@
 
 
-      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-      axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
-      var app = Vue.createApp({
-      
-          delimiters: ["[[", "]]"],
+var app = Vue.createApp({
 
-          data() { return {
-              loginButtonText : 'Submit <i class="fas fa-sign-in-alt"></i>',
-              loginErrorText : "",
-              form_ids : {{form_ids|safe}},
-              }                          
-          },
+    delimiters: ["[[", "]]"],
 
-          methods:{
-              //get current, last or next month
+    data() { return {
+        login_button_text : 'Submit <i class="fas fa-sign-in-alt"></i>',
+        login_error_text : "",
+        form_ids : {{form_ids|safe}},
+        username : null,
+        password : null,
+        }                          
+    },
 
-              login:function(){
-                  app.$data.loginButtonText = '<i class="fas fa-spinner fa-spin"></i>';
-                  app.$data.loginErrorText = "";
+    methods:{
+        //get current, last or next month
 
-                  axios.post('/accounts/login/', {
-                          action :"login",
-                          formData : $("#login_form").serializeArray(), 
-                                                      
-                      })
-                      .then(function (response) {     
-                          
-                        status=response.data.status;                               
+        login:function(){
+            app.login_button_text = '<i class="fas fa-spinner fa-spin"></i>';
+            app.login_error_text = "";
+            let form = document.querySelector('login_form');
 
-                        app.clearMainFormErrors();
+            axios.post('/accounts/login/', {
+                    action :"login",
+                    form_data : {username:app.username, password:app.password},                              
+                })
+                .then(function (response) {     
+                    
+                  status=response.data.status;                               
 
-                        if(status == "validation")
-                        {              
-                          //form validation error           
-                          app.displayErrors(response.data.errors);
-                        }
-                        else if(status == "error")
-                        {
-                          app.$data.loginErrorText = "Username or Password is incorrect."
-                        }
-                        else
-                        {
-                          window.location = response.data.redirect_path;
-                        }
+                  app.clear_main_form_errors();
 
-                        app.$data.loginButtonText = 'Submit <i class="fas fa-sign-in-alt"></i>';
+                  if(status == "validation")
+                  {              
+                    //form validation error           
+                    app.display_errors(response.data.errors);
+                  }
+                  else if(status == "error")
+                  {
+                    app.login_error_text = "Username or Password is incorrect."
+                  }
+                  else
+                  {
+                    window.location = response.data.redirect_path;
+                  }
 
-                      })
-                      .catch(function (error) {
-                          console.log(error);                            
-                      });                        
-                  },
+                  app.login_button_text = 'Submit <i class="fas fa-sign-in-alt"></i>';
 
-                  clearMainFormErrors:function(){
+                })
+                .catch(function (error) {
+                    console.log(error);                            
+                });                        
+            },
 
-                        s = app.$data.form_ids;                    
-                        for(var i in s)
-                        {
-                            $("#id_" + s[i]).attr("class","form-control");
-                            $("#id_errors_" + s[i]).remove();
-                        }
+            clear_main_form_errors(){
 
-                    },
-              
-                //display form errors
-                displayErrors:function(errors){
-                      for(var e in errors)
-                      {
-                          $("#id_" + e).attr("class","form-control is-invalid")
-                          var str='<span id=id_errors_'+ e +' class="text-danger">';
-                          
-                          for(var i in errors[e])
-                          {
-                              str +=errors[e][i] + '<br>';
-                          }
+                  s = app.form_ids;                    
+                  for(let i in s)
+                  {
+                      e = document.getElementById("id_errors_" + s[i]);
+                      if(e) e.remove();
+                  }
 
-                          str+='</span>';
-                          $("#div_id_" + e).append(str); 
+              },
+        
+          //display form errors
+          display_errors(errors){
+                for(let e in errors)
+                {
+                    let str='<span id=id_errors_'+ e +' class="text-danger">';
+                    
+                    for(let i in errors[e])
+                    {
+                        str +=errors[e][i] + '<br>';
+                    }
 
-                      }
-                  },
+                    str+='</span>';
 
-              
-          },            
+                    document.getElementById("div_id_" + e).insertAdjacentHTML('beforeend', str);
+                }
+            },
 
-          mounted() {
-                                      
-          },
-      }).mount('#app');
+        
+    },            
+
+    mounted() {
+                                
+    },
+}).mount('#app');

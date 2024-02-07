@@ -268,10 +268,9 @@ def take_update_parameterset(data):
         logger.warning(f"take_update_take_update_parameterset session, not found ID: {session_id}")
         return
     
-    form_data_dict = {}
+    form_data_dict = form_data
 
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict["instruction_set"] = form_data_dict["instruction_set"]["id"]
 
     form = ParameterSetForm(form_data_dict, instance=session.parameter_set)
 
@@ -305,10 +304,7 @@ def take_update_parameterset_type(data):
         logger.warning(f"take_update_parameterset_type paramterset_type, not found ID: {paramterset_type_id}")
         return
     
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict = form_data
 
     form = ParameterSetTypeForm(form_data_dict, instance=parameter_set_type)
 
@@ -339,10 +335,7 @@ def take_update_parameterset_good(data):
         logger.warning(f"take_update_parameterset_good paramterset_good, not found ID: {parameterset_good_id}")
         return
     
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict = form_data
 
     form = ParameterSetGoodForm(form_data_dict, instance=parameter_set_good)
 
@@ -372,10 +365,13 @@ def take_update_parameterset_player(data):
         logger.warning(f"take_update_parameterset_type paramterset_player, not found ID: {paramterset_player_id}")
         return
     
-    form_data_dict = {}
+    form_data_dict = form_data
 
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict["good_one"] =  form_data_dict["good_one"]["id"]
+    form_data_dict["good_two"] =  form_data_dict["good_two"]["id"]
+    form_data_dict["good_three"] =  form_data_dict["good_three"]["id"]
+    form_data_dict["parameter_set_type"] =  form_data_dict["parameter_set_type"]["id"]
+    form_data_dict["avatar"] =  form_data_dict["avatar"]["id"]
 
     logger.info(f'form_data_dict : {form_data_dict}')
 
@@ -411,10 +407,7 @@ def take_update_parameterset_player_group(data):
         logger.warning(f"take_update_parameterset_type paramterset_type, not found ID: {paramterset_player_group_id}")
         return
     
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict = form_data
 
     logger.info(f'form_data_dict : {form_data_dict}')
 
@@ -512,10 +505,7 @@ def take_import_parameters(data):
     session_id = data["sessionID"]
     form_data = data["formData"]
     
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict = form_data
 
     source_session = Session.objects.get(id=form_data_dict["session"])
     target_session = Session.objects.get(id=session_id)
@@ -559,10 +549,7 @@ def take_update_parameterset_avatar(data):
         logger.warning(f"take_update_parameterset_good paramterset_avatar, not found ID: {parameterset_avatar_id}")
         return
     
-    form_data_dict = {}
-
-    for field in form_data:            
-        form_data_dict[field["name"]] = field["value"]
+    form_data_dict = form_data
 
     form = ParameterSetAvatarForm(form_data_dict, instance=parameter_set_avatar)
 

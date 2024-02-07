@@ -70,6 +70,18 @@ var app = Vue.createApp({
                     // show_parameters:false,
                     import_parameters_message : "",
 
+                    importParametersModal : null,
+                    editParametersetModal : null,
+                    editParametersetTypeModal : null,
+                    editParametersetPlayerModal : null,
+                    editParametersetPlayerGroupModal : null,
+                    editParametersetGoodModal : null,
+                    editAvatarsModal : null,
+                    parameterSetModal : null,
+
+                    //form paramters
+                    session_import : null,
+
                 }},
     methods: {
 
@@ -94,9 +106,6 @@ var app = Vue.createApp({
             switch(messageType) {                
                 case "get_session":
                     app.takeGetSession(messageData);
-                    break;
-                case "update_session":
-                    app.takeUpdateSession(messageData);
                     break;
                 case "update_parameterset":
                     app.takeUpdateParameterset(messageData);
@@ -136,15 +145,15 @@ var app = Vue.createApp({
                     break;
             }
 
-            // if(!app.$data.first_load_done)
+            // if(!app.first_load_done)
             // {
-            //     if(!app.$data.session.started)
+            //     if(!app.session.started)
             //     {
-            //         app.$data.show_parameters = true;
+            //         app.show_parameters = true;
             //     }
             // }
 
-            app.$data.first_load_done = true;
+            
 
             app.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
@@ -157,10 +166,34 @@ var app = Vue.createApp({
         sendMessage(messageType, messageText) {
             
 
-            app.$data.chatSocket.send(JSON.stringify({
+            app.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
                 }));
+        },
+
+        do_first_load: function do_first_load()
+        {
+            
+            app.importParametersModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('importParametersModal'), {keyboard: false})
+            app.editParametersetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetModal'), {keyboard: false})
+            app.editParametersetTypeModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetTypeModal'), {keyboard: false})
+            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})
+            app.editParametersetPlayerGroupModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerGroupModal'), {keyboard: false})
+            app.editParametersetGoodModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetGoodModal'), {keyboard: false})
+            app.editAvatarsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editAvatarsModal'), {keyboard: false})
+            app.parameterSetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('parameterSetModal'), {keyboard: false})
+
+            document.getElementById('importParametersModal').addEventListener('hidden.bs.modal', app.hideImportParameters);
+            document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
+            document.getElementById('editParametersetTypeModal').addEventListener('hidden.bs.modal', app.hideEditParametersetType);
+            document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
+            document.getElementById('editParametersetPlayerGroupModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayerGroup);
+            document.getElementById('editParametersetGoodModal').addEventListener('hidden.bs.modal', app.hideEditParametersetGood);
+            document.getElementById('editAvatarsModal').addEventListener('hidden.bs.modal', app.hideEditParametersetAvatar);
+            document.getElementById('parameterSetModal').addEventListener('hidden.bs.modal', app.hideParameterSet);
+
+            app.first_load_done = true;
         },
 
         /** take create new session
@@ -168,9 +201,16 @@ var app = Vue.createApp({
         */
         takeGetSession(messageData){
             
-            app.$data.session = messageData.session;
+            app.session = messageData.session;
 
-            if(app.$data.session.started)
+            if(!app.first_load_done)
+            {
+                Vue.nextTick(() => {
+                    app.do_first_load();
+                });
+            }
+
+            if(app.session.started)
             {
                 
             }
@@ -183,34 +223,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         sendGetSession(){
-            app.sendMessage("get_session",{"sessionID" : app.$data.sessionID});
-        },
-
-        /** send session update form   
-        */
-        sendUpdateSession(){
-            app.$data.cancelModal = false;
-            app.$data.working = true;
-            app.sendMessage("update_session",{"formData" : $("#sessionForm").serializeArray(),
-                                              "sessionID" : app.$data.sessionID});
-        },
-
-        /** take update session reponse
-         * @param messageData {json} result of update, either sucess or fail with errors
-        */
-        takeUpdateSession(messageData){
-            app.clearMainFormErrors();
-
-            if(messageData.status == "success")
-            {
-                app.takeGetSession(messageData);       
-                $('#editSessionModal').modal('hide');    
-            } 
-            else
-            {
-                app.$data.cancelModal=true;                           
-                app.displayErrors(messageData.errors);
-            } 
+            app.sendMessage("get_session",{"sessionID" : app.sessionID});
         },
 
         //do nothing on when enter pressed for post
@@ -230,87 +243,78 @@ var app = Vue.createApp({
         */
         clearMainFormErrors(){
             
-            for(var item in app.$data.session)
+            for(let item in app.session)
             {
-                $("#id_" + item).attr("class","form-control");
-                $("#id_errors_" + item).remove();
+                let e = document.getElementById("id_errors_" + item);
+                if(e) e.remove();
             }
 
-            s = app.$data.parameterset_form_ids;
-            for(var i in s)
+            s = app.parameterset_form_ids;
+            for(let i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
 
-            s = app.$data.parameterset_type_form_ids;
+            s = app.parameterset_type_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
 
-            s = app.$data.parameterset_player_form_ids;
+            s = app.parameterset_player_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
 
-            s = app.$data.parameterset_player_group_form_ids;
+            s = app.parameterset_player_group_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
 
-            s = app.$data.parameterset_good_form_ids;
+            s = app.parameterset_good_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
 
-            s = app.$data.parameterset_avatar_form_ids;
+            s = app.parameterset_avatar_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
         },
 
         /** display form error messages
         */
         displayErrors(errors){
-            for(var e in errors)
-            {
-                $("#id_" + e).attr("class","form-control is-invalid")
-                var str='<span id=id_errors_'+ e +' class="text-danger">';
-                
-                for(var i in errors[e])
+            for(let e in errors)
                 {
-                    str +=errors[e][i] + '<br>';
+                    //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")
+                    let str='<span id=id_errors_'+ e +' class="text-danger">';
+                    
+                    for(let i in errors[e])
+                    {
+                        str +=errors[e][i] + '<br>';
+                    }
+
+                    str+='</span>';
+
+                    document.getElementById("div_id_" + e).insertAdjacentHTML('beforeend', str);
+                    document.getElementById("div_id_" + e).scrollIntoView(); 
                 }
-
-                str+='</span>';
-                $("#div_id_" + e).append(str); 
-
-                var elmnt = document.getElementById("div_id_" + e);
-                elmnt.scrollIntoView(); 
-
-            }
         }, 
     },
 
     mounted(){
-        $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession); 
-        $('#importParametersModal').on("hidden.bs.modal", this.hideImportParameters); 
-        $('#editParametersetModal').on("hidden.bs.modal", this.hideEditParameterset);
-        $('#editParametersetTypeModal').on("hidden.bs.modal", this.hideEditParametersetType);
-        $('#editParametersetPlayerModal').on("hidden.bs.modal", this.hideEditParametersetPlayer);
-        $('#editParametersetPlayerGroupModal').on("hidden.bs.modal", this.hideEditParametersetPlayerGroup);
-        $('#editParametersetGoodModal').on("hidden.bs.modal", this.hideEditParametersetGood);
-        $('#editAvatarsModal').on("hidden.bs.modal", this.hideEditParametersetAvatar);
+       
     },
 
 }).mount('#app');

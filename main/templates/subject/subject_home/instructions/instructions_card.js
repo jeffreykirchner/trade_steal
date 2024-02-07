@@ -276,7 +276,8 @@ simulateGoodTransferInstructions(){
         return;
     }
 
-    let form_data = $("#moveTwoGoodsForm").serializeArray();
+    let form_data = {transfer_good_one_amount_2g: this.transfer_good_one_amount,
+                     transfer_good_two_amount_2g: this.transfer_good_two_amount};
 
     let transfer_good_one_amount_2g = Number(this.transfer_good_one_amount);
     let transfer_good_two_amount_2g = Number(this.transfer_good_two_amount);

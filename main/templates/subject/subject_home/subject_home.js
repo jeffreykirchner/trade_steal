@@ -157,9 +157,9 @@ var app = Vue.createApp({
                 
             }
 
-            // if(!app.$data.first_load_done)
+            // if(!app.first_load_done)
             // {
-            //     if(!app.$data.session.started)
+            //     if(!app.session.started)
             //     {
             //        this.show_parameters = true;
             //     }
@@ -188,10 +188,10 @@ var app = Vue.createApp({
         */
         doFirstLoad()
         {
-            app.$data.moveTwoGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveTwoGoodsModal'), {keyboard: false});
-            app.$data.moveThreeGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveThreeGoodsModal'), {keyboard: false});
-            app.$data.avatarChoiceGridModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarChoiceGridModal'), {keyboard: false});
-            app.$data.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false});
+            app.moveTwoGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveTwoGoodsModal'), {keyboard: false});
+            app.moveThreeGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveThreeGoodsModal'), {keyboard: false});
+            app.avatarChoiceGridModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarChoiceGridModal'), {keyboard: false});
+            app.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false});
 
             document.getElementById('moveTwoGoodsModal').addEventListener('hidden.bs.modal', app.hideTransferModal);
             document.getElementById('moveThreeGoodsModal').addEventListener('hidden.bs.modal', app.hideTransferModal);
@@ -234,21 +234,21 @@ var app = Vue.createApp({
             
             app.destroyPixiPlayers();
 
-            app.$data.session = messageData.status.session;
-            app.$data.session_player = messageData.status.session_player;
+            app.session = messageData.status.session;
+            app.session_player = messageData.status.session_player;
 
-            app.$data.current_town = app.$data.session_player.parameter_set_player.town;
+            app.current_town = app.session_player.parameter_set_player.town;
 
-            if(app.$data.session.started)
+            if(app.session.started)
             {
-                app.$data.production_slider_one =  app.$data.session_player.good_one_production_rate;
-                app.$data.production_slider_two =  app.$data.session_player.good_two_production_rate;
+                app.production_slider_one =  app.session_player.good_one_production_rate;
+                app.production_slider_two =  app.session_player.good_two_production_rate;
 
-                if(app.$data.production_slider_one>50){
-                    app.$data.production_slider = 50-app.$data.production_slider_one;
+                if(app.production_slider_one>50){
+                    app.production_slider = 50-app.production_slider_one;
                 }
-                else if(app.$data.production_slider_one<50){
-                    app.$data.production_slider = app.$data.production_slider_two-50;
+                else if(app.production_slider_one<50){
+                    app.production_slider = app.production_slider_two-50;
                 }
             }
             else
@@ -258,7 +258,7 @@ var app = Vue.createApp({
             
             if(this.session.current_experiment_phase != 'Done')
             {
-                if(!app.$data.pixi_loaded)
+                if(!app.pixi_loaded)
                     Vue.nextTick(() => {
                         app.setupPixi();
                     });
@@ -279,7 +279,7 @@ var app = Vue.createApp({
                 app.calcWaste();
 
                 // if game is finished show modal
-                if(app.$data.session.finished)
+                if(app.session.finished)
                 {
                     this.showEndGameModal();
                 }
@@ -308,8 +308,8 @@ var app = Vue.createApp({
                 let canvas = document.getElementById('sd_graph_id');
                 app.canvas_width = canvas.width;
                 app.canvas_height = canvas.height;
-                app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
-                app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
+                app.canvas_scale_height = app.canvas_height / app.grid_y;
+                app.canvas_scale_width = app.canvas_width / app.grid_x;
 
                 app.setupPixiPlayers();
             }, 250);
@@ -388,7 +388,7 @@ var app = Vue.createApp({
             }
 
             //session complete
-            if(app.$data.session.finished)
+            if(app.session.finished)
             {
                 this.showEndGameModal();
             }            
@@ -405,7 +405,7 @@ var app = Vue.createApp({
                 !this.avatar_choice_modal_visible)
 
             {
-                app.$data.avatarChoiceGridModal.toggle();
+                app.avatarChoiceGridModal.toggle();
 
                 this.avatar_choice_modal_visible=true;
 
@@ -426,7 +426,7 @@ var app = Vue.createApp({
             this.closeMoveModal();
 
             //show endgame modal
-            app.$data.endGameModal.toggle();
+            app.endGameModal.toggle();
 
             this.end_game_modal_visible = true;
         },
@@ -456,8 +456,8 @@ var app = Vue.createApp({
          * @param messageData {json}
         */
         takeUpdateNextPhase(messageData){
-            app.$data.avatarChoiceGridModal.hide();
-            app.$data.endGameModal.hide();
+            app.avatarChoiceGridModal.hide();
+            app.endGameModal.hide();
 
             app.destroyPixiPlayers();
 
@@ -512,31 +512,25 @@ var app = Vue.createApp({
         */
         clearMainFormErrors(){
             
-            for(var item in this.session)
-            {
-                $("#id_" + item).attr("class","form-control");
-                $("#id_errors_" + item).remove();
-            }
-
             s = this.session_player_move_two_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
 
             s = this.session_player_move_three_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
 
             s = this.end_game_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                let e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
         },
 
@@ -545,19 +539,21 @@ var app = Vue.createApp({
         displayErrors(errors){
             for(var e in errors)
             {
-                $("#id_" + e).attr("class","form-control is-invalid")
-                var str='<span id=id_errors_'+ e +' class="text-danger">';
-                
-                for(var i in errors[e])
+                for(let e in errors)
                 {
-                    str +=errors[e][i] + '<br>';
+                    //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")
+                    let str='<span id=id_errors_'+ e +' class="text-danger">';
+                    
+                    for(let i in errors[e])
+                    {
+                        str +=errors[e][i] + '<br>';
+                    }
+
+                    str+='</span>';
+
+                    document.getElementById("div_id_" + e).insertAdjacentHTML('beforeend', str);
+                    document.getElementById("div_id_" + e).scrollIntoView(); 
                 }
-
-                str+='</span>';
-                $("#div_id_" + e).append(str); 
-
-                var elmnt = document.getElementById("div_id_" + e);
-                elmnt.scrollIntoView(); 
 
             }
         }, 
@@ -567,7 +563,7 @@ var app = Vue.createApp({
          */
         findSessionPlayer(id){
 
-            let session_players = app.$data.session.session_players;
+            let session_players = app.session.session_players;
             for(let i=0; i<session_players.length; i++)
             {
                 if(session_players[i].id == id)
@@ -584,7 +580,7 @@ var app = Vue.createApp({
          */
         findSessionPlayerIndex(id){
 
-            let session_players = app.$data.session.session_players;
+            let session_players = app.session.session_players;
             for(let i=0; i<session_players.length; i++)
             {
                 if(session_players[i].id == id)
