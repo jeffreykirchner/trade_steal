@@ -184,6 +184,12 @@ updatePixiTransfer(target_x, target_y){
     transfer_line = pixi_transfer_line;
     source = pixi_transfer_source;
 
+    if(!source.x) return;
+    if(!source.y) return;
+    if(!transfer_line) return;
+    if(!target_x) return;
+    if(!target_y) return;
+
     transfer_line.clear();
 
     transfer_line.visible=true;

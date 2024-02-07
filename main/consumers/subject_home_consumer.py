@@ -970,13 +970,12 @@ def take_name(session_id, session_player_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Take name: {session_id} {session_player_id} {data}")
 
-    form_data_dict = {}
+    
 
     try:
         form_data = data["formData"]
 
-        for field in form_data:            
-            form_data_dict[field["name"]] = field["value"]
+        form_data_dict = form_data
 
     except KeyError:
         logger.warning(f"take_name , setup form: {session_player_id}")

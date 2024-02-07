@@ -1,7 +1,9 @@
 sendName(){
 
     app.working = true;
-    app.sendMessage("name", {"formData" : $("#endGameForm").serializeArray()});
+    formData = {name:document.getElementById("id_name").value, 
+                student_id:document.getElementById("id_student_id").value,};
+    app.sendMessage("name", {"formData" : formData});
                      
 },
 
