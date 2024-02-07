@@ -473,11 +473,13 @@ setupSingleAvatar(index){
 
     if(session_players[index].avatar)
     {
-        sprite = PIXI.Sprite.from(pixi_textures[session_players[index].avatar.label]);
+        pixi_textures[session_players[index].avatar.label].baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
+        sprite = new PIXI.Sprite(pixi_textures[session_players[index].avatar.label]);
     }
     else
     {
-        sprite = PIXI.Sprite.from(pixi_textures[session_players[index].parameter_set_player.avatar.label]);
+        pixi_textures[session_players[index].parameter_set_player.avatar.label].baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
+        sprite = new PIXI.Sprite(pixi_textures[session_players[index].parameter_set_player.avatar.label]);
     }
     
     sprite.x = 0;
