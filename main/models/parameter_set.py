@@ -380,6 +380,7 @@ class ParameterSet(models.Model):
             "avatar_grid_text" : self.avatar_grid_text,
 
             "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
+            "parameter_set_players" : [p.json_for_subject() for p in self.parameter_set_players.all()],
 
             "survey_required" : "True" if self.survey_required else "False",
             "survey_link" : self.survey_link,

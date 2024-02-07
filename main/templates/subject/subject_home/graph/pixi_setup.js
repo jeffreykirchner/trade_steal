@@ -15,8 +15,38 @@ setupPixi(){
 
     if(app.session.parameter_set.show_avatars=="True")
     {
-        PIXI.Assets.add({alias:'avatar_sprite_sheet', src:'{% static avatar_sprite_sheet %}'});
-        load_list.push('avatar_sprite_sheet');
+
+        //load avatars from choice grid
+        for(let i in app.session.parameter_set.parameter_set_avatars)
+        {
+            let avatar = app.session.parameter_set.parameter_set_avatars[i].avatar;
+
+            if(avatar)
+            {
+                if(load_list.includes(avatar.label)) continue;
+
+                PIXI.Assets.add({alias:avatar.label, src:"/static/avatars/" + avatar.file_name});
+                load_list.push(avatar.label);
+            }
+        }
+
+        //load avatars from players
+        for(let i in app.session.parameter_set.parameter_set_players)
+        {
+            let avatar = app.session.parameter_set.parameter_set_players[i].avatar;
+
+            if(load_list.includes(avatar.label)) continue;
+
+            PIXI.Assets.add({alias:avatar.label, src:"/static/avatars/" + avatar.file_name});
+            load_list.push(avatar.label);
+
+        }
+
+        // PIXI.Assets.add({alias:"Blank", src:"/static/avatars/blank.png"});
+        // load_list.push("Blank");
+
+        // PIXI.Assets.add({alias:'avatar_sprite_sheet', src:'{% static avatar_sprite_sheet %}'});
+        // load_list.push('avatar_sprite_sheet');
     }
 
     const textures_promise = PIXI.Assets.load(load_list);
@@ -81,6 +111,8 @@ resetPixiApp(){
 /** load pixi sprite sheets
 */
 setupPixiSheets(textures){
+    pixi_textures = textures;
+
     app.house_sheet = textures.graph_sprite_sheet;
     app.avatar_sheet = textures.avatar_sprite_sheet;
     app.house_sprite = new PIXI.Sprite(app.house_sheet.textures["House0000"]);
@@ -441,11 +473,11 @@ setupSingleAvatar(index){
 
     if(session_players[index].avatar)
     {
-        sprite = PIXI.Sprite.from(this.avatar_sheet.textures[session_players[index].avatar.file_name]);
+        sprite = PIXI.Sprite.from(pixi_textures[session_players[index].avatar.label]);
     }
     else
     {
-        sprite = PIXI.Sprite.from(this.avatar_sheet.textures[session_players[index].parameter_set_player.avatar.file_name]);
+        sprite = PIXI.Sprite.from(pixi_textures[session_players[index].parameter_set_player.avatar.label]);
     }
     
     sprite.x = 0;
