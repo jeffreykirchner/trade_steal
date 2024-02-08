@@ -22,8 +22,21 @@
                                 <td class="text-nowrap">
                                     [[p.parameter_set_player.id_label]]
                                 </td>
-                                <td class="text-nowrap">
+                                <td class="text-start text-nowrap">
+                                    [[p.parameter_set_player.parameter_set_type.good_one_amount]]
+                                    <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">
+                                        [[p.parameter_set_player.good_one.label]] 
+                                    </span> 
+
+                                    <br>
+
+                                    [[p.parameter_set_player.parameter_set_type.good_two_amount]]
+                                    <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">
+                                        [[p.parameter_set_player.good_two.label]] 
+                                    </span>
+                                    <br>
                                     
+                                    [[Math.max(p.parameter_set_player.parameter_set_type.good_one_amount, p.parameter_set_player.parameter_set_type.good_two_amount)]]¢
                                 </td>
                                 <td class="text-nowrap">
                                     
