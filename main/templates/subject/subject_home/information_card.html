@@ -1,0 +1,38 @@
+<div class="card" v-show="first_load_done && 
+                          session.started && 
+                          session.current_experiment_phase!='Selection' && 
+                          session.parameter_set.information_mode != 'None'">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Information</span>
+    </div>
+    <div class="card-body">      
+        <div class="row justify-content-center">           
+            <div class="col text-center">                
+                <div class="table-responsive">
+                    <table class="table table-condensed"> 
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Earnings</th>
+                                <th>Production Preference</th>
+                            </tr>
+                        </thead>
+                        <tbody id="player_list">
+                            <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                                <td class="text-nowrap">
+                                    [[p.player_number]]
+                                </td>
+                                <td class="text-nowrap">
+                                    
+                                </td>
+                                <td class="text-nowrap">
+                                    
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>                    
+</div> 
