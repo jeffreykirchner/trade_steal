@@ -12,7 +12,7 @@
                     <table class="table table-condensed"> 
                         <thead>
                             <tr>
-                                <th>Player</th>
+                                <th>Person</th>
                                 <th>Earnings</th>
                                 <th>Production Preference</th>
                             </tr>
@@ -20,7 +20,7 @@
                         <tbody id="player_list">
                             <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
                                 <td class="text-nowrap">
-                                    [[p.player_number]]
+                                    [[p.parameter_set_player.id_label]]
                                 </td>
                                 <td class="text-nowrap">
                                     

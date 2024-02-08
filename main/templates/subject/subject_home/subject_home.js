@@ -18,8 +18,8 @@ var app = Vue.createApp({
                     playerKey : "{{session_player.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
-                    session_player : {{session_player_json|safe}}, 
-                    session : {{session_json|safe}},
+                    session_player : null, 
+                    session : null,
 
                     tick_tock : 0,
 
@@ -165,8 +165,6 @@ var app = Vue.createApp({
             //     }
             // }
 
-            this.first_load_done = true;
-
             this.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
         },
@@ -188,6 +186,7 @@ var app = Vue.createApp({
         */
         doFirstLoad()
         {
+
             app.moveTwoGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveTwoGoodsModal'), {keyboard: false});
             app.moveThreeGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveThreeGoodsModal'), {keyboard: false});
             app.avatarChoiceGridModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarChoiceGridModal'), {keyboard: false});
@@ -217,6 +216,7 @@ var app = Vue.createApp({
                 
                 app.scroll_update();
             })
+            this.first_load_done = true;
         },
 
         /** send winsock request to get session info
@@ -229,15 +229,13 @@ var app = Vue.createApp({
         *    @param messageData {json} session day in json format
         */
         takeGetSession(messageData){
-
-            app.doFirstLoad();
             
-            app.destroyPixiPlayers();
-
             app.session = messageData.status.session;
             app.session_player = messageData.status.session_player;
 
             app.current_town = app.session_player.parameter_set_player.town;
+
+            app.destroyPixiPlayers();
 
             if(app.session.started)
             {
@@ -296,6 +294,13 @@ var app = Vue.createApp({
                     this.instructionDisplayScroll();
                 });               
                 
+            }
+
+            if(!app.first_load_done)
+            {
+                Vue.nextTick(() => {
+                    app.doFirstLoad();
+                });
             }
         },
 
