@@ -4,7 +4,7 @@
 {%block head%}
 <script type="text/javascript">
 
-    $(document).ready(function(){
+    document.addEventListener("DOMContentLoaded", function(){
         {%include "subject/subject_home/subject_home.js"%}
     });
 
@@ -79,55 +79,68 @@
 {% block content %}
 
 <!-- modals -->
-{%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid_modal.html"%}
+<div v-if="session">
+    {%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid_modal.html"%}
+    {%include "subject/subject_home/summary/end_game_modal.html"%}
+    {%include "subject/subject_home/graph/move_two_goods_modal.html"%}
+    {%include "subject/subject_home/graph/move_three_goods_modal.html"%}
 
-<!-- instructions -->
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
-    <div class="col-md">
-        {%include "subject/subject_home/instructions_card.html"%}
-    </div>
-</div>
-
-<!-- experiment -->
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
-    <div class="col-md-9">
-        {%include "subject/subject_home/graph_card.html"%}                
-    </div>
-    <div class="col-md-3">
-        <div class="row">
-            <div class="col-md">
-                {%include "subject/subject_home/production_card.html"%}
-            </div>            
+    <!-- instructions -->
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">
+        <div class="col-md">
+            {%include "subject/subject_home/instructions_card.html"%}
         </div>
-        <div class="row mt-4">
-            <div class="col-md">
-                {%include "subject/subject_home/earnings_card.html"%}
-            </div>            
+    </div>
+
+    <!-- experiment -->
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
+        <div class="col-md-9">
+            {%include "subject/subject_home/graph_card.html"%}                
         </div>
-        <div class="row mt-4">
-            <div class="col-md">
-                {%include "subject/subject_home/summary_card.html"%}
-            </div>            
-        </div>     
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md">
+                    {%include "subject/subject_home/production_card.html"%}
+                </div>            
+            </div>
+            <div class="row mt-4">
+                <div class="col-md">
+                    {%include "subject/subject_home/earnings_card.html"%}
+                </div>            
+            </div>
+            <div class="row mt-4">
+                <div class="col-md">
+                    {%include "subject/subject_home/summary_card.html"%}
+                </div>            
+            </div>     
+            <div class="row mt-4">
+                <div class="col-md">
+                    {%include "subject/subject_home/information_card.html"%}
+                </div>            
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
+        <div class="col-12 fs-4 fw-bold text-center">
+            <br>
+            <br>
+            <br>
+            <br>
+            The session is complete, thank you for your participation!              
+        </div>    
+    </div>
+
+    <div class="row justify-content-lg-center mt-4" v-cloak>
+        <div class="col-12 text-end text-muted">
+            <span class="align-middle">Client [[session_player.player_number]]</span>
+        </div>  
     </div>
 </div>
-
-<div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Done'">
-    <div class="col-12 fs-4 fw-bold text-center">
-        <br>
-        <br>
-        <br>
-        <br>
-        The session is complete, thank you for your participation!              
-    </div>    
+<div v-else>
+    <div class="col text-end">
+        <i class="fas fa-cog fa-spin fa-2x"></i>
+    </div>
 </div>
-
-<div class="row justify-content-lg-center mt-4">
-    <div class="col-12 text-end text-muted">
-        <span class="align-middle">Client [[session_player.player_number]]</span>
-    </div>  
-</div>
-
-
 
 {% endblock %}

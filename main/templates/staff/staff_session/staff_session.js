@@ -4,6 +4,8 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
+{%include "subject/subject_home/graph/pixi_globals.js"%}
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
@@ -24,9 +26,9 @@ var app = Vue.createApp({
                     move_to_next_phase_text : 'Start Next Experiment Phase',
 
                     pixi_loaded : false,             //true when pixi is loaded
-                    pixi_transfer_line : null,       //transfer line between two pixi containers  
-                    pixi_transfer_source : null,     //source of transfer
-                    pixi_transfer_target : null,     //target of transfer
+                    // pixi_transfer_line : null,       //transfer line between two pixi containers  
+                    //pixi_transfer_source : null,     //source of transfer
+                    //pixi_transfer_target : null,     //target of transfer
                     pixi_modal_open : false,         //true whe pixi modal is open
                     pixi_transfer_source_modal_string : "",   //source string shown on transfer modal
                     pixi_transfer_target_modal_string : "" ,  //target string shown on transfer modal
@@ -64,6 +66,12 @@ var app = Vue.createApp({
 
                     timer_warning : false,
                     timer_warning_timeout : null,
+
+                    //modals
+                    edit_subject_modal: null,
+                    edit_session_modal: null,
+                    send_message_modal: null,
+                    upload_email_modal: null,
                 }},
     methods: {
 
@@ -185,9 +193,26 @@ var app = Vue.createApp({
                     break;
             }
 
-            this.first_load_done = true;
             app.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
+        },
+
+        /**
+         * do after session has loaded
+         */
+        do_first_load: function do_first_load()
+        {
+            app.edit_subject_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_subject_modal'), {keyboard: false});
+            app.edit_session_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_session_modal'), {keyboard: false});
+            app.send_message_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('send_message_modal'), {keyboard: false});
+            app.upload_email_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_email_modal'), {keyboard: false});
+
+            document.getElementById('edit_subject_modal').addEventListener('hidden.bs.modal', app.hide_edit_subject);
+            document.getElementById('edit_session_modal').addEventListener('hidden.bs.modal', app.hide_edit_session);
+            document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
+            document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
+
+            app.first_load_done = true;
         },
 
         /** send websocket message to server
@@ -205,7 +230,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         sendGetSession(){
-            app.sendMessage("get_session",{"sessionKey" : app.$data.sessionKey});
+            app.sendMessage("get_session",{"sessionKey" : app.sessionKey});
         },
 
         /** take create new session
@@ -215,9 +240,9 @@ var app = Vue.createApp({
             
             app.destroyPixiPlayers();
 
-            app.$data.session = messageData.session;
+            app.session = messageData.session;
 
-            if(app.$data.session.started)
+            if(app.session.started)
             {
                 
             }
@@ -226,7 +251,7 @@ var app = Vue.createApp({
                 
             }
             
-            if(!app.$data.pixi_loaded)
+            if(!app.pixi_loaded)
                 setTimeout(app.setupPixi, 250);       
             else
                 setTimeout(app.setupPixiPlayers, 250);
@@ -235,7 +260,17 @@ var app = Vue.createApp({
             app.updatePhaseButtonText();
             app.updateNoticeDisplay(true);        
 
-            Vue.nextTick(app.update_graph_canvas());
+            if(!app.first_load_done)
+            {
+                Vue.nextTick(() => {
+                    app.do_first_load();
+                    app.update_graph_canvas()
+                });
+            }
+            else
+            {
+                
+            }
         },
 
         /**
@@ -247,8 +282,8 @@ var app = Vue.createApp({
                 let canvas = document.getElementById('sd_graph_id');
                 app.canvas_width = canvas.width;
                 app.canvas_height = canvas.height;
-                app.canvas_scale_height = app.canvas_height / app.$data.grid_y;
-                app.canvas_scale_width = app.canvas_width / app.$data.grid_x;
+                app.canvas_scale_height = app.canvas_height / app.grid_y;
+                app.canvas_scale_width = app.canvas_width / app.grid_x;
 
                 app.setupPixiPlayers();
             }, 250);
@@ -312,32 +347,6 @@ var app = Vue.createApp({
         updateChatDisplay(force_scroll){
             
             this.chat_list_to_display=Array.from(this.session.chat_all[parseInt(this.current_town)]);
-
-            // //add spacers
-            // for(let i=this.chat_list_to_display.length;i<18;i++)
-            // {
-            //     this.chat_list_to_display.unshift({id:i*-1,sender_label:"", text:"|", sender_id:0, chat_type:'All'})
-            // }
-
-            // //scroll to view
-            // if(this.chat_list_to_display.length>0)
-            // {
-            //     Vue.nextTick(() => {app.updateChatDisplayScroll(force_scroll)});        
-            // }
-        },
-
-        /**
-         * scroll to newest chat element
-         */
-        updateChatDisplayScroll(force_scroll){
-
-            // if(!app.session.timer_running) return;
-
-            // if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
-            // {
-            //     var elmnt = document.getElementById("chat_id_" + app.$data.chat_list_to_display[app.$data.chat_list_to_display.length-1].id.toString());
-            //     elmnt.scrollIntoView(); 
-            // }
         },
 
         /**
@@ -401,12 +410,12 @@ var app = Vue.createApp({
 
             if(status == "fail") return;
 
-            app.$data.session.started = result.started;
-            app.$data.session.current_period = result.current_period;
-            app.$data.session.current_period_phase = result.current_period_phase;
-            app.$data.session.time_remaining = result.time_remaining;
-            app.$data.session.timer_running = result.timer_running;
-            app.$data.session.finished = result.finished;
+            app.session.started = result.started;
+            app.session.current_period = result.current_period;
+            app.session.current_period_phase = result.current_period_phase;
+            app.session.time_remaining = result.time_remaining;
+            app.session.timer_running = result.timer_running;
+            app.session.finished = result.finished;
 
             app.takeUpdateGoods({status : {result : result.session_players}});
             app.takeUpdateEarnings(messageData);
@@ -429,7 +438,7 @@ var app = Vue.createApp({
         takeUpdatePeriod(period_update){
             if(!period_update) return;
 
-            app.$data.session.session_periods[period_update.period_number-1] = period_update;
+            app.session.session_periods[period_update.period_number-1] = period_update;
             Vue.nextTick(app.update_graph_canvas());
         },
 
@@ -467,50 +476,41 @@ var app = Vue.createApp({
         */
         clearMainFormErrors(){
             
-            for(var item in app.$data.session)
+            for(var item in app.session)
             {
-                $("#id_" + item).attr("class","form-control");
-                $("#id_errors_" + item).remove();
+                e = document.getElementById("id_errors_" + item);
+                if(e) e.remove();
             }
 
-            s = app.$data.staff_edit_name_etc_form_ids;
+            s = app.staff_edit_name_etc_form_ids;
             for(var i in s)
             {
-                $("#id_" + s[i]).attr("class","form-control");
-                $("#id_errors_" + s[i]).remove();
+                e = document.getElementById("id_errors_" + s[i]);
+                if(e) e.remove();
             }
         },
 
         /** display form error messages
         */
         displayErrors(errors){
-            for(var e in errors)
-            {
-                $("#id_" + e).attr("class","form-control is-invalid")
-                var str='<span id=id_errors_'+ e +' class="text-danger">';
-                
-                for(var i in errors[e])
+            for(let e in errors)
                 {
-                    str +=errors[e][i] + '<br>';
+                    let str='<span id=id_errors_'+ e +' class="text-danger">';
+                    
+                    for(let i in errors[e])
+                    {
+                        str +=errors[e][i] + '<br>';
+                    }
+
+                    str+='</span>';
+
+                    document.getElementById("div_id_" + e).insertAdjacentHTML('beforeend', str);
+                    document.getElementById("div_id_" + e).scrollIntoView(); 
                 }
-
-                str+='</span>';
-                $("#div_id_" + e).append(str); 
-
-                var elmnt = document.getElementById("div_id_" + e);
-                elmnt.scrollIntoView(); 
-
-            }
         }, 
     },
 
     mounted(){
-
-        $('#editSubjectModal').on("hidden.bs.modal", this.hideEditSubject);
-        $('#editSessionModal').on("hidden.bs.modal", this.hideEditSession);
-        $('#sendMessageModal').on("hidden.bs.modal", this.hideSendInvitations);
-        $('#uploadEmailModal').on("hidden.bs.modal", this.hideSendEmailList);
-
         window.addEventListener('resize', this.handleResize);
     },
 

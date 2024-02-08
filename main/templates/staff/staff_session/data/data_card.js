@@ -1,7 +1,7 @@
 /**send download summary data
 */
 downloadSummaryData(){
-    app.$data.working = true;
+    app.working = true;
     this.data_downloading = true;
     app.sendMessage("download_summary_data", {});
 },
@@ -15,7 +15,7 @@ takeDownloadSummaryData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Exchange_Specialization_Summary_Data_Session_" + app.$data.session.id +".csv";
+    downloadLink.download = "Exchange_Specialization_Summary_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -27,7 +27,7 @@ takeDownloadSummaryData(messageData){
 /**send download summary data
 */
 downloadActionsData(){
-    app.$data.working = true;
+    app.working = true;
     this.data_downloading = true;
     app.sendMessage("download_action_data", {});
 },
@@ -41,7 +41,7 @@ takeDownloadActionData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Exchange_Specialization_Action_Data_Session_" + app.$data.session.id +".csv";
+    downloadLink.download = "Exchange_Specialization_Action_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -53,7 +53,7 @@ takeDownloadActionData(messageData){
 /**send download recruiter data
 */
 downloadRecruiterData(){
-    app.$data.working = true;
+    app.working = true;
     this.data_downloading = true;
     app.sendMessage("download_recruiter_data", {});
 },
@@ -68,10 +68,10 @@ takeDownloadRecruiterData(messageData){
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
 
-    if(app.$data.session.parameter_set.prolific_mode=='False')
-        downloadLink.download = "Exchange_Specialization_Recruiter_Data_Session_" + app.$data.session.id +".csv";
+    if(app.session.parameter_set.prolific_mode=='False')
+        downloadLink.download = "Exchange_Specialization_Recruiter_Data_Session_" + app.session.id +".csv";
     else
-        downloadLink.download = "Exchange_Specialization_Prolific_Data_Session_" + app.$data.session.id +".csv";
+        downloadLink.download = "Exchange_Specialization_Prolific_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -83,7 +83,7 @@ takeDownloadRecruiterData(messageData){
 /**send download payment data
 */
 downloadPaymentData(){
-    app.$data.working = true;
+    app.working = true;
     this.data_downloading = true;
     app.sendMessage("download_payment_data", {});
 },
@@ -97,7 +97,7 @@ takeDownloadPaymentData(messageData){
     var blob = new Blob(["\ufeff", messageData.status.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
-    downloadLink.download = "Exchange_Specialization_Payment_Data_Session_" + app.$data.session.id +".csv";
+    downloadLink.download = "Exchange_Specialization_Payment_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(downloadLink);
     downloadLink.click();

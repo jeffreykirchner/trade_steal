@@ -159,7 +159,7 @@ class ParameterSetPlayer(models.Model):
             "good_three" : self.good_three.json(),
 
             "avatar" : self.avatar.json() if self.avatar else None,
-
+            "parameter_set_type" : self.parameter_set_type.json_for_subject(),
             "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
         }
 

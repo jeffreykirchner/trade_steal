@@ -1,0 +1,80 @@
+<div class="card" v-show="first_load_done && 
+                          session.started && 
+                          session.current_experiment_phase!='Selection' && 
+                          session.parameter_set.information_mode != 'None'">                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle">Production Advantage</span>
+    </div>
+    <div class="card-body">      
+        <div class="row justify-content-center">           
+            <div class="col text-center">                
+                <div class="table-responsive">
+                    <table class="table table-condensed"> 
+                        <thead>
+                            <tr>
+                                <th>Person</th>
+                                <th>Earnings</th>
+                                <th>Production Preference</th>
+                            </tr>
+                        </thead>
+                        <tbody id="player_list">
+                            <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                                <td class="text-nowrap">
+                                    [[p.parameter_set_player.id_label]]
+                                </td>
+                                <td class="text-start text-nowrap">
+                                    <div class="row">
+                                        <div class="col-1 pe-1 offset-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col">
+                                            [[p.parameter_set_player.parameter_set_type.good_one_amount]]
+                                            <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">
+                                                [[p.parameter_set_player.good_one.label]] 
+                                            </span> 
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-1 pe-1 offset-1">
+                                            +
+                                        </div>
+                                        <div class="col">
+                                            [[p.parameter_set_player.parameter_set_type.good_two_amount]]
+                                            <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">
+                                                [[p.parameter_set_player.good_two.label]] 
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-1 border-top pe-1 offset-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col border-top">
+                                            [[Math.max(p.parameter_set_player.parameter_set_type.good_one_amount, p.parameter_set_player.parameter_set_type.good_two_amount)]]¢
+                                        </div>
+                                    </div>
+                
+                                </td>
+                                <td class="text-nowrap align-middle">
+                                    <div v-if="p.parameter_set_player.parameter_set_type.good_preference=='Good One'">
+                                        <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">
+                                            [[p.parameter_set_player.good_one.label]] 
+                                        </span> 
+                                    </div>
+                                    <div v-else>
+                                        <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">
+                                            [[p.parameter_set_player.good_two.label]] 
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>                    
+</div> 

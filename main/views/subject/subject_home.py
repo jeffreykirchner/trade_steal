@@ -81,12 +81,10 @@ class SubjectHomeView(View):
                                "page_key" : f'session-{session.id}',
                                "instructions" : json.dumps(session_player.get_instruction_set(), cls=DjangoJSONEncoder),
                                "session_player" : session_player,
-                               "session_player_json" : json.dumps(session_player.json(), cls=DjangoJSONEncoder),
                                "session" : session,
                                "parameters" : parameters,
                                "default_chat_recipient" : default_chat_recipient,
-                               "default_chat_label" : default_chat_label,
-                               "session_json":json.dumps(session.json_for_subject(session_player), cls=DjangoJSONEncoder)})
+                               "default_chat_label" : default_chat_label,})
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):

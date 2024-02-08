@@ -3,25 +3,21 @@
  */
  showEditParametersetType:function(index){
     app.clearMainFormErrors();
-    app.$data.cancelModal=true;
-    app.$data.parametersetTypeBeforeEdit = Object.assign({}, app.$data.session.parameter_set.parameter_set_types[index]);
-    app.$data.parametersetTypeBeforeEditIndex = index;
-    app.$data.current_parameterset_type = app.$data.session.parameter_set.parameter_set_types[index];
+    app.cancelModal=true;
+    app.parametersetTypeBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_types[index]);
+    app.parametersetTypeBeforeEditIndex = index;
+    app.current_parameterset_type = app.session.parameter_set.parameter_set_types[index];
 
-    var myModal = new bootstrap.Modal(document.getElementById('editParametersetTypeModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.editParametersetTypeModal.show();
 },
 
 /** hide edit parmeter set type
 */
 hideEditParametersetType:function(){
-    if(app.$data.cancelModal)
+    if(app.cancelModal)
     {
-        Object.assign(app.$data.session.parameter_set.parameter_set_types[app.$data.parametersetTypeBeforeEditIndex], app.$data.parametersetTypeBeforeEdit);
-        app.$data.parametersetTypeBeforeEdit=null;
+        Object.assign(app.session.parameter_set.parameter_set_types[app.parametersetTypeBeforeEditIndex], app.parametersetTypeBeforeEdit);
+        app.parametersetTypeBeforeEdit=null;
     }
 },
 
@@ -29,29 +25,29 @@ hideEditParametersetType:function(){
 */
 sendUpdateParametersetType(){
     
-    app.$data.working = true;
-    app.sendMessage("update_parameterset_type", {"sessionID" : app.$data.sessionID,
-                                                 "parameterset_type_id" : app.$data.current_parameterset_type.id,
-                                                 "formData" : $("#parametersetTypeForm").serializeArray(),});
+    app.working = true;
+    app.sendMessage("update_parameterset_type", {"sessionID" : app.sessionID,
+                                                 "parameterset_type_id" : app.current_parameterset_type.id,
+                                                 "formData" : app.current_parameterset_type,});
 },
 
 /** handle result of updating parameter set type
 */
 takeUpdateParametersetType(messageData){
-    //app.$data.cancelModal=false;
+    //app.cancelModal=false;
     //app.clearMainFormErrors();
 
-    app.$data.cancelModal=false;
+    app.cancelModal=false;
     app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
     {
         app.takeGetSession(messageData);       
-        $('#editParametersetTypeModal').modal('hide');            
+        app.editParametersetTypeModal.hide();         
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
 },

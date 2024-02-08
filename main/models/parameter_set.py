@@ -47,6 +47,10 @@ class ParameterSet(models.Model):
     prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
     post_forward_link = models.CharField(max_length = 1000, default = '', verbose_name = 'After Study Forwarding Link', blank=True, null=True) #at the completion of the study forward subjects to link
     
+    information_mode = models.CharField(max_length=100,
+                                        choices=globals.InformationModes.choices,
+                                        default=globals.InformationModes.NONE)                                      #type of information mode
+
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
 
     timestamp = models.DateTimeField(auto_now_add= True)
@@ -94,6 +98,8 @@ class ParameterSet(models.Model):
 
             self.prolific_mode = new_ps.get("prolific_mode")
             self.post_forward_link = new_ps.get("post_forward_link")
+
+            self.information_mode = new_ps.get("information_mode", globals.InformationModes.NONE)
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
 
@@ -351,6 +357,8 @@ class ParameterSet(models.Model):
             "prolific_mode" : "True" if self.prolific_mode else "False", 
             "post_forward_link" : self.post_forward_link,
 
+            "information_mode" : self.information_mode,
+
             "test_mode" : "True" if self.test_mode else "False",
         }
     
@@ -380,12 +388,15 @@ class ParameterSet(models.Model):
             "avatar_grid_text" : self.avatar_grid_text,
 
             "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
+            "parameter_set_players" : [p.json_for_subject() for p in self.parameter_set_players.all()],
 
             "survey_required" : "True" if self.survey_required else "False",
             "survey_link" : self.survey_link,
 
             "prolific_mode" : "True" if self.prolific_mode else "False", 
             "post_forward_link" : self.post_forward_link,
+
+            "information_mode" : self.information_mode,
 
             "test_mode" : self.test_mode,
         }

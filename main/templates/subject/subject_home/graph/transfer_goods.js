@@ -4,39 +4,39 @@ showTransferModal(container){
 
     if(app.pixi_modal_open) return;
 
-    if(!app.$data.pixi_transfer_line.visible ||
-       container ==  app.$data.pixi_transfer_source ||
-       app.$data.pixi_transfer_source == null ||
-       app.$data.pixi_transfer_target == null)
+    if(!pixi_transfer_line.visible ||
+       container ==  pixi_transfer_source ||
+       pixi_transfer_source == null ||
+       pixi_transfer_target == null)
     {
         app.turnOffHighlights();
         return;
     } 
 
-    parameter_set = app.$data.session.parameter_set;
+    parameter_set = app.session.parameter_set;
 
-    app.$data.transfer_source_modal_string = app.$data.pixi_transfer_source.name.modal_label;
-    app.$data.transfer_target_modal_string = app.$data.pixi_transfer_target.name.modal_label;
+    app.transfer_source_modal_string = pixi_transfer_source.name.modal_label;
+    app.transfer_target_modal_string = pixi_transfer_target.name.modal_label;
 
-    app.$data.transfer_modal_good_one_rgb = app.$data.pixi_transfer_source.name.good_one_color;
-    app.$data.transfer_modal_good_two_rgb = app.$data.pixi_transfer_source.name.good_two_color;
+    app.transfer_modal_good_one_rgb = pixi_transfer_source.name.good_one_color;
+    app.transfer_modal_good_two_rgb = pixi_transfer_source.name.good_two_color;
 
-    app.$data.transfer_modal_good_one_name = app.$data.pixi_transfer_source.name.good_a_label;
-    app.$data.transfer_modal_good_two_name = app.$data.pixi_transfer_source.name.good_b_label;
+    app.transfer_modal_good_one_name = pixi_transfer_source.name.good_a_label;
+    app.transfer_modal_good_two_name = pixi_transfer_source.name.good_b_label;
 
-    app.$data.pixi_modal_open = true;
-    app.$data.cancelModal=true;
+    app.pixi_modal_open = true;
+    app.cancelModal=true;
 
-    if(parameter_set.good_count == 2 || app.$data.pixi_transfer_source.name.type == "field")
+    if(parameter_set.good_count == 2 || pixi_transfer_source.name.type == "field")
     {
-        app.$data.moveTwoGoodsModal.toggle();
+        app.moveTwoGoodsModal.toggle();
     }
     else
     {
-        app.$data.transfer_modal_good_three_rgb = app.$data.pixi_transfer_source.name.good_three_color;
-        app.$data.transfer_modal_good_three_name = app.$data.pixi_transfer_source.name.good_c_label;
+        app.transfer_modal_good_three_rgb = pixi_transfer_source.name.good_three_color;
+        app.transfer_modal_good_three_name = pixi_transfer_source.name.good_c_label;
 
-        app.$data.moveThreeGoodsModal.toggle();
+        app.moveThreeGoodsModal.toggle();
     }
 },
 
@@ -46,26 +46,26 @@ hideTransferModal:function(){
     
     app.clearMainFormErrors();
 
-    if(app.$data.cancelModal)
+    if(app.cancelModal)
     {
-       app.$data.transfer_good_one_amount = 0;
-       app.$data.transfer_good_two_amount = 0;
-       app.$data.transfer_good_three_amount = 0;
+       app.transfer_good_one_amount = 0;
+       app.transfer_good_two_amount = 0;
+       app.transfer_good_three_amount = 0;
     }
 
-    app.$data.pixi_modal_open = false;
+    app.pixi_modal_open = false;
     app.turnOffHighlights();
 },
 
 sendMoveGoods(){
     
     if(this.working == true) return;
-    if(!this.pixi_transfer_source) return;
-    if(!this.pixi_transfer_target) return; 
+    if(!pixi_transfer_source) return;
+    if(!pixi_transfer_target) return; 
 
     app.clearMainFormErrors();
 
-    if(this.pixi_transfer_source.name.type == "house" &&
+    if(pixi_transfer_source.name.type == "house" &&
        this.session.parameter_set.good_count == 3)
     {
         if(this.transfer_good_one_amount == 0 && 
@@ -77,7 +77,9 @@ sendMoveGoods(){
             return;
         }
 
-        var form_data = $("#moveThreeGoodsForm").serializeArray();
+        var form_data = {transfer_good_one_amount_3g: this.transfer_good_one_amount,
+                         transfer_good_two_amount_3g: this.transfer_good_two_amount,
+                         transfer_good_three_amount_3g: this.transfer_good_three_amount};
     }
     else
     {
@@ -89,15 +91,16 @@ sendMoveGoods(){
              return;
          }
 
-        var form_data = $("#moveTwoGoodsForm").serializeArray();
+        var form_data = {transfer_good_one_amount_2g: this.transfer_good_one_amount,
+                         transfer_good_two_amount_2g: this.transfer_good_two_amount};
     }
 
     this.working = true;
-    app.sendMessage("move_goods", {"sourceType" : this.pixi_transfer_source.name.type.toString(),
-                                   "sourceID" :  this.pixi_transfer_source.name.user_id.toString(),
+    app.sendMessage("move_goods", {"sourceType" : pixi_transfer_source.name.type.toString(),
+                                   "sourceID" :  pixi_transfer_source.name.user_id.toString(),
 
-                                   "targetType" : this.pixi_transfer_target.name.type.toString(),
-                                   "targetID" : this.pixi_transfer_target.name.user_id.toString(),
+                                   "targetType" : pixi_transfer_target.name.type.toString(),
+                                   "targetID" : pixi_transfer_target.name.user_id.toString(),
 
                                    "formData" : form_data,});
 },
@@ -105,7 +108,7 @@ sendMoveGoods(){
 /** take result of moving goods
 */
 takeMoveGoods(messageData){
-    //app.$data.cancelModal=false;
+    //app.cancelModal=false;
     app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
@@ -115,7 +118,7 @@ takeMoveGoods(messageData){
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     }
 },
@@ -124,8 +127,8 @@ takeMoveGoods(messageData){
  * close and reset the move modals
  */
 closeMoveModal(){
-    app.$data.moveTwoGoodsModal.hide();
-    app.$data.moveThreeGoodsModal.hide();
+    app.moveTwoGoodsModal.hide();
+    app.moveThreeGoodsModal.hide();
 
     this.transfer_good_one_amount = 0;  
     this.transfer_good_two_amount = 0;  
@@ -202,6 +205,6 @@ takeUpdateGoods(messageData){
 updateNoticeDisplayScroll(){
     // if(this.session_player.notices.length==0) return;
 
-    // var elmnt = document.getElementById("notice_id_" + app.$data.session_player.notices[app.$data.session_player.notices.length-1].id.toString());
+    // var elmnt = document.getElementById("notice_id_" + app.session_player.notices[app.session_player.notices.length-1].id.toString());
     // elmnt.scrollIntoView(); 
 },

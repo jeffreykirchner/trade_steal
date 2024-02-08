@@ -20,6 +20,7 @@ class StaffEditNameEtcForm(forms.Form):
     name = forms.CharField(label='Full Name',
                            required=False,
                            widget=forms.TextInput(attrs={"v-model":"staffEditNameEtcForm.name",
+                                                         "autocomplete":"off",
                                                          "v-on:keyup.enter":"sendUpdateSubject()"}))
 
     student_id = forms.CharField(label='Student ID',

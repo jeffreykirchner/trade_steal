@@ -7,7 +7,7 @@
     if(messageData.status.value == "success")
     {
         let result = messageData.status.result;
-        let session_players = app.$data.session.session_players;
+        let session_players = app.session.session_players;
 
         session_player = app.findSessionPlayer(result.id);
 
@@ -32,7 +32,7 @@
     if(messageData.status.status == "success")
     {
         let group_list = messageData.status.group_list;
-        let session_players = app.$data.session.session_players;
+        let session_players = app.session.session_players;
 
         for(let i=0; i<group_list.length; i++)
         {
@@ -167,7 +167,7 @@ takeFinishedInstructions(messageData){
  */
 findSessionPlayerIndex(id){
 
-    let session_players = app.$data.session.session_players;
+    let session_players = app.session.session_players;
     for(let i=0; i<session_players.length; i++)
     {
         if(session_players[i].id == id)
@@ -212,7 +212,7 @@ takeUpdateEmailList(messageData){
 
     if(messageData.status.value == "success")
     {            
-        $('#uploadEmailModal').modal('hide');    
+        app.upload_email_modal.hide(); 
 
         result = messageData.status.result;
 
@@ -225,7 +225,7 @@ takeUpdateEmailList(messageData){
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
 },
@@ -238,11 +238,7 @@ showSendEmailList(){
 
     this.csv_email_list = "";
     
-    var myModal = new bootstrap.Modal(document.getElementById('uploadEmailModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.upload_email_modal.show(); 
 },
 
 /** hide edit subject modal
@@ -273,7 +269,7 @@ takeUpdateSubject(messageData){
 
     if(messageData.status.value == "success")
     {            
-        $('#editSubjectModal').modal('hide');    
+        app.edit_subject_modal.hide();    
 
         let session_player = app.findSessionPlayer(messageData.status.session_player.id);
         session_player.name = messageData.status.session_player.name;
@@ -282,7 +278,7 @@ takeUpdateSubject(messageData){
     } 
     else
     {
-        app.$data.cancelModal=true;                           
+        app.cancelModal=true;                           
         app.displayErrors(messageData.status.errors);
     } 
 },
@@ -301,11 +297,7 @@ showEditSubject(id){
     this.staffEditNameEtcForm.student_id = session_player.student_id;
     this.staffEditNameEtcForm.email = session_player.email;
     
-    var myModal = new bootstrap.Modal(document.getElementById('editSubjectModal'), {
-        keyboard: false
-        })
-
-    myModal.toggle();
+    app.edit_subject_modal.show();  
 },
 
 /** hide edit subject modal

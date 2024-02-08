@@ -7,20 +7,20 @@ update_production_slider(){
     // production_slider_one : 50,
     // production_slider_two : 50,
 
-    if(app.$data.production_slider < 0){
+    if(app.production_slider < 0){
 
-        app.$data.production_slider_one = Math.abs(app.$data.production_slider) + 50;
-        app.$data.production_slider_two = 100 - app.$data.production_slider_one;
+        app.production_slider_one = Math.abs(app.production_slider) + 50;
+        app.production_slider_two = 100 - app.production_slider_one;
 
-    }else if(app.$data.production_slider > 0){
+    }else if(app.production_slider > 0){
 
-        app.$data.production_slider_two = Math.abs(app.$data.production_slider) + 50;
-        app.$data.production_slider_one = 100 - app.$data.production_slider_two;
+        app.production_slider_two = Math.abs(app.production_slider) + 50;
+        app.production_slider_one = 100 - app.production_slider_two;
 
     }else{
-        app.$data.production_slider = 0;
-        app.$data.production_slider_one = 50;
-        app.$data.production_slider_two = 50;
+        app.production_slider = 0;
+        app.production_slider_one = 50;
+        app.production_slider_two = 50;
     }
 
 },
@@ -30,11 +30,11 @@ update_production_slider(){
  */
 sendProdution(){
 
-    if(app.$data.working) return;
+    if(app.working) return;
     
-    app.$data.working = true;
-    app.sendMessage("production_time", {"production_slider_one" : app.$data.production_slider_one,
-                                        "production_slider_two" : app.$data.production_slider_two,
+    app.working = true;
+    app.sendMessage("production_time", {"production_slider_one" : app.production_slider_one,
+                                        "production_slider_two" : app.production_slider_two,
                             });                   
 },
 
@@ -46,8 +46,8 @@ takeProduction(messageData){
     {
         result = messageData.status.result;       
         
-        app.$data.session_player.good_one_production_rate = result.good_one_production_rate;
-        app.$data.session_player.good_two_production_rate = result.good_two_production_rate;
+        app.session_player.good_one_production_rate = result.good_one_production_rate;
+        app.session_player.good_two_production_rate = result.good_two_production_rate;
     } 
     else
     {

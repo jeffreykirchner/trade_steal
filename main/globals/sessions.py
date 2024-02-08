@@ -36,3 +36,10 @@ class ExperimentPhase(models.TextChoices):
     INSTRUCTIONS = 'Instructions', _('Instructions')
     RUN = 'Run', _('Run')
     DONE = 'Done', _('Done')
+
+class InformationModes(models.TextChoices):
+    '''
+    information modes
+    '''
+    NONE = 'None', _('None')
+    PRODUCTION = 'Production', _('Production')

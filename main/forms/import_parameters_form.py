@@ -14,12 +14,11 @@ class ImportParametersForm(forms.Form):
         super(ImportParametersForm, self).__init__(*args, **kwargs)
         self.fields['session'].queryset = Session.objects.filter(soft_delete=False) \
                                                          .exclude(id=self.session_id) \
-                                                         .filter(Q(creator=self.user) | Q(shared=True) | Q(collaborators=self.user))
+                                                         .filter(Q(creator=self.user) | Q(shared=True) | Q(collaborators=self.user))\
+                                                         .distinct() \
+                                                         .order_by('title')
     
     session =  forms.ModelChoiceField(label="Select session to import.",
                                       queryset=None,
                                       empty_label=None,
-                                      widget=forms.Select(attrs={}))
-
-
-    
+                                      widget=forms.Select(attrs={"v-model":"session_import"}))
