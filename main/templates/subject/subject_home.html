@@ -81,6 +81,9 @@
 <!-- modals -->
 <div v-if="session">
     {%include "subject/subject_home/avatar_choice_grid/avatar_choice_grid_modal.html"%}
+    {%include "subject/subject_home/summary/end_game_modal.html"%}
+    {%include "subject/subject_home/graph/move_two_goods_modal.html"%}
+    {%include "subject/subject_home/graph/move_three_goods_modal.html"%}
 
     <!-- instructions -->
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase == 'Instructions'">

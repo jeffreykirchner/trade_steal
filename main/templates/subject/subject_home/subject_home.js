@@ -252,7 +252,15 @@ var app = Vue.createApp({
             else
             {
                 
-            }            
+                
+            }   
+            
+            if(!app.first_load_done)
+            {
+                Vue.nextTick(() => {
+                    app.doFirstLoad();
+                });
+            }
             
             if(this.session.current_experiment_phase != 'Done')
             {
@@ -279,11 +287,15 @@ var app = Vue.createApp({
                 // if game is finished show modal
                 if(app.session.finished)
                 {
-                    this.showEndGameModal();
+                    Vue.nextTick(() => {
+                        this.showEndGameModal();
+                    });
                 }
 
                 //if no avavtar show choioce grid
-                app.showAvatarChoiceGrid();
+                Vue.nextTick(() => {
+                    app.showAvatarChoiceGrid();
+                });
 
             }
 
@@ -294,13 +306,6 @@ var app = Vue.createApp({
                     this.instructionDisplayScroll();
                 });               
                 
-            }
-
-            if(!app.first_load_done)
-            {
-                Vue.nextTick(() => {
-                    app.doFirstLoad();
-                });
             }
         },
 
