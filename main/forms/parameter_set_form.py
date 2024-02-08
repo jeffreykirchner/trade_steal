@@ -7,6 +7,7 @@ from django import forms
 from main.models import ParameterSet
 
 from main.globals import AvatarModes
+from main.globals import InformationModes
 
 import  main
 
@@ -111,6 +112,10 @@ class ParameterSetForm(forms.ModelForm):
     post_forward_link =  forms.CharField(label='After Session, Forward Subjects to URL',
                                    required=False,
                                    widget=forms.TextInput(attrs={"v-model":"session.parameter_set.post_forward_link",}))
+    
+    information_mode = forms.ChoiceField(label='Information Mode',
+                                       choices=InformationModes.choices,
+                                       widget=forms.Select(attrs={"v-model":"session.parameter_set.information_mode",}))
 
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
@@ -122,7 +127,7 @@ class ParameterSetForm(forms.ModelForm):
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
                  'group_chat', 'private_chat', 'show_avatars', 'avatar_assignment_mode', 'avatar_grid_row_count', 
                  'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'instruction_set', 'survey_required', 
-                 'survey_link', 'prolific_mode', 'post_forward_link', 'test_mode']
+                 'survey_link', 'prolific_mode', 'post_forward_link', 'information_mode', 'test_mode']
     
 
     def clean_survey_link(self):

@@ -8,6 +8,7 @@ from django.db.utils import IntegrityError
 
 from main.models import ParameterSet
 from main.globals import SubjectType
+from main.globals import InformationModes
 
 import main
 
@@ -104,3 +105,29 @@ class ParameterSetType(models.Model):
             "ce_earnings" : self.ce_earnings,
             "autarky_earnings" : self.autarky_earnings,
         }
+    
+    def json_for_subject(self):
+        '''
+        return json object of model for subject
+        '''
+
+        if self.parameter_set.information_mode == InformationModes.NONE:
+            return{
+                "id" : self.id,
+            }
+
+        max_time = self.parameter_set.period_length_production
+        production_1 = self.good_one_production_1 + self.good_one_production_2 * max_time ** self.good_one_production_3
+        production_2 = self.good_two_production_1 + self.good_two_production_2 * max_time ** self.good_two_production_3
+
+        good_preference = "Good One" if production_1 > production_2 else "Good Two"
+
+        return{
+                
+                "id" : self.id,
+    
+                "good_one_amount" : self.good_one_amount,
+                "good_two_amount" : self.good_two_amount,
+    
+                "good_preference" : good_preference,
+            }

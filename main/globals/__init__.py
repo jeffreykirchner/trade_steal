@@ -9,6 +9,7 @@ from .sessions import ContainerTypes
 from .sessions import ChatTypes
 from .sessions import PeriodPhase
 from .sessions import ExperimentPhase
+from .sessions import InformationModes
 
 from .round_half_away_from_zero import round_half_away_from_zero
 
