@@ -67,13 +67,14 @@ resetPixiApp(){
                                                backgroundColor : 0xFFFFFF,
                                                autoResize: true,
                                                antialias: false,
-                                               resolution: 1,
+                                               resolution: window.devicePixelRatio,
                                                view: canvas });
 
     app.canvas_width = canvas.width;
     app.canvas_height = canvas.height;
 
     pixi_app.stage.eventMode = 'passive';
+    //pixi_app.stage.sortableChildren = true;
 
     //add background rectangle
     let container1 = new PIXI.Container();
@@ -124,7 +125,7 @@ setupPixiSheets(textures){
 
     app.canvas_scale_height = app.canvas_height / app.grid_y;
     app.canvas_scale_width = app.canvas_width / app.grid_x;
-    app.canvas_scale = app.canvas_scale_height /  app.house_sprite.height;
+    app.canvas_scale = (app.canvas_scale_height /  app.house_sprite.height) * (1/window.devicePixelRatio);
 
     app.pixi_loaded = true;
     app.setupPixiPlayers();
@@ -509,7 +510,7 @@ setupSingleAvatar(index){
     container2.addChild(label);
 
     avatar_containers[index] = container2;
-    pixi_app.stage.addChild(avatar_containers[index]);
+    pixi_app.stage.addChildAt(avatar_containers[index],2);
 },
 /**
  * location grid for layout
@@ -594,6 +595,9 @@ getLocationCordinates(index, field_or_house){
 
         y += (index-4) * (app.canvas_scale_height + (app.grid_y_padding*app.canvas_scale));
     }    
+
+    x *= (1/window.devicePixelRatio);
+    y *= (1/window.devicePixelRatio);
 
     return {x:x, y:y};
 },
