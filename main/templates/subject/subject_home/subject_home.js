@@ -89,14 +89,14 @@ var app = Vue.createApp({
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected(){            
+        handleSocketConnected: function handleSocketConnected(){            
             app.sendGetSession();
         },
 
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage(data) {
+        takeMessage: function takeMessage(data) {
 
             {%if DEBUG%}
             console.log(data);
@@ -173,7 +173,7 @@ var app = Vue.createApp({
         *    @param messageType {string} type of message sent to server
         *    @param messageText {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {            
+        sendMessage: function sendMessage(messageType, messageText) {            
 
             this.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
@@ -184,7 +184,7 @@ var app = Vue.createApp({
         /**
          * do after session has loaded
         */
-        doFirstLoad()
+        doFirstLoad: function doFirstLoad()
         {
 
             app.moveTwoGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveTwoGoodsModal'), {keyboard: false});
@@ -221,14 +221,14 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        sendGetSession(){
+        sendGetSession: function sendGetSession(){
             app.sendMessage("get_session", {"playerKey" : this.playerKey});
         },
         
         /** take create new session
         *    @param messageData {json} session day in json format
         */
-        takeGetSession(messageData){
+        takeGetSession: function takeGetSession(messageData){
             
             app.session = messageData.status.session;
             app.session_player = messageData.status.session_player;
@@ -312,7 +312,7 @@ var app = Vue.createApp({
         /**
          * handle window resize event
          */
-        handleResize(){                
+        handleResize: function handleResize(){                
 
             setTimeout(function(){
                 let canvas = document.getElementById('sd_graph_id');
@@ -328,7 +328,7 @@ var app = Vue.createApp({
         /** update start status
         *    @param messageData {json} session day in json format
         */
-        takeUpdateStartExperiment(messageData){
+        takeUpdateStartExperiment: function takeUpdateStartExperiment(messageData){
             app.takeGetSession(messageData);
 
             if(app.session.current_experiment_phase == "Instructions")
@@ -343,7 +343,7 @@ var app = Vue.createApp({
         /** update reset status
         *    @param messageData {json} session day in json format
         */
-        takeUpdateResetExperiment(messageData){
+        takeUpdateResetExperiment: function takeUpdateResetExperiment(messageData){
             app.takeGetSession(messageData);
 
             this.production_slider_one = 50;
@@ -359,7 +359,7 @@ var app = Vue.createApp({
         /**
         * update time and start status
         */
-        takeUpdateTime(messageData){
+        takeUpdateTime: function takeUpdateTime(messageData){
             let result = messageData.status.result;
             let status = messageData.status.value;
             let notice_list = messageData.status.notice_list;
@@ -407,7 +407,7 @@ var app = Vue.createApp({
         /**
          * if needed show avatar choice grid
          */
-        showAvatarChoiceGrid(){
+        showAvatarChoiceGrid: function showAvatarChoiceGrid(){
 
             if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
                 this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
@@ -429,7 +429,7 @@ var app = Vue.createApp({
         /**
          * show the end game modal
          */
-        showEndGameModal(){
+        showEndGameModal: function showEndGameModal(){
             if(this.end_game_modal_visible) return;
 
             //hide transfer modals
@@ -444,14 +444,14 @@ var app = Vue.createApp({
          /**
          * take end of game notice
          */
-        takeEndGame(messageData){
+        takeEndGame: function takeEndGame(messageData){
 
         },
 
         /**
          * update players in group
          */
-        takeUpdateGroups(messageData){
+        takeUpdateGroups: function takeUpdateGroups(messageData){
             app.destroyPixiPlayers();
 
             this.session.session_players = messageData.status.result.session_players;
@@ -465,7 +465,7 @@ var app = Vue.createApp({
         /** take next period response
          * @param messageData {json}
         */
-        takeUpdateNextPhase(messageData){
+        takeUpdateNextPhase: function takeUpdateNextPhase(messageData){
             app.avatarChoiceGridModal.hide();
             app.endGameModal.hide();
 
@@ -494,18 +494,18 @@ var app = Vue.createApp({
 
         /** hide choice grid modal modal
         */
-        hideChoiceGridModal(){
+        hideChoiceGridModal: function hideChoiceGridModal(){
             this.avatar_choice_modal_visible=false;
         },
 
         /** hide choice grid modal modal
         */
-        hideEndGameModal(){
+        hideEndGameModal: function hideEndGameModal(){
             this.end_game_modal_visible=false;
         },
 
         //do nothing on when enter pressed for post
-        onSubmit(){
+        onSubmit: function onSubmit(){
             //do nothing
         },
         
@@ -520,7 +520,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors(){
+        clearMainFormErrors: function clearMainFormErrors(){
             
             s = this.session_player_move_two_form_ids;
             for(var i in s)
@@ -546,7 +546,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors(errors){
+        displayErrors: function displayErrors(errors){
             for(var e in errors)
             {
                 for(let e in errors)
@@ -571,7 +571,7 @@ var app = Vue.createApp({
         /**
          * return session player that has specified id
          */
-        findSessionPlayer(id){
+        findSessionPlayer: function findSessionPlayer(id){
 
             let session_players = app.session.session_players;
             for(let i=0; i<session_players.length; i++)
@@ -588,7 +588,7 @@ var app = Vue.createApp({
         /**
          * return session player index that has specified id
          */
-        findSessionPlayerIndex(id){
+        findSessionPlayerIndex: function findSessionPlayerIndex(id){
 
             let session_players = app.session.session_players;
             for(let i=0; i<session_players.length; i++)

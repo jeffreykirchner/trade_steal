@@ -1,7 +1,7 @@
 /**
  * send request to create new session
  */
-sendCreateSession(){
+sendCreateSession: function sendCreateSession(){
     this.working = true;
     this.createSessionButtonText ='<i class="fas fa-spinner fa-spin"></i>';
     app.sendMessage("create_session",{});
@@ -10,7 +10,7 @@ sendCreateSession(){
 /**
  * take crate a new session
  */
-takeCreateSession(messageData){    
+takeCreateSession: function takeCreateSession(messageData){    
     this.createSessionButtonText ='Create Session <i class="fas fa-plus"></i>';
     app.takeGetSessions(messageData);
 },
@@ -19,7 +19,7 @@ takeCreateSession(messageData){
  * send request to delete session
  * @param id : int
  */
-sendDeleteSession(id){
+sendDeleteSession: function sendDeleteSession(id){
     if (!confirm('Delete session?')) {
         return;
     }

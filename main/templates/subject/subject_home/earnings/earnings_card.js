@@ -1,7 +1,7 @@
 /**
  * calc how many goods are being wasted
  */
- calcWaste(){
+ calcWaste: function calcWaste(){
 
     app.potential_earnings = 0;
 

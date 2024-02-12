@@ -1,7 +1,7 @@
 /**
  * update producton slider values when slider is moved
  */
-update_production_slider(){
+update_production_slider: function update_production_slider(){
 
     // production_slider : 0,
     // production_slider_one : 50,
@@ -28,7 +28,7 @@ update_production_slider(){
 /**
  * send prouduction rate updates
  */
-sendProdution(){
+sendProdution: function sendProdution(){
 
     if(app.working) return;
     
@@ -40,7 +40,7 @@ sendProdution(){
 
 /** take result of production rate updates
 */
-takeProduction(messageData){
+takeProduction: function takeProduction(messageData){
 
     if(messageData.status.value == "success")
     {

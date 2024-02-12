@@ -3,14 +3,14 @@
 /**
  * do random self test actions
  */
-randomNumber(min, max){
+randomNumber: function randomNumber(min, max){
     //return a random number between min and max
     min = Math.ceil(min);
     max = Math.floor(max+1);
     return Math.floor(Math.random() * (max - min) + min);
 },
 
-randomString(min_length, max_length){
+randomString: function randomString(min_length, max_length){
 
     s = "";
     r = this.randomNumber(min_length, max_length);
@@ -24,7 +24,7 @@ randomString(min_length, max_length){
     return s;
 },
 
-doTestMode(){
+doTestMode: function doTestMode(){
     {%if DEBUG%}
     console.log("Do Test Mode");
     {%endif%}
@@ -69,7 +69,7 @@ doTestMode(){
 /**
  * test during selection phase
  */
- doTestModeSelection()
+ doTestModeSelection: function doTestModeSelection()
  {
 
     if(this.avatar_choice_grid_selected_row == 0 && this.avatar_choice_grid_selected_col == 0)
@@ -89,7 +89,7 @@ doTestMode(){
 /**
  * test during instruction phase
  */
- doTestModeInstructions()
+ doTestModeInstructions: function doTestModeInstructions()
  {
     if(this.session_player.instructions_finished) return;
     if(this.working) return;
@@ -141,7 +141,7 @@ doTestMode(){
 /**
  * test during run phase
  */
-doTestModeRun()
+doTestModeRun: function doTestModeRun()
 {
     //do chat
     let go = true;
@@ -190,7 +190,7 @@ doTestModeRun()
 /**
  * test mode chat
  */
-doTestModeChat(){
+doTestModeChat: function doTestModeChat(){
 
     session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length-1)];
 
@@ -217,7 +217,7 @@ doTestModeChat(){
 /**
  * test mode move
  */
-doTestModeMove(){
+doTestModeMove: function doTestModeMove(){
     let session_player_source = null;
     let source_container = null;
 
@@ -277,7 +277,7 @@ doTestModeMove(){
 /**
  * test mode update production percentages
  */
-doTestModeProductionUpdate(){
+doTestModeProductionUpdate: function doTestModeProductionUpdate(){
     this.production_slider = this.randomNumber(-50, 50)
     this.update_production_slider();
 },

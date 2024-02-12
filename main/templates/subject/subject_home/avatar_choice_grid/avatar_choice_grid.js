@@ -1,7 +1,7 @@
 /**
  * get image html
  */
-get_grid_image_html(r, c){
+get_grid_image_html: function get_grid_image_html(r, c){
 
     let parameter_set_avatars = this.session.parameter_set.parameter_set_avatars;
 
@@ -28,7 +28,7 @@ get_grid_image_html(r, c){
 /**
  * handle choice grid click
  */
-take_choice_grid_click(r, c){
+take_choice_grid_click: function take_choice_grid_click(r, c){
 
     if(this.working) return;
     if(this.session_player.avatar != null) return;
@@ -55,7 +55,7 @@ take_choice_grid_click(r, c){
 /**
  * handle choice grid click
  */
- take_choice_grid_label(label){
+ take_choice_grid_label: function take_choice_grid_label(label){
 
     let parameter_set_avatars = this.session.parameter_set.parameter_set_avatars;
 
@@ -76,7 +76,7 @@ take_choice_grid_click(r, c){
 /**
  * send avatar choice
  */
-sendAvatar(){
+sendAvatar: function sendAvatar(){
 
     if(this.working) return;
 
@@ -93,7 +93,7 @@ sendAvatar(){
 
 /** take result of moving goods
 */
-takeAvatar(messageData){
+takeAvatar: function takeAvatar(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 

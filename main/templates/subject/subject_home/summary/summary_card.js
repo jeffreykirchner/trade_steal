@@ -1,4 +1,4 @@
-sendName(){
+sendName: function sendName(){
 
     app.working = true;
     formData = {name:document.getElementById("id_name").value, 
@@ -9,7 +9,7 @@ sendName(){
 
 /** take result of moving goods
 */
-takeName(messageData){
+takeName: function takeName(messageData){
 
     app.clearMainFormErrors();
 
@@ -27,7 +27,7 @@ takeName(messageData){
 /**
  * post study link
  */
-postSessionLink(){
+postSessionLink: function postSessionLink(){
 
     if(app.session_player.post_experiment_link == '') return;
 

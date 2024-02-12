@@ -3,7 +3,7 @@
 /**
  * update the pixi players with new info
  */
-setupPixi(){    
+setupPixi: function setupPixi(){    
     app.resetPixiApp();
     // PIXI.Loader.shared.add("{% static graph_sprite_sheet %}")
     //                   .add("{% static avatar_sprite_sheet %}")
@@ -56,7 +56,7 @@ setupPixi(){
     });
 },
 
-resetPixiApp(){
+resetPixiApp: function resetPixiApp(){
     let canvas = document.getElementById('sd_graph_id');
     //     ctx = canvas.getContext('2d');
 
@@ -111,7 +111,7 @@ resetPixiApp(){
 
 /** load pixi sprite sheets
 */
-setupPixiSheets(textures){
+setupPixiSheets: function setupPixiSheets(textures){
     pixi_textures = textures;
 
     app.house_sheet = textures.graph_sprite_sheet;
@@ -137,7 +137,7 @@ setupPixiSheets(textures){
 /**
  * setup pixi players
  */
-setupPixiPlayers(){
+setupPixiPlayers: function setupPixiPlayers(){
 
     if(!app.pixi_loaded) return;
     if(!app.session.parameter_set.show_avatars=="True") return;
@@ -174,7 +174,7 @@ setupPixiPlayers(){
 /**setup house container for player
  * @param index : int
  */
-setupSingleHouse(index){
+setupSingleHouse: function setupSingleHouse(index){
     let session_players = app.session.session_players;
     let session_player = session_players[index];
 
@@ -311,7 +311,7 @@ setupSingleHouse(index){
  * @param x_location : float : x location of label within container
  * @param y_location : float : y location of label within container
  */
-createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
+createGoodLabel: function createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
 
     amount = Math.round(amount);
 
@@ -334,7 +334,7 @@ createGoodLabel(amount, label_name, rgb_color, x_location, y_location){
 /**setup field container for player
  * @param index : int
  */
-setupSingleField(index){
+setupSingleField: function setupSingleField(index){
     let session_players = app.session.session_players;
     let session_player = session_players[index];
 
@@ -449,7 +449,7 @@ setupSingleField(index){
 },
 
 /**setup avatar container for player */
-setupSingleAvatar(index){
+setupSingleAvatar: function setupSingleAvatar(index){
 
     let session_players = app.session.session_players;
     let session_player = session_players[index];
@@ -515,7 +515,7 @@ setupSingleAvatar(index){
 /**
  * location grid for layout
  */
-setupGrid(){
+setupGrid: function setupGrid(){
     x = app.canvas_scale_width;
     y = app.canvas_scale_height + (app.grid_y_padding*app.canvas_scale);
 
@@ -541,7 +541,7 @@ setupGrid(){
  
 /**destroy house and field containers
  */
-destroyPixiPlayers(){
+destroyPixiPlayers: function destroyPixiPlayers(){
     let session_players = app.session.session_players;
     
     for(let i=0;i<session_players.length;i++)
@@ -568,7 +568,7 @@ destroyPixiPlayers(){
 
 /** location of house and fields
  */
-getLocationCordinates(index, field_or_house){
+getLocationCordinates: function getLocationCordinates(index, field_or_house){
 
     let y=0;
     let x=0;

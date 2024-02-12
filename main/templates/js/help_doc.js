@@ -2,7 +2,7 @@
  * send request for help doc
  * @param title : string
  */
-sendLoadHelpDoc(title){
+sendLoadHelpDoc: function sendLoadHelpDoc(title){
     this.working = true;
     this.helpText = "Loading ...";
 
@@ -19,7 +19,7 @@ sendLoadHelpDoc(title){
  * take help text load request
  * @param messageData : json
  */
-takeLoadHelpDoc(messageData){
+takeLoadHelpDoc: function takeLoadHelpDoc(messageData){
 
     if(messageData.status.value == "success")
     {
