@@ -2,7 +2,7 @@
  * take update player groups
  * @param messageData {json} session day in json format
  */
-  takeUpdateConnectionStatus(messageData){
+  takeUpdateConnectionStatus: function takeUpdateConnectionStatus(messageData){
             
     if(messageData.status.value == "success")
     {
@@ -27,7 +27,7 @@
  * take update player groups
  * @param messageData {json} session day in json format
  */
- takeUpdateGroups(messageData){
+ takeUpdateGroups: function takeUpdateGroups(messageData){
     
     if(messageData.status.status == "success")
     {
@@ -49,7 +49,7 @@
 /** take name and student id
 * @param messageData {json} session day in json format
 */
-takeUpdateName(messageData){
+takeUpdateName: function takeUpdateName(messageData){
            
     if(messageData.status.value == "success")
     {
@@ -68,7 +68,7 @@ takeUpdateName(messageData){
 /** take name and student id
 * @param messageData {json} session day in json format
 */
-takeUpdateAvatar(messageData){
+takeUpdateAvatar: function takeUpdateAvatar(messageData){
            
     if(messageData.status.value == "success")
     {
@@ -87,7 +87,7 @@ takeUpdateAvatar(messageData){
 /** take name and student id
 * @param messageData {json} session day in json format
 */
-takeNextInstruction(messageData){
+takeNextInstruction: function takeNextInstruction(messageData){
            
     if(messageData.status.value == "success")
     {
@@ -106,7 +106,7 @@ takeNextInstruction(messageData){
  /** take name and student id
 * @param messageData {json} session day in json format
 */
-takeFinishedInstructions(messageData){
+takeFinishedInstructions: function takeFinishedInstructions(messageData){
            
     if(messageData.status.value == "success")
     {
@@ -126,7 +126,7 @@ takeFinishedInstructions(messageData){
   * update subject earnings
   *  @param messageData {json} session day in json format
   */
- takeUpdateEarnings(messageData){
+ takeUpdateEarnings: function takeUpdateEarnings(messageData){
 
     if(messageData.status.value == "success")
     {
@@ -148,7 +148,7 @@ takeFinishedInstructions(messageData){
  /**
   * return session player that has specified id
   */
- findSessionPlayer(id){
+ findSessionPlayer: function findSessionPlayer(id){
 
     let session_players = this.session.session_players;
     for(let i=0; i<session_players.length; i++)
@@ -165,7 +165,7 @@ takeFinishedInstructions(messageData){
 /**
  * return session player index that has specified id
  */
-findSessionPlayerIndex(id){
+findSessionPlayerIndex: function findSessionPlayerIndex(id){
 
     let session_players = app.session.session_players;
     for(let i=0; i<session_players.length; i++)
@@ -182,7 +182,7 @@ findSessionPlayerIndex(id){
 /**
  * take update subjects production
  */
-takeUpdateProductionTime(messageData){
+takeUpdateProductionTime: function takeUpdateProductionTime(messageData){
 
     if(messageData.status.value == "success")
     {
@@ -196,7 +196,7 @@ takeUpdateProductionTime(messageData){
 
 /** send session update form   
 */
-sendEmailList(){
+sendEmailList: function sendEmailList(){
     this.cancelModal = false;
     this.working = true;
 
@@ -207,7 +207,7 @@ sendEmailList(){
 /** take update subject response
  * @param messageData {json} result of update, either sucess or fail with errors
 */
-takeUpdateEmailList(messageData){
+takeUpdateEmailList: function takeUpdateEmailList(messageData){
     app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
@@ -232,7 +232,7 @@ takeUpdateEmailList(messageData){
 
 /** show edit subject modal
 */
-showSendEmailList(){
+showSendEmailList: function showSendEmailList(){
     app.clearMainFormErrors();
     this.cancelModal=true;
 
@@ -243,7 +243,7 @@ showSendEmailList(){
 
 /** hide edit subject modal
 */
-hideSendEmailList(){
+hideSendEmailList: function hideSendEmailList(){
     this.csv_email_list = "";
 
     if(this.cancelModal)
@@ -254,7 +254,7 @@ hideSendEmailList(){
 
 /** send session update form   
 */
-sendUpdateSubject(){
+sendUpdateSubject: function sendUpdateSubject(){
     this.cancelModal = false;
     this.working = true;
     app.sendMessage("update_subject",
@@ -264,7 +264,7 @@ sendUpdateSubject(){
 /** take update subject response
  * @param messageData {json} result of update, either sucess or fail with errors
 */
-takeUpdateSubject(messageData){
+takeUpdateSubject: function takeUpdateSubject(messageData){
     app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
@@ -285,7 +285,7 @@ takeUpdateSubject(messageData){
 
 /** show edit subject modal
 */
-showEditSubject(id){
+showEditSubject: function showEditSubject(id){
     app.clearMainFormErrors();
     this.cancelModal=true;
 
@@ -302,7 +302,7 @@ showEditSubject(id){
 
 /** hide edit subject modal
 */
-hideEditSubject(){
+hideEditSubject: function hideEditSubject(){
     if(this.cancelModal)
     {
        
@@ -313,7 +313,7 @@ hideEditSubject(){
 /**
  * copy earnings to clipboard
  */
-copyEarnings(){
+copyEarnings: function copyEarnings(){
 
    var text="";
 
@@ -329,7 +329,7 @@ copyEarnings(){
 },
 
 //copy text to clipboard
-copyToClipboard(text){
+copyToClipboard: function copyToClipboard(text){
 
     // Create a dummy input to copy the string array inside it
     var dummy = document.createElement("textarea");
@@ -359,7 +359,7 @@ copyToClipboard(text){
 
 /** send session update form   
 */
-sendAnonymizeData(){
+sendAnonymizeData: function sendAnonymizeData(){
     
     if (!confirm('Anonymize data? Identifying information will be permanent removed.')) {
         return;
@@ -372,7 +372,7 @@ sendAnonymizeData(){
 /** take update subject response
  * @param messageData {json} result of update, either sucess or fail with errors
 */
-takeAnonymizeData(messageData){
+takeAnonymizeData: function takeAnonymizeData(messageData){
     app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
@@ -399,7 +399,7 @@ takeAnonymizeData(messageData){
 /** take survey completed by subject
  * @param message_data {json} result of update, either sucess or fail with errors
 */
-take_update_survey_complete(message_data){
+take_update_survey_complete: function take_update_survey_complete(message_data){
     result = message_data.status;
 
     session_player = app.findSessionPlayer(result.player_id);

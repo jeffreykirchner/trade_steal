@@ -1,18 +1,18 @@
-sendGetSessionsAdmin(){
+sendGetSessionsAdmin: function sendGetSessionsAdmin(){
     //get list of sessions
     app.working = true;
     app.sessions_full_admin_visible = true;
     app.sendMessage("get_sessions_admin",{});
 },
 
-takeGetSessionsAdmin(messageData){
+takeGetSessionsAdmin: function takeGetSessionsAdmin(messageData){
     //process list of all sessions
     app.working = false;
     app.sessions_full_admin = messageData.sessions_admin;
 },
 
 //sort by title
-sortByTitleAllSessions:function(){
+sortByTitleAllSessions: function sortByTitleAllSessions(){
 
     app.working = true;
 
@@ -25,7 +25,7 @@ sortByTitleAllSessions:function(){
     app.working = false;
 },
 
-sortByDateAllSessions:function(){
+sortByDateAllSessions:function sortByDateAllSessions(){
 
     app.working = true;
 
@@ -37,7 +37,7 @@ sortByDateAllSessions:function(){
     app.working = false;
 },
 
-sortByOwnerAllSessions:function(){
+sortByOwnerAllSessions:function sortByOwnerAllSessions(){
 
     app.working = true;
 

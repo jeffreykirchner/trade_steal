@@ -1,7 +1,7 @@
 /**
  *pointer down on field
  */
- handleFieldPointerDown(index, event){
+ handleFieldPointerDown: function handleFieldPointerDown(index, event){
     //console.log('Field ' + (index+1).toString() + ' down');
     let session_players = app.session.session_players;
     app.handleContainerDown(field_containers[index], event);
@@ -10,7 +10,7 @@
 /**
  *pointer up on field
  */
-handleFieldPointerUp(index, event){
+handleFieldPointerUp: function handleFieldPointerUp(index, event){
     //console.log('Field ' + (index+1).toString() + ' up');
     if(app.session.parameter_set.allow_stealing == "False")
     {
@@ -25,13 +25,13 @@ handleFieldPointerUp(index, event){
 /**
  *pointer move over field
  */
-handleFieldPointerOver(index, event){
+handleFieldPointerOver: function handleFieldPointerOver(index, event){
     //console.log('Field ' + (index+1).toString() + ' Over');
     let session_players = app.session.session_players;
     app.setContainerAsTarget(field_containers[index], event);
 },
 
-handleFieldPointerMove(index, event){
+handleFieldPointerMove: function handleFieldPointerMove(index, event){
     //console.log('House ' + (index+1).toString() + ' move');
     app.handleStagePointerMove(event);
 },
@@ -39,7 +39,7 @@ handleFieldPointerMove(index, event){
 /**
  *pointer move off field
  */
-handleFieldPointerOut(index, event){
+handleFieldPointerOut: function handleFieldPointerOut(index, event){
     //console.log('Field ' + (index+1).toString() + ' Out');
     let session_players = app.session.session_players;
     app.removeContainerTarget(field_containers[index], event);
@@ -48,7 +48,7 @@ handleFieldPointerOut(index, event){
 /**
  *pointer down on house
  */
-handleHousePointerDown(index, event){
+handleHousePointerDown: function handleHousePointerDown(index, event){
     //console.log('House ' + (index+1).toString() + ' down');
     let session_players = app.session.session_players;
     app.handleContainerDown(house_containers[index], event);
@@ -57,7 +57,7 @@ handleHousePointerDown(index, event){
 /**
  *pointer up on house
  */
-handleHousePointerUp(index, event){
+handleHousePointerUp: function handleHousePointerUp(index, event){
    //console.log('House ' + (index+1).toString() + ' up');
    let session_players = app.session.session_players;
    app.handleContainerUp(house_containers[index], event);
@@ -66,14 +66,14 @@ handleHousePointerUp(index, event){
 /**
  *pointer over house
  */
-handleHousePointerOver(index, event){
+handleHousePointerOver: function handleHousePointerOver(index, event){
     //console.log('House ' + (index+1).toString() + ' Over');
     let session_players = app.session.session_players;
     app.setContainerAsTarget(house_containers[index], event);
    
 },
 
-handleHousePointerMove(index, event){
+handleHousePointerMove: function handleHousePointerMove(index, event){
     //console.log('House ' + (index+1).toString() + ' move');
     app.handleStagePointerMove(event);
 },
@@ -81,7 +81,7 @@ handleHousePointerMove(index, event){
 /**
  *pointer move off house
  */
-handleHousePointerOut(index, event){
+handleHousePointerOut: function handleHousePointerOut(index, event){
     //console.log('House ' + (index+1).toString() + ' Out');
     let session_players = app.session.session_players;
     app.removeContainerTarget(house_containers[index], event);
@@ -90,7 +90,7 @@ handleHousePointerOut(index, event){
 /**
  * handle container mouse down
  */
-handleContainerDown(container, event){
+handleContainerDown: function handleContainerDown(container, event){
     app.turnOffHighlights();
 
     if(app.session.finished) return;
@@ -104,7 +104,7 @@ handleContainerDown(container, event){
 /**
  * handle container mouse up
  */
-handleContainerUp(container, event){
+handleContainerUp: function handleContainerUp(container, event){
     if(app.session.finished) return;
         
     app.setContainerAsTarget(container, event);
@@ -113,7 +113,7 @@ handleContainerUp(container, event){
 
 /**set specified container as trasnfer target target
 */
-setContainerAsTarget(container, event)
+setContainerAsTarget: function setContainerAsTarget(container, event)
 {
     if(pixi_transfer_line.visible && !app.pixi_modal_open)
     {
@@ -127,7 +127,7 @@ setContainerAsTarget(container, event)
 
 /**remove container target when pointer moves off of it
 */
-removeContainerTarget(container, event){
+removeContainerTarget: function removeContainerTarget(container, event){
     if(container ==  pixi_transfer_target && !app.pixi_modal_open)
     {
         pixi_transfer_target = null;
@@ -138,7 +138,7 @@ removeContainerTarget(container, event){
 /**
  *pointer up on stage
  */
- handleStagePointerUp(event){
+ handleStagePointerUp: function handleStagePointerUp(event){
     //console.log('Stage up: ' + event);
     app.turnOffHighlights();
 },
@@ -146,7 +146,7 @@ removeContainerTarget(container, event){
 /**
  * pointer move over stage
  */
-handleStagePointerMove(event){
+handleStagePointerMove: function handleStagePointerMove(event){
     if(pixi_transfer_line.visible && !app.pixi_modal_open)
     {
         //console.log('stage move over: ' + event.data.global.x + ' ' + event.data.global.y);
@@ -157,7 +157,7 @@ handleStagePointerMove(event){
 /**
  * turn off highlights around all containers
  */
-turnOffHighlights(){
+turnOffHighlights: function turnOffHighlights(){
     if(app.pixi_modal_open) return;
 
     let session_players = app.session.session_players;
@@ -180,7 +180,7 @@ turnOffHighlights(){
 /**
  * update transfer line
  */
-updatePixiTransfer(target_x, target_y){
+updatePixiTransfer: function updatePixiTransfer(target_x, target_y){
     transfer_line = pixi_transfer_line;
     source = pixi_transfer_source;
 

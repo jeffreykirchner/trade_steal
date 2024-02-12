@@ -18,12 +18,12 @@ var app = Vue.createApp({
                     titleSortButtonText: 'Title <i class="fas fa-sort"></i>',
                 }},
     methods: {
-        handleSocketConnected(){
+        handleSocketConnected: function handleSocketConnected(){
             //fire when socket connects
             app.sendGetSessions();
         },
 
-        takeMessage(data) {
+        takeMessage: function takeMessage(data) {
            //process socket message from server
 
            {%if DEBUG%}
@@ -49,7 +49,7 @@ var app = Vue.createApp({
             app.working = false;
         },
 
-        sendMessage(messageType,messageText) {
+        sendMessage: function sendMessage(messageType,messageText) {
             //send socket message to server
 
             this.chatSocket.send(JSON.stringify({
@@ -58,12 +58,12 @@ var app = Vue.createApp({
                 }));
         },
 
-        sendGetSessions(){
+        sendGetSessions: function sendGetSessions(){
             //get list of sessions
             app.sendMessage("get_sessions",{});
         },
 
-        takeGetSessions(messageData){
+        takeGetSessions: function takeGetSessions(messageData){
             //process list of sessions
 
             app.sessions = messageData.sessions;

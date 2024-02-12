@@ -3,7 +3,7 @@
  * Given the page number return the requested instruction text
  * @param pageNumber : int
  */
-getInstructionPage(pageNumber){
+getInstructionPage: function getInstructionPage(pageNumber){
 
     for(i=0;i<this.instructions.instruction_pages.length;i++)
     {
@@ -19,7 +19,7 @@ getInstructionPage(pageNumber){
 /**
  * advance to next instruction page
  */
-sendNextInstruction(direction){
+sendNextInstruction: function sendNextInstruction(direction){
 
     if(this.working) return;
     
@@ -30,7 +30,7 @@ sendNextInstruction(direction){
 /**
  * advance to next instruction page
  */
-takeNextInstruction(messageData){
+takeNextInstruction: function takeNextInstruction(messageData){
     if(messageData.status.value == "success")
     {
         result = messageData.status.result;       
@@ -51,7 +51,7 @@ takeNextInstruction(messageData){
 /**
  * finish instructions
  */
-sendFinishInstructions(){
+sendFinishInstructions: function sendFinishInstructions(){
 
     if(this.working) return;
     
@@ -62,7 +62,7 @@ sendFinishInstructions(){
 /**
  * finish instructions
  */
-takeFinishInstructions(messageData){
+takeFinishInstructions: function takeFinishInstructions(messageData){
     if(messageData.status.value == "success")
     {
         result = messageData.status.result;       
@@ -79,7 +79,7 @@ takeFinishInstructions(messageData){
 /**
  * process instruction page
  */
-processInstructionPage(){
+processInstructionPage: function processInstructionPage(){
 
     switch(this.session_player.current_instruction){
         case this.instructions.action_page_production:
@@ -110,7 +110,7 @@ processInstructionPage(){
 /**
  * scroll instruction into view
  */
-instructionDisplayScroll(){
+instructionDisplayScroll: function instructionDisplayScroll(){
     
     document.getElementById("instructions_frame").scrollIntoView();
 
@@ -127,7 +127,7 @@ instructionDisplayScroll(){
 /**
  * simulate production on page 2
  */
-simulateProductionInstructions(){
+simulateProductionInstructions: function simulateProductionInstructions(){
     if(this.session.current_experiment_phase != 'Instructions') return;
     if(this.session_player.current_instruction != this.instructions.action_page_production) return;
 
@@ -145,7 +145,7 @@ simulateProductionInstructions(){
 /**
  * simulate_do_period_production
  */
-simulate_do_period_production(){
+simulate_do_period_production: function simulate_do_period_production(){
 
     if(this.session.current_experiment_phase != 'Instructions') return;
     if(this.session_player.current_instruction !=  this.instructions.action_page_production) return;
@@ -197,7 +197,7 @@ simulate_do_period_production(){
 /**
  * setup page 3 instructions
  */
-setup_page_3_instructions(){
+setup_page_3_instructions: function setup_page_3_instructions(){
 
     this.simulate_clear_goods_instructions();
 
@@ -222,7 +222,7 @@ setup_page_3_instructions(){
 /**
  * reset all goods to zero during instructions
  */
-simulate_clear_goods_instructions(){
+simulate_clear_goods_instructions: function simulate_clear_goods_instructions(){
 
     let session_players = this.session.session_players;
     let result = [];
@@ -249,7 +249,7 @@ simulate_clear_goods_instructions(){
 /**
  * simulate_do_period_production_function
  */
-simulate_do_period_production_function(good_production_1, good_production_2, good_production_3, production_rate){
+simulate_do_period_production_function: function simulate_do_period_production_function(good_production_1, good_production_2, good_production_3, production_rate){
 
     let total_time = this.session.parameter_set.period_length_production;
 
@@ -262,7 +262,7 @@ simulate_do_period_production_function(good_production_1, good_production_2, goo
 /**
  * simulate goods transfer on page 3
  */
-simulateGoodTransferInstructions(){
+simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
     this.clearMainFormErrors();
 
     if(pixi_transfer_source.name.type.toString() != "field" ||
@@ -347,7 +347,7 @@ simulateGoodTransferInstructions(){
 /**
  * simulate goods transfer on page 4
  */
- simulateChatInstructions(){
+ simulateChatInstructions: function simulateChatInstructions(){
     if(this.session_player.current_instruction != this.instructions.action_page_chat) return;
 
     if(this.chat_text.trim() == "") return;
@@ -389,7 +389,7 @@ simulateGoodTransferInstructions(){
     this.chat_text="";
 },
 
-scroll_update()
+scroll_update: function scroll_update()
 {
     var scrollTop = document.getElementById('instructions_frame_a').scrollTop;
     var scrollHeight = document.getElementById('instructions_frame_a').scrollHeight; // added

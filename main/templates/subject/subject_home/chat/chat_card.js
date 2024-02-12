@@ -1,4 +1,4 @@
-sendChat(){
+sendChat: function sendChat(){
 
     if(this.working) return;
     if(this.chat_text.trim() == "") return;
@@ -15,7 +15,7 @@ sendChat(){
 
 /** take result of moving goods
 */
-takeChat(messageData){
+takeChat: function takeChat(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
@@ -32,7 +32,7 @@ takeChat(messageData){
 /** take updated data from goods being moved by another player
 *    @param messageData {json} session day in json format
 */
-takeUpdateChat(messageData){
+takeUpdateChat: function takeUpdateChat(messageData){
     
     let result = messageData.status;
     let chat = result.chat;
@@ -99,7 +99,7 @@ takeUpdateChat(messageData){
 /** update who should receive chat
 *    @param messageData {json} session day in json format
 */
-updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
+updateChatRecipients: function updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
 
     this.chat_recipients = chat_recipients;
     this.chat_button_label = chat_button_label;
@@ -119,7 +119,7 @@ updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
 
 /** update chat displayed on the screen
  */
-updateChatDisplay(){
+updateChatDisplay: function updateChatDisplay(){
 
     if(app.chat_recipients=="NONE") return;
 
@@ -145,7 +145,7 @@ updateChatDisplay(){
     // }
 },
 
-updateChatDisplayScroll(){
+updateChatDisplayScroll: function updateChatDisplayScroll(){
     // var elmnt = document.getElementById("chat_id_" + this.chat_list_to_display[this.chat_list_to_display.length-1].id.toString());
     // elmnt.scrollIntoView(); 
 },

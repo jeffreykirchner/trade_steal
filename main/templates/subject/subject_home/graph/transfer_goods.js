@@ -1,6 +1,6 @@
 /** show transfer modal when mouse up on valid target
 */
-showTransferModal(container){
+showTransferModal: function showTransferModal(container){
 
     if(app.pixi_modal_open) return;
 
@@ -42,7 +42,7 @@ showTransferModal(container){
 
 /** hide transfer modal
 */
-hideTransferModal:function(){
+hideTransferModal:function hideTransferModal(){
     
     app.clearMainFormErrors();
 
@@ -57,7 +57,7 @@ hideTransferModal:function(){
     app.turnOffHighlights();
 },
 
-sendMoveGoods(){
+sendMoveGoods: function sendMoveGoods(){
     
     if(this.working == true) return;
     if(!pixi_transfer_source) return;
@@ -107,7 +107,7 @@ sendMoveGoods(){
 
 /** take result of moving goods
 */
-takeMoveGoods(messageData){
+takeMoveGoods: function takeMoveGoods(messageData){
     //app.cancelModal=false;
     app.clearMainFormErrors();
 
@@ -126,7 +126,7 @@ takeMoveGoods(messageData){
 /**
  * close and reset the move modals
  */
-closeMoveModal(){
+closeMoveModal: function closeMoveModal(){
     app.moveTwoGoodsModal.hide();
     app.moveThreeGoodsModal.hide();
 
@@ -138,14 +138,14 @@ closeMoveModal(){
 /** take updated data from goods being moved by another player
 *    @param messageData {json} session day in json format
 */
-takeUpdateMoveGoods(messageData){
+takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
     app.takeUpdateGoods(messageData);
 },
 
 /** update good counts of players in list
 *    @param messageData {json} session day in json format
 */
-takeUpdateGoods(messageData){
+takeUpdateGoods: function takeUpdateGoods(messageData){
     results = messageData.status.result;
 
     let session_player = this.session_player;
@@ -202,7 +202,7 @@ takeUpdateGoods(messageData){
 /**
  * scroll notice text to the bottom
  */
-updateNoticeDisplayScroll(){
+updateNoticeDisplayScroll: function updateNoticeDisplayScroll(){
     // if(this.session_player.notices.length==0) return;
 
     // var elmnt = document.getElementById("notice_id_" + app.session_player.notices[app.session_player.notices.length-1].id.toString());

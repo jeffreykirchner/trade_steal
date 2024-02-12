@@ -77,14 +77,14 @@ var app = Vue.createApp({
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected(){            
+        handleSocketConnected: function handleSocketConnected(){            
             app.sendGetSession();
         },
 
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage(data) {
+        takeMessage: function takeMessage(data){
 
             {%if DEBUG%}
             console.log(data);
@@ -219,7 +219,7 @@ var app = Vue.createApp({
         *    @param messageType {string} type of message sent to server
         *    @param messageText {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {            
+        sendMessage:function sendMessage(messageType, messageText) {            
 
             this.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
@@ -229,14 +229,14 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        sendGetSession(){
+        sendGetSession: function sendGetSession(){
             app.sendMessage("get_session",{"sessionKey" : app.sessionKey});
         },
 
         /** take create new session
         *    @param messageData {json} session day in json format
         */
-        takeGetSession(messageData){
+        takeGetSession: function takeGetSession(messageData){
             
             app.destroyPixiPlayers();
 
@@ -275,8 +275,8 @@ var app = Vue.createApp({
 
         /**
          * handle window resize event
-         */
-         handleResize(){
+        */
+        handleResize: function handleResize(){
 
             setTimeout(function(){
                 let canvas = document.getElementById('sd_graph_id');
@@ -291,7 +291,7 @@ var app = Vue.createApp({
 
         /**update text of move on button based on current state
          */
-        updatePhaseButtonText(){
+        updatePhaseButtonText: function updatePhaseButtonText(){
             if(this.session.finished && this.session.current_experiment_phase == "Done")
             {
                 this.move_to_next_phase_text = '** Session complete **';
@@ -328,7 +328,7 @@ var app = Vue.createApp({
         /** take updated data from goods being moved by another player
         *    @param messageData {json} session day in json format
         */
-        takeUpdateChat(messageData){
+        takeUpdateChat: function takeUpdateChat(messageData){
             
             let result = messageData.status;
             let chat = result.chat;
@@ -344,7 +344,7 @@ var app = Vue.createApp({
         /**
          * update chat displayed based on town chosen
          */
-        updateChatDisplay(force_scroll){
+        updateChatDisplay: function updateChatDisplay(force_scroll){
             
             this.chat_list_to_display=Array.from(this.session.chat_all[parseInt(this.current_town)]);
         },
@@ -352,7 +352,7 @@ var app = Vue.createApp({
         /**
          * update chat displayed based on town chosen
          */
-        updateNoticeDisplay(forceScroll){            
+        updateNoticeDisplay: function updateNoticeDisplay(forceScroll){            
             this.notice_list_to_display=Array.from(this.session.notices[parseInt(this.current_town)]);
             // setTimeout(function() {  app.updateNoticeDisplayScrollStaff(forceScroll); }, 250);
         },
@@ -360,7 +360,7 @@ var app = Vue.createApp({
         /**
          * show applicable notices.
          */
-        takeUpdateNotice(messageData){
+        takeUpdateNotice: function takeUpdateNotice(messageData){
 
             let result = messageData.status.result;
 
@@ -387,7 +387,7 @@ var app = Vue.createApp({
             
         },
 
-        updateNoticeDisplayScrollStaff(force_scroll){
+        updateNoticeDisplayScrollStaff: function updateNoticeDisplayScrollStaff(force_scroll){
             if(!app.session.timer_running) return;
 
             if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
@@ -403,7 +403,7 @@ var app = Vue.createApp({
         /**
          * update time and start status
          */
-        takeUpdateTime(messageData){
+        takeUpdateTime: function takeUpdateTime(messageData){
 
             let result = messageData.status.result;
             let status = messageData.status.value;
@@ -435,7 +435,7 @@ var app = Vue.createApp({
         /**
          * update single session period
          */
-        takeUpdatePeriod(period_update){
+        takeUpdatePeriod: function takeUpdatePeriod(period_update){
             if(!period_update) return;
 
             app.session.session_periods[period_update.period_number-1] = period_update;
@@ -445,21 +445,22 @@ var app = Vue.createApp({
         /**
          * take update end game
          */
-         takeUpdateEndGame(messageData){
+        takeUpdateEndGame: function takeUpdateEndGame(messageData){
 
-         },
+        },
 
         /**
          * change the town shown
          */
-        change_town_view(){
+        change_town_view: function change_town_view(){
             app.destroyPixiPlayers();
             app.setupPixiPlayers();
             app.updateChatDisplay(true);
             app.updateNoticeDisplay(true);
         },
+
         //do nothing on when enter pressed for post
-        onSubmit(){
+        onSubmit: function onSubmit(){
             //do nothing
         },
         
@@ -474,7 +475,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors(){
+        clearMainFormErrors: function clearMainFormErrors(){
             
             for(var item in app.session)
             {
@@ -492,7 +493,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors(errors){
+        displayErrors: function displayErrors(errors){
             for(let e in errors)
                 {
                     let str='<span id=id_errors_'+ e +' class="text-danger">';
