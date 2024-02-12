@@ -1,6 +1,6 @@
 /** send session update form   
 */
-sendUpdateSession(){
+sendUpdateSession: function sendUpdateSession(){
     this.cancelModal = false;
     this.working = true;
     app.sendMessage("update_session",{"formData" : {title:app.session.title}});
@@ -9,7 +9,7 @@ sendUpdateSession(){
 /** take update session reponse
  * @param messageData {json} result of update, either sucess or fail with errors
 */
-takeUpdateSession(messageData){
+takeUpdateSession: function takeUpdateSession(messageData){
     app.clearMainFormErrors();
 
     if(messageData.status == "success")
@@ -26,7 +26,7 @@ takeUpdateSession(messageData){
 
 /** show edit session modal
 */
-showEditSession:function(){
+showEditSession:function showEditSession(){
     app.clearMainFormErrors();
     this.cancelModal=true;
     this.sessionBeforeEdit = Object.assign({}, this.session);
@@ -36,7 +36,7 @@ showEditSession:function(){
 
 /** hide edit session modal
 */
-hideEditSession:function(){
+hideEditSession:function hideEditSession(){
     if(this.cancelModal)
     {
         Object.assign(this.session, this.sessionBeforeEdit);

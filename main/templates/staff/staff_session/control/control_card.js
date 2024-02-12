@@ -1,6 +1,6 @@
 /**start the experiment
 */
-start_experiment(){
+start_experiment: function start_experiment(){
     app.working = true;
     app.sendMessage("start_experiment", {});
 },
@@ -8,27 +8,27 @@ start_experiment(){
 /** take start experiment response
  * @param messageData {json}
 */
-takeStartExperiment(messageData){
+takeStartExperiment: function takeStartExperiment(messageData){
     app.takeGetSession(messageData);
 },
 
 /** update start status
 *    @param messageData {json} session day in json format
 */
-takeUpdateStartExperiment(messageData){
+takeUpdateStartExperiment: function takeUpdateStartExperiment(messageData){
     app.takeGetSession(messageData);
 },
 
 /** update start status
 *    @param messageData {json} session day in json format
 */
-takeUpdateResetExperiment(messageData){
+takeUpdateResetExperiment: function takeUpdateResetExperiment(messageData){
     app.takeGetSession(messageData);
 },
 
 /**reset experiment, remove all bids, asks and trades
 */
-reset_experiment(){
+reset_experiment: function reset_experiment(){
     if (!confirm('Reset session? All activity will be removed.')) {
         return;
     }
@@ -40,7 +40,7 @@ reset_experiment(){
 /** take reset experiment response
  * @param messageData {json}
 */
-takeResetExperiment(messageData){
+takeResetExperiment: function takeResetExperiment(messageData){
     app.change_town_view()
     app.chat_list_to_display=[];
     app.takeGetSession(messageData);
@@ -52,7 +52,7 @@ takeResetExperiment(messageData){
     }
 },
 
-resetConnections(){
+resetConnections: function resetConnections(){
     if (!confirm('Reset connection status?.')) {
         return;
     }
@@ -64,20 +64,20 @@ resetConnections(){
 /** update start status
 *    @param messageData {json} session day in json format
 */
-takeUpdateResetConnections(messageData){
+takeUpdateResetConnections: function takeUpdateResetConnections(messageData){
     app.takeGetSession(messageData);
 },
 
 /** take reset experiment response
  * @param messageData {json}
 */
-takeResetConnections(messageData){
+takeResetConnections: function takeResetConnections(messageData){
     app.takeGetSession(messageData);
 },
 
 /**advance to next phase
 */
-next_experiment_phase(){
+next_experiment_phase: function next_experiment_phase(){
 
     if (!confirm('Continue to the next phase of the experiment?')) {
         return;
@@ -90,7 +90,7 @@ next_experiment_phase(){
 /** take next period response
  * @param messageData {json}
 */
-takeNextPhase(messageData){
+takeNextPhase: function takeNextPhase(messageData){
     
     this.session.current_experiment_phase = messageData.status.current_experiment_phase;
     this.updatePhaseButtonText();
@@ -100,7 +100,7 @@ takeNextPhase(messageData){
 /** take next period response
  * @param messageData {json}
 */
-takeUpdateNextPhase(messageData){
+takeUpdateNextPhase: function takeUpdateNextPhase(messageData){
     
     this.session.current_experiment_phase = messageData.status.current_experiment_phase;
     this.updatePhaseButtonText();
@@ -111,7 +111,7 @@ takeUpdateNextPhase(messageData){
 /**
  * start the period timer
 */
-startTimer(){
+startTimer: function startTimer(){
     app.working = true;
 
     let action = "";
@@ -131,13 +131,13 @@ startTimer(){
 /** take start experiment response
  * @param messageData {json}
 */
-takeStartTimer(messageData){
+takeStartTimer: function takeStartTimer(messageData){
     app.takeUpdateTime(messageData);
 },
 
 /**reset experiment, remove all bids, asks and trades
 */
-endEarly(){
+endEarly: function endEarly(){
     if (!confirm('End the experiment after this period completes?')) {
         return;
     }
@@ -149,13 +149,13 @@ endEarly(){
 /** take reset experiment response
  * @param messageData {json}
 */
-takeEndEarly(messageData){
+takeEndEarly: function takeEndEarly(messageData){
    this.session.parameter_set.period_count = messageData.status.result;
 },
 
 /** send invitations
 */
-sendSendInvitations(){
+sendSendInvitations: function sendSendInvitations(){
 
     this.sendMessageModalForm.text = tinymce.get("id_invitation_subject").getContent();
 
@@ -176,7 +176,7 @@ sendSendInvitations(){
 /** take update subject response
  * @param messageData {json} result of update, either sucess or fail with errors
 */
-takeSendInvitations(messageData){
+takeSendInvitations: function takeSendInvitations(messageData){
     app.clearMainFormErrors();
 
     if(messageData.status.value == "success")
@@ -194,7 +194,7 @@ takeSendInvitations(messageData){
 
 /** show edit subject modal
 */
-showSendInvitations(){
+showSendInvitations: function showSendInvitations(){
 
     this.cancelModal=true;
 
@@ -208,14 +208,14 @@ showSendInvitations(){
 
 /** hide edit subject modal
 */
-hideSendInvitations(){
+hideSendInvitations: function hideSendInvitations(){
     this.emailResult = "";
 },
 
 /**
  * fill invitation with default values
  */
-fillDefaultInvitation(){
+fillDefaultInvitation: function fillDefaultInvitation(){
     this.sendMessageModalForm.subject = this.emailDefaultSubject;
     
     tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);

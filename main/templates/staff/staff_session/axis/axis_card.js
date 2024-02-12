@@ -1,6 +1,6 @@
 /**refresh the supply and demand canvas
 */
-update_graph_canvas:function(){
+update_graph_canvas:function update_graph_canvas(){
 
     var el = document.getElementById('efficiency_graph');
     el.setAttribute('width', el.clientWidth);
@@ -28,7 +28,7 @@ update_graph_canvas:function(){
 
 /** clear canvas of current image to be re-drawn
  */
-clear_canvas: function(chartID){
+clear_canvas: function clear_canvas(chartID){
     if(document.getElementById(chartID) == null)
     {
         return;
@@ -54,7 +54,7 @@ clear_canvas: function(chartID){
  * @param yLabel {string} label on Y axis
  * @param XLabel {string} label on X axis
 */
-draw_axis: function (chartID, marginY, marginX, marginTopAndRight, yMin, yMax, yTickCount, xMin, xMax, xTickCount, yLabel, xLabel){
+draw_axis: function draw_axis(chartID, marginY, marginX, marginTopAndRight, yMin, yMax, yTickCount, xMin, xMax, xTickCount, yLabel, xLabel){
     
     if(document.getElementById(chartID) == null)
     {
@@ -163,7 +163,7 @@ draw_axis: function (chartID, marginY, marginX, marginTopAndRight, yMin, yMax, y
  * @param xMax {int} ending value on X axis
  * @param period {int} period from 1 to N of which equilibrium lines will be drawn
 */
-draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin, yMax, xMin, xMax,)
+draw_efficiency_line:function draw_efficiency_line(chartID, marginY, marginX, marginTopAndRight, yMin, yMax, xMin, xMax,)
 {
     
     let canvas = document.getElementById(chartID),
@@ -270,7 +270,7 @@ draw_efficiency_line:function(chartID, marginY, marginX, marginTopAndRight, yMin
  * @param canvasWidth {int} width of the canvas in pixels
  * @param markerWidth {int} width of the marker or line in pixels
  */
-convertToX:function(value, maxValue, minValue, canvasWidth, markerWidth){
+convertToX:function convertToX(value, maxValue, minValue, canvasWidth, markerWidth){
     
     let tempT = parseFloat(canvasWidth) / parseFloat(maxValue-minValue);
 
@@ -290,7 +290,7 @@ convertToX:function(value, maxValue, minValue, canvasWidth, markerWidth){
  * @param canvasHeight {int} height of the canvas in pixels
  * @param markerHeight {int} height of the marker or line in pixels
  */
-convertToY:function(value, maxValue, minValue, canvasHeight, markerHeight){
+convertToY:function convertToY(value, maxValue, minValue, canvasHeight, markerHeight){
     markerHeight=0;
     
     tempT = canvasHeight / (maxValue-minValue);

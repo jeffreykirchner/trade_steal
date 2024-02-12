@@ -1,6 +1,6 @@
 /**send download summary data
 */
-downloadSummaryData(){
+downloadSummaryData: function downloadSummaryData(){
     app.working = true;
     this.data_downloading = true;
     app.sendMessage("download_summary_data", {});
@@ -9,7 +9,7 @@ downloadSummaryData(){
 /** take download summary data
  * @param messageData {json}
 */
-takeDownloadSummaryData(messageData){
+takeDownloadSummaryData: function takeDownloadSummaryData(messageData){
 
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", messageData.status.result]);
@@ -26,7 +26,7 @@ takeDownloadSummaryData(messageData){
 
 /**send download summary data
 */
-downloadActionsData(){
+downloadActionsData: function downloadActionsData(){
     app.working = true;
     this.data_downloading = true;
     app.sendMessage("download_action_data", {});
@@ -35,7 +35,7 @@ downloadActionsData(){
 /** take download summary data
  * @param messageData {json}
 */
-takeDownloadActionData(messageData){
+takeDownloadActionData: function takeDownloadActionData(messageData){
 
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", messageData.status.result]);
@@ -52,7 +52,7 @@ takeDownloadActionData(messageData){
 
 /**send download recruiter data
 */
-downloadRecruiterData(){
+downloadRecruiterData: function downloadRecruiterData(){
     app.working = true;
     this.data_downloading = true;
     app.sendMessage("download_recruiter_data", {});
@@ -61,7 +61,7 @@ downloadRecruiterData(){
 /** take download recruiter data
  * @param messageData {json}
 */
-takeDownloadRecruiterData(messageData){
+takeDownloadRecruiterData: function takeDownloadRecruiterData(messageData){
 
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", messageData.status.result]);
@@ -82,7 +82,7 @@ takeDownloadRecruiterData(messageData){
 
 /**send download payment data
 */
-downloadPaymentData(){
+downloadPaymentData: function downloadPaymentData(){
     app.working = true;
     this.data_downloading = true;
     app.sendMessage("download_payment_data", {});
@@ -91,7 +91,7 @@ downloadPaymentData(){
 /** take download payment data
  * @param messageData {json}
 */
-takeDownloadPaymentData(messageData){
+takeDownloadPaymentData: function takeDownloadPaymentData(messageData){
 
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", messageData.status.result]);
