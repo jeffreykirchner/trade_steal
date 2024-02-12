@@ -270,8 +270,7 @@ simulateGoodTransferInstructions(){
        pixi_transfer_source.name.user_id != this.session_player.id ||
        pixi_transfer_target.name.user_id != this.session_player.id) 
     {
-        let errors = {transfer_good_one_amount_2g:["For the purposes of the instructions, please transfer items from your field to your house."],
-                      transfer_good_one_amount_3g:["For the purposes of the instructions, please transfer items from your field to your house."]};
+        let errors = {transfer_good_one_amount_2g:["For the purposes of the instructions, please transfer items from your field to your house."]};
         this.displayErrors(errors);
         return;
     }
