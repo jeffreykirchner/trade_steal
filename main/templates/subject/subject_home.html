@@ -94,10 +94,14 @@
 
     <!-- experiment -->
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.current_experiment_phase != 'Done'">
-        <div class="col-md-9">
-            <div class="row mb-4 justify-content-end" v-if="session.parameter_set.information_mode != 'None'">
-                <div class="col-auto">
-                    {%include "subject/subject_home/information_card.html"%}
+        <div class="col-md-9 pe-0">
+            <div class="row" v-if="session.parameter_set.information_mode != 'None'">
+                <div class="col-md">
+                   <br>
+                   <br>
+                   <br>
+                   <br>
+                   <br> 
                 </div>
             </div>
             <div class="row">
@@ -112,16 +116,21 @@
                     {%include "subject/subject_home/production_card.html"%}
                 </div>            
             </div>
-            <div class="row mt-4">
+            <div class="row mt-2">
                 <div class="col-md">
                     {%include "subject/subject_home/earnings_card.html"%}
                 </div>            
             </div>
-            <div class="row mt-4">
+            <div class="row mt-2">
                 <div class="col-md">
                     {%include "subject/subject_home/summary_card.html"%}
                 </div>            
             </div>     
+            <div class="row mt-2">
+                <div class="col-md">
+                    {%include "subject/subject_home/information_card.html"%}
+                </div>            
+            </div>
         </div>
     </div>
 
