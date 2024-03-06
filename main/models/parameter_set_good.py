@@ -12,8 +12,9 @@ class ParameterSetGood(models.Model):
     '''
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE,  related_name="parameter_set_goods")
 
-    label =  models.CharField(verbose_name='Good One Label', max_length = 10, default="Orange")     #label for good 
-    rgb_color =  models.CharField(verbose_name='Good One RGB Color', max_length = 10, default="#FF5733")      #rgb color of good a   
+    label =  models.CharField(verbose_name='Good Label', max_length = 10, default="Orange")     #label for good 
+    abbreviation = models.CharField(verbose_name='Good Abbreviation', max_length = 2, blank=True, null=True)     #abbreviation for good
+    rgb_color =  models.CharField(verbose_name='Good RGB Color', max_length = 10, default="#FF5733")      #rgb color of good a   
     
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -27,6 +28,7 @@ class ParameterSetGood(models.Model):
         ordering = ['id']
         constraints = [
             models.UniqueConstraint(fields=['parameter_set', 'label'], name='unique_parameter_set_good_label'),
+            models.UniqueConstraint(fields=['parameter_set', 'abbreviation'], name='unique_parameter_set_good_abbreviation'),
             models.UniqueConstraint(fields=['parameter_set', 'rgb_color'], name='unique_parameter_set_good_rgb'),
         ]
 
@@ -39,6 +41,7 @@ class ParameterSetGood(models.Model):
         message = "Parameters loaded successfully."
 
         self.label = source.get("label")
+        self.abbreviation = source.get("abbreviation")
         self.rgb_color = source.get("rgb_color")
         
         self.save()
@@ -62,5 +65,6 @@ class ParameterSetGood(models.Model):
         return{
             "id" : self.id,
             "label" : self.label,
+            "abbreviation" : self.abbreviation,
             "rgb_color" : self.rgb_color,
         }

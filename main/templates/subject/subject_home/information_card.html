@@ -24,12 +24,12 @@
                             <td class="align-middle">
                                 <div v-if="p.parameter_set_player.parameter_set_type.good_preference=='Good One'">
                                     <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">
-                                        [[p.parameter_set_player.good_one.label]](O)
+                                        [[p.parameter_set_player.good_one.label]]([[p.parameter_set_player.good_one.abbreviation]])
                                     </span> 
                                 </div>
                                 <div v-else>
                                     <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">
-                                        [[p.parameter_set_player.good_two.label]](B)
+                                        [[p.parameter_set_player.good_two.label]]([[p.parameter_set_player.good_two.abbreviation]])
                                     </span>
                                 </div>
                             </td>
@@ -38,7 +38,7 @@
                                 <div class="row justify-content-center text-center">
                                     <div class="col" >
                                         
-                                        [[p.parameter_set_player.parameter_set_type.good_one_amount]]<span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">O</span>+[[p.parameter_set_player.parameter_set_type.good_two_amount]]<span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">B</span>
+                                        [[p.parameter_set_player.parameter_set_type.good_one_amount]]<span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.parameter_set_player.good_one.abbreviation]]</span>+[[p.parameter_set_player.parameter_set_type.good_two_amount]]<span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.parameter_set_player.good_two.abbreviation]]</span>
                                         =
                                         [[Math.max(p.parameter_set_player.parameter_set_type.good_one_amount, p.parameter_set_player.parameter_set_type.good_two_amount)]]¢
                                                                                     
