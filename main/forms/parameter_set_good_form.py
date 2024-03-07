@@ -14,6 +14,10 @@ class ParameterSetGoodForm(forms.ModelForm):
     label = forms.CharField(label='Good Label',
                             widget=forms.TextInput(attrs={"v-model":"current_parameter_set_good.label",
                                                           "maxlength": "10"}))
+    
+    abbreviation = forms.CharField(label='Good Abbreviation',
+                                    widget=forms.TextInput(attrs={"v-model":"current_parameter_set_good.abbreviation",
+                                                                    "maxlength": "2"}))
 
     rgb_color = forms.CharField(label='Good RGB Color',
                                 widget=forms.TextInput(attrs={"v-model":"current_parameter_set_good.rgb_color",
@@ -21,4 +25,4 @@ class ParameterSetGoodForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSetGood
-        fields =['label', 'rgb_color', ]
+        fields =['label', 'abbreviation', 'rgb_color', ]
