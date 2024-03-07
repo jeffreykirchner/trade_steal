@@ -175,13 +175,22 @@ class ParameterSet(models.Model):
         self.add_parameter_set_type(globals.SubjectType.FOUR, Decimal('0'), Decimal('2.530'), Decimal('1'), Decimal('0'), Decimal('1.1'),  Decimal('2'), 1, 2)
     
         # good setup
-        parameter_set_good_one = main.models.ParameterSetGood(parameter_set=self, label="Orange", rgb_color="#FF5733")
+        parameter_set_good_one = main.models.ParameterSetGood(parameter_set=self, 
+                                                              label="Orange", 
+                                                              abbreviation="O",
+                                                              rgb_color="#FF5733")
         parameter_set_good_one.save()
 
-        parameter_set_good_two = main.models.ParameterSetGood(parameter_set=self, label="Blue", rgb_color="#6495ED")
+        parameter_set_good_two = main.models.ParameterSetGood(parameter_set=self, 
+                                                              label="Blue", 
+                                                              abbreviation="B",
+                                                              rgb_color="#6495ED")
         parameter_set_good_two.save()
 
-        parameter_set_good_three = main.models.ParameterSetGood(parameter_set=self, label="Pink", rgb_color="#FF1493")
+        parameter_set_good_three = main.models.ParameterSetGood(parameter_set=self, 
+                                                                label="Pink", 
+                                                                abbreviation="P",
+                                                                rgb_color="#FF1493")
         parameter_set_good_three.save()
 
         #player setup
