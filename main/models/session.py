@@ -369,14 +369,14 @@ class Session(models.Model):
         writer = csv.writer(output)
 
         if not self.parameter_set.prolific_mode:
-            writer.writerow(['Session ID', 'Name', 'Student ID', 'Client #', 'Earnings', 'Avatar'])
+            writer.writerow(['Session ID', 'Name', 'Student ID', 'Client #','Study Subject ID', 'Earnings', 'Avatar'])
         else:
-            writer.writerow(['Session ID', 'Prolific Session ID', 'Prolific Subject ID', 'Client #', 'Earnings', 'Avatar'])
+            writer.writerow(['Session ID', 'Prolific Session ID', 'Prolific Subject ID', 'Study Subject ID', 'Client #', 'Earnings', 'Avatar'])
 
         session_players = self.session_players.all()
 
         for p in session_players:
-            writer.writerow([self.id, p.name, p.student_id, p.player_number, p.earnings/100, p.avatar.label if p.avatar else 'None'])
+            writer.writerow([self.id, p.name, p.student_id, p.player_key, p.player_number, p.earnings/100, p.avatar.label if p.avatar else 'None'])
 
         return output.getvalue()
 
