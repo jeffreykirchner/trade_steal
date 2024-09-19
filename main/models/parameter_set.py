@@ -5,6 +5,7 @@ import logging
 
 from decimal import Decimal
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.utils import IntegrityError
 from django.db.models import Sum
@@ -52,6 +53,8 @@ class ParameterSet(models.Model):
                                         default=globals.InformationModes.NONE)                                      #type of information mode
 
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
+
+    json_for_session = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set 
 
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -326,6 +329,20 @@ class ParameterSet(models.Model):
             return autarky_earnings / ce_earnings
         
         return 0
+    
+    def update_json_local(self):
+        '''
+        update json model
+        '''
+
+    def update_json_fk(self, update_avatars=False, 
+                             update_good=False, 
+                             update_player_group=False,
+                             update_player=False,
+                             update_type=False):
+        '''
+        update json model
+        '''
 
 
     def json(self):
