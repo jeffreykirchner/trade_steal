@@ -370,7 +370,7 @@ class ParameterSet(models.Model):
 
         self.save()
 
-    def update_json_fk(self, update_avatars=False, 
+    def update_json_fk(self, update_avatar=False, 
                              update_good=False, 
                              update_player=False,
                              update_type=False):
@@ -378,7 +378,7 @@ class ParameterSet(models.Model):
         update json model
         '''
 
-        if update_avatars:
+        if update_avatar:
             self.json_for_session["parameter_set_avatars"] = [a.json() for a in self.parameter_set_avatars_a.all()]
 
         if update_good:
@@ -452,6 +452,8 @@ class ParameterSet(models.Model):
         '''
         return json object for subject
         '''
+        return self.json()
+    
         return{
             "id" : self.id,
 

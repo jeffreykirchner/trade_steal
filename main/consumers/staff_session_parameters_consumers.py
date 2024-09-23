@@ -568,7 +568,8 @@ def take_update_parameterset_avatar(data):
 
     if form.is_valid():
         #print("valid form")             
-        form.save()              
+        form.save()  
+        parameter_set_avatar.parameter_set.update_json_fk(update_avatar=True)            
 
         return {"value" : "success", "result" : parameter_set_avatar.parameter_set.json()}                      
                                 
