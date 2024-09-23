@@ -170,6 +170,21 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                      "data": message_data["status"],
                      "sender_channel_name": self.channel_name},
                 )
+            
+    async def refresh_screens(self, event):
+        '''
+        refresh client and server screens
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_refresh_screens)(self.session_id,  event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     async def start_timer(self, event):
         '''
@@ -1108,6 +1123,25 @@ def take_anonymize_data(session_id, data):
     
     return {"value" : "success",
             "result" : list(result)}
+
+def take_refresh_screens(session_id, data):
+    '''
+    refresh screen
+    '''
+    logger = logging.getLogger(__name__)
+    # logger.info(f'refresh screen: {session_id} {data}')
+
+    try:        
+        session = Session.objects.get(id=session_id)
+        session.parameter_set.json(update_required=True)
+
+    except ObjectDoesNotExist:
+        logger.warning(f"take_refresh_screens session not found: {session_id}")
+        return {"status":"fail", 
+                "message":"Session not found",
+                "result":{}}
+
+    return {"session" : session.json()}
 
 
     

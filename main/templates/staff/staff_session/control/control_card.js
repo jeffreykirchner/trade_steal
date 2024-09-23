@@ -220,3 +220,29 @@ fillDefaultInvitation: function fillDefaultInvitation(){
     
     tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);
 },
+
+/**
+ * send refresh screens
+ */
+send_refresh_screens: function send_refresh_screens(message_data){
+    if (!confirm('Refresh the client and server screens?')) {
+        return;
+    }
+
+    app.working = true;
+    app.sendMessage("refresh_screens", {});
+},
+
+/**
+ * take refresh screens
+ */
+take_refresh_screens: function take_refresh_screens(message_data){
+    if(message_data.session != {})
+    {           
+        app.session = message_data.status.session;
+    } 
+    else
+    {
+       
+    }
+},

@@ -402,7 +402,7 @@ class ParameterSet(models.Model):
             
             self.json_for_session = {}
             self.update_json_local()
-            self.update_json_fk(update_avatars=True, 
+            self.update_json_fk(update_avatar=True, 
                                 update_good=True, 
                                 update_player=True,
                                 update_type=True)
