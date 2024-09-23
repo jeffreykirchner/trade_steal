@@ -499,7 +499,13 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         no group broadcast of survey complete
         '''
         pass
-
+    
+    async def update_refresh_screens(self, event):
+        '''
+        refresh staff screen
+        '''
+        pass
+       
 #local sync functions  
 def take_get_session_subject(session_player_id):
     '''

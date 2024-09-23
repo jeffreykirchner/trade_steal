@@ -281,6 +281,8 @@ def take_update_parameterset(data):
         session.parameter_set.update_group_counts()
         session.parameter_set.update_choice_avatar_counts()        
 
+        session.parameter_set.update_json_local()
+
         return {"value" : "success"}                      
                                 
     logger.info("Invalid paramterset form")
@@ -312,6 +314,8 @@ def take_update_parameterset_type(data):
         #print("valid form")             
         form.save()              
 
+        parameter_set_type.parameter_set.update_json_fk(update_type=True)
+
         return {"value" : "success"}                      
                                 
     logger.info("Invalid parameterset type form")
@@ -342,6 +346,7 @@ def take_update_parameterset_good(data):
     if form.is_valid():
         #print("valid form")             
         form.save()              
+        parameter_set_good.parameter_set.update_json_fk(update_good=True)
 
         return {"value" : "success"}                      
                                 
@@ -385,6 +390,8 @@ def take_update_parameterset_player(data):
         #print("valid form")             
         form.save()              
 
+        parameter_set_player.parameter_set.update_json_fk(update_player=True)
+
         return {"value" : "success"}                      
                                 
     logger.info("Invalid parameterset player form")
@@ -417,6 +424,8 @@ def take_update_parameterset_player_group(data):
         #print("valid form")             
         form.save()              
 
+        parameter_set_player_group.parameter_set_player.parameter_set.update_json_fk(update_player=True)
+
         return {"value" : "success"}                      
                                 
     logger.info("Invalid parameterset player group form")
@@ -439,6 +448,8 @@ def take_remove_parameterset_player(data):
     except ObjectDoesNotExist:
         logger.warning(f"take_remove_parameterset_player paramterset_player, not found ID: {paramterset_player_id}")
         return
+    
+    session.parameter_set.update_json_fk(update_player=True)
     
     return {"value" : "success"}
 
@@ -476,6 +487,8 @@ def take_add_paramterset_player(data):
 
     session.parameter_set.update_group_counts()
     session.update_player_count()
+
+    session.parameter_set.update_json_fk(update_player=True)
 
 def take_copy_groups_forward(data):
     '''
@@ -555,7 +568,8 @@ def take_update_parameterset_avatar(data):
 
     if form.is_valid():
         #print("valid form")             
-        form.save()              
+        form.save()  
+        parameter_set_avatar.parameter_set.update_json_fk(update_avatar=True)            
 
         return {"value" : "success", "result" : parameter_set_avatar.parameter_set.json()}                      
                                 
