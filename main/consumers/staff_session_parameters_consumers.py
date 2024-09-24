@@ -246,7 +246,7 @@ def get_session(id_):
 
     try:        
         session = Session.objects.get(id=id_)
-        return session.json()
+        return session.json_min()
     except ObjectDoesNotExist:
         logger.warning(f"get_session session, not found: {id_}")
         return {}

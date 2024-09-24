@@ -15,7 +15,7 @@ var app = Vue.createApp({
                     helpText : "Loading ...",
                     sessionID : {{session.id}},
                     session : {{session_json|safe}},
-                   
+                       
                     valuecost_modal_label:'Edit Value or Cost',
                     current_parameterset_type:{                       //json attached to parameterset type edit modal
                         id:0,
@@ -88,7 +88,13 @@ var app = Vue.createApp({
         /** fire when websocket connects to server
         */
         handleSocketConnected(){            
-            app.sendGetSession();
+            // app.sendGetSession();
+            if(!app.first_load_done)
+            {
+                Vue.nextTick(() => {
+                    app.do_first_load();
+                });
+            }
         },
 
         /** take websocket message from server
@@ -222,9 +228,9 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        sendGetSession(){
-            app.sendMessage("get_session",{"sessionID" : app.sessionID});
-        },
+        // sendGetSession(){
+        //     app.sendMessage("get_session",{"sessionID" : app.sessionID});
+        // },
 
         //do nothing on when enter pressed for post
         onSubmit(){
