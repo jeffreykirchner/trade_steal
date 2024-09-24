@@ -1,14 +1,8 @@
 echo "setup trade_steal"
 sudo service postgresql restart
-echo "drop db: enter db password"
-dropdb trade_steal -U dbadmin -h localhost -i
+echo "drop trade steal db: enter db password"
+dropdb trade_steal -U dbadmin -h localhost -i -p 5432
 echo "create database: enter db password"
-createdb -h localhost -U dbadmin -O dbadmin trade_steal
-source _trade_steal_env/bin/activate
-python manage.py migrate
-echo "create super user"
-python manage.py createsuperuser 
-echo "load fixtures"
-python manage.py loaddata main.json
-echo "setup done"
-python manage.py runserver
+createdb -h localhost -p 5432 -U dbadmin -O dbadmin trade_steal
+echo "restore database: enter db password"
+pg_restore -v --no-owner --role=dbowner --host=localhost --port=5432 --username=dbadmin --dbname=trade_steal database_dumps/trade_steal.sql

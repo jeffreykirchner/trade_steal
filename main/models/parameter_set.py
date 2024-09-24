@@ -5,6 +5,7 @@ import logging
 
 from decimal import Decimal
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.utils import IntegrityError
 from django.db.models import Sum
@@ -52,6 +53,8 @@ class ParameterSet(models.Model):
                                         default=globals.InformationModes.NONE)                                      #type of information mode
 
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
+
+    json_for_session = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set 
 
     timestamp = models.DateTimeField(auto_now_add= True)
     updated= models.DateTimeField(auto_now= True)
@@ -155,6 +158,9 @@ class ParameterSet(models.Model):
             for index, p in enumerate(new_parameter_set_avatars):
                 a=self.parameter_set_avatars_a.get(grid_location_row=p["grid_location_row"], grid_location_col=p["grid_location_col"])
                 a.from_dict(p)
+
+            self.json_for_session = None
+            self.save()
 
         except IntegrityError as exp:
             message = f"Failed to load parameter set: {exp}"
@@ -288,6 +294,8 @@ class ParameterSet(models.Model):
 
         for p in self.parameter_set_players.all():
             p.copy_group_foward(period_number)
+        
+        self.update_json_fk(update_player=True)
 
     def get_group(self, group_number, period_number):
         '''
@@ -326,12 +334,81 @@ class ParameterSet(models.Model):
             return autarky_earnings / ce_earnings
         
         return 0
+    
+    def update_json_local(self):
+        '''
+        update json model
+        '''
 
+        self.json_for_session["id"] = self.id
 
-    def json(self):
+        self.json_for_session["period_count"] = self.period_count
+        self.json_for_session["period_length_production"] = self.period_length_production
+        self.json_for_session["period_length_trade"] = self.period_length_trade
+        self.json_for_session["break_period_frequency"] = self.break_period_frequency
+        self.json_for_session["allow_stealing"] = "True" if self.allow_stealing else "False"
+        self.json_for_session["group_chat"] = "True" if self.group_chat else "False"
+        self.json_for_session["private_chat"] = "True" if self.private_chat else "False"
+        self.json_for_session["town_count"] = self.town_count
+        self.json_for_session["good_count"] = self.good_count
+
+        self.json_for_session["show_instructions"] = "True" if self.show_instructions else "False"
+        self.json_for_session["instruction_set"] = self.instruction_set.json_min()
+        self.json_for_session["show_avatars"] = "True" if self.show_avatars else "False"
+        self.json_for_session["avatar_assignment_mode"] = self.avatar_assignment_mode
+        self.json_for_session["avatar_grid_row_count"] = self.avatar_grid_row_count
+        self.json_for_session["avatar_grid_col_count"] = self.avatar_grid_col_count
+        self.json_for_session["avatar_grid_text"] = self.avatar_grid_text
+
+        self.json_for_session["survey_required"] = "True" if self.survey_required else "False"
+        self.json_for_session["survey_link"] = self.survey_link
+        self.json_for_session["prolific_mode"] = "True" if self.prolific_mode else "False"
+        self.json_for_session["post_forward_link"] = self.post_forward_link
+        self.json_for_session["information_mode"] = self.information_mode
+
+        self.json_for_session["test_mode"] = "True" if self.test_mode else "False"
+
+        self.save()
+
+    def update_json_fk(self, update_avatar=False, 
+                             update_good=False, 
+                             update_player=False,
+                             update_type=False):
+        '''
+        update json model
+        '''
+
+        if update_avatar:
+            self.json_for_session["parameter_set_avatars"] = [a.json() for a in self.parameter_set_avatars_a.all()]
+
+        if update_good:
+            self.json_for_session["parameter_set_goods"] = [p.json() for p in self.parameter_set_goods.all()]
+
+        if update_player:
+            self.json_for_session["parameter_set_players"] = [p.json() for p in self.parameter_set_players.all()]
+
+        if update_type:
+            self.json_for_session["parameter_set_types"] = [p.json() for p in self.parameter_set_types.all()]
+
+        self.save()
+
+    def json(self, update_required=False):
         '''
         return json object of model
         '''
+
+        if not self.json_for_session or \
+               update_required:
+            
+            self.json_for_session = {}
+            self.update_json_local()
+            self.update_json_fk(update_avatar=True, 
+                                update_good=True, 
+                                update_player=True,
+                                update_type=True)
+
+        return self.json_for_session
+
         return{
             "id" : self.id,
             "town_count" : self.town_count,
@@ -375,6 +452,8 @@ class ParameterSet(models.Model):
         '''
         return json object for subject
         '''
+        return self.json()
+    
         return{
             "id" : self.id,
 

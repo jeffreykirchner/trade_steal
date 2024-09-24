@@ -1,6 +1,8 @@
 '''
 admin interface
 '''
+from django.utils.translation import ngettext
+
 from django.contrib import admin
 from django.contrib import messages
 from django.conf import settings
@@ -100,8 +102,20 @@ class SessionPlayerInline(admin.TabularInline):
 class SessionAdmin(admin.ModelAdmin):
     form = SessionFormAdmin
 
+    def refresh(self, request, queryset):
+
+        for i in queryset.all():
+            i.parameter_set.json(update_required=True)
+
+        self.message_user(request, ngettext(
+                '%d session is refreshed.',
+                '%d sessions are refreshed.',
+                queryset.count(),
+        ) % queryset.count(), messages.SUCCESS)
+
     readonly_fields = ['parameter_set']
     inlines = [SessionPlayerInline]
+    actions = ['refresh']
 
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerMove)
