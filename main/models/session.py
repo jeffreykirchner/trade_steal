@@ -426,6 +426,24 @@ class Session(models.Model):
             "autarky_efficiency" : self.parameter_set.get_autarky_efficiency(),
         }
     
+    def json_min(self):
+        '''
+        return json object of model
+        '''
+        return{
+            "id":self.id,
+            "title":self.title,
+            "start_date":self.get_start_date_string(),
+            "started":self.started,
+            "current_experiment_phase":self.current_experiment_phase,
+            "current_period":self.current_period,
+            "current_period_phase":self.current_period_phase,
+            "time_remaining":self.time_remaining,
+            "timer_running":self.timer_running,
+            "finished":self.finished,
+            "parameter_set":self.parameter_set.json(),
+        }
+    
     def json_for_subject(self, session_player):
         '''
         json object for subject screen
