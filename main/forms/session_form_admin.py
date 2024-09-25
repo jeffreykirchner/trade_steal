@@ -51,10 +51,16 @@ class SessionFormAdmin(forms.ModelForm):
     title = forms.CharField(label='Title',
                             widget=forms.TextInput(attrs={"size":"50"}))
     
+    channel_key = forms.CharField(label='Channel Key',
+                            widget=forms.TextInput(attrs={"size":"50"}))
+    
+    id_string = forms.CharField(label='ID String',
+                            widget=forms.TextInput(attrs={"size":"6"}))
+    
     shared = forms.BooleanField(label='Share parameterset with all.', required=False)
     locked = forms.BooleanField(label='Locked, prevent deletion.', required=False)
     soft_delete = forms.BooleanField(label='Soft Delete.', required=False)
 
     class Meta:
         model=Session
-        fields = ('creator', 'collaborators', 'title', 'shared', 'locked', 'soft_delete')
+        fields = ('creator', 'collaborators', 'title', 'shared', 'locked', 'soft_delete', 'id_string')

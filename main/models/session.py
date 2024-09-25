@@ -11,12 +11,15 @@ import logging
 import uuid
 import csv
 import io
+import random
+import string
 
 from django.conf import settings
 
 from django.dispatch import receiver
 from django.db import models
 from django.db.models.signals import post_delete
+from django.db.models.signals import post_save
 from django.utils.timezone import now
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -44,6 +47,8 @@ class Session(models.Model):
 
     channel_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Channel Key')     #unique channel to communicate on
     session_key = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name = 'Session Key')     #unique key for session to auto login subjects by id
+
+    id_string = models.CharField(max_length=6, unique=True, null=True, blank=True)                       #unique string for session to auto login subjects by id
 
     started =  models.BooleanField(default=False)                                #starts session and filll in session
     current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
@@ -410,6 +415,7 @@ class Session(models.Model):
             "locked":self.locked,
             "start_date":self.get_start_date_string(),
             "started":self.started,
+            "id_string":self.id_string,
             "current_experiment_phase":self.current_experiment_phase,
             "current_period":self.current_period,
             "current_period_phase":self.current_period_phase,
@@ -514,3 +520,17 @@ def post_delete_parameterset(sender, instance, *args, **kwargs):
     '''
     if instance.parameter_set:
         instance.parameter_set.delete()
+
+@receiver(post_save, sender=Session)
+def post_save_session(sender, instance, created, *args, **kwargs):
+    '''
+    after session is initialized
+    '''
+    if created:
+        id_string = ''.join(random.choices(string.ascii_lowercase, k=6))
+
+        while Session.objects.filter(id_string=id_string).exists():
+            id_string = ''.join(random.choices(string.ascii_lowercase, k=6))
+
+        instance.id_string = id_string
+        instance.save()
