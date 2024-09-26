@@ -61,7 +61,7 @@ class StaffSessionView(SingleObjectMixin, View):
                                "page_key" : f'session-{session.id}',
                                "parameters" : parameters,
                                "session" : session,
-                               "session_json":json.dumps(session.json(), cls=DjangoJSONEncoder),
+                               
                                })
     
     @method_decorator(login_required)

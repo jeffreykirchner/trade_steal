@@ -19,7 +19,7 @@ var app = Vue.createApp({
                     sessionID : {{session.id}},
                     sessionKey : "{{session.session_key}}",
                     other_color : 0xD3D3D3,
-                    session : {{session_json|safe}},
+                    session : null,
 
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
 
@@ -241,10 +241,9 @@ var app = Vue.createApp({
         */
         takeGetSession: function takeGetSession(messageData){
             
-            app.destroyPixiPlayers();
-
             app.session = messageData.session;
-
+            app.destroyPixiPlayers();
+            
             if(app.session.started)
             {
                 
@@ -255,9 +254,19 @@ var app = Vue.createApp({
             }
             
             if(!app.pixi_loaded)
-                setTimeout(app.setupPixi, 250);       
+            {
+                Vue.nextTick(() => {
+                    app.setupPixi();
+                });
+                // setTimeout(app.setupPixi, 250);  
+            }     
             else
-                setTimeout(app.setupPixiPlayers, 250);
+            {
+                Vue.nextTick(() => {
+                    app.setupPixiPlayers();
+                });
+                // setTimeout(app.setupPixiPlayers, 250);
+            }
             
             app.updateChatDisplay(true);
             app.updatePhaseButtonText();
