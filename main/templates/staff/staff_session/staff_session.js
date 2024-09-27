@@ -6,6 +6,8 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 {%include "subject/subject_home/graph/pixi_globals.js"%}
 
+let worker = null;
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
@@ -79,6 +81,15 @@ var app = Vue.createApp({
         */
         handleSocketConnected: function handleSocketConnected(){            
             app.sendGetSession();
+        },
+
+        /** fire trys to connect to server
+         * return true if re-connect should be allowed else false
+        */
+         handle_socket_connection_try: function handle_socket_connection_try(){         
+            app.session.world_state.timer_running = false;
+            if(worker) worker.terminate();
+            return true;
         },
 
         /** take websocket message from server

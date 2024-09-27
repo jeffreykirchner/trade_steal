@@ -52,6 +52,8 @@ class ParameterSet(models.Model):
                                         choices=globals.InformationModes.choices,
                                         default=globals.InformationModes.NONE)                                      #type of information mode
 
+    reconnection_limit = models.IntegerField(verbose_name='Limit Subject Screen Reconnection Trys', default=25)       #limit subject screen reconnection trys
+
     test_mode = models.BooleanField(default=False, verbose_name = 'Test Mode')                                #if true subject screens will do random auto testing
 
     json_for_session = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)                   #json model of parameter set 
@@ -105,6 +107,8 @@ class ParameterSet(models.Model):
             self.information_mode = new_ps.get("information_mode", globals.InformationModes.NONE)
 
             self.instruction_set = InstructionSet.objects.get(label=new_ps.get("instruction_set")["label"])
+
+            self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
             self.save()
 
@@ -365,6 +369,8 @@ class ParameterSet(models.Model):
         self.json_for_session["prolific_mode"] = "True" if self.prolific_mode else "False"
         self.json_for_session["post_forward_link"] = self.post_forward_link
         self.json_for_session["information_mode"] = self.information_mode
+
+        self.json_for_session["reconnection_limit"] = self.reconnection_limit
 
         self.json_for_session["test_mode"] = "True" if self.test_mode else "False"
 
