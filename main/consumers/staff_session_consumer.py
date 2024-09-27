@@ -220,17 +220,17 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 "sender_channel_name": self.channel_name,},
         )
 
-        if result["value"] == "success" and event["message_text"]["action"] == "start":
-            #start continue timer
-            await self.channel_layer.send(
-                self.channel_name,
-                {
-                    'type': "continue_timer",
-                    'message_text': {},
-                }
-            )
-        else:
-            logger.info(f"start_timer: {message}")
+        # if result["value"] == "success" and event["message_text"]["action"] == "start":
+        #     #start continue timer
+        #     await self.channel_layer.send(
+        #         self.channel_name,
+        #         {
+        #             'type': "continue_timer",
+        #             'message_text': {},
+        #         }
+        #     )
+        # else:
+        #     logger.info(f"start_timer: {message}")
         
         logger.info(f"start_timer complete {event}")
 
@@ -273,26 +273,26 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 )
 
             #if session is not over continue
-            if not timer_result["end_game"]:
+            # if not timer_result["end_game"]:
 
-                # await self.channel_layer.send(
-                #     self.channel_name,
-                #     {
-                #         'type': "continue_timer",
-                #         'message_text': {},
-                #     }
-                # )
+            #     # await self.channel_layer.send(
+            #     #     self.channel_name,
+            #     #     {
+            #     #         'type': "continue_timer",
+            #     #         'message_text': {},
+            #     #     }
+            #     # )
 
-                loop = asyncio.get_event_loop()
-                #loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
-                loop.call_later(1, asyncio.create_task, 
-                                self.channel_layer.send(
-                                    self.channel_name,
-                                    {
-                                        'type': "continue_timer",
-                                        'message_text': {},
-                                    }
-                                ))
+            #     loop = asyncio.get_event_loop()
+            #     #loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
+            #     loop.call_later(1, asyncio.create_task, 
+            #                     self.channel_layer.send(
+            #                         self.channel_name,
+            #                         {
+            #                             'type': "continue_timer",
+            #                             'message_text': {},
+            #                         }
+            #                     ))
 
         
         logger.info(f"continue_timer end")

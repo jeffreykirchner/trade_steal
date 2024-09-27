@@ -132,7 +132,21 @@ startTimer: function startTimer(){
  * @param messageData {json}
 */
 takeStartTimer: function takeStartTimer(messageData){
-    app.takeUpdateTime(messageData);
+    if(worker) worker.terminate();
+
+    // app.takeUpdateTime(messageData);
+    app.session.timer_running = messageData.timer_running;
+
+    if(app.session.timer_running)
+    {
+        worker = new Worker("/static/js/worker_timer.js");
+
+        worker.onmessage = function (evt) {   
+            app.sendMessage("continue_timer", {});
+        };
+
+        worker.postMessage(0);
+    }
 },
 
 /**reset experiment, remove all bids, asks and trades

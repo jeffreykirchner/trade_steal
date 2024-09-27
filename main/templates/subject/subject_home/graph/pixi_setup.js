@@ -9,9 +9,9 @@ setupPixi: function setupPixi(){
     //                   .add("{% static avatar_sprite_sheet %}")
     //                   .load(app.setupPixiSheets);
 
-    PIXI.Assets.add({alias:'graph_sprite_sheet', src:'{% static graph_sprite_sheet %}'});
+    PIXI.Assets.add({alias:'sprite_sheet_trade_steal', src:'{% static "sprite_sheet_trade_steal.json" %}'});
 
-    let load_list = ['graph_sprite_sheet'];
+    let load_list = ['sprite_sheet_trade_steal'];
 
     if(app.session.parameter_set.show_avatars=="True")
     {
@@ -114,7 +114,7 @@ resetPixiApp: function resetPixiApp(){
 setupPixiSheets: function setupPixiSheets(textures){
     pixi_textures = textures;
 
-    app.house_sheet = textures.graph_sprite_sheet;
+    app.house_sheet = textures.sprite_sheet_trade_steal;
     app.avatar_sheet = textures.avatar_sprite_sheet;
     app.house_sprite = new PIXI.Sprite(app.house_sheet.textures["House0000"]);
 

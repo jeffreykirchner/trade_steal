@@ -4,7 +4,7 @@ onmessage = async function (e) {
     // app.send_message("continue_timer", {});
     let go=true;
     while(go){
-        await sleep(333);
+        await sleep(1000);
         postMessage("");
     }
 };

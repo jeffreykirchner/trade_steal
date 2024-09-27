@@ -119,7 +119,7 @@ class ParameterSetForm(forms.ModelForm):
 
     reconnection_limit = forms.IntegerField(label='Re-connection Limit',
                                             min_value=1,
-                                            widget=forms.NumberInput(attrs={"v-model":"parameter_set.reconnection_limit",
+                                            widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.reconnection_limit",
                                                                             "step":"1",
                                                                             "min":"1"}))
 
