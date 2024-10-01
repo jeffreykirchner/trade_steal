@@ -87,7 +87,7 @@ var app = Vue.createApp({
          * return true if re-connect should be allowed else false
         */
          handle_socket_connection_try: function handle_socket_connection_try(){         
-            app.session.world_state.timer_running = false;
+            app.session.timer_running = false;
             if(worker) worker.terminate();
             return true;
         },
@@ -205,6 +205,8 @@ var app = Vue.createApp({
                 case "refresh_screens":
                     app.take_refresh_screens(messageData);
                     break;
+                case "stop_timer_pulse":
+                    app.take_stop_timer_pulse(messageData);
             }
 
             app.working = false;
@@ -294,6 +296,10 @@ var app = Vue.createApp({
             {
                 
             }
+
+            let v = {};
+            v.timer_running = app.session.timer_running;
+            app.takeStartTimer(v);
         },
 
         /**

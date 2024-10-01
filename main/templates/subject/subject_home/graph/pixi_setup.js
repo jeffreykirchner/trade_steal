@@ -109,7 +109,8 @@ resetPixiApp: function resetPixiApp(){
     pixi_app.stage.addChild(pixi_transfer_line);
 },
 
-/** load pixi sprite sheets
+/** 
+ * load pixi sprite sheets
 */
 setupPixiSheets: function setupPixiSheets(textures){
     pixi_textures = textures;
