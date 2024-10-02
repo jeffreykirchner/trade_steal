@@ -14,6 +14,13 @@ doWebSockets = function()
         app.chatSocket.onclose = function(e) {
             console.error('Socket closed, trying to connect ... ');
             app.reconnecting=true;
+
+            if(!app.handle_socket_connection_try()) 
+            {
+                console.error('Socket re-connection limit reached.');
+                return;
+            } 
+
             window.setTimeout(doWebSockets(), randomNumber(500,1500));            
         }; 
 

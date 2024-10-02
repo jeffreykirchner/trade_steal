@@ -6,6 +6,8 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 {%include "subject/subject_home/graph/pixi_globals.js"%}
 
+let worker = null;
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
@@ -79,6 +81,15 @@ var app = Vue.createApp({
         */
         handleSocketConnected: function handleSocketConnected(){            
             app.sendGetSession();
+        },
+
+        /** fire trys to connect to server
+         * return true if re-connect should be allowed else false
+        */
+         handle_socket_connection_try: function handle_socket_connection_try(){         
+            app.session.timer_running = false;
+            if(worker) worker.terminate();
+            return true;
         },
 
         /** take websocket message from server
@@ -194,6 +205,8 @@ var app = Vue.createApp({
                 case "refresh_screens":
                     app.take_refresh_screens(messageData);
                     break;
+                case "stop_timer_pulse":
+                    app.take_stop_timer_pulse(messageData);
             }
 
             app.working = false;
@@ -283,6 +296,10 @@ var app = Vue.createApp({
             {
                 
             }
+
+            let v = {};
+            v.timer_running = app.session.timer_running;
+            app.takeStartTimer(v);
         },
 
         /**

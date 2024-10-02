@@ -117,6 +117,12 @@ class ParameterSetForm(forms.ModelForm):
                                        choices=InformationModes.choices,
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.information_mode",}))
 
+    reconnection_limit = forms.IntegerField(label='Re-connection Limit',
+                                            min_value=1,
+                                            widget=forms.NumberInput(attrs={"v-model":"session.parameter_set.reconnection_limit",
+                                                                            "step":"1",
+                                                                            "min":"1"}))
+
     test_mode = forms.ChoiceField(label='Test Mode',
                                        choices=((True, 'Yes'), (False,'No' )),
                                        widget=forms.Select(attrs={"v-model":"session.parameter_set.test_mode",}))
@@ -127,7 +133,7 @@ class ParameterSetForm(forms.ModelForm):
                  'period_length_trade', 'break_period_frequency', 'allow_stealing' ,
                  'group_chat', 'private_chat', 'show_avatars', 'avatar_assignment_mode', 'avatar_grid_row_count', 
                  'avatar_grid_col_count', 'avatar_grid_text', 'show_instructions', 'instruction_set', 'survey_required', 
-                 'survey_link', 'prolific_mode', 'post_forward_link', 'information_mode', 'test_mode']
+                 'survey_link', 'prolific_mode', 'post_forward_link', 'information_mode', 'reconnection_limit', 'test_mode']
     
 
     def clean_survey_link(self):

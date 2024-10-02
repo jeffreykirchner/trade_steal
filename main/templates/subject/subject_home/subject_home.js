@@ -20,6 +20,7 @@ var app = Vue.createApp({
                     other_color : 0xD3D3D3,
                     session_player : null, 
                     session : null,
+                    reconnection_count : 0,
 
                     tick_tock : 0,
 
@@ -91,6 +92,24 @@ var app = Vue.createApp({
         */
         handleSocketConnected: function handleSocketConnected(){            
             app.sendGetSession();
+        },
+
+         /** fire trys to connect to server
+         * return true if re-connect should be allowed else false
+        */
+         handle_socket_connection_try: function handle_socket_connection_try(){            
+            if(!app.session) return true;
+
+            app.reconnection_count+=1;
+
+            if(app.reconnection_count > app.session.parameter_set.reconnection_limit)
+            {
+                app.reconnection_failed = true;
+                app.check_in_error_message = "Refresh your browser."
+                return false;
+            }
+
+            return true;
         },
 
         /** take websocket message from server

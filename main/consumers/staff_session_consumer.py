@@ -54,6 +54,7 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)       
 
         self.session_id = message_data["session"]["id"]
+        self.timer_running = message_data["session"]["timer_running"]
 
         message = {}
         message["messageType"] = event["type"]
@@ -220,17 +221,17 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 "sender_channel_name": self.channel_name,},
         )
 
-        if result["value"] == "success" and event["message_text"]["action"] == "start":
-            #start continue timer
-            await self.channel_layer.send(
-                self.channel_name,
-                {
-                    'type': "continue_timer",
-                    'message_text': {},
-                }
-            )
-        else:
-            logger.info(f"start_timer: {message}")
+        # if result["value"] == "success" and event["message_text"]["action"] == "start":
+        #     #start continue timer
+        #     await self.channel_layer.send(
+        #         self.channel_name,
+        #         {
+        #             'type': "continue_timer",
+        #             'message_text': {},
+        #         }
+        #     )
+        # else:
+        #     logger.info(f"start_timer: {message}")
         
         logger.info(f"start_timer complete {event}")
 
@@ -239,10 +240,14 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         continue to next second of the experiment
         '''
         logger = logging.getLogger(__name__)
-        logger.info(f"continue_timer start")
+        # logger.info(f"continue_timer start")
 
         if not self.timer_running:
             logger.info(f"continue_timer timer off")
+            message = {}
+            message["messageType"] = "stop_timer_pulse"
+            message["messageData"] = {}
+            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
             return
 
         # await asyncio.sleep(1)
@@ -273,29 +278,29 @@ class StaffSessionConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                 )
 
             #if session is not over continue
-            if not timer_result["end_game"]:
+            # if not timer_result["end_game"]:
 
-                # await self.channel_layer.send(
-                #     self.channel_name,
-                #     {
-                #         'type': "continue_timer",
-                #         'message_text': {},
-                #     }
-                # )
+            #     # await self.channel_layer.send(
+            #     #     self.channel_name,
+            #     #     {
+            #     #         'type': "continue_timer",
+            #     #         'message_text': {},
+            #     #     }
+            #     # )
 
-                loop = asyncio.get_event_loop()
-                #loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
-                loop.call_later(1, asyncio.create_task, 
-                                self.channel_layer.send(
-                                    self.channel_name,
-                                    {
-                                        'type': "continue_timer",
-                                        'message_text': {},
-                                    }
-                                ))
+            #     loop = asyncio.get_event_loop()
+            #     #loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
+            #     loop.call_later(1, asyncio.create_task, 
+            #                     self.channel_layer.send(
+            #                         self.channel_name,
+            #                         {
+            #                             'type': "continue_timer",
+            #                             'message_text': {},
+            #                         }
+            #                     ))
 
         
-        logger.info(f"continue_timer end")
+        # logger.info(f"continue_timer end")
 
     async def download_summary_data(self, event):
         '''
@@ -892,7 +897,7 @@ def take_do_period_timer(session_id):
     else:
         return_json = session.do_period_timer()
 
-    logger.info(f"take_do_period_timer: {return_json}")
+    # logger.info(f"take_do_period_timer: {return_json}")
 
     return return_json
 

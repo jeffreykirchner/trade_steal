@@ -33,6 +33,9 @@ reset_experiment: function reset_experiment(){
         return;
     }
 
+    if(worker) worker.terminate();
+    app.session.timer_running = false;
+
     app.working = true;
     app.sendMessage("reset_experiment", {});
 },
@@ -132,7 +135,28 @@ startTimer: function startTimer(){
  * @param messageData {json}
 */
 takeStartTimer: function takeStartTimer(messageData){
-    app.takeUpdateTime(messageData);
+    if(worker) worker.terminate();
+
+    if("status" in messageData) app.takeUpdateTime(messageData);
+    // app.session.timer_running = messageData.result.timer_running;
+
+    if(app.session.timer_running)
+    {
+        worker = new Worker("/static/js/worker_timer.js");
+
+        worker.onmessage = function (evt) {   
+            app.sendMessage("continue_timer", {});
+        };
+
+        worker.postMessage(0);
+    }
+},
+
+/**
+ * stop local timer pulse 
+ */
+take_stop_timer_pulse: function take_stop_timer_pulse(){
+    if(worker) worker.terminate();
 },
 
 /**reset experiment, remove all bids, asks and trades
