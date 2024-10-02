@@ -113,7 +113,7 @@ class SessionAdmin(admin.ModelAdmin):
                 queryset.count(),
         ) % queryset.count(), messages.SUCCESS)
 
-    readonly_fields = ['parameter_set']
+    readonly_fields = ['parameter_set', 'channel_key', 'controlling_channel']
     inlines = [SessionPlayerInline]
     actions = ['refresh']
 
