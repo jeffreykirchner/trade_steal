@@ -20,8 +20,10 @@ class TimerMixin():
         '''
         start or stop timer 
         '''
+        logger = logging.getLogger(__name__) 
+
         if self.controlling_channel != self.channel_name:
-            logger.warning(f"start_timer: not controlling channel")
+            # logger.warning(f"start_timer: not controlling channel")
             return
         
         logger = logging.getLogger(__name__)
@@ -72,8 +74,10 @@ class TimerMixin():
         '''
         continue to next second of the experiment
         '''
+        logger = logging.getLogger(__name__) 
+        
         if self.controlling_channel != self.channel_name:
-            logger.warning(f"continue_timer: not controlling channel")
+            # logger.warning(f"continue_timer: not controlling channel")
             return
         
         logger = logging.getLogger(__name__)
