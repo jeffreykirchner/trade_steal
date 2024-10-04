@@ -181,7 +181,7 @@ takeEndEarly: function takeEndEarly(messageData){
 */
 sendSendInvitations: function sendSendInvitations(){
 
-    this.sendMessageModalForm.text = tinymce.get("id_invitation_subject").getContent();
+    this.sendMessageModalForm.text = tinymce.get("id_invitation_text").getContent();
 
     if(this.sendMessageModalForm.subject == "" || this.sendMessageModalForm.text == "")
     {
@@ -220,12 +220,12 @@ takeSendInvitations: function takeSendInvitations(messageData){
 */
 showSendInvitations: function showSendInvitations(){
 
-    this.cancelModal=true;
+    app.cancelModal=true;
 
-    this.sendMessageModalForm.subject = this.session.invitation_subject;
-    this.sendMessageModalForm.text = this.session.invitation_text;
+    app.sendMessageModalForm.subject = app.session.invitation_subject;
+    app.sendMessageModalForm.text = app.session.invitation_text;
 
-    tinymce.get("id_invitation_subject").setContent(this.sendMessageModalForm.text);
+    tinymce.get("id_invitation_text").setContent(app.sendMessageModalForm.text);
     
     app.send_message_modal.show();
 },
@@ -242,7 +242,7 @@ hideSendInvitations: function hideSendInvitations(){
 fillDefaultInvitation: function fillDefaultInvitation(){
     this.sendMessageModalForm.subject = this.emailDefaultSubject;
     
-    tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);
+    tinymce.get("id_invitation_text").setContent(this.emailDefaultText);
 },
 
 /**
