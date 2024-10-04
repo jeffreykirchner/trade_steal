@@ -1,12 +1,12 @@
 
-import json
-import logging
-import asyncio
+from asgiref.sync import sync_to_async
 
-from channels.db import database_sync_to_async
+import json
+
 from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import Session
+from main.models import SessionPlayer
 
 
 import main
