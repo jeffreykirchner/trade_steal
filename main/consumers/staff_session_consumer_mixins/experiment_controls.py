@@ -6,11 +6,11 @@ import json
 from django.db import transaction
 from django.core.serializers.json import DjangoJSONEncoder
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 
 from main.globals import ExperimentPhase
 from main.globals import send_mass_email_service
 from main.globals import AvatarModes
-
 
 import main
 
@@ -128,6 +128,35 @@ class ExperimentControlsMixin():
                      "data": message_data["status"],
                      "sender_channel_name": self.channel_name},
                 )
+            
+    async def send_invitations(self, event):
+        '''
+        send invitations to subjects
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_send_invitations)(self.session_id,  event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+    async def refresh_screens(self, event):
+        '''
+        refresh client and server screens
+        '''
+
+        message_data = {}
+        message_data["status"] = await sync_to_async(take_refresh_screens)(self.session_id,  event["message_text"])
+
+        message = {}
+        message["messageType"] = event["type"]
+        message["messageData"] = message_data
+
+
+        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     
     #consumer updates
@@ -181,19 +210,21 @@ class ExperimentControlsMixin():
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
-    async def send_invitations(self, event):
+    async def update_next_phase(self, event):
         '''
-        send invitations to subjects
+        update session phase
         '''
 
         message_data = {}
-        message_data["status"] = await sync_to_async(take_send_invitations)(self.session_id,  event["message_text"])
+        message_data["status"] = event["data"]
 
         message = {}
         message["messageType"] = event["type"]
         message["messageData"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+
+   
 def take_start_experiment(session_id, data):
     '''
     start experiment
@@ -337,3 +368,23 @@ def take_send_invitations(session_id, data):
             "result" : {"email_result" : result,
                         "invitation_subject" : session.invitation_subject,
                         "invitation_text" : session.invitation_text }}
+
+def take_refresh_screens(session_id, data):
+    '''
+    refresh screen
+    '''
+    logger = logging.getLogger(__name__)
+    # logger.info(f'refresh screen: {session_id} {data}')
+
+    try:        
+        session = Session.objects.get(id=session_id)
+        session.parameter_set.json(update_required=True)
+
+    except ObjectDoesNotExist:
+        logger.warning(f"take_refresh_screens session not found: {session_id}")
+        return {"status":"fail", 
+                "message":"Session not found",
+                "result":{}}
+
+    return {"session" : session.json()}
+
