@@ -181,6 +181,29 @@ class StaffSessionConsumer(SocketConsumerMixin,
 
         #update not from a client
         if event["data"]["value"] == "fail":
+            if not self.session_id:
+                self.session_id = event["session_id"]
+
+            # logger.info(f"update_connection_status: event data {event}, channel name {self.channel_name}, group name {self.room_group_name}")
+
+            if "session" in self.room_group_name:
+                #connection from staff screen
+                if event["connect_or_disconnect"] == "connect":
+                    # session = await Session.objects.aget(id=self.session_id)
+                    self.controlling_channel = event["sender_channel_name"]
+
+                    if self.channel_name == self.controlling_channel:
+                        # logger.info(f"update_connection_status: controller {self.channel_name}, session id {self.session_id}")
+                        await Session.objects.filter(id=self.session_id).aupdate(controlling_channel=self.controlling_channel) 
+                        await self.channel_layer.group_send(self.room_group_name,
+                                                            {"type": "update_set_controlling_channel",
+                                                            "data": {"controlling_channel" : self.controlling_channel},
+                                                            "sender_channel_name": self.channel_name,},
+            )
+                else:
+                    #disconnect from staff screen
+                    pass
+            
             return
 
         message_data = {}
@@ -334,6 +357,13 @@ class StaffSessionConsumer(SocketConsumerMixin,
 
         await self.send(text_data=json.dumps({'message': message}, 
                         cls=DjangoJSONEncoder))
+        
+    async def update_set_controlling_channel(self, event):
+        '''
+        update controlling channel
+        '''
+        event_data = event["data"]
+        self.controlling_channel = event_data["controlling_channel"]
 #local async function
 
 #local sync functions    

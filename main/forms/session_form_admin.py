@@ -51,8 +51,8 @@ class SessionFormAdmin(forms.ModelForm):
     title = forms.CharField(label='Title',
                             widget=forms.TextInput(attrs={"size":"50"}))
     
-    channel_key = forms.CharField(label='Channel Key',
-                            widget=forms.TextInput(attrs={"size":"50"}))
+    # channel_key = forms.CharField(label='Channel Key',
+    #                         widget=forms.TextInput(attrs={"size":"50"}))
     
     id_string = forms.CharField(label='ID String',
                             widget=forms.TextInput(attrs={"size":"6"}))

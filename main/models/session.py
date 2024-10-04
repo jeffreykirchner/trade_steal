@@ -50,6 +50,8 @@ class Session(models.Model):
 
     id_string = models.CharField(max_length=6, unique=True, null=True, blank=True)                       #unique string for session to auto login subjects by id
 
+    controlling_channel = models.CharField(max_length = 300, default="")         #channel controlling session
+
     started =  models.BooleanField(default=False)                                #starts session and filll in session
     current_experiment_phase = models.CharField(max_length=100, choices=ExperimentPhase.choices, default=ExperimentPhase.RUN)         #current phase of expeirment
     current_period = models.IntegerField(default=0)                              #current period of the session

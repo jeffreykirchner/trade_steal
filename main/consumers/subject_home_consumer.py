@@ -255,6 +255,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
                  "sender_channel_name": self.channel_name},
             )
 
+    async def update_set_controlling_channel(self, event):
+        '''
+        only for subject screens
+        '''
+        pass
+
     #consumer updates
     async def update_start_experiment(self, event):
         '''
