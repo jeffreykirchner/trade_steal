@@ -228,7 +228,23 @@ var app = Vue.createApp({
             document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
             document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
 
+            tinyMCE.init({
+                target: document.getElementById('id_invitation_text'),
+                height : "400",
+                theme: "silver",
+                plugins: "directionality,paste,searchreplace,code",
+                directionality: "{{ directionality }}",
+            });
+    
+            // Prevent Bootstrap dialog from blocking focusin
+            document.addEventListener('focusin', (e) => {
+            if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                e.stopImmediatePropagation();
+            }
+            });
+
             app.first_load_done = true;
+
         },
 
         /** send websocket message to server

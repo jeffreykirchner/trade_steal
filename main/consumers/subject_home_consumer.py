@@ -511,6 +511,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         refresh staff screen
         '''
         pass
+
+    async def update_reset_connections(self, event):
+        '''
+        update reset experiment
+        '''
+        pass
        
 #local sync functions  
 def take_get_session_subject(session_player_id):
