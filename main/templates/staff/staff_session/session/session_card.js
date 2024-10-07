@@ -14,7 +14,7 @@ takeUpdateSession: function takeUpdateSession(messageData){
 
     if(messageData.status == "success")
     {
-        app.takeGetSession(messageData);       
+        app.takeGetSession(messageData.session);       
         app.edit_session_modal.hide();    
     } 
     else

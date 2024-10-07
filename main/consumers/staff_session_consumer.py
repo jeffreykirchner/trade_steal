@@ -5,28 +5,24 @@ from asgiref.sync import sync_to_async
 
 import json
 import logging
-import re
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import transaction
-from django.db.utils import IntegrityError
-from channels.layers import get_channel_layer
 
 from main.consumers import SocketConsumerMixin
 from main.consumers import StaffSubjectUpdateMixin
 
 from main.forms import SessionForm
-from main.forms import StaffEditNameEtcForm
 
 from main.models import Session
-from main.models import SessionPlayer
-from main.models import Parameters
 
 from .staff_session_consumer_mixins import *
 
+from .send_message_mixin import SendMessageMixin
+
 class StaffSessionConsumer(SocketConsumerMixin, 
                            StaffSubjectUpdateMixin,
+                           SendMessageMixin,
                            DataMixin,
                            TimerMixin,
                            SubjectControlsMixin,
@@ -50,18 +46,13 @@ class StaffSessionConsumer(SocketConsumerMixin,
         self.connection_type = "staff"
 
         #build response
-        message_data = {}
-        message_data["session"] = await sync_to_async(take_get_session)(self.connection_uuid)       
+        result = await sync_to_async(take_get_session)(self.connection_uuid)       
 
-        self.session_id = message_data["session"]["id"]
-        self.timer_running = message_data["session"]["timer_running"]
+        self.session_id = result["id"]
+        self.timer_running = result["timer_running"]
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_session(self, event):
         '''
@@ -70,22 +61,11 @@ class StaffSessionConsumer(SocketConsumerMixin,
         # logger = logging.getLogger(__name__) 
         # logger.info(f"Update Session: {event}")
 
-        #build response
-        message_data = {}
-        message_data =  await sync_to_async(take_update_session_form)(self.session_id, event["message_text"])
+        result =  await sync_to_async(take_update_session_form)(self.session_id, event["message_text"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
-
-
-
-    
-    
-    
     async def update_survey_complete(self, event):
         '''
         send survey complete update

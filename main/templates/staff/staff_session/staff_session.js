@@ -101,8 +101,8 @@ var app = Vue.createApp({
             console.log(data);
             {%endif%}
 
-            messageType = data.message.messageType;
-            messageData = data.message.messageData;
+            messageType = data.message.message_type;
+            messageData = data.message.message_data;
 
             switch(messageType) {                
                 case "get_session":
@@ -270,7 +270,7 @@ var app = Vue.createApp({
         */
         takeGetSession: function takeGetSession(messageData){
             
-            app.session = messageData.session;
+            app.session = messageData;
             app.destroyPixiPlayers();
             
             if(app.session.started)
