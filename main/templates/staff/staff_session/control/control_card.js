@@ -105,10 +105,10 @@ takeNextPhase: function takeNextPhase(messageData){
 */
 takeUpdateNextPhase: function takeUpdateNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    this.session.current_experiment_phase = messageData.current_experiment_phase;
     this.updatePhaseButtonText();
     
-    app.takeUpdatePeriod(messageData.status.period_update);
+    app.takeUpdatePeriod(messageData.period_update);
 },
 
 /**

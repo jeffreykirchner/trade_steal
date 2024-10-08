@@ -76,25 +76,14 @@ class ExperimentControlsMixin():
         '''
         advance to next phase in experiment
         '''
-        #update subject count
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
+        result = await sync_to_async(take_next_phase)(self.session_id, event["message_text"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        if message_data["status"]["value"] == "fail":
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        if result["value"] == "fail":
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
         else:
-            #send message to client pages
-            await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {"type": "update_next_phase",
-                     "data": message_data["status"],
-                     "sender_channel_name": self.channel_name},
-                )
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
             
     async def send_invitations(self, event):
         '''
@@ -164,14 +153,10 @@ class ExperimentControlsMixin():
         update session phase
         '''
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result = json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
    
 def take_start_experiment(session_id, data):

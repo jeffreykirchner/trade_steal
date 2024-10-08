@@ -490,9 +490,9 @@ var app = Vue.createApp({
 
             app.destroyPixiPlayers();
 
-            this.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
-            this.session.session_players = messageData.status.session_players;
-            this.session_player = messageData.status.session_player;
+            this.session.current_experiment_phase = messageData.session.current_experiment_phase;
+            this.session.session_players = messageData.session_players;
+            this.session_player = messageData.session_player;
 
             Vue.nextTick(() => {
                 // setTimeout(app.setupPixiPlayers, 250);
