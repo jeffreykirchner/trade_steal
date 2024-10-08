@@ -87,7 +87,7 @@ var app = Vue.createApp({
          * return true if re-connect should be allowed else false
         */
          handle_socket_connection_try: function handle_socket_connection_try(){         
-            app.session.timer_running = false;
+            if(app.session) app.session.timer_running = false;
             if(worker) worker.terminate();
             return true;
         },
@@ -270,7 +270,7 @@ var app = Vue.createApp({
         */
         takeGetSession: function takeGetSession(messageData){
             
-            app.session = messageData;
+            app.session = messageData.session;
             app.destroyPixiPlayers();
             
             if(app.session.started)

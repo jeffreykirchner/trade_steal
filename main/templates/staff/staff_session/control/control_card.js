@@ -174,7 +174,7 @@ endEarly: function endEarly(){
  * @param messageData {json}
 */
 takeEndEarly: function takeEndEarly(messageData){
-   this.session.parameter_set.period_count = messageData.status.result;
+   this.session.parameter_set.period_count = messageData.period_count;
 },
 
 /** send invitations

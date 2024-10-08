@@ -48,8 +48,8 @@ class StaffSessionConsumer(SocketConsumerMixin,
         #build response
         result = await sync_to_async(take_get_session)(self.connection_uuid)       
 
-        self.session_id = result["id"]
-        self.timer_running = result["timer_running"]
+        self.session_id = result["session"]["id"]
+        self.timer_running = result["session"]["timer_running"]
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -99,7 +99,7 @@ def take_get_session(session_key):
 
     # try:        
     session = Session.objects.get(session_key=session_key)
-    return session.json()
+    return {"session" : session.json()}
     # except ObjectDoesNotExist:
     #     logger.warning(f"staff get_session session, not found: {session_key}")
     #     return {}
