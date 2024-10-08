@@ -16,56 +16,40 @@ class DataMixin():
         download summary data
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_download_summary_data)(self.session_id)
+        result = await sync_to_async(take_download_summary_data)(self.session_id)
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def download_action_data(self, event):
         '''
         download summary data
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_download_action_data)(self.session_id)
+        result = await sync_to_async(take_download_action_data)(self.session_id)
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def download_recruiter_data(self, event):
         '''
         download summary data
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_download_recruiter_data)(self.session_id)
+        result = await sync_to_async(take_download_recruiter_data)(self.session_id)
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def download_payment_data(self, event):
         '''
         download payment data
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_download_payment_data)(self.session_id)
+        result = await sync_to_async(take_download_payment_data)(self.session_id)
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
 
 def take_download_summary_data(session_id):
