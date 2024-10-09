@@ -29,26 +29,18 @@ class SubjectControlsMixin():
 
         result = await sync_to_async(take_update_subject)(self.session_id,  event["message_text"])
 
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {"type": "update_update_subject",
-             "data": result,
-             "sender_channel_name": self.channel_name,},
-        )
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def email_list(self, event):
         '''
         take csv email list and load in to session players
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_email_list)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_email_list)(self.session_id,  event["message_text"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def anonymize_data(self, event):
         '''
@@ -57,30 +49,18 @@ class SubjectControlsMixin():
 
         result = await sync_to_async(take_anonymize_data)(self.session_id,  event["message_text"])
 
-        #update all 
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {"type": "update_anonymize_data",
-             "data": result,
-             "sender_channel_name": self.channel_name,},
-        )
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def update_anonymize_data(self, event):
         '''
         send anonymize data update to staff sessions
         '''
 
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        result = json.loads(event["group_data"])
 
-        message_data = {}
-        message_data["status"] = event["data"]
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_update_subject(self, event):
         '''
@@ -90,14 +70,10 @@ class SubjectControlsMixin():
         # logger = logging.getLogger(__name__) 
         # logger.info("Eng game update")
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result = json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
 
 def take_update_subject(session_id, data):
     '''
@@ -139,8 +115,6 @@ def take_update_subject(session_id, data):
                                 
     logger.info("Invalid session form")
     return {"status":"fail", "errors":dict(form.errors.items())}
-
-
 
 def take_email_list(session_id, data):
     '''

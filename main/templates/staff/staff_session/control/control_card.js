@@ -203,16 +203,16 @@ sendSendInvitations: function sendSendInvitations(){
 takeSendInvitations: function takeSendInvitations(messageData){
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {           
-        this.emailResult = "Result: " + messageData.status.result.email_result.mail_count.toString() + " messages sent.";
+        this.emailResult = "Result: " + messageData.result.email_result.mail_count.toString() + " messages sent.";
 
-        this.session.invitation_subject = messageData.status.result.invitation_subject;
-        this.session.invitation_text = messageData.status.result.invitation_text;
+        this.session.invitation_subject = messageData.result.invitation_subject;
+        this.session.invitation_text = messageData.result.invitation_text;
     } 
     else
     {
-        this.emailResult = messageData.status.result;
+        this.emailResult = messageData.result;
     } 
 },
 
