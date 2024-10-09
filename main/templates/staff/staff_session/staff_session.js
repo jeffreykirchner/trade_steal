@@ -450,8 +450,8 @@ var app = Vue.createApp({
          */
         takeUpdateTime: function takeUpdateTime(messageData){
 
-            let result = messageData.status.result;
-            let status = messageData.status.value;
+            let result = messageData.result;
+            let status = messageData.value;
 
             if(status == "fail") return;
 
@@ -464,7 +464,7 @@ var app = Vue.createApp({
 
             app.takeUpdateGoods({status : {result : result.session_players}});
             app.takeUpdateEarnings(messageData);
-            app.takeUpdatePeriod(messageData.status.period_update);
+            app.takeUpdatePeriod(messageData.period_update);
 
             app.updatePhaseButtonText();
 

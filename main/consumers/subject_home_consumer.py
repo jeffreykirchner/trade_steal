@@ -34,9 +34,13 @@ from main.globals import round_half_away_from_zero
 
 from main.decorators import check_sesison_started_ws
 
+from .send_message_mixin import SendMessageMixin
+
 import main
 
-class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
+class SubjectHomeConsumer(SocketConsumerMixin, 
+                          SendMessageMixin,
+                          StaffSubjectUpdateMixin):
     '''
     websocket session list
     '''    
@@ -60,16 +64,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         result = await sync_to_async(take_get_session_subject)(self.session_player_id)
 
-        #build response
-        message_data = {"status":{}}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def move_goods(self, event):
         '''
@@ -373,7 +369,7 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         update running, phase and time status
         '''
 
-        event_data = deepcopy(event["data"])
+        event_data = json.loads(deepcopy(event["group_data"]))
 
         #if new period is starting, update local info
         if event_data["result"]["do_group_update"]:
@@ -402,14 +398,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         event_data["result"]["session_players"] = session_players
 
-        message_data = {}
-        message_data["status"] = event_data
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_groups(self, event)  :
         '''

@@ -137,7 +137,7 @@ startTimer: function startTimer(){
 takeStartTimer: function takeStartTimer(messageData){
     if(worker) worker.terminate();
 
-    if("status" in messageData) app.takeUpdateTime(messageData);
+    if("result" in messageData) app.takeUpdateTime(messageData);
     // app.session.timer_running = messageData.result.timer_running;
 
     if(app.session.timer_running)
