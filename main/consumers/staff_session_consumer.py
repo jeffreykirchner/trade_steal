@@ -129,10 +129,10 @@ def take_update_session_form(session_id, data):
         #print("valid form")                
         form.save()              
 
-        return {"status":"success", "session" : session.json()}                      
+        return {"value":"success", "session" : session.json()}                      
                                 
     logger.info("Invalid session form")
-    return {"status":"fail", "errors":dict(form.errors.items())}
+    return {"value":"fail", "errors":dict(form.errors.items())}
 
 
 

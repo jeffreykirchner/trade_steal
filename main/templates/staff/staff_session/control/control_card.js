@@ -95,7 +95,7 @@ next_experiment_phase: function next_experiment_phase(){
 */
 takeNextPhase: function takeNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    this.session.current_experiment_phase = messageData.current_experiment_phase;
     this.updatePhaseButtonText();
 
 },
@@ -263,7 +263,7 @@ send_refresh_screens: function send_refresh_screens(message_data){
 take_refresh_screens: function take_refresh_screens(message_data){
     if(message_data.session != {})
     {           
-        app.session = message_data.status.session;
+        app.session = message_data.session;
     } 
     else
     {

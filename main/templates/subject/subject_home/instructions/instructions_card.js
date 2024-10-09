@@ -31,9 +31,9 @@ sendNextInstruction: function sendNextInstruction(direction){
  * advance to next instruction page
  */
 takeNextInstruction: function takeNextInstruction(messageData){
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        result = messageData.status.result;       
+        result = messageData.result;       
         
         this.session_player.current_instruction = result.current_instruction;
         this.session_player.current_instruction_complete = result.current_instruction_complete;
@@ -63,9 +63,9 @@ sendFinishInstructions: function sendFinishInstructions(){
  * finish instructions
  */
 takeFinishInstructions: function takeFinishInstructions(messageData){
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        result = messageData.status.result;       
+        result = messageData.result;       
         
         this.session_player.instructions_finished = result.instructions_finished;
         this.session_player.current_instruction_complete = result.current_instruction_complete;

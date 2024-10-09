@@ -394,7 +394,7 @@ var app = Vue.createApp({
 
             this.tick_tock = this.session.time_remaining % 2;
 
-            app.takeUpdateGoods({status : {result : result.session_players}});
+            app.takeUpdateGoods({result : result.session_players});
 
             //update subject earnings
             this.session_player.earnings = result.session_player_earnings.earnings;

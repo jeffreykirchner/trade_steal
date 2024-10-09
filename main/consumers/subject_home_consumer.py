@@ -73,26 +73,20 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         '''
         result = await sync_to_async(take_move_goods)(self.session_id, self.session_player_id, event["message_text"])
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
         # Send reply to sending channel
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         #if success send to all connected clients
         if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_move_goods",
-                 "data": result,
-                 'sender_channel_name': self.channel_name,
-                 'sender_group' : self.group_number,
-                 "sender_town" : self.town_number,},
-            )
+            group_result = {"type": "update_move_goods",
+                            "data": result,
+                            'sender_channel_name': self.channel_name,
+                            'sender_group' : self.group_number,
+                            "sender_town" : self.town_number,}
+
+            await self.send_message(message_to_self=None, message_to_group=group_result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
    
     async def chat(self, event):
         '''
@@ -346,23 +340,19 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         # logger = logging.getLogger(__name__) 
         # logger.info(f'update_goods{self.channel_name}')
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result =  json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        if self.channel_name == event['sender_channel_name']:
+        if self.channel_name == result['sender_channel_name']:
             return
 
-        if self.group_number != event['sender_group']:
+        if self.group_number != result['sender_group']:
             return
         
-        if self.town_number != event['sender_town']:
+        if self.town_number != result['sender_town']:
             return
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result["data"], message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_time(self, event):
         '''

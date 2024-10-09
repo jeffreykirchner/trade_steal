@@ -375,7 +375,7 @@ var app = Vue.createApp({
         */
         takeUpdateChat: function takeUpdateChat(messageData){
             
-            let result = messageData.status;
+            let result = messageData;
             let chat = result.chat;
             let town = result.town;
 
@@ -407,7 +407,7 @@ var app = Vue.createApp({
          */
         takeUpdateNotice: function takeUpdateNotice(messageData){
 
-            let result = messageData.status.result;
+            let result = messageData.result;
 
             for(i=0;i<result.length;i++)
             {
@@ -462,7 +462,7 @@ var app = Vue.createApp({
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
 
-            app.takeUpdateGoods({status : {result : result.session_players}});
+            app.takeUpdateGoods({result : result.session_players});
             app.takeUpdateEarnings(messageData);
             app.takeUpdatePeriod(messageData.period_update);
 

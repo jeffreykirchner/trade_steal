@@ -20,16 +20,10 @@ class SubjectUpdatesMixin():
         '''
         send chat to clients, if clients can view it
         '''
-        result = event["staff_result"]
+        result =  json.loads(event["staff_result"])
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_move_goods(self, event):
         '''
@@ -38,14 +32,10 @@ class SubjectUpdatesMixin():
         # logger = logging.getLogger(__name__) 
         # logger.info(f'update_goods{self.channel_name}')
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result =  json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result["data"], message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_groups(self, event)  :
         '''
@@ -54,14 +44,9 @@ class SubjectUpdatesMixin():
 
         result = await sync_to_async(take_update_groups)(self.session_id)
 
-        message_data = {}
-        message_data["status"] = result
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
 
     async def update_connection_status(self, event):
         '''
@@ -124,14 +109,11 @@ class SubjectUpdatesMixin():
         # logger = logging.getLogger(__name__) 
         # logger.info("Eng game update")
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result =  json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
     async def update_avatar(self, event):
         '''
@@ -141,14 +123,10 @@ class SubjectUpdatesMixin():
         # logger = logging.getLogger(__name__) 
         # logger.info("Eng game update")
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result =  json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_next_instruction(self, event):
         '''
@@ -158,14 +136,11 @@ class SubjectUpdatesMixin():
         # logger = logging.getLogger(__name__) 
         # logger.info("Eng game update")
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result =  json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
     async def update_finish_instructions(self, event):
         '''
@@ -175,14 +150,11 @@ class SubjectUpdatesMixin():
         # logger = logging.getLogger(__name__) 
         # logger.info("Eng game update")
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result =  json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
     async def update_production_time(self, event):
         '''
@@ -192,14 +164,11 @@ class SubjectUpdatesMixin():
         # logger = logging.getLogger(__name__) 
         # logger.info("Eng game update")
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result =  json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
     
 def take_update_groups(session_id):
     '''
