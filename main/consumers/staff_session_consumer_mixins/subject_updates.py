@@ -20,9 +20,9 @@ class SubjectUpdatesMixin():
         '''
         send chat to clients, if clients can view it
         '''
-        result =  json.loads(event["staff_result"])
+        result =  json.loads(event["group_data"])
 
-        await self.send_message(message_to_self=result, message_to_group=None,
+        await self.send_message(message_to_self=result["staff_result"], message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_move_goods(self, event):
