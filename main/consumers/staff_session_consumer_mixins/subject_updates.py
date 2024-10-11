@@ -71,35 +71,31 @@ class SubjectUpdatesMixin():
                     if self.channel_name == self.controlling_channel:
                         # logger.info(f"update_connection_status: controller {self.channel_name}, session id {self.session_id}")
                         await Session.objects.filter(id=self.session_id).aupdate(controlling_channel=self.controlling_channel) 
-                        await self.channel_layer.group_send(self.room_group_name,
-                                                            {"type": "update_set_controlling_channel",
-                                                            "data": {"controlling_channel" : self.controlling_channel},
-                                                            "sender_channel_name": self.channel_name,},
-            )
+
+                        result = {"controlling_channel" : self.controlling_channel}
+                        await self.send_message(message_to_self=None, message_to_group=result,
+                                                message_type="set_controlling_channel", send_to_client=False, send_to_group=True)
+            
                 else:
                     #disconnect from staff screen
                     pass
             
             return
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result = event["data"]
 
         #get subject name and student id
-        subject_id = message_data["status"]["result"]["id"]
+        subject_id = result["result"]["id"]
 
         session_player = await SessionPlayer.objects.aget(id=subject_id)
-        message_data["status"]["result"]["name"] = session_player.name
-        message_data["status"]["result"]["student_id"] = session_player.student_id
-        message_data["status"]["result"]["current_instruction"] = session_player.current_instruction
-        message_data["status"]["result"]["survey_complete"] = session_player.survey_complete
-        message_data["status"]["result"]["instructions_finished"] = session_player.instructions_finished
+        result["result"]["name"] = session_player.name
+        result["result"]["student_id"] = session_player.student_id
+        result["result"]["current_instruction"] = session_player.current_instruction
+        result["result"]["survey_complete"] = session_player.survey_complete
+        result["result"]["instructions_finished"] = session_player.instructions_finished
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_name(self, event):
         '''

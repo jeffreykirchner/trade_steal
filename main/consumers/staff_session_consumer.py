@@ -84,8 +84,8 @@ class StaffSessionConsumer(SocketConsumerMixin,
         '''
         update controlling channel
         '''
-        event_data = event["data"]
-        self.controlling_channel = event_data["controlling_channel"]
+        result = json.loads(event["group_data"])
+        self.controlling_channel = result["controlling_channel"]
 #local async function
 
 #local sync functions    
