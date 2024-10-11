@@ -21,11 +21,11 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.utils.timezone import now
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 
 import main
 
-from main.models import ParameterSet, avatar
+from main.models import ParameterSet
 
 from main.globals import PeriodPhase
 from main.globals import AvatarModes
@@ -65,6 +65,8 @@ class Session(models.Model):
 
     invitation_text = HTMLField(default="", verbose_name="Invitation Text")      #inviataion email subject and text
     invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
+
+    world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
 
     soft_delete =  models.BooleanField(default=False)                            #hide session if true
 
@@ -143,6 +145,8 @@ class Session(models.Model):
 
         for i in self.session_players.all():
             i.start()
+        
+        self.setup_world_state()
     
     def pre_assign_avatars(self):
         '''
@@ -166,6 +170,7 @@ class Session(models.Model):
         self.current_experiment_phase = ExperimentPhase.RUN
         self.time_remaining = self.parameter_set.period_length_production
         self.timer_running = False
+        self.world_state = {}
 
         for p in self.session_players.all():
             p.reset()
@@ -386,6 +391,17 @@ class Session(models.Model):
             writer.writerow([self.id, p.name, p.student_id, p.player_key, p.player_number, p.earnings/100, p.avatar.label if p.avatar else 'None'])
 
         return output.getvalue()
+
+    def setup_world_state(self):
+        '''
+        setup world state
+        '''
+        self.world_state = {"last_update":str(datetime.now()), 
+                            "last_store":str(datetime.now()),
+                            "timer_history":[],
+                           }
+        
+        self.save()
 
     def json(self):
         '''

@@ -100,15 +100,10 @@ class ExperimentControlsMixin():
         refresh client and server screens
         '''
 
-        message_data = {}
-        message_data["status"] = await sync_to_async(take_refresh_screens)(self.session_id,  event["message_text"])
+        result = await sync_to_async(take_refresh_screens)(self.session_id,  event["message_text"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     
     #consumer updates
