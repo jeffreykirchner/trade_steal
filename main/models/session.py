@@ -6,6 +6,7 @@ from datetime import datetime
 from tinymce.models import HTMLField
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from asgiref.sync import sync_to_async
 
 import logging
 import uuid
@@ -193,6 +194,15 @@ class Session(models.Model):
 
         return self.session_periods.get(period_number=self.current_period)
     
+    async def aget_current_session_period(self):
+        '''
+        return the current session period
+        '''
+        if not self.started:
+            return None
+
+        return await self.session_periods.aget(period_number=self.current_period)
+    
     def update_player_count(self):
         '''
         update the number of session players based on the number defined in the parameterset
@@ -230,7 +240,6 @@ class Session(models.Model):
 
         notice_list = []
         
-
         if not status == "fail" and not end_game:
 
             if self.time_remaining == 0:
@@ -448,6 +457,7 @@ class Session(models.Model):
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
             "autarky_efficiency" : self.parameter_set.get_autarky_efficiency(),
+            "world_state" : self.world_state,
         }
     
     def json_min(self):

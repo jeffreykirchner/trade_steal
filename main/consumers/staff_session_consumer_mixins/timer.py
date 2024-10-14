@@ -34,8 +34,13 @@ class TimerMixin():
 
         if event["message_text"]["action"] == "start":
             self.timer_running = True
+
+            self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+                                                            "count": 0})
         else:
             self.timer_running = False
+
+        await self.store_world_state(force_store=True)
 
         #Send reply to sending channel
         if self.timer_running == True:
@@ -65,16 +70,21 @@ class TimerMixin():
             logger.info(f"continue_timer timer off")
             result = {}
             await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type="stop_timer_pulse", send_to_client=True, send_to_group=False)
+                                    message_type="stop_timer_pulse", send_to_client=True, send_to_group=False)
             return
+        
+        session = await Session.objects.select_related("parameter_set").aget(id=self.session_id)
 
-        if not self.timer_running:
-            logger.info(f"continue_timer timer off")
-            return
-
-        result = await sync_to_async(take_do_period_timer)(self.session_id)
+        if session.timer_running == False or session.finished:
+            result = {"value" : "fail", "result" : {"message" : "session no longer running"}}
+        else:
+            result = await sync_to_async(session.do_period_timer)()
 
         if result["value"] == "success":
+
+            ts = datetime.now() - datetime.strptime(self.world_state_local["timer_history"][-1]["time"],"%Y-%m-%dT%H:%M:%S.%f")
+            self.world_state_local["timer_history"][-1]["count"] = math.floor(ts.seconds)
+            await self.store_world_state(force_store=True)
 
             await self.send_message(message_to_self=None, message_to_group=result,
                                     message_type="time", send_to_client=False, send_to_group=True)
@@ -83,38 +93,6 @@ class TimerMixin():
                 await self.send_message(message_to_self=None, message_to_group={},
                                     message_type="groups", send_to_client=False, send_to_group=True)
                 
-                # await self.channel_layer.group_send(
-                #     self.room_group_name,
-                #     {"type": "update_groups",
-                #      "data": {},
-                #      "sender_channel_name": self.channel_name,},
-                # )
-
-            #if session is not over continue
-            # if not timer_result["end_game"]:
-
-            #     # await self.channel_layer.send(
-            #     #     self.channel_name,
-            #     #     {
-            #     #         'type': "continue_timer",
-            #     #         'message_text': {},
-            #     #     }
-            #     # )
-
-            #     loop = asyncio.get_event_loop()
-            #     #loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
-            #     loop.call_later(1, asyncio.create_task, 
-            #                     self.channel_layer.send(
-            #                         self.channel_name,
-            #                         {
-            #                             'type': "continue_timer",
-            #                             'message_text': {},
-            #                         }
-            #                     ))
-
-        
-        # logger.info(f"continue_timer end")
-
     async def update_time(self, event):
         '''
         update running, phase and time status

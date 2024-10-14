@@ -27,6 +27,7 @@ class StaffSessionConsumer(SocketConsumerMixin,
                            TimerMixin,
                            SubjectControlsMixin,
                            SubjectUpdatesMixin,
+                           WorldStateMixin,
                            ExperimentControlsMixin):
     '''
     websocket session list
@@ -34,6 +35,7 @@ class StaffSessionConsumer(SocketConsumerMixin,
 
     has_timer_control = False
     timer_running = False
+    world_state_local = {}            #local copy of world state
         
     async def get_session(self, event):
         '''
@@ -46,7 +48,9 @@ class StaffSessionConsumer(SocketConsumerMixin,
         self.connection_type = "staff"
 
         #build response
-        result = await sync_to_async(take_get_session)(self.connection_uuid)       
+        result = await sync_to_async(take_get_session)(self.connection_uuid)     
+
+        self.world_state_local = result["session"]["world_state"]  
 
         self.session_id = result["session"]["id"]
         self.timer_running = result["session"]["timer_running"]

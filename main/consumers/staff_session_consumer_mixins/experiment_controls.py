@@ -116,6 +116,8 @@ class ExperimentControlsMixin():
 
         result = await sync_to_async(main.consumers.take_get_session)(self.connection_uuid)
 
+        self.world_state_local = result['session']['world_state']
+
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
