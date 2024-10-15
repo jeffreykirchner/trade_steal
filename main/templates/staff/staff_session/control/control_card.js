@@ -95,7 +95,7 @@ next_experiment_phase: function next_experiment_phase(){
 */
 takeNextPhase: function takeNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    this.session.current_experiment_phase = messageData.current_experiment_phase;
     this.updatePhaseButtonText();
 
 },
@@ -105,10 +105,10 @@ takeNextPhase: function takeNextPhase(messageData){
 */
 takeUpdateNextPhase: function takeUpdateNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    this.session.current_experiment_phase = messageData.current_experiment_phase;
     this.updatePhaseButtonText();
     
-    app.takeUpdatePeriod(messageData.status.period_update);
+    app.takeUpdatePeriod(messageData.period_update);
 },
 
 /**
@@ -137,7 +137,7 @@ startTimer: function startTimer(){
 takeStartTimer: function takeStartTimer(messageData){
     if(worker) worker.terminate();
 
-    if("status" in messageData) app.takeUpdateTime(messageData);
+    if("result" in messageData) app.takeUpdateTime(messageData);
     // app.session.timer_running = messageData.result.timer_running;
 
     if(app.session.timer_running)
@@ -174,14 +174,14 @@ endEarly: function endEarly(){
  * @param messageData {json}
 */
 takeEndEarly: function takeEndEarly(messageData){
-   this.session.parameter_set.period_count = messageData.status.result;
+   this.session.parameter_set.period_count = messageData.period_count;
 },
 
 /** send invitations
 */
 sendSendInvitations: function sendSendInvitations(){
 
-    this.sendMessageModalForm.text = tinymce.get("id_invitation_subject").getContent();
+    this.sendMessageModalForm.text = tinymce.get("id_invitation_text").getContent();
 
     if(this.sendMessageModalForm.subject == "" || this.sendMessageModalForm.text == "")
     {
@@ -203,16 +203,16 @@ sendSendInvitations: function sendSendInvitations(){
 takeSendInvitations: function takeSendInvitations(messageData){
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {           
-        this.emailResult = "Result: " + messageData.status.result.email_result.mail_count.toString() + " messages sent.";
+        this.emailResult = "Result: " + messageData.result.email_result.mail_count.toString() + " messages sent.";
 
-        this.session.invitation_subject = messageData.status.result.invitation_subject;
-        this.session.invitation_text = messageData.status.result.invitation_text;
+        this.session.invitation_subject = messageData.result.invitation_subject;
+        this.session.invitation_text = messageData.result.invitation_text;
     } 
     else
     {
-        this.emailResult = messageData.status.result;
+        this.emailResult = messageData.result;
     } 
 },
 
@@ -220,12 +220,12 @@ takeSendInvitations: function takeSendInvitations(messageData){
 */
 showSendInvitations: function showSendInvitations(){
 
-    this.cancelModal=true;
+    app.cancelModal=true;
 
-    this.sendMessageModalForm.subject = this.session.invitation_subject;
-    this.sendMessageModalForm.text = this.session.invitation_text;
+    app.sendMessageModalForm.subject = app.session.invitation_subject;
+    app.sendMessageModalForm.text = app.session.invitation_text;
 
-    tinymce.get("id_invitation_subject").setContent(this.sendMessageModalForm.text);
+    tinymce.get("id_invitation_text").setContent(app.sendMessageModalForm.text);
     
     app.send_message_modal.show();
 },
@@ -242,7 +242,7 @@ hideSendInvitations: function hideSendInvitations(){
 fillDefaultInvitation: function fillDefaultInvitation(){
     this.sendMessageModalForm.subject = this.emailDefaultSubject;
     
-    tinymce.get("id_invitation_subject").setContent(this.emailDefaultText);
+    tinymce.get("id_invitation_text").setContent(this.emailDefaultText);
 },
 
 /**
@@ -263,7 +263,7 @@ send_refresh_screens: function send_refresh_screens(message_data){
 take_refresh_screens: function take_refresh_screens(message_data){
     if(message_data.session != {})
     {           
-        app.session = message_data.status.session;
+        app.session = message_data.session;
     } 
     else
     {

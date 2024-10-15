@@ -19,7 +19,7 @@ takeChat: function takeChat(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
         app.takeUpdateChat(messageData);                        
     } 
@@ -34,7 +34,7 @@ takeChat: function takeChat(messageData){
 */
 takeUpdateChat: function takeUpdateChat(messageData){
     
-    let result = messageData.status;
+    let result = messageData;
     let chat = result.chat;
     let session_player = this.session_player;
 

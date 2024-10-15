@@ -31,9 +31,9 @@ sendNextInstruction: function sendNextInstruction(direction){
  * advance to next instruction page
  */
 takeNextInstruction: function takeNextInstruction(messageData){
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        result = messageData.status.result;       
+        result = messageData.result;       
         
         this.session_player.current_instruction = result.current_instruction;
         this.session_player.current_instruction_complete = result.current_instruction_complete;
@@ -63,9 +63,9 @@ sendFinishInstructions: function sendFinishInstructions(){
  * finish instructions
  */
 takeFinishInstructions: function takeFinishInstructions(messageData){
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        result = messageData.status.result;       
+        result = messageData.result;       
         
         this.session_player.instructions_finished = result.instructions_finished;
         this.session_player.current_instruction_complete = result.current_instruction_complete;
@@ -176,7 +176,7 @@ simulate_do_period_production: function simulate_do_period_production(){
         notice : null,
     })
     
-    app.takeUpdateGoods({status : {result : result}});
+    app.takeUpdateGoods({result : result});
 
     this.session.time_remaining -= 1;
 
@@ -216,7 +216,7 @@ setup_page_3_instructions: function setup_page_3_instructions(){
         notice : null,
     })
     
-    app.takeUpdateGoods({status : {result : result}});
+    app.takeUpdateGoods({result : result});
 },
 
 /**
@@ -243,7 +243,7 @@ simulate_clear_goods_instructions: function simulate_clear_goods_instructions(){
         })
     }
 
-    app.takeUpdateGoods({status : {result : result}});
+    app.takeUpdateGoods({result : result});
 },
 
 /**
@@ -334,7 +334,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
         notice : null,
     });
     
-    app.takeUpdateGoods({status : {result : result}});
+    app.takeUpdateGoods({result : result});
 
     if(this.session_player.current_instruction == this.instructions.action_page_move)
     {
@@ -359,22 +359,22 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
     {
         chat_type = "All";
 
-        messageData = {status : {chat: {text : this.chat_text.trim(),
-                                 sender_label : this.session_player.parameter_set_player.id_label,
-                                 sender_id : this.session_player.id,
-                                 id : randomNumber(1, 1000000)},
-                      chat_type:chat_type}}
+        messageData = {chat: {text : this.chat_text.trim(),
+                              sender_label : this.session_player.parameter_set_player.id_label,
+                              sender_id : this.session_player.id,
+                              id : randomNumber(1, 1000000)},
+                      chat_type:chat_type}
     }
     else
     {
         chat_type = "Individual";
 
-        messageData = {status : {chat: {text : this.chat_text.trim(),
-                                        sender_label : this.session_player.parameter_set_player.id_label,
-                                        sender_id : this.session_player.id,
-                                        id : randomNumber(1, 1000000)},
-                                 sesson_player_target : this.chat_recipients,        
-                                 chat_type:chat_type}}
+        messageData = {chat: {text : this.chat_text.trim(),
+                                     sender_label : this.session_player.parameter_set_player.id_label,
+                                     sender_id : this.session_player.id,
+                                     id : randomNumber(1, 1000000)},
+                       sesson_player_target : this.chat_recipients,        
+                       chat_type:chat_type}
     }
 
    

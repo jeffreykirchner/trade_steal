@@ -12,7 +12,7 @@ downloadSummaryData: function downloadSummaryData(){
 takeDownloadSummaryData: function takeDownloadSummaryData(messageData){
 
     var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.status.result]);
+    var blob = new Blob(["\ufeff", messageData.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
     downloadLink.download = "Exchange_Specialization_Summary_Data_Session_" + app.session.id +".csv";
@@ -38,7 +38,7 @@ downloadActionsData: function downloadActionsData(){
 takeDownloadActionData: function takeDownloadActionData(messageData){
 
     var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.status.result]);
+    var blob = new Blob(["\ufeff", messageData.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
     downloadLink.download = "Exchange_Specialization_Action_Data_Session_" + app.session.id +".csv";
@@ -64,7 +64,7 @@ downloadRecruiterData: function downloadRecruiterData(){
 takeDownloadRecruiterData: function takeDownloadRecruiterData(messageData){
 
     var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.status.result]);
+    var blob = new Blob(["\ufeff", messageData.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
 
@@ -94,7 +94,7 @@ downloadPaymentData: function downloadPaymentData(){
 takeDownloadPaymentData: function takeDownloadPaymentData(messageData){
 
     var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.status.result]);
+    var blob = new Blob(["\ufeff", messageData.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
     downloadLink.download = "Exchange_Specialization_Payment_Data_Session_" + app.session.id +".csv";

@@ -97,9 +97,9 @@ takeAvatar: function takeAvatar(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        this.session_player.avatar = messageData.status.result.avatar;         
+        this.session_player.avatar = messageData.result.avatar;         
     } 
     else
     {

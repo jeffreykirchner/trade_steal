@@ -34,9 +34,13 @@ from main.globals import round_half_away_from_zero
 
 from main.decorators import check_sesison_started_ws
 
+from .send_message_mixin import SendMessageMixin
+
 import main
 
-class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
+class SubjectHomeConsumer(SocketConsumerMixin, 
+                          SendMessageMixin,
+                          StaffSubjectUpdateMixin):
     '''
     websocket session list
     '''    
@@ -60,16 +64,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         result = await sync_to_async(take_get_session_subject)(self.session_player_id)
 
-        #build response
-        message_data = {"status":{}}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def move_goods(self, event):
         '''
@@ -77,26 +73,20 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         '''
         result = await sync_to_async(take_move_goods)(self.session_id, self.session_player_id, event["message_text"])
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
         # Send reply to sending channel
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         #if success send to all connected clients
         if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_move_goods",
-                 "data": result,
-                 'sender_channel_name': self.channel_name,
-                 'sender_group' : self.group_number,
-                 "sender_town" : self.town_number,},
-            )
+            group_result = {"type": "update_move_goods",
+                            "data": result,
+                            'sender_channel_name': self.channel_name,
+                            'sender_group' : self.group_number,
+                            "sender_town" : self.town_number,}
+
+            await self.send_message(message_to_self=None, message_to_group=group_result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
    
     async def chat(self, event):
         '''
@@ -105,7 +95,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         result = await sync_to_async(take_chat, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
         if result["value"] == "fail":
-            await self.send(text_data=json.dumps({'message': result}, cls=DjangoJSONEncoder))
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
             return
 
         event_result = result["result"]
@@ -120,27 +111,21 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         staff_result["town"] = self.town_number
         staff_result["chat"] = event_result["chat_for_staff"]
 
-        message_data = {}
-        message_data["status"] = subject_result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
         # Send reply to sending channel
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=subject_result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         #if success send to all connected clients
         if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_chat",
-                 "subject_result": subject_result,
-                 "staff_result": staff_result,
-                 "sender_group" : self.group_number,
-                 "sender_town" : self.town_number,
-                 "sender_channel_name": self.channel_name},
-            )
+            group_result = {"type": "update_chat",
+                            "subject_result": subject_result,
+                            "staff_result": staff_result,
+                            "sender_group" : self.group_number,
+                            "sender_town" : self.town_number,
+                            "sender_channel_name": self.channel_name}
+
+            await self.send_message(message_to_self=None, message_to_group=group_result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def production_time(self, event):
         '''
@@ -149,111 +134,65 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         #update subject count
         result = await sync_to_async(take_production_time, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
         # Send reply to sending channel
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_production_time",
-                 "data": result,
-                 "sender_channel_name": self.channel_name},
-            )
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def name(self, event):
         '''
         take name and id number
         '''
         result = await sync_to_async(take_name)(self.session_id, self.session_player_id, event["message_text"])
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+       
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_name",
-                 "data": result,
-                 "sender_channel_name": self.channel_name},
-            )
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def avatar(self, event):
         '''
         take avatar number
         '''
         result = await sync_to_async(take_avatar, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_avatar",
-                 "data": result,
-                 "sender_channel_name": self.channel_name},
-            )
+           await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def next_instruction(self, event):
         '''
         advance instruction page
         '''
         result = await sync_to_async(take_next_instruction, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_next_instruction",
-                 "data": result,
-                 "sender_channel_name": self.channel_name},
-            )
+           await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def finish_instructions(self, event):
         '''
         fisish instructions
         '''
         result = await sync_to_async(take_finish_instructions, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+       
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         if result["value"] == "success":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_finish_instructions",
-                 "data": result,
-                 "sender_channel_name": self.channel_name},
-            )
+           await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, send_to_group=True)
 
     async def update_set_controlling_channel(self, event):
         '''
@@ -271,18 +210,10 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         await self.update_local_info(event)
 
-        #get session json object
         result = await sync_to_async(take_get_session_subject)(self.session_player_id)
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        #if self.channel_name != event['sender_channel_name']:
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
     
     async def update_reset_experiment(self, event):
         '''
@@ -291,44 +222,32 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         #logger = logging.getLogger(__name__) 
         #logger.info(f'update start subjects {self.channel_name}')
 
-        #get session json object
         result = await sync_to_async(take_get_session_subject)(self.session_player_id)
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_chat(self, event):
         '''
         send chat to clients, if clients can view it
         '''
 
-        message_data = {}
-        message_data["status"] =  event["subject_result"]
+        result = json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        if self.group_number != event['sender_group'] or \
-           self.town_number != event['sender_town'] or \
-           self.channel_name == event['sender_channel_name']:
+        if self.group_number != result['sender_group'] or \
+           self.town_number != result['sender_town'] or \
+           self.channel_name == result['sender_channel_name']:
 
             return
         
-
-        if message_data['status']['chat_type'] == "Individual" and \
-           message_data['status']['sesson_player_target'] != self.session_player_id and \
-           message_data['status']['chat']['sender_id'] != self.session_player_id:
+        if result["subject_result"]['chat_type'] == "Individual" and \
+           result["subject_result"]['sesson_player_target'] != self.session_player_id and \
+           result["subject_result"]['chat']['sender_id'] != self.session_player_id:
 
            return
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result["subject_result"], message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_local_info(self, event):
         '''
@@ -350,30 +269,26 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
         # logger = logging.getLogger(__name__) 
         # logger.info(f'update_goods{self.channel_name}')
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result =  json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        if self.channel_name == event['sender_channel_name']:
+        if self.channel_name == result['sender_channel_name']:
             return
 
-        if self.group_number != event['sender_group']:
+        if self.group_number != result['sender_group']:
             return
         
-        if self.town_number != event['sender_town']:
+        if self.town_number != result['sender_town']:
             return
 
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result["data"], message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_time(self, event):
         '''
         update running, phase and time status
         '''
 
-        event_data = deepcopy(event["data"])
+        event_data = json.loads(deepcopy(event["group_data"]))
 
         #if new period is starting, update local info
         if event_data["result"]["do_group_update"]:
@@ -402,14 +317,8 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         event_data["result"]["session_players"] = session_players
 
-        message_data = {}
-        message_data["status"] = event_data
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_groups(self, event)  :
         '''
@@ -418,37 +327,26 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         result = await sync_to_async(take_update_groups)(self.session_id, self.session_player_id)
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_connection_status(self, event):
         '''
         handle connection status update from group member
         '''
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Connection update")
+        pass
 
     async def update_name(self, event):
         '''
         no group broadcast of name to subjects
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
     
     async def update_avatar(self, event):
         '''
         no group broadcast of avatar to subjects
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
     
     async def update_next_phase(self, event):
         '''
@@ -457,48 +355,38 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
 
         result = await sync_to_async(take_update_next_phase)(self.session_id, self.session_player_id)
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_next_instruction(self, event):
         '''
         no group broadcast of avatar to current instruction
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
     
     async def update_finish_instructions(self, event):
         '''
         no group broadcast of avatar to current instruction
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
 
     async def update_production_time(self, event):
         '''
         no production update on clients
         '''
-
-        # logger = logging.getLogger(__name__) 
-        # logger.info("Eng game update")
+        pass
     
     async def update_anonymize_data(self, event):
         '''
         no anonmyize data update on client
         '''
+        pass
     
     async def update_update_subject(self, event):
         '''
         do not update subject screens when staff updates subject name
         '''
+        pass
 
     async def update_survey_complete(self, event):
         '''
@@ -509,6 +397,12 @@ class SubjectHomeConsumer(SocketConsumerMixin, StaffSubjectUpdateMixin):
     async def update_refresh_screens(self, event):
         '''
         refresh staff screen
+        '''
+        pass
+
+    async def update_reset_connections(self, event):
+        '''
+        update reset experiment
         '''
         pass
        

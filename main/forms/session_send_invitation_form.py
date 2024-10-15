@@ -9,10 +9,9 @@ class SessionInvitationForm(forms.Form):
     form to send invitations
     '''
 
-    invitation_text = forms.CharField(label='Invitation Subject',
-                              required=False,
-                              widget=forms.TextInput(attrs={"v-model":"sendMessageModalForm.subject",}))
+    invitation_subject = forms.CharField(label='Invitation Subject',
+                                         widget=forms.TextInput(attrs={"v-model":"sendMessageModalForm.subject",}))
     
-    invitation_subject = forms.CharField(label='Invitation Text',
-                                         widget=TinyMCE(attrs={"rows":20, "cols":100,
-                                                               "v-model":"sendMessageModalForm.text"}))
+    invitation_text = forms.CharField(label='Invitation Text',
+                                      widget=TinyMCE(attrs={"rows":20, "cols":100,
+                                                            "v-model":"sendMessageModalForm.text"}))
