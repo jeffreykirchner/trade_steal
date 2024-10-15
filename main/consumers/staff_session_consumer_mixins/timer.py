@@ -73,6 +73,17 @@ class TimerMixin():
                                     message_type="stop_timer_pulse", send_to_client=True, send_to_group=False)
             return
         
+        #check if full second has passed
+        send_update = True
+        ts = datetime.now() - datetime.strptime(self.world_state_local["timer_history"][-1]["time"],"%Y-%m-%dT%H:%M:%S.%f")
+
+        #check if a full second has passed
+        if self.world_state_local["timer_history"][-1]["count"] == math.floor(ts.seconds):
+            send_update = False
+
+        if not send_update:
+            return
+        
         session = await Session.objects.select_related("parameter_set").aget(id=self.session_id)
 
         if session.timer_running == False or session.finished:
@@ -82,7 +93,6 @@ class TimerMixin():
 
         if result["value"] == "success":
 
-            ts = datetime.now() - datetime.strptime(self.world_state_local["timer_history"][-1]["time"],"%Y-%m-%dT%H:%M:%S.%f")
             self.world_state_local["timer_history"][-1]["count"] = math.floor(ts.seconds)
             await self.store_world_state(force_store=True)
 
