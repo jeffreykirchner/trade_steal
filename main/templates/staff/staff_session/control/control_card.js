@@ -95,7 +95,7 @@ next_experiment_phase: function next_experiment_phase(){
 */
 takeNextPhase: function takeNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    this.session.current_experiment_phase = messageData.current_experiment_phase;
     this.updatePhaseButtonText();
 
 },
@@ -105,10 +105,10 @@ takeNextPhase: function takeNextPhase(messageData){
 */
 takeUpdateNextPhase: function takeUpdateNextPhase(messageData){
     
-    this.session.current_experiment_phase = messageData.status.current_experiment_phase;
+    this.session.current_experiment_phase = messageData.current_experiment_phase;
     this.updatePhaseButtonText();
     
-    app.takeUpdatePeriod(messageData.status.period_update);
+    app.takeUpdatePeriod(messageData.period_update);
 },
 
 /**
@@ -137,7 +137,7 @@ startTimer: function startTimer(){
 takeStartTimer: function takeStartTimer(messageData){
     if(worker) worker.terminate();
 
-    if("status" in messageData) app.takeUpdateTime(messageData);
+    if("result" in messageData) app.takeUpdateTime(messageData);
     // app.session.timer_running = messageData.result.timer_running;
 
     if(app.session.timer_running)
@@ -174,7 +174,7 @@ endEarly: function endEarly(){
  * @param messageData {json}
 */
 takeEndEarly: function takeEndEarly(messageData){
-   this.session.parameter_set.period_count = messageData.status.result;
+   this.session.parameter_set.period_count = messageData.period_count;
 },
 
 /** send invitations
@@ -203,16 +203,16 @@ sendSendInvitations: function sendSendInvitations(){
 takeSendInvitations: function takeSendInvitations(messageData){
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {           
-        this.emailResult = "Result: " + messageData.status.result.email_result.mail_count.toString() + " messages sent.";
+        this.emailResult = "Result: " + messageData.result.email_result.mail_count.toString() + " messages sent.";
 
-        this.session.invitation_subject = messageData.status.result.invitation_subject;
-        this.session.invitation_text = messageData.status.result.invitation_text;
+        this.session.invitation_subject = messageData.result.invitation_subject;
+        this.session.invitation_text = messageData.result.invitation_text;
     } 
     else
     {
-        this.emailResult = messageData.status.result;
+        this.emailResult = messageData.result;
     } 
 },
 
@@ -263,7 +263,7 @@ send_refresh_screens: function send_refresh_screens(message_data){
 take_refresh_screens: function take_refresh_screens(message_data){
     if(message_data.session != {})
     {           
-        app.session = message_data.status.session;
+        app.session = message_data.session;
     } 
     else
     {

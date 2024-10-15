@@ -13,14 +13,14 @@ takeName: function takeName(messageData){
 
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        app.session_player.name = messageData.status.result.name; 
-        app.session_player.student_id = messageData.status.result.student_id;                   
+        app.session_player.name = messageData.result.name; 
+        app.session_player.student_id = messageData.result.student_id;                   
     } 
     else
     {
-        app.displayErrors(messageData.status.errors);
+        app.displayErrors(messageData.errors);
     }
 },
 

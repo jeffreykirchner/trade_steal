@@ -20,8 +20,10 @@ class TimerMixin():
         '''
         start or stop timer 
         '''
+        logger = logging.getLogger(__name__) 
+
         if self.controlling_channel != self.channel_name:
-            logger.warning(f"start_timer: not controlling channel")
+            # logger.warning(f"start_timer: not controlling channel")
             return
         
         logger = logging.getLogger(__name__)
@@ -30,41 +32,24 @@ class TimerMixin():
 
         result = await sync_to_async(take_start_timer)(self.session_id, event["message_text"])
 
-        message_data = {}
-        message_data["status"] = result
-
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
         if event["message_text"]["action"] == "start":
             self.timer_running = True
+
+            self.world_state_local["timer_history"].append({"time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+                                                            "count": 0})
         else:
             self.timer_running = False
 
+        await self.store_world_state(force_store=True)
+
         #Send reply to sending channel
         if self.timer_running == True:
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type="start_timer", send_to_client=True, send_to_group=False)
 
         #update all that timer has started
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {"type": "update_time",
-                "data": result,
-                "sender_channel_name": self.channel_name,},
-        )
-
-        # if result["value"] == "success" and event["message_text"]["action"] == "start":
-        #     #start continue timer
-        #     await self.channel_layer.send(
-        #         self.channel_name,
-        #         {
-        #             'type': "continue_timer",
-        #             'message_text': {},
-        #         }
-        #     )
-        # else:
-        #     logger.info(f"start_timer: {message}")
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type="time", send_to_client=False, send_to_group=True)
         
         logger.info(f"start_timer complete {event}")
 
@@ -72,8 +57,10 @@ class TimerMixin():
         '''
         continue to next second of the experiment
         '''
+        logger = logging.getLogger(__name__) 
+        
         if self.controlling_channel != self.channel_name:
-            logger.warning(f"continue_timer: not controlling channel")
+            # logger.warning(f"continue_timer: not controlling channel")
             return
         
         logger = logging.getLogger(__name__)
@@ -81,77 +68,50 @@ class TimerMixin():
 
         if not self.timer_running:
             logger.info(f"continue_timer timer off")
-            message = {}
-            message["messageType"] = "stop_timer_pulse"
-            message["messageData"] = {}
-            await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+            result = {}
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type="stop_timer_pulse", send_to_client=True, send_to_group=False)
             return
-
-        # await asyncio.sleep(1)
-
-        if not self.timer_running:
-            logger.info(f"continue_timer timer off")
-            return
-
-        timer_result = await sync_to_async(take_do_period_timer)(self.session_id)
-
-        # timer_result = await do_period_timer(self.session_id)
-
-        if timer_result["value"] == "success":
-
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "update_time",
-                "data": timer_result,
-                "sender_channel_name": self.channel_name,},
-            )
-
-            if timer_result["result"]["do_group_update"]:
-                await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {"type": "update_groups",
-                     "data": {},
-                     "sender_channel_name": self.channel_name,},
-                )
-
-            #if session is not over continue
-            # if not timer_result["end_game"]:
-
-            #     # await self.channel_layer.send(
-            #     #     self.channel_name,
-            #     #     {
-            #     #         'type': "continue_timer",
-            #     #         'message_text': {},
-            #     #     }
-            #     # )
-
-            #     loop = asyncio.get_event_loop()
-            #     #loop.call_later(1, asyncio.create_task, take_continue_timer(self.session_id, self.channel_name))
-            #     loop.call_later(1, asyncio.create_task, 
-            #                     self.channel_layer.send(
-            #                         self.channel_name,
-            #                         {
-            #                             'type': "continue_timer",
-            #                             'message_text': {},
-            #                         }
-            #                     ))
-
         
-        # logger.info(f"continue_timer end")
+        #check if full second has passed
+        send_update = True
+        ts = datetime.now() - datetime.strptime(self.world_state_local["timer_history"][-1]["time"],"%Y-%m-%dT%H:%M:%S.%f")
 
+        #check if a full second has passed
+        if self.world_state_local["timer_history"][-1]["count"] == math.floor(ts.seconds):
+            send_update = False
+
+        if not send_update:
+            return
+        
+        session = await Session.objects.select_related("parameter_set").aget(id=self.session_id)
+
+        if session.timer_running == False or session.finished:
+            result = {"value" : "fail", "result" : {"message" : "session no longer running"}}
+        else:
+            result = await sync_to_async(session.do_period_timer)()
+
+        if result["value"] == "success":
+
+            self.world_state_local["timer_history"][-1]["count"] = math.floor(ts.seconds)
+            await self.store_world_state(force_store=True)
+
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type="time", send_to_client=False, send_to_group=True)
+
+            if result["result"]["do_group_update"]:
+                await self.send_message(message_to_self=None, message_to_group={},
+                                    message_type="groups", send_to_client=False, send_to_group=True)
+                
     async def update_time(self, event):
         '''
         update running, phase and time status
         '''
 
-        message_data = {}
-        message_data["status"] = event["data"]
+        result = json.loads(event["group_data"])
 
-        message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
-
-        await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, send_to_group=False)
 
 def take_start_timer(session_id, data):
     '''

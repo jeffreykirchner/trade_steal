@@ -6,6 +6,7 @@ from datetime import datetime
 from tinymce.models import HTMLField
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from asgiref.sync import sync_to_async
 
 import logging
 import uuid
@@ -21,11 +22,11 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.utils.timezone import now
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 
 import main
 
-from main.models import ParameterSet, avatar
+from main.models import ParameterSet
 
 from main.globals import PeriodPhase
 from main.globals import AvatarModes
@@ -65,6 +66,8 @@ class Session(models.Model):
 
     invitation_text = HTMLField(default="", verbose_name="Invitation Text")      #inviataion email subject and text
     invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
+
+    world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
 
     soft_delete =  models.BooleanField(default=False)                            #hide session if true
 
@@ -143,6 +146,8 @@ class Session(models.Model):
 
         for i in self.session_players.all():
             i.start()
+        
+        self.setup_world_state()
     
     def pre_assign_avatars(self):
         '''
@@ -166,6 +171,7 @@ class Session(models.Model):
         self.current_experiment_phase = ExperimentPhase.RUN
         self.time_remaining = self.parameter_set.period_length_production
         self.timer_running = False
+        self.world_state = {}
 
         for p in self.session_players.all():
             p.reset()
@@ -187,6 +193,15 @@ class Session(models.Model):
             return None
 
         return self.session_periods.get(period_number=self.current_period)
+    
+    async def aget_current_session_period(self):
+        '''
+        return the current session period
+        '''
+        if not self.started:
+            return None
+
+        return await self.session_periods.aget(period_number=self.current_period)
     
     def update_player_count(self):
         '''
@@ -225,7 +240,6 @@ class Session(models.Model):
 
         notice_list = []
         
-
         if not status == "fail" and not end_game:
 
             if self.time_remaining == 0:
@@ -387,6 +401,17 @@ class Session(models.Model):
 
         return output.getvalue()
 
+    def setup_world_state(self):
+        '''
+        setup world state
+        '''
+        self.world_state = {"last_update":str(datetime.now()), 
+                            "last_store":str(datetime.now()),
+                            "timer_history":[],
+                           }
+        
+        self.save()
+
     def json(self):
         '''
         return json object of model
@@ -432,6 +457,7 @@ class Session(models.Model):
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
             "autarky_efficiency" : self.parameter_set.get_autarky_efficiency(),
+            "world_state" : self.world_state,
         }
     
     def json_min(self):

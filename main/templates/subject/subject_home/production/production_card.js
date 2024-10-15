@@ -42,9 +42,9 @@ sendProdution: function sendProdution(){
 */
 takeProduction: function takeProduction(messageData){
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        result = messageData.status.result;       
+        result = messageData.result;       
         
         app.session_player.good_one_production_rate = result.good_one_production_rate;
         app.session_player.good_two_production_rate = result.good_two_production_rate;

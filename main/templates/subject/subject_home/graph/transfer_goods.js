@@ -111,7 +111,7 @@ takeMoveGoods: function takeMoveGoods(messageData){
     //app.cancelModal=false;
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
         app.takeUpdateGoods(messageData);    
         this.closeMoveModal();               
@@ -119,7 +119,7 @@ takeMoveGoods: function takeMoveGoods(messageData){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        app.displayErrors(messageData.errors);
     }
 },
 
@@ -146,7 +146,7 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
 *    @param messageData {json} session day in json format
 */
 takeUpdateGoods: function takeUpdateGoods(messageData){
-    results = messageData.status.result;
+    results = messageData.result;
 
     let session_player = this.session_player;
 

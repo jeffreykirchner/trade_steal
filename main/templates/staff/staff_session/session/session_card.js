@@ -12,7 +12,7 @@ sendUpdateSession: function sendUpdateSession(){
 takeUpdateSession: function takeUpdateSession(messageData){
     app.clearMainFormErrors();
 
-    if(messageData.status == "success")
+    if(messageData.value == "success")
     {
         app.takeGetSession(messageData);       
         app.edit_session_modal.hide();    

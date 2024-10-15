@@ -133,11 +133,11 @@
                             <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
                                 [[p.student_id=="" ? "---" : p.student_id]]
                             </td>
-                            <td class="player_table_cell text-nowrap" >
-                                <span v-if="session.parameter_set.prolific_mode=='False'" v-on:click="showEditSubject(p.id)">
+                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
+                                <span v-if="session.parameter_set.prolific_mode=='False'">
                                     [[(!p.email || p.email=="") ? "---" : p.email]]
                                 </span>
-                               <span v-else>
+                                <span v-else>
                                     [[p.player_key]]
                                </span>
                             </td>

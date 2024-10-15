@@ -87,7 +87,7 @@ var app = Vue.createApp({
          * return true if re-connect should be allowed else false
         */
          handle_socket_connection_try: function handle_socket_connection_try(){         
-            app.session.timer_running = false;
+            if(app.session) app.session.timer_running = false;
             if(worker) worker.terminate();
             return true;
         },
@@ -101,8 +101,8 @@ var app = Vue.createApp({
             console.log(data);
             {%endif%}
 
-            messageType = data.message.messageType;
-            messageData = data.message.messageData;
+            messageType = data.message.message_type;
+            messageData = data.message.message_data;
 
             switch(messageType) {                
                 case "get_session":
@@ -375,7 +375,7 @@ var app = Vue.createApp({
         */
         takeUpdateChat: function takeUpdateChat(messageData){
             
-            let result = messageData.status;
+            let result = messageData;
             let chat = result.chat;
             let town = result.town;
 
@@ -407,7 +407,7 @@ var app = Vue.createApp({
          */
         takeUpdateNotice: function takeUpdateNotice(messageData){
 
-            let result = messageData.status.result;
+            let result = messageData.result;
 
             for(i=0;i<result.length;i++)
             {
@@ -450,8 +450,8 @@ var app = Vue.createApp({
          */
         takeUpdateTime: function takeUpdateTime(messageData){
 
-            let result = messageData.status.result;
-            let status = messageData.status.value;
+            let result = messageData.result;
+            let status = messageData.value;
 
             if(status == "fail") return;
 
@@ -462,9 +462,9 @@ var app = Vue.createApp({
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
 
-            app.takeUpdateGoods({status : {result : result.session_players}});
+            app.takeUpdateGoods({result : result.session_players});
             app.takeUpdateEarnings(messageData);
-            app.takeUpdatePeriod(messageData.status.period_update);
+            app.takeUpdatePeriod(messageData.period_update);
 
             app.updatePhaseButtonText();
 

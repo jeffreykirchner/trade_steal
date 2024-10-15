@@ -4,9 +4,9 @@
  */
   takeUpdateConnectionStatus: function takeUpdateConnectionStatus(messageData){
             
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        let result = messageData.status.result;
+        let result = messageData.result;
         let session_players = app.session.session_players;
 
         session_player = app.findSessionPlayer(result.id);
@@ -29,9 +29,9 @@
  */
  takeUpdateGroups: function takeUpdateGroups(messageData){
     
-    if(messageData.status.status == "success")
+    if(messageData == "success")
     {
-        let group_list = messageData.status.group_list;
+        let group_list = messageData.group_list;
         let session_players = app.session.session_players;
 
         for(let i=0; i<group_list.length; i++)
@@ -51,9 +51,9 @@
 */
 takeUpdateName: function takeUpdateName(messageData){
            
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        let result = messageData.status.result;
+        let result = messageData.result;
 
         session_player = app.findSessionPlayer(result.id);
 
@@ -70,9 +70,9 @@ takeUpdateName: function takeUpdateName(messageData){
 */
 takeUpdateAvatar: function takeUpdateAvatar(messageData){
            
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        let result = messageData.status.result;
+        let result = messageData.result;
 
         session_player = app.findSessionPlayer(result.id);
 
@@ -89,9 +89,9 @@ takeUpdateAvatar: function takeUpdateAvatar(messageData){
 */
 takeNextInstruction: function takeNextInstruction(messageData){
            
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        let result = messageData.status.result;
+        let result = messageData.result;
 
         session_player = this.findSessionPlayer(result.id);
 
@@ -108,9 +108,9 @@ takeNextInstruction: function takeNextInstruction(messageData){
 */
 takeFinishedInstructions: function takeFinishedInstructions(messageData){
            
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        let result = messageData.status.result;
+        let result = messageData.result;
 
         session_player = this.findSessionPlayer(result.id);
 
@@ -128,9 +128,9 @@ takeFinishedInstructions: function takeFinishedInstructions(messageData){
   */
  takeUpdateEarnings: function takeUpdateEarnings(messageData){
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
-        let session_player_earnings = messageData.status.result.session_player_earnings;
+        let session_player_earnings = messageData.result.session_player_earnings;
         let session_players = this.session.session_players;
 
         for(let i=0; i<session_player_earnings.length; i++)
@@ -184,13 +184,13 @@ findSessionPlayerIndex: function findSessionPlayerIndex(id){
  */
 takeUpdateProductionTime: function takeUpdateProductionTime(messageData){
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {
        
-        session_player = app.findSessionPlayer(messageData.status.result.id);
+        session_player = app.findSessionPlayer(messageData.result.id);
         
-        session_player.good_one_production_rate = messageData.status.result.good_one_production_rate; 
-        session_player.good_two_production_rate = messageData.status.result.good_two_production_rate;    
+        session_player.good_one_production_rate = messageData.result.good_one_production_rate; 
+        session_player.good_two_production_rate = messageData.result.good_two_production_rate;    
     }
 },
 
@@ -210,11 +210,11 @@ sendEmailList: function sendEmailList(){
 takeUpdateEmailList: function takeUpdateEmailList(messageData){
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {            
         app.upload_email_modal.hide(); 
 
-        result = messageData.status.result;
+        result = messageData.result;
 
         for(i=0; i<result.length; i++)
         {
@@ -226,7 +226,7 @@ takeUpdateEmailList: function takeUpdateEmailList(messageData){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        app.displayErrors(messageData.errors);
     } 
 },
 
@@ -267,19 +267,19 @@ sendUpdateSubject: function sendUpdateSubject(){
 takeUpdateSubject: function takeUpdateSubject(messageData){
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {            
         app.edit_subject_modal.hide();    
 
-        let session_player = app.findSessionPlayer(messageData.status.session_player.id);
-        session_player.name = messageData.status.session_player.name;
-        session_player.student_id = messageData.status.session_player.student_id;
-        session_player.email = messageData.status.session_player.email;
+        let session_player = app.findSessionPlayer(messageData.session_player.id);
+        session_player.name = messageData.session_player.name;
+        session_player.student_id = messageData.session_player.student_id;
+        session_player.email = messageData.session_player.email;
     } 
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        app.displayErrors(messageData.errors);
     } 
 },
 
@@ -375,10 +375,10 @@ sendAnonymizeData: function sendAnonymizeData(){
 takeAnonymizeData: function takeAnonymizeData(messageData){
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(messageData.value == "success")
     {            
 
-        let session_player_updates = messageData.status.result;
+        let session_player_updates = messageData.result;
         let session_players = this.session.session_players;
 
         for(let i=0; i<session_player_updates.length; i++)
@@ -400,7 +400,7 @@ takeAnonymizeData: function takeAnonymizeData(messageData){
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_update_survey_complete: function take_update_survey_complete(message_data){
-    result = message_data.status;
+    result = message_data;
 
     session_player = app.findSessionPlayer(result.player_id);
     session_player.survey_complete = true;

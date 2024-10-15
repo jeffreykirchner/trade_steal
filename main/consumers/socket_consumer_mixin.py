@@ -21,7 +21,7 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
     room_group_name = None           #channel that consumer listens on
     channel_session_user = True
     http_user = True
-    player_key = ""                  #SessionPlayer.player_key
+    player_key = ""                   #SessionPlayer.player_key
     controlling_channel = None        #channel that is controlling the session
 
     async def connect(self):

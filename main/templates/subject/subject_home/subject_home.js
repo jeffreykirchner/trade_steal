@@ -121,8 +121,8 @@ var app = Vue.createApp({
             console.log(data);
             {%endif%}
 
-            messageType = data.message.messageType;
-            messageData = data.message.messageData;
+            messageType = data.message.message_type;
+            messageData = data.message.message_data;
 
             switch(messageType) {                
                 case "get_session":
@@ -249,8 +249,8 @@ var app = Vue.createApp({
         */
         takeGetSession: function takeGetSession(messageData){
             
-            app.session = messageData.status.session;
-            app.session_player = messageData.status.session_player;
+            app.session = messageData.session;
+            app.session_player = messageData.session_player;
 
             app.current_town = app.session_player.parameter_set_player.town;
 
@@ -379,9 +379,9 @@ var app = Vue.createApp({
         * update time and start status
         */
         takeUpdateTime: function takeUpdateTime(messageData){
-            let result = messageData.status.result;
-            let status = messageData.status.value;
-            let notice_list = messageData.status.notice_list;
+            let result = messageData.result;
+            let status = messageData.value;
+            let notice_list = messageData.notice_list;
 
             if(status == "fail") return;
 
@@ -394,7 +394,7 @@ var app = Vue.createApp({
 
             this.tick_tock = this.session.time_remaining % 2;
 
-            app.takeUpdateGoods({status : {result : result.session_players}});
+            app.takeUpdateGoods({result : result.session_players});
 
             //update subject earnings
             this.session_player.earnings = result.session_player_earnings.earnings;
@@ -473,7 +473,7 @@ var app = Vue.createApp({
         takeUpdateGroups: function takeUpdateGroups(messageData){
             app.destroyPixiPlayers();
 
-            this.session.session_players = messageData.status.result.session_players;
+            this.session.session_players = messageData.result.session_players;
 
             setTimeout(app.setupPixiPlayers, 250);
 
@@ -490,9 +490,9 @@ var app = Vue.createApp({
 
             app.destroyPixiPlayers();
 
-            this.session.current_experiment_phase = messageData.status.session.current_experiment_phase;
-            this.session.session_players = messageData.status.session_players;
-            this.session_player = messageData.status.session_player;
+            this.session.current_experiment_phase = messageData.session.current_experiment_phase;
+            this.session.session_players = messageData.session_players;
+            this.session_player = messageData.session_player;
 
             Vue.nextTick(() => {
                 // setTimeout(app.setupPixiPlayers, 250);
