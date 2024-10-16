@@ -219,7 +219,7 @@ class Session(models.Model):
 
             new_session_player.save()
 
-    def do_period_timer(self):
+    def do_period_timer(self, parameter_set_local):
         '''
         do period timer actions
         '''
@@ -231,9 +231,9 @@ class Session(models.Model):
         #check session over
         if self.time_remaining == 0 and \
            self.current_period_phase == PeriodPhase.TRADE and \
-           self.current_period >= self.parameter_set.period_count:
+           self.current_period >= parameter_set_local["period_count"]:
 
-            self.do_period_consumption()
+            self.do_period_consumption(parameter_set_local)
             period_update = self.get_current_session_period()
             self.finished = True
             end_game = True
@@ -249,9 +249,9 @@ class Session(models.Model):
                                        
                     #start trade phase
                     self.current_period_phase = PeriodPhase.TRADE
-                    self.time_remaining = self.parameter_set.period_length_trade
+                    self.time_remaining = parameter_set_local["period_length_trade"]
                 else:
-                    self.do_period_consumption()
+                    self.do_period_consumption(parameter_set_local)
                     
                     period_update = self.get_current_session_period()
                     if period_update:
@@ -259,15 +259,15 @@ class Session(models.Model):
 
                     self.current_period += 1
                     self.current_period_phase = PeriodPhase.PRODUCTION
-                    self.time_remaining = self.parameter_set.period_length_production                         
+                    self.time_remaining = parameter_set_local["period_length_production"]                       
 
-                    if self.current_period % self.parameter_set.break_period_frequency == 0:
+                    if self.current_period % parameter_set_local["break_period_frequency"] == 0:
                         notice_list = self.add_notice_to_all(f"<center>*** Break period, chat only, no production. ***</center>")           
             else:
                 
                 if self.current_period_phase == PeriodPhase.PRODUCTION:
 
-                    if self.current_period % self.parameter_set.break_period_frequency != 0 :
+                    if self.current_period % parameter_set_local["break_period_frequency"] != 0 :
                         self.do_period_production()                        
 
                 self.time_remaining -= 1
@@ -310,13 +310,14 @@ class Session(models.Model):
 
         return notice_list
     
-    def do_period_consumption(self):
+    def do_period_consumption(self, parameter_set_local):
         '''
         covert goods in house to earnings
         '''
 
-        for p in self.session_players.all():
-            p.do_period_consumption()
+        for p in self.session_players.prefetch_related("parameter_set_player").all():
+            parameter_set_player_local = parameter_set_local["parameter_set_players"][str(p.parameter_set_player.id)]
+            p.do_period_consumption(parameter_set_player_local)
 
     def get_download_summary_csv(self):
         '''

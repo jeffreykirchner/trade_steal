@@ -347,7 +347,7 @@ class SessionPlayer(models.Model):
 
         return session_player_notice.json()
 
-    def do_period_consumption(self):
+    def do_period_consumption(self, parameter_set_player_local):
         '''
         covert goods in house to earnings
         '''
@@ -361,18 +361,18 @@ class SessionPlayer(models.Model):
 
         #convert goods to earnings
 
-        parameter_set_type = self.parameter_set_player.parameter_set_type
+        parameter_set_type = parameter_set_player_local["parameter_set_type"]
 
         earnings_per_unit = max(parameter_set_type.good_one_amount, parameter_set_type.good_two_amount)
 
-        while self.good_one_house >= parameter_set_type.good_one_amount and \
-              self.good_two_house >= parameter_set_type.good_two_amount:
+        while self.good_one_house >= parameter_set_type["good_one_amount"] and \
+              self.good_two_house >= parameter_set_type["good_two_amount"]:
 
               self.earnings += earnings_per_unit
               session_player_period.earnings += earnings_per_unit
 
-              self.good_one_house -= parameter_set_type.good_one_amount
-              self.good_two_house -= parameter_set_type.good_two_amount
+              self.good_one_house -= parameter_set_type["good_one_amount"]
+              self.good_two_house -= parameter_set_type["good_two_amount"]
 
         self.good_one_house = 0
         self.good_two_house = 0

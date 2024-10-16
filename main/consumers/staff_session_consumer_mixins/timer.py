@@ -89,7 +89,7 @@ class TimerMixin():
         if session.timer_running == False or session.finished:
             result = {"value" : "fail", "result" : {"message" : "session no longer running"}}
         else:
-            result = await sync_to_async(session.do_period_timer)()
+            result = await sync_to_async(session.do_period_timer)(self.parameter_set_local)
 
         if result["value"] == "success":
 
