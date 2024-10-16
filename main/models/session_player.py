@@ -481,6 +481,7 @@ class SessionPlayer(models.Model):
             "connected_count" : self.connected_count,
 
             "parameter_set_player" : self.parameter_set_player.json(),
+            "parameter_set_player_id" : self.parameter_set_player.id,
 
             "group_number" : self.get_current_group_number(),
 
@@ -533,6 +534,7 @@ class SessionPlayer(models.Model):
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
             "parameter_set_player" : self.parameter_set_player.json_for_subject(),
+            "parameter_set_player_id" : self.parameter_set_player.id,
 
             "avatar" : self.avatar.json() if self.avatar else None,
         }

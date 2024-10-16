@@ -123,7 +123,9 @@
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                        <tr v-for="(p, index) in session.session_players" 
+                            :set="temp_parameter_set_player=session.parameter_set.parameter_set_players[p.parameter_set_player_id]"
+                            v-bind:key="p.id">
                             <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p.id)">
                                 [[p.player_number]]
                             </td>
@@ -148,32 +150,32 @@
                                 [[(p.avatar) ? p.avatar.label : 'None']]
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                [[p.parameter_set_player.town]]
+                                [[temp_parameter_set_player.town]]
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                [[p.parameter_set_player.location]]
+                                [[temp_parameter_set_player.location]]
                             </td>                            
                             <td class="player_table_cell text-nowrap">
                                 [[p.group_number]]
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                [[p.parameter_set_player.id_label]]
+                                [[temp_parameter_set_player.id_label]]
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                [[p.parameter_set_player.parameter_set_type.subject_type]]
+                                [[temp_parameter_set_player.parameter_set_type.subject_type]]
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_house]]</span>
-                                <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">&nbsp;&nbsp;[[p.good_two_house]]</span>
-                                <span v-bind:style = "{color : p.parameter_set_player.good_three.rgb_color}" v-show="session.parameter_set.good_count == 3">&nbsp;&nbsp;[[p.good_three_house]]</span>
+                                <span v-bind:style = "{color : temp_parameter_set_player.good_one.rgb_color}">[[p.good_one_house]]</span>
+                                <span v-bind:style = "{color : temp_parameter_set_player.good_two.rgb_color}">&nbsp;&nbsp;[[p.good_two_house]]</span>
+                                <span v-bind:style = "{color : temp_parameter_set_player.good_three.rgb_color}" v-show="session.parameter_set.good_count == 3">&nbsp;&nbsp;[[p.good_three_house]]</span>
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_field]]</span>&nbsp;&nbsp;
-                                <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.good_two_field]]</span>
+                                <span v-bind:style = "{color : temp_parameter_set_player.good_one.rgb_color}">[[p.good_one_field]]</span>&nbsp;&nbsp;
+                                <span v-bind:style = "{color : temp_parameter_set_player.good_two.rgb_color}">[[p.good_two_field]]</span>
                             </td>
                             <td class="player_table_cell text-nowrap">
-                                <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.good_one_production_rate]]%</span> / 
-                                <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.good_two_production_rate]]%</span>
+                                <span v-bind:style = "{color : temp_parameter_set_player.good_one.rgb_color}">[[p.good_one_production_rate]]%</span> / 
+                                <span v-bind:style = "{color : temp_parameter_set_player.good_two.rgb_color}">[[p.good_two_production_rate]]%</span>
                             </td>                            
                             <td class="player_table_cell text-nowrap">
                                 <a v-bind:href="p.login_link">Login Link</a>

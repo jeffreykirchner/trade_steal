@@ -79,6 +79,16 @@ class ParameterSetType(models.Model):
         parameter_set_type_pk_map[source.get("id")] = self.id
 
         return message
+    
+    def get_good_preference(self):
+        '''
+        return good preference
+        '''
+        max_time = self.parameter_set.period_length_production
+        production_1 = self.good_one_production_1 + self.good_one_production_2 * max_time ** self.good_one_production_3
+        production_2 = self.good_two_production_1 + self.good_two_production_2 * max_time ** self.good_two_production_3
+
+        return "Good One" if production_1 > production_2 else "Good Two"
 
 
     def json(self):
@@ -102,6 +112,8 @@ class ParameterSetType(models.Model):
             "good_two_production_2" : self.good_two_production_2.normalize(),
             "good_two_production_3" : self.good_two_production_3.normalize(),
 
+            "good_preference" : self.get_good_preference(),            
+
             "ce_earnings" : self.ce_earnings,
             "autarky_earnings" : self.autarky_earnings,
         }
@@ -116,12 +128,6 @@ class ParameterSetType(models.Model):
                 "id" : self.id,
             }
 
-        max_time = self.parameter_set.period_length_production
-        production_1 = self.good_one_production_1 + self.good_one_production_2 * max_time ** self.good_one_production_3
-        production_2 = self.good_two_production_1 + self.good_two_production_2 * max_time ** self.good_two_production_3
-
-        good_preference = "Good One" if production_1 > production_2 else "Good Two"
-
         return{
                 
                 "id" : self.id,
@@ -129,5 +135,5 @@ class ParameterSetType(models.Model):
                 "good_one_amount" : self.good_one_amount,
                 "good_two_amount" : self.good_two_amount,
     
-                "good_preference" : good_preference,
+                "good_preference" : self.get_good_preference(),
             }
