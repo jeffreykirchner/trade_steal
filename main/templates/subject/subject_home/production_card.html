@@ -1,4 +1,6 @@
-<div class="card" v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'">                  
+<div class="card" 
+     v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'"
+     :set="parameter_set_player_local=get_parameter_set_player_from_player_id(session_player.id)">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">Your field's production</span>            
 
@@ -38,12 +40,12 @@
 
         <div class="row">
             <div class="col text-start" 
-                 v-bind:style = "{color : session_player.parameter_set_player.good_one.rgb_color}">
-                [[session_player.parameter_set_player.good_one.label]]
+                 v-bind:style = "{color : parameter_set_player_local.good_one.rgb_color}">
+                [[parameter_set_player_local.good_one.label]]
             </div>
             <div class="col text-end"
-                 v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
-                [[session_player.parameter_set_player.good_two.label]]
+                 v-bind:style = "{color : parameter_set_player_local.good_two.rgb_color}">
+                [[parameter_set_player_local.good_two.label]]
             </div>
         </div>
 

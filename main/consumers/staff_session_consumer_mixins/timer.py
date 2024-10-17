@@ -66,7 +66,9 @@ class TimerMixin():
         logger = logging.getLogger(__name__)
         # logger.info(f"continue_timer start")
 
-        if not self.timer_running:
+        session = await Session.objects.select_related("parameter_set").aget(id=self.session_id)
+
+        if not self.timer_running or session.finished:
             logger.info(f"continue_timer timer off")
             result = {}
             await self.send_message(message_to_self=result, message_to_group=None,
@@ -84,12 +86,7 @@ class TimerMixin():
         if not send_update:
             return
         
-        session = await Session.objects.select_related("parameter_set").aget(id=self.session_id)
-
-        if session.timer_running == False or session.finished:
-            result = {"value" : "fail", "result" : {"message" : "session no longer running"}}
-        else:
-            result = await sync_to_async(session.do_period_timer)()
+        result = await sync_to_async(session.do_period_timer)(self.parameter_set_local)
 
         if result["value"] == "success":
 

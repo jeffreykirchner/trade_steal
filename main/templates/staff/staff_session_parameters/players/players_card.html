@@ -1,7 +1,7 @@
 <div class="card" v-show="first_load_done">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">
-            Players ([[session.parameter_set.parameter_set_players.length]])
+            Players ([[session.parameter_set.parameter_set_players_order.length]])
         </span>      
 
         <span class="float-end">
@@ -57,40 +57,44 @@
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_players" v-bind:key="p.id">
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.session_player_number]]
+                        <tr v-for="(p, index) in session.parameter_set.parameter_set_players_order" 
+                            v-bind:key="p"
+                            :set="temp_p=session.parameter_set.parameter_set_players[p]">
+                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                                [[temp_p.session_player_number]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.town]]
+                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                                [[temp_p.town]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.location]]
+                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                                [[temp_p.location]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.id_label]]
+                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                                [[temp_p.id_label]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                [[p.parameter_set_type.subject_type]]
+                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                                [[temp_p.parameter_set_type.subject_type]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                <span v-bind:style = "{color : p.good_one.rgb_color}">[[p.good_one.label]]</span>
+                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                                <span v-bind:style = "{color : temp_p.good_one.rgb_color}">[[temp_p.good_one.label]]</span>
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                <span v-bind:style = "{color : p.good_two.rgb_color}">[[p.good_two.label]]</span>
+                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                                <span v-bind:style = "{color : temp_p.good_two.rgb_color}">[[temp_p.good_two.label]]</span>
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="player_table_cell">
-                                <span v-bind:style = "[{color : p.good_three.rgb_color},
-                                                       (session.parameter_set.good_count==2) ? {'text-decoration': 'line-through'}:{}]">[[p.good_three.label]]</span>
+                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                                <span v-bind:style = "[{color : temp_p.good_three.rgb_color},
+                                                       (session.parameter_set.good_count==2) ? {'text-decoration': 'line-through'}:{}]">[[temp_p.good_three.label]]</span>
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(index)" class="text-nowrap player_table_cell">
-                                [[p.avatar ? p.avatar.label:'None']]
+                            <td v-on:click="showEditParametersetPlayer(p)" class="text-nowrap player_table_cell">
+                                [[temp_p.avatar ? temp_p.avatar.label:'None']]
                             </td>
                             <td style="background-color:rgb(240, 240, 240);">
                                
                             </td>
-                            <td v-for="(g, index2) in p.period_groups" v-on:click="showEditParametersetPlayerGroup(index, index2)" class="player_table_cell" v-bind:key="g.id">
-                                G[[g.group_number]]
+                            <td v-for="(g, index2) in temp_p.period_groups_order" 
+                                :set="temp_g=temp_p.period_groups[g]"
+                                v-on:click="showEditParametersetPlayerGroup(p, g)" class="player_table_cell" v-bind:key="g">
+                                G[[temp_g.group_number]]
                             </td>
                         </tr>
                     </tbody>

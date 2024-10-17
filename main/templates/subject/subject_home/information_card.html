@@ -17,19 +17,21 @@
                         </tr>
                     </thead>
                     <tbody id="player_list">
-                        <tr v-for="(p, index) in session.session_players" v-bind:key="p.id">
+                        <tr v-for="(p, index) in session.session_players" 
+                            v-bind:key="p.id"
+                            :set="temp_parameter_set_player=session.parameter_set.parameter_set_players[p.parameter_set_player_id]">
                             <td class="text-nowrap">
-                                [[p.parameter_set_player.id_label]]
+                                [[temp_parameter_set_player.id_label]]
                             </td>
                             <td class="align-middle">
-                                <div v-if="p.parameter_set_player.parameter_set_type.good_preference=='Good One'">
-                                    <span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">
-                                        [[p.parameter_set_player.good_one.label]]([[p.parameter_set_player.good_one.abbreviation]])
+                                <div v-if="temp_parameter_set_player.parameter_set_type.good_preference=='Good One'">
+                                    <span v-bind:style = "{color : temp_parameter_set_player.good_one.rgb_color}">
+                                        [[temp_parameter_set_player.good_one.label]]([[temp_parameter_set_player.good_one.abbreviation]])
                                     </span> 
                                 </div>
                                 <div v-else>
-                                    <span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">
-                                        [[p.parameter_set_player.good_two.label]]([[p.parameter_set_player.good_two.abbreviation]])
+                                    <span v-bind:style = "{color : temp_parameter_set_player.good_two.rgb_color}">
+                                        [[temp_parameter_set_player.good_two.label]]([[temp_parameter_set_player.good_two.abbreviation]])
                                     </span>
                                 </div>
                             </td>
@@ -38,9 +40,9 @@
                                 <div class="row justify-content-center text-center">
                                     <div class="col" >
                                         
-                                        [[p.parameter_set_player.parameter_set_type.good_one_amount]]<span v-bind:style = "{color : p.parameter_set_player.good_one.rgb_color}">[[p.parameter_set_player.good_one.abbreviation]]</span>+[[p.parameter_set_player.parameter_set_type.good_two_amount]]<span v-bind:style = "{color : p.parameter_set_player.good_two.rgb_color}">[[p.parameter_set_player.good_two.abbreviation]]</span>
+                                        [[temp_parameter_set_player.parameter_set_type.good_one_amount]]<span v-bind:style = "{color : temp_parameter_set_player.good_one.rgb_color}">[[temp_parameter_set_player.good_one.abbreviation]]</span>+[[temp_parameter_set_player.parameter_set_type.good_two_amount]]<span v-bind:style = "{color : temp_parameter_set_player.good_two.rgb_color}">[[temp_parameter_set_player.good_two.abbreviation]]</span>
                                         =
-                                        [[Math.max(p.parameter_set_player.parameter_set_type.good_one_amount, p.parameter_set_player.parameter_set_type.good_two_amount)]]¢
+                                        [[Math.max(temp_parameter_set_player.parameter_set_type.good_one_amount, temp_parameter_set_player.parameter_set_type.good_two_amount)]]¢
                                                                                     
                                     </div>
                                 </div>                

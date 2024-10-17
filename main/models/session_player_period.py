@@ -30,7 +30,7 @@ class SessionPlayerPeriod(models.Model):
     good_two_production_rate = models.IntegerField(verbose_name='Good two production setting 0-100', default=0)        #amount of time producing good two
 
     earnings = models.IntegerField(verbose_name='Period Earnings', default=0)        #earnings in cents this period
-    efficiency = models.DecimalField(verbose_name = 'Efficiency', decimal_places=2, default=0, max_digits=5)
+    efficiency = models.DecimalField(verbose_name = 'Efficiency', decimal_places=3, default=0, max_digits=5)
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -67,14 +67,16 @@ class SessionPlayerPeriod(models.Model):
                          self.good_two_production_rate,
                          self.good_one_consumption,
                          self.good_two_consumption,
-                         self.earnings,])
+                         self.earnings,
+                         self.efficiency,
+                         ])
 
-    def update_efficiency(self):
+    def update_efficiency(self, ce_earnings):
         '''
         update efficiency mesaure
         '''
 
-        ce_earnings = self.session_player.parameter_set_player.parameter_set_type.ce_earnings
+        # ce_earnings = self.session_player.parameter_set_player.parameter_set_type.ce_earnings
 
         self.efficiency = 0
 

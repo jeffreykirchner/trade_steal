@@ -313,9 +313,12 @@ var app = Vue.createApp({
                 
             }
 
-            let v = {};
-            v.timer_running = app.session.timer_running;
-            app.takeStartTimer(v);
+            if(!app.session.finished)
+            {
+                let v = {};
+                v.timer_running = app.session.timer_running;
+                app.takeStartTimer(v);
+            }
         },
 
         /**
@@ -413,9 +416,10 @@ var app = Vue.createApp({
             {
                 if(result[i].notice)
                 {
-                    session_player = app.findSessionPlayer(result[0].id);
-                    town = session_player.parameter_set_player.town; 
-                    notice = result[i].notice;
+                    let session_player = app.findSessionPlayer(result[0].id);
+                    let notice_parameter_set_player = app.get_parameter_set_player_from_player_id(session_player.id);
+                    let town = notice_parameter_set_player.town; 
+                    let notice = result[i].notice;
                     if(notice.show_on_staff)
                     {
                         if(this.session.notices[town].length >= 100)
@@ -512,6 +516,7 @@ var app = Vue.createApp({
         {%include "staff/staff_session/control/control_card.js"%}
         {%include "staff/staff_session/session/session_card.js"%}
         {%include "subject/subject_home/graph/graph_card.js"%}
+        {%include "subject/subject_home/graph/helpers.js"%}
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}

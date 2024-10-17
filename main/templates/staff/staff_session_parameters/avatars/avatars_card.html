@@ -32,23 +32,24 @@
                         </tr>
                     </thead>
                     <tbody id="avatar_grid_list">
-                        <tr v-for="(p, index) in session.parameter_set.parameter_set_avatars" 
-                            v-bind:key="p.id"
-                            v-on:click="showEditParametersetAvatar(index)">                           
+                        <tr v-for="(p, index) in session.parameter_set.parameter_set_avatars_order" 
+                            v-bind:key="p"
+                            :set="temp_p=session.parameter_set.parameter_set_avatars[p]"
+                            v-on:click="showEditParametersetAvatar(p)">                           
 
                             <td class="player_table_cell">
-                                <span v-if="p.avatar">
-                                    [[p.avatar.label]]
+                                <span v-if="temp_p.avatar">
+                                    [[temp_p.avatar.label]]
                                 </span>
                                 <span v-else>
                                     None
                                 </span>                                
                             </td>
                             <td class="player_table_cell">
-                                [[p.grid_location_row]]
+                                [[temp_p.grid_location_row]]
                             </td>
                             <td class="player_table_cell">
-                                [[p.grid_location_col]]
+                                [[temp_p.grid_location_col]]
                             </td>                            
                         </tr>
                     </tbody>
