@@ -1,4 +1,6 @@
-<div class="card" v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'">                  
+<div class="card" 
+     v-show="first_load_done && session.started && session.current_experiment_phase!='Selection'"
+     :set="temp_parameter_set_player=session.parameter_set.parameter_set_players[session_player.parameter_set_player_id]">                  
     <div class="card-header fw-bold">                
         <span class="align-middle">Period Earnings</span>            
 
@@ -13,18 +15,18 @@
 
         <div class="row">
             <div class="col text-center">
-                [[session_player.parameter_set_player.parameter_set_type.good_one_amount]]
+                [[temp_parameter_set_player.parameter_set_type.good_one_amount]]
 
-                <span v-bind:style = "{color : session_player.parameter_set_player.good_one.rgb_color}">
-                    [[session_player.parameter_set_player.good_one.label]] 
+                <span v-bind:style = "{color : temp_parameter_set_player.good_one.rgb_color}">
+                    [[temp_parameter_set_player.good_one.label]] 
                 </span>
 
                 goods and 
 
-                [[session_player.parameter_set_player.parameter_set_type.good_two_amount]]
+                [[temp_parameter_set_player.parameter_set_type.good_two_amount]]
 
-                <span v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
-                    [[session_player.parameter_set_player.good_two.label]] 
+                <span v-bind:style = "{color : temp_parameter_set_player.good_two.rgb_color}">
+                    [[temp_parameter_set_player.good_two.label]] 
                 </span>
 
                 goods
@@ -33,22 +35,22 @@
 
         <div class="row">
             <div class="col text-center">
-                in your house you earn [[Math.max(session_player.parameter_set_player.parameter_set_type.good_one_amount, session_player.parameter_set_player.parameter_set_type.good_two_amount)]]¢ each period.
+                in your house you earn [[Math.max(temp_parameter_set_player.parameter_set_type.good_one_amount, temp_parameter_set_player.parameter_set_type.good_two_amount)]]¢ each period.
             </div>            
         </div>
 
         <div class="row border-top mt-3">
             <div class="col text-center mt-2">
-                <span v-bind:style = "{color : session_player.parameter_set_player.good_one.rgb_color}">
-                    [[session_player.parameter_set_player.good_one.label]] 
+                <span v-bind:style = "{color : temp_parameter_set_player.good_one.rgb_color}">
+                    [[temp_parameter_set_player.good_one.label]] 
                 </span>
                 goods wasted in your house: [[good_one_waste]]
             </div>            
         </div>
         <div class="row mt-2">
             <div class="col text-center">
-                <span v-bind:style = "{color : session_player.parameter_set_player.good_two.rgb_color}">
-                    [[session_player.parameter_set_player.good_two.label]]
+                <span v-bind:style = "{color : temp_parameter_set_player.good_two.rgb_color}">
+                    [[temp_parameter_set_player.good_two.label]]
                 </span>
                 goods wasted in your house: [[good_two_waste]]
             </div>            

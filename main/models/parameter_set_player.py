@@ -140,7 +140,8 @@ class ParameterSetPlayer(models.Model):
 
             "session_player_number" : session_player.player_number if session_player else "---",
 
-            "period_groups" : [g.json() for g in self.parameter_set_player_groups.all()],
+            "period_groups_order" : list(self.parameter_set_player_groups.all().values_list('id', flat=True)),
+            "period_groups" : {str(g.id):g.json() for g in self.parameter_set_player_groups.all()},
         }
     
     def json_for_subject(self):

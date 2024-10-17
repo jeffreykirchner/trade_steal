@@ -150,7 +150,9 @@ simulate_do_period_production: function simulate_do_period_production(){
     if(this.session.current_experiment_phase != 'Instructions') return;
     if(this.session_player.current_instruction !=  this.instructions.action_page_production) return;
 
-    let parameter_set_type = this.session_player.parameter_set_player.parameter_set_type;
+    let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
+
+    let parameter_set_type = parameter_set_player_local.parameter_set_type;
 
     good_one_field = this.simulate_do_period_production_function(parameter_set_type.good_one_production_1,
                                                             parameter_set_type.good_one_production_2,
@@ -355,12 +357,14 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
 
     if(this.chat_recipients == "NONE") return;
 
+    let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
+
     if(this.chat_recipients == "all")
     {
         chat_type = "All";
 
         messageData = {chat: {text : this.chat_text.trim(),
-                              sender_label : this.session_player.parameter_set_player.id_label,
+                              sender_label : parameter_set_player_local.id_label,
                               sender_id : this.session_player.id,
                               id : randomNumber(1, 1000000)},
                       chat_type:chat_type}
@@ -370,14 +374,12 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
         chat_type = "Individual";
 
         messageData = {chat: {text : this.chat_text.trim(),
-                                     sender_label : this.session_player.parameter_set_player.id_label,
+                                     sender_label : parameter_set_player_local.id_label,
                                      sender_id : this.session_player.id,
                                      id : randomNumber(1, 1000000)},
                        sesson_player_target : this.chat_recipients,        
                        chat_type:chat_type}
     }
-
-   
 
     app.takeUpdateChat(messageData);
 

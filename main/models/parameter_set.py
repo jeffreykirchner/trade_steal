@@ -385,16 +385,20 @@ class ParameterSet(models.Model):
         '''
 
         if update_avatar:
-            self.json_for_session["parameter_set_avatars"] = [a.json() for a in self.parameter_set_avatars_a.all()]
+            self.json_for_session["parameter_set_avatars_order"] = list(self.parameter_set_avatars_a.all().values_list('id', flat=True))
+            self.json_for_session["parameter_set_avatars"] = {str(p.id):p.json() for p in self.parameter_set_avatars_a.all()}
 
         if update_good:
-            self.json_for_session["parameter_set_goods"] = [p.json() for p in self.parameter_set_goods.all()]
+            self.json_for_session["parameter_set_goods_order"] = list(self.parameter_set_goods.all().values_list('id', flat=True))
+            self.json_for_session["parameter_set_goods"] = {str(p.id):p.json() for p in self.parameter_set_goods.all()}
 
         if update_player:
-            self.json_for_session["parameter_set_players"] = [p.json() for p in self.parameter_set_players.all()]
+            self.json_for_session["parameter_set_players_order"] = list(self.parameter_set_players.all().values_list('id', flat=True))
+            self.json_for_session["parameter_set_players"] = {str(p.id):p.json() for p in self.parameter_set_players.all()}
 
         if update_type:
-            self.json_for_session["parameter_set_types"] = [p.json() for p in self.parameter_set_types.all()]
+            self.json_for_session["parameter_set_types_order"] = list(self.parameter_set_types.all().values_list('id', flat=True))
+            self.json_for_session["parameter_set_types"] = {str(p.id):p.json() for p in self.parameter_set_types.all()}
 
         self.save()
 

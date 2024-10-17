@@ -252,7 +252,9 @@ var app = Vue.createApp({
             app.session = messageData.session;
             app.session_player = messageData.session_player;
 
-            app.current_town = app.session_player.parameter_set_player.town;
+            let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
+
+            app.current_town = parameter_set_player_local.town;
 
             app.destroyPixiPlayers();
 
@@ -529,6 +531,7 @@ var app = Vue.createApp({
         },
         
         {%include "subject/subject_home/graph/graph_card.js"%}
+        {%include "subject/subject_home/graph/helpers.js"%}
         {%include "subject/subject_home/chat/chat_card.js"%}
         {%include "subject/subject_home/production/production_card.js"%}
         {%include "subject/subject_home/earnings/earnings_card.js"%}
@@ -586,40 +589,6 @@ var app = Vue.createApp({
 
             }
         }, 
-
-        /**
-         * return session player that has specified id
-         */
-        findSessionPlayer: function findSessionPlayer(id){
-
-            let session_players = app.session.session_players;
-            for(let i=0; i<session_players.length; i++)
-            {
-                if(session_players[i].id == id)
-                {
-                    return session_players[i];
-                }
-            }
-
-            return null;
-        },
-
-        /**
-         * return session player index that has specified id
-         */
-        findSessionPlayerIndex: function findSessionPlayerIndex(id){
-
-            let session_players = app.session.session_players;
-            for(let i=0; i<session_players.length; i++)
-            {
-                if(session_players[i].id == id)
-                {
-                    return i;
-                }
-            }
-
-            return null;
-        },
 
     },
 

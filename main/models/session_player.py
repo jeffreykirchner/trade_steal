@@ -347,7 +347,7 @@ class SessionPlayer(models.Model):
 
         return session_player_notice.json()
 
-    def do_period_consumption(self):
+    def do_period_consumption(self, parameter_set_player_local):
         '''
         covert goods in house to earnings
         '''
@@ -361,18 +361,18 @@ class SessionPlayer(models.Model):
 
         #convert goods to earnings
 
-        parameter_set_type = self.parameter_set_player.parameter_set_type
+        parameter_set_type = parameter_set_player_local["parameter_set_type"]
 
-        earnings_per_unit = max(parameter_set_type.good_one_amount, parameter_set_type.good_two_amount)
+        earnings_per_unit = max(parameter_set_type["good_one_amount"], parameter_set_type["good_two_amount"])
 
-        while self.good_one_house >= parameter_set_type.good_one_amount and \
-              self.good_two_house >= parameter_set_type.good_two_amount:
+        while self.good_one_house >= parameter_set_type["good_one_amount"] and \
+              self.good_two_house >= parameter_set_type["good_two_amount"]:
 
               self.earnings += earnings_per_unit
               session_player_period.earnings += earnings_per_unit
 
-              self.good_one_house -= parameter_set_type.good_one_amount
-              self.good_two_house -= parameter_set_type.good_two_amount
+              self.good_one_house -= parameter_set_type["good_one_amount"]
+              self.good_two_house -= parameter_set_type["good_two_amount"]
 
         self.good_one_house = 0
         self.good_two_house = 0
@@ -383,7 +383,7 @@ class SessionPlayer(models.Model):
 
         self.save()
         session_player_period.save()
-        session_player_period.update_efficiency()
+        session_player_period.update_efficiency(parameter_set_player_local["parameter_set_type"]["ce_earnings"])
 
     def get_instruction_set(self):
         '''
@@ -480,7 +480,8 @@ class SessionPlayer(models.Model):
             "login_link" : reverse('subject_home', kwargs={'player_key': self.player_key}),
             "connected_count" : self.connected_count,
 
-            "parameter_set_player" : self.parameter_set_player.json(),
+            # "parameter_set_player" : self.parameter_set_player.json(),
+            "parameter_set_player_id" : self.parameter_set_player.id,
 
             "group_number" : self.get_current_group_number(),
 
@@ -532,7 +533,8 @@ class SessionPlayer(models.Model):
 
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
-            "parameter_set_player" : self.parameter_set_player.json_for_subject(),
+            # "parameter_set_player" : self.parameter_set_player.json_for_subject(),
+            "parameter_set_player_id" : self.parameter_set_player.id,
 
             "avatar" : self.avatar.json() if self.avatar else None,
         }

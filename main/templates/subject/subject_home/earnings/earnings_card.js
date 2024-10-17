@@ -5,11 +5,13 @@
 
     app.potential_earnings = 0;
 
-    good_one = app.session_player.good_one_house.valueOf();
-    good_two = app.session_player.good_two_house.valueOf();
+    let good_one = app.session_player.good_one_house.valueOf();
+    let good_two = app.session_player.good_two_house.valueOf();
 
-    good_one_need = app.session_player.parameter_set_player.parameter_set_type.good_one_amount;
-    good_two_need = app.session_player.parameter_set_player.parameter_set_type.good_two_amount;
+    let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
+
+    let good_one_need = parameter_set_player_local.parameter_set_type.good_one_amount;
+    let good_two_need = parameter_set_player_local.parameter_set_type.good_two_amount;
 
     while(good_one >= good_one_need && good_two >= good_two_need)
     {

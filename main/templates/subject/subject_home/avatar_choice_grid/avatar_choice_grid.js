@@ -4,15 +4,17 @@
 get_grid_image_html: function get_grid_image_html(r, c){
 
     let parameter_set_avatars = this.session.parameter_set.parameter_set_avatars;
+    let parameter_set_avatars_order = this.session.parameter_set.parameter_set_avatars_order;
 
     image_id="blank.png";
 
-    for(let i=0; i<parameter_set_avatars.length;i++)
+    for(let i=0; i<parameter_set_avatars_order.length;i++)
     {
-        if(parameter_set_avatars[i].grid_location_row == r && parameter_set_avatars[i].grid_location_col == c)
+        let id = parameter_set_avatars_order[i];
+        if(parameter_set_avatars[id].grid_location_row == r && parameter_set_avatars[id].grid_location_col == c)
         {
-            if( parameter_set_avatars[i].avatar)
-                image_id = parameter_set_avatars[i].avatar.file_name;
+            if( parameter_set_avatars[id].avatar)
+                image_id = parameter_set_avatars[id].avatar.file_name;
             break;
         }
     }

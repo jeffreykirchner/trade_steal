@@ -179,7 +179,9 @@ setupSingleHouse: function setupSingleHouse(index){
     let session_players = app.session.session_players;
     let session_player = session_players[index];
 
-    if(session_players[index].parameter_set_player.town.toString() != app.current_town) return;
+    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_players[index].id);
+
+    if(parameter_set_player_index.town.toString() != app.current_town) return;
 
     if(house_containers[index])
     {
@@ -189,10 +191,9 @@ setupSingleHouse: function setupSingleHouse(index){
 
     let container = new PIXI.Container();
     
-    let parameter_set_player = session_player.parameter_set_player;
     let parameter_set = app.session.parameter_set;
 
-    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'house');
+    let pt = app.getLocationCordinates(parameter_set_player_index.location, 'house');
 
     let y_location_good_one = 0;
     let y_location_good_two = 0;
@@ -236,7 +237,7 @@ setupSingleHouse: function setupSingleHouse(index){
     container.addChildAt(highlight, 0)
 
     //house label texture
-    let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
+    let label = new PIXI.Text(parameter_set_player_index.id_label,{fontFamily : 'Arial',
                                                              fontWeight:'bold',
                                                              fontSize: 48,
                                                              align : 'center'});
@@ -250,14 +251,14 @@ setupSingleHouse: function setupSingleHouse(index){
     //good one label   
     container.addChild(app.createGoodLabel(session_player.good_one_house.toString(),
                                            "good_a_label",
-                                           parameter_set_player.good_one.rgb_color,
+                                           parameter_set_player_index.good_one.rgb_color,
                                            sprite.width / 2,
                                            y_location_good_one))
 
     //good two label
     container.addChild(app.createGoodLabel(session_player.good_two_house.toString(),
                                            "good_b_label",
-                                           parameter_set_player.good_two.rgb_color,
+                                           parameter_set_player_index.good_two.rgb_color,
                                            sprite.width / 2,
                                            y_location_good_two))
 
@@ -265,7 +266,7 @@ setupSingleHouse: function setupSingleHouse(index){
     if(parameter_set.good_count == 3){
         container.addChild(app.createGoodLabel(session_player.good_three_house.toString(),
                                                "good_c_label",
-                                               parameter_set_player.good_three.rgb_color,
+                                               parameter_set_player_index.good_three.rgb_color,
                                                sprite.width / 2,
                                                y_location_good_three))
     }
@@ -279,15 +280,15 @@ setupSingleHouse: function setupSingleHouse(index){
     container.name = {type : 'house',
                       index : index, 
                       user_id: session_players[index].id,
-                      modal_label: "House " + parameter_set_player.id_label,
+                      modal_label: "House " + parameter_set_player_index.id_label,
 
-                      good_one_color: parameter_set_player.good_one.rgb_color,
-                      good_two_color: parameter_set_player.good_two.rgb_color,
-                      good_three_color: parameter_set_player.good_three.rgb_color,
+                      good_one_color: parameter_set_player_index.good_one.rgb_color,
+                      good_two_color: parameter_set_player_index.good_two.rgb_color,
+                      good_three_color: parameter_set_player_index.good_three.rgb_color,
 
-                      good_a_label : parameter_set_player.good_one.label,
-                      good_b_label : parameter_set_player.good_two.label,
-                      good_c_label : parameter_set_player.good_three.label,};
+                      good_a_label : parameter_set_player_index.good_one.label,
+                      good_b_label : parameter_set_player_index.good_two.label,
+                      good_c_label : parameter_set_player_index.good_three.label,};
 
     if(app.is_subject)  //only subject screen can move items
         if(app.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.session_player.id)
@@ -339,7 +340,9 @@ setupSingleField: function setupSingleField(index){
     let session_players = app.session.session_players;
     let session_player = session_players[index];
 
-    if(session_players[index].parameter_set_player.town.toString() != app.current_town) return;
+    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_players[index].id);
+
+    if(parameter_set_player_index.town.toString() != app.current_town) return;
 
     if(field_containers[index])
     {
@@ -349,10 +352,9 @@ setupSingleField: function setupSingleField(index){
 
     let container = new PIXI.Container();
 
-    let parameter_set_player = session_player.parameter_set_player;
     let parameter_set = app.session.parameter_set;
 
-    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'field');
+    let pt = app.getLocationCordinates(parameter_set_player_index.location, 'field');
 
     //field texture
     let sprite = PIXI.Sprite.from(app.house_sheet.textures["Field0000"]);
@@ -377,7 +379,7 @@ setupSingleField: function setupSingleField(index){
     container.addChildAt(highlight, 0)
 
     //field id label texture
-    let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
+    let label = new PIXI.Text(parameter_set_player_index.id_label,{fontFamily : 'Arial',
                                                                     fontWeight:'bold',
                                                                     fontSize: 48,
                                                                     align : 'center'});
@@ -403,14 +405,14 @@ setupSingleField: function setupSingleField(index){
     //good one label
     container.addChild(app.createGoodLabel(session_player.good_one_field.toString(),
                                            "good_a_label",
-                                           parameter_set_player.good_one.rgb_color,
+                                           parameter_set_player_index.good_one.rgb_color,
                                            sprite.width / 2,
                                            sprite.height / 4))
 
     //good two label
     container.addChild(app.createGoodLabel(session_player.good_two_field.toString(),
                                            "good_b_label",
-                                           parameter_set_player.good_two.rgb_color,
+                                           parameter_set_player_index.good_two.rgb_color,
                                            sprite.width / 2,
                                            sprite.height / 4 * 3))
 
@@ -419,13 +421,13 @@ setupSingleField: function setupSingleField(index){
     container.name = {type : 'field',
                       index:index,
                       user_id: session_players[index].id,
-                      modal_label: "Field " + parameter_set_player.id_label,
+                      modal_label: "Field " + parameter_set_player_index.id_label,
                       
-                      good_one_color: parameter_set_player.good_one.rgb_color,
-                      good_two_color: parameter_set_player.good_two.rgb_color, 
+                      good_one_color: parameter_set_player_index.good_one.rgb_color,
+                      good_two_color: parameter_set_player_index.good_two.rgb_color, 
 
-                      good_a_label : parameter_set_player.good_one.label,
-                      good_b_label : parameter_set_player.good_two.label};
+                      good_a_label : parameter_set_player_index.good_one.label,
+                      good_b_label : parameter_set_player_index.good_two.label};
 
     container.pivot.set(container.width/2, container.height/2);
     container.hitArea = new PIXI.Rectangle(0, 0, container.width, container.height);    
@@ -455,8 +457,10 @@ setupSingleAvatar: function setupSingleAvatar(index){
     let session_players = app.session.session_players;
     let session_player = session_players[index];
 
-    if(session_players[index].parameter_set_player.town.toString() != app.current_town) return;
-    if(!session_players[index].avatar && !session_players[index].parameter_set_player.avatar) return;
+    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_players[index].id);
+
+    if(parameter_set_player_index.town.toString() != app.current_town) return;
+    if(!session_players[index].avatar && !parameter_set_player_index.avatar) return;
 
     if(avatar_containers[index])
     {
@@ -466,10 +470,9 @@ setupSingleAvatar: function setupSingleAvatar(index){
 
     let container = new PIXI.Container();
 
-    let parameter_set_player = session_player.parameter_set_player;
     let parameter_set = app.session.parameter_set;
 
-    let pt = app.getLocationCordinates(session_players[index].parameter_set_player.location, 'avatar');
+    let pt = app.getLocationCordinates(parameter_set_player_index.location, 'avatar');
     
     let sprite = null;
 
@@ -480,8 +483,8 @@ setupSingleAvatar: function setupSingleAvatar(index){
     }
     else
     {
-        pixi_textures[session_players[index].parameter_set_player.avatar.label].baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
-        sprite = new PIXI.Sprite(pixi_textures[session_players[index].parameter_set_player.avatar.label]);
+        pixi_textures[parameter_set_player_index.avatar.label].baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
+        sprite = new PIXI.Sprite(pixi_textures[parameter_set_player_index.avatar.label]);
     }
     
     sprite.x = 0;
@@ -499,7 +502,7 @@ setupSingleAvatar: function setupSingleAvatar(index){
     container2.addChild(container);
 
     //avatar label texture
-    let label = new PIXI.Text(parameter_set_player.id_label,{fontFamily : 'Arial',
+    let label = new PIXI.Text(parameter_set_player_index.id_label,{fontFamily : 'Arial',
         fontWeight:'bold',
         fontSize: 15,
         align : 'center'});
