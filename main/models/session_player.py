@@ -363,7 +363,7 @@ class SessionPlayer(models.Model):
 
         parameter_set_type = parameter_set_player_local["parameter_set_type"]
 
-        earnings_per_unit = max(parameter_set_type.good_one_amount, parameter_set_type.good_two_amount)
+        earnings_per_unit = max(parameter_set_type["good_one_amount"], parameter_set_type["good_two_amount"])
 
         while self.good_one_house >= parameter_set_type["good_one_amount"] and \
               self.good_two_house >= parameter_set_type["good_two_amount"]:
@@ -383,7 +383,7 @@ class SessionPlayer(models.Model):
 
         self.save()
         session_player_period.save()
-        session_player_period.update_efficiency()
+        session_player_period.update_efficiency(parameter_set_player_local["parameter_set_type"]["ce_earnings"])
 
     def get_instruction_set(self):
         '''

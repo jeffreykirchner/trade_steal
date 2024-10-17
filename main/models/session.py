@@ -253,9 +253,9 @@ class Session(models.Model):
                 else:
                     self.do_period_consumption(parameter_set_local)
                     
-                    period_update = self.get_current_session_period()
-                    if period_update:
-                        period_update.update_efficiency()
+                    # period_update = self.get_current_session_period()
+                    # if period_update:
+                    #     period_update.update_efficiency()
 
                     self.current_period += 1
                     self.current_period_phase = PeriodPhase.PRODUCTION
@@ -328,7 +328,7 @@ class Session(models.Model):
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
         writer.writerow(["Session ID", "Period", "Town", "Group", "Location", "Client #", "Label", "Good One Production", "Good One Production %", "Good Two Production", "Good Two Production %",
-                         "Good One Consumption", "Good Two Consumption", "Earnings ¢"])
+                         "Good One Consumption", "Good Two Consumption", "Earnings ¢", "Efficiency"])
 
         session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
                                                                         .order_by('session_period__period_number', 

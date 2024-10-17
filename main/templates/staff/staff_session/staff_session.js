@@ -313,9 +313,12 @@ var app = Vue.createApp({
                 
             }
 
-            let v = {};
-            v.timer_running = app.session.timer_running;
-            app.takeStartTimer(v);
+            if(!app.session.finished)
+            {
+                let v = {};
+                v.timer_running = app.session.timer_running;
+                app.takeStartTimer(v);
+            }
         },
 
         /**
