@@ -86,7 +86,7 @@ var app = Vue.createApp({
         /** fire trys to connect to server
          * return true if re-connect should be allowed else false
         */
-         handle_socket_connection_try: function handle_socket_connection_try(){         
+        handle_socket_connection_try: function handle_socket_connection_try(){         
             if(app.session) app.session.timer_running = false;
             if(worker) worker.terminate();
             return true;
