@@ -29,7 +29,7 @@
  */
  takeUpdateGroups: function takeUpdateGroups(messageData){
     
-    if(messageData == "success")
+    if(messageData.status == "success")
     {
         let group_list = messageData.group_list;
         let session_players = app.session.session_players;

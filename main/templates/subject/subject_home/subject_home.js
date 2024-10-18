@@ -479,7 +479,10 @@ var app = Vue.createApp({
 
             setTimeout(app.setupPixiPlayers, 250);
 
-            document.getElementById("chat_all_id").click();
+            // document.getElementById("chat_all_id").click();
+            app.chat_recipients = "NONE";
+            app.chat_recipients_index = 0;
+            app.chat_button_label = "Select Recipient";
             app.calcWaste();
         },
 
