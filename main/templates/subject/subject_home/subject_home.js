@@ -480,9 +480,36 @@ var app = Vue.createApp({
             setTimeout(app.setupPixiPlayers, 250);
 
             // document.getElementById("chat_all_id").click();
-            app.chat_recipients = "NONE";
-            app.chat_recipients_index = 0;
-            app.chat_button_label = "Select Recipient";
+           
+
+            if(app.session.parameter_set.private_chat == 'True')
+            {
+                app.chat_recipients = "NONE";
+                app.chat_recipients_index = 0;
+                app.chat_button_label = "Select Recipient";
+                
+                //deselect group chat
+                if(app.session.parameter_set.group_chat == 'True')
+                {
+                    let b = document.getElementById("chat_all_id");
+                    b.classList.remove('active');
+                    b.checked = false;
+                }
+
+                //deselect group chat
+                for(p in app.session.session_players)
+                {
+                    let s = "chat_invididual_" + app.session.session_players[p].id + "_id";
+                    let b = document.getElementById(s);
+
+                    if(b)
+                    {
+                        b.classList.remove('active');
+                        b.checked = false;
+                    }
+                }
+            }
+
             app.calcWaste();
         },
 

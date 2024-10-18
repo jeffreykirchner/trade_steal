@@ -99,20 +99,23 @@ takeUpdateChat: function takeUpdateChat(messageData){
 /** update who should receive chat
 *    @param messageData {json} session day in json format
 */
-updateChatRecipients: function updateChatRecipients(chat_recipients, chat_button_label, chat_recipients_index){
+updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipients_index){
 
     this.chat_recipients = chat_recipients;
-    this.chat_button_label = chat_button_label;
+    
     this.chat_recipients_index = chat_recipients_index;
 
     app.updateChatDisplay();
 
     if(this.chat_recipients=="all")
     {
+        this.chat_button_label = "Everyone";
         this.session_player.new_chat_message = false;
     }
     else
     {
+        let parameter_set_player = app.get_parameter_set_player_from_player_id(chat_recipients);
+        this.chat_button_label = "Person " + parameter_set_player.id_label;
         this.session.session_players[chat_recipients_index].new_chat_message = false;
     }
 },
