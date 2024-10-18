@@ -38,6 +38,11 @@ class ParameterSetPlayerGroup(models.Model):
         
         message = "Parameters loaded successfully."
 
+        self.group_number = source.get("group_number")
+        self.period = source.get("period")
+
+        self.save()
+
         return message
 
     def json(self):

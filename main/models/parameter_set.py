@@ -119,49 +119,34 @@ class ParameterSet(models.Model):
             #parameter set types           
             new_parameter_set_types = new_ps.get("parameter_set_types")
             for new_p in new_parameter_set_types:
-                p = self.parameter_set_types.get(subject_type=new_p.get("subject_type"))
-                p.from_dict(new_p, parameter_set_type_pk_map)
+                v = new_parameter_set_types[new_p]
+                p = self.parameter_set_types.get(subject_type=v.get("subject_type"))
+                p.from_dict(v, parameter_set_type_pk_map)
             
             #parameter set goods
+            self.parameter_set_goods.all().delete()
             new_parameter_set_goods = new_ps.get("parameter_set_goods")
-            for index, p in enumerate(self.parameter_set_goods.all()) :
-                p.from_dict(new_parameter_set_goods[index], parameter_set_goods_pk_map)
+            for new_p in new_parameter_set_goods:
+                v = new_parameter_set_goods[new_p]
+                p = main.models.ParameterSetGood(parameter_set=self)
+                p.from_dict(v, parameter_set_goods_pk_map)
             
             #parameter set players
-            parameter_set_goods = self.parameter_set_goods.all()
+            self.parameter_set_players.all().delete()
             new_parameter_set_players = new_ps.get("parameter_set_players")
 
-            if len(new_parameter_set_players) > self.parameter_set_players.count():
-                #add more players
-                new_player_count = len(new_parameter_set_players) - self.parameter_set_players.count()
-
-                for i in range(new_player_count):
-                    self.add_new_player(self.parameter_set_types.first(),
-                                        i,
-                                        parameter_set_goods[0],
-                                        parameter_set_goods[1],
-                                        parameter_set_goods[2])
-
-            elif len(new_parameter_set_players) < self.parameter_set_players.count():
-                #remove excess players
-
-                extra_player_count = self.parameter_set_players.count() - len(new_parameter_set_players)
-
-                for i in range(extra_player_count):
-                    self.parameter_set_players.last().delete()
-            
-            self.update_group_counts()
-
-            new_parameter_set_players = new_ps.get("parameter_set_players")
-            for index, p in enumerate(self.parameter_set_players.all()):                
-                p.from_dict(new_parameter_set_players[index], parameter_set_type_pk_map, parameter_set_goods_pk_map)
+            for new_p in new_parameter_set_players:
+                v = new_parameter_set_players[new_p]
+                p = main.models.ParameterSetPlayer(parameter_set=self)
+                p.from_dict(v, parameter_set_type_pk_map, parameter_set_goods_pk_map)
 
             #parameter set avatars
-            self.update_choice_avatar_counts()
+            self.parameter_set_avatars_a.all().delete()
             new_parameter_set_avatars = new_ps.get("parameter_set_avatars")
-            for index, p in enumerate(new_parameter_set_avatars):
-                a=self.parameter_set_avatars_a.get(grid_location_row=p["grid_location_row"], grid_location_col=p["grid_location_col"])
-                a.from_dict(p)
+            for new_p in new_parameter_set_avatars:
+                v = new_parameter_set_avatars[new_p]
+                p = main.models.ParameterSetAvatar(parameter_set=self)
+                p.from_dict(v)
 
             self.json_for_session = None
             self.save()
