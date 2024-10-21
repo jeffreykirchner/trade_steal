@@ -8,8 +8,8 @@
  * set the visibility of all feilds and houses
  */
 setFieldHouseVisbility: function setFieldHouseVisbility(value){
-    session_players = app.session.session_players;
-    for(let i=0;i<session_players.length;i++)
+    
+    for(let i=0;i<app.session.session_players_order.length;i++)
     {
         if(house_containers[i])
         {

@@ -497,7 +497,7 @@ var app = Vue.createApp({
                 }
 
                 //deselect group chat
-                for(p in app.session.session_players)
+                for(p in app.session.session_players_order)
                 {
                     let s = "chat_invididual_" + app.session.session_players[p].id + "_id";
                     let b = document.getElementById(s);

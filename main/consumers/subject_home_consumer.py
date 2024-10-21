@@ -966,7 +966,7 @@ def take_update_next_phase(session_id, session_player_id):
         return {"value" : "success",
                 "session" : session_player.session.json_for_subject(session_player),
                 "session_player" : session_player.json(),
-                "session_players" : [p.json_for_subject(session_player) for p in group_list]}
+                "session_players" : {str(p.id):p.json_for_subject(session_player) for p in group_list}}
 
     except ObjectDoesNotExist:
         logger.warning(f"take_update_next_phase: session not found, session {session_id}, session_player_id {session_player_id}")

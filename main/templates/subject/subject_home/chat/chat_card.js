@@ -54,7 +54,6 @@ takeUpdateChat: function takeUpdateChat(messageData){
     else if(result.chat_type=="Individual")
     {
         var sesson_player_target =  result.sesson_player_target;
-        var session_players = this.session.session_players;
 
         var target = -1;
         if(sesson_player_target == session_player.id)
@@ -66,7 +65,7 @@ takeUpdateChat: function takeUpdateChat(messageData){
             target = sesson_player_target;
         }
 
-        session_player = app.findSessionPlayer(target);
+        session_player = app.session.session_players[target];
         session_player_index = app.findSessionPlayerIndex(target);
 
         if(session_player)
@@ -80,17 +79,7 @@ takeUpdateChat: function takeUpdateChat(messageData){
             {
                 session_player.new_chat_message = true;
             }
-        }
-
-        // for(let i=0; i<session_players.length; i++)
-        // {
-        //     if(session_players[i].id == target)
-        //     {
-                
-                
-        //         break;
-        //     }
-        // }        
+        }       
     }
 
     app.updateChatDisplay();
@@ -116,7 +105,9 @@ updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipi
     {
         let parameter_set_player = app.get_parameter_set_player_from_player_id(chat_recipients);
         this.chat_button_label = "Person " + parameter_set_player.id_label;
-        this.session.session_players[chat_recipients_index].new_chat_message = false;
+        let session_player_id = this.session.session_players_order[chat_recipients_index];
+        let session_player = this.session.session_players[session_player_id];
+        session_player.new_chat_message = false;
     }
 },
 
@@ -132,20 +123,11 @@ updateChatDisplay: function updateChatDisplay(){
     }
     else
     {
-        this.chat_list_to_display=Array.from(this.session.session_players[this.chat_recipients_index].chat_individual);
+        let session_player_id = this.session.session_players_order[this.chat_recipients_index];
+        let session_player = this.session.session_players[session_player_id];
+        this.chat_list_to_display=Array.from(session_player.chat_individual);
     }
 
-    //add spacers
-    // for(let i=this.chat_list_to_display.length;i<12;i++)
-    // {
-    //     this.chat_list_to_display.unshift({id:i*-1, text:"|", sender_id:this.session_player.id})
-    // }
-
-    // //scroll to view
-    // if(this.chat_list_to_display.length>0)
-    // {
-    //     Vue.nextTick(() => {app.updateChatDisplayScroll()});        
-    // }
 },
 
 updateChatDisplayScroll: function updateChatDisplayScroll(){

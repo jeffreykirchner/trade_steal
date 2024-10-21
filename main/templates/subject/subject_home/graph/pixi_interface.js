@@ -3,7 +3,6 @@
  */
  handleFieldPointerDown: function handleFieldPointerDown(index, event){
     //console.log('Field ' + (index+1).toString() + ' down');
-    let session_players = app.session.session_players;
     app.handleContainerDown(field_containers[index], event);
 },
 
@@ -17,8 +16,6 @@ handleFieldPointerUp: function handleFieldPointerUp(index, event){
         app.turnOffHighlights();
         return;
     }
-
-    let session_players = app.session.session_players;
     app.handleContainerUp(field_containers[index], event);
 },
 
@@ -27,7 +24,6 @@ handleFieldPointerUp: function handleFieldPointerUp(index, event){
  */
 handleFieldPointerOver: function handleFieldPointerOver(index, event){
     //console.log('Field ' + (index+1).toString() + ' Over');
-    let session_players = app.session.session_players;
     app.setContainerAsTarget(field_containers[index], event);
 },
 
@@ -41,7 +37,6 @@ handleFieldPointerMove: function handleFieldPointerMove(index, event){
  */
 handleFieldPointerOut: function handleFieldPointerOut(index, event){
     //console.log('Field ' + (index+1).toString() + ' Out');
-    let session_players = app.session.session_players;
     app.removeContainerTarget(field_containers[index], event);
 },
 
@@ -50,7 +45,6 @@ handleFieldPointerOut: function handleFieldPointerOut(index, event){
  */
 handleHousePointerDown: function handleHousePointerDown(index, event){
     //console.log('House ' + (index+1).toString() + ' down');
-    let session_players = app.session.session_players;
     app.handleContainerDown(house_containers[index], event);
 },
 
@@ -59,7 +53,7 @@ handleHousePointerDown: function handleHousePointerDown(index, event){
  */
 handleHousePointerUp: function handleHousePointerUp(index, event){
    //console.log('House ' + (index+1).toString() + ' up');
-   let session_players = app.session.session_players;
+
    app.handleContainerUp(house_containers[index], event);
 },
 
@@ -68,7 +62,7 @@ handleHousePointerUp: function handleHousePointerUp(index, event){
  */
 handleHousePointerOver: function handleHousePointerOver(index, event){
     //console.log('House ' + (index+1).toString() + ' Over');
-    let session_players = app.session.session_players;
+
     app.setContainerAsTarget(house_containers[index], event);
    
 },
@@ -83,7 +77,7 @@ handleHousePointerMove: function handleHousePointerMove(index, event){
  */
 handleHousePointerOut: function handleHousePointerOut(index, event){
     //console.log('House ' + (index+1).toString() + ' Out');
-    let session_players = app.session.session_players;
+ 
     app.removeContainerTarget(house_containers[index], event);
 },
 
@@ -160,9 +154,8 @@ handleStagePointerMove: function handleStagePointerMove(event){
 turnOffHighlights: function turnOffHighlights(){
     if(app.pixi_modal_open) return;
 
-    let session_players = app.session.session_players;
     
-    for(let i=0;i<session_players.length;i++)
+    for(let i=0;i<app.session.session_players_order.length;i++)
     {
         if(house_containers[i])
             if(house_containers[i].getChildByName("highlight"))

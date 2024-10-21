@@ -143,18 +143,18 @@ setupPixiPlayers: function setupPixiPlayers(){
     if(!app.pixi_loaded) return;
     if(!app.session.parameter_set.show_avatars=="True") return;
 
-    let session_players = app.session.session_players;
+    let session_players_order = app.session.session_players_order;
     let session = app.session;
     let session_player = app.session_player;
 
     //setup pixi houses
-    for(let i=0;i<session_players.length;i++)
+    for(let i=0;i<session_players_order.length;i++)
     {        
         app.setupSingleHouse(i);
     }
 
     //setup pixi fields
-    for(let i=0;i<session_players.length;i++)
+    for(let i=0;i<session_players_order.length;i++)
     {
         app.setupSingleField(i);
     }
@@ -162,7 +162,7 @@ setupPixiPlayers: function setupPixiPlayers(){
     //setup pixi avatars
     if(app.session.parameter_set.show_avatars == "True")
     {
-        for(let i=0;i<session_players.length;i++)
+        for(let i=0;i<session_players_order.length;i++)
         {
             app.setupSingleAvatar(i);
         }
@@ -176,10 +176,11 @@ setupPixiPlayers: function setupPixiPlayers(){
  * @param index : int
  */
 setupSingleHouse: function setupSingleHouse(index){
-    let session_players = app.session.session_players;
-    let session_player = session_players[index];
 
-    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_players[index].id);
+    let session_player_id = app.session.session_players_order[index];
+    let session_player = app.session.session_players[session_player_id];
+
+    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_player_id);
 
     if(parameter_set_player_index.town.toString() != app.current_town) return;
 
@@ -218,7 +219,7 @@ setupSingleHouse: function setupSingleHouse(index){
     sprite.name = "house_texture"
 
     
-    if(typeof app.session_player != 'undefined' && session_players[index].player_number == app.session_player.player_number){
+    if(typeof app.session_player != 'undefined' && session_player.player_number == app.session_player.player_number){
         sprite.tint = app.owner_color;
     }
     else{
@@ -279,7 +280,7 @@ setupSingleHouse: function setupSingleHouse(index){
     //container.buttonMode = true;
     container.name = {type : 'house',
                       index : index, 
-                      user_id: session_players[index].id,
+                      user_id: session_player.id,
                       modal_label: "House " + parameter_set_player_index.id_label,
 
                       good_one_color: parameter_set_player_index.good_one.rgb_color,
@@ -291,7 +292,7 @@ setupSingleHouse: function setupSingleHouse(index){
                       good_c_label : parameter_set_player_index.good_three.label,};
 
     if(app.is_subject)  //only subject screen can move items
-        if(app.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.session_player.id)
+        if(app.session.parameter_set.allow_stealing == "True" || session_player.id == app.session_player.id)
             container.on('pointerdown', app.handleHousePointerDown.bind(this, index));
 
     container.on('pointerup', app.handleHousePointerUp.bind(this, index))
@@ -337,10 +338,10 @@ createGoodLabel: function createGoodLabel(amount, label_name, rgb_color, x_locat
  * @param index : int
  */
 setupSingleField: function setupSingleField(index){
-    let session_players = app.session.session_players;
-    let session_player = session_players[index];
+    let session_player_id = app.session.session_players_order[index];
+    let session_player = app.session.session_players[session_player_id];
 
-    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_players[index].id);
+    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_player.id);
 
     if(parameter_set_player_index.town.toString() != app.current_town) return;
 
@@ -361,7 +362,7 @@ setupSingleField: function setupSingleField(index){
 
     sprite.x = 0;
     sprite.y = 0;
-    if(typeof app.session_player != 'undefined' && session_players[index].player_number == app.session_player.player_number){
+    if(typeof app.session_player != 'undefined' && session_player.player_number == app.session_player.player_number){
         sprite.tint = app.owner_color;
     }
     else{
@@ -420,7 +421,7 @@ setupSingleField: function setupSingleField(index){
     container.y = pt.y;
     container.name = {type : 'field',
                       index:index,
-                      user_id: session_players[index].id,
+                      user_id: session_player.id,
                       modal_label: "Field " + parameter_set_player_index.id_label,
                       
                       good_one_color: parameter_set_player_index.good_one.rgb_color,
@@ -437,7 +438,7 @@ setupSingleField: function setupSingleField(index){
 
     //prevent stealing    
     if(app.is_subject)  //only subject screen can move items
-        if(app.session.parameter_set.allow_stealing == "True" || session_players[index].id == app.session_player.id)
+        if(app.session.parameter_set.allow_stealing == "True" || session_player.id == app.session_player.id)
             container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
 
     container.on('pointerup', app.handleFieldPointerUp.bind(this, index))
@@ -454,13 +455,13 @@ setupSingleField: function setupSingleField(index){
 /**setup avatar container for player */
 setupSingleAvatar: function setupSingleAvatar(index){
 
-    let session_players = app.session.session_players;
-    let session_player = session_players[index];
+    let session_player_id = app.session.session_players_order[index];
+    let session_player = app.session.session_players[session_player_id];
 
-    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_players[index].id);
+    let parameter_set_player_index = app.get_parameter_set_player_from_player_id(session_player.id);
 
     if(parameter_set_player_index.town.toString() != app.current_town) return;
-    if(!session_players[index].avatar && !parameter_set_player_index.avatar) return;
+    if(!session_player.avatar && !parameter_set_player_index.avatar) return;
 
     if(avatar_containers[index])
     {
@@ -476,10 +477,10 @@ setupSingleAvatar: function setupSingleAvatar(index){
     
     let sprite = null;
 
-    if(session_players[index].avatar)
+    if(session_player.avatar)
     {
-        pixi_textures[session_players[index].avatar.label].baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
-        sprite = new PIXI.Sprite(pixi_textures[session_players[index].avatar.label]);
+        pixi_textures[session_player.avatar.label].baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
+        sprite = new PIXI.Sprite(pixi_textures[session_player.avatar.label]);
     }
     else
     {
