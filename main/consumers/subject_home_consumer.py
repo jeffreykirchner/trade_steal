@@ -704,7 +704,7 @@ def take_chat(session_id, session_player_id, data):
     data : json : incoming json data
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"take chat: {session_id} {session_player_id} {data}")
+    #logger.info(f"take chat: {session_id} {session_player_id} {data}")
 
     try:
         recipients = data["recipients"] 

@@ -452,7 +452,8 @@ class Session(models.Model):
             "finished":self.finished,
             "parameter_set":self.parameter_set.json(),
             "session_periods":[i.json() for i in self.session_periods.all()],
-            "session_players":[i.json(False) for i in self.session_players.all()],
+            "session_players":{str(i.id):i.json(False) for i in self.session_players.all()},
+            "session_players_order":[i.id for i in self.session_players.all()],
             "chat_all" : chat,
             "notices" : notices,
             "invitation_text" : self.invitation_text,
@@ -495,7 +496,8 @@ class Session(models.Model):
             "finished":self.finished,
             "parameter_set":self.parameter_set.json_for_subject(),
 
-            "session_players":[i.json_for_subject(session_player) for i in session_player.get_current_group_list()]
+            "session_players":{str(i.id):i.json_for_subject(session_player) for i in session_player.get_current_group_list()},
+            "session_players_order":[i.id for i in session_player.get_current_group_list()],
         }
     
     def json_for_timmer(self):

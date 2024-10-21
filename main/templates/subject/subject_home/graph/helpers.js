@@ -19,13 +19,18 @@ get_parameter_set_player_from_player_id: function get_parameter_set_player_from_
   */
  findSessionPlayer: function findSessionPlayer(id){
 
-    let session_players = this.session.session_players;
-    for(let i=0; i<session_players.length; i++)
+    // let session_players = this.session.session_players;
+    // for(let i=0; i<session_players.length; i++)
+    // {
+    //     if(session_players[i].id == id)
+    //     {
+    //         return session_players[i];
+    //     }
+    // }
+
+    if(id in app.session.session_players)
     {
-        if(session_players[i].id == id)
-        {
-            return session_players[i];
-        }
+        return app.session.session_players[id];
     }
 
     return null;

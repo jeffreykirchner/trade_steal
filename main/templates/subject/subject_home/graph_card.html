@@ -110,25 +110,26 @@
                         <span v-if=session_player.new_chat_message>*</span>
                     </label>
                     
-                    <div v-for="(p, index) in session.session_players" 
-                         v-bind:key="p.id"
-                         :set="chat_parameter_set_player=get_parameter_set_player_from_player_id(p.id)">
+                    <div v-for="(p, index) in session.session_players_order" 
+                         v-bind:key="p"
+                         :set="v={chat_parameter_set_player:get_parameter_set_player_from_player_id(p),
+                                  temp_p:session.session_players[p]}">
                         
                         <input type="radio"
                             class="btn-check" 
                             name="btnradio" 
-                            v-bind:id="'chat_invididual_' + p.id + '_id'"                             
+                            v-bind:id="'chat_invididual_' + p + '_id'"                             
                             autocomplete="off" 
-                            v-if="p.id != session_player.id"
-                            v-on:click="updateChatRecipients(p.id, index)">
+                            v-if="p != session_player.id"
+                            v-on:click="updateChatRecipients(p, index)">
                         <label class="btn btn-outline-secondary"
-                               v-if="p.id != session_player.id"
-                               v-bind:style="[(p.new_chat_message && tick_tock==0) ? {'background-color':'LightPink', 
+                               v-if="p != session_player.id"
+                               v-bind:style="[(v.temp_p.new_chat_message && tick_tock==0) ? {'background-color':'LightPink', 
                                                                                       'font-weight':'bold', 
                                                                                       'color':'black'}:{}]"
-                               v-bind:for="'chat_invididual_' + p.id + '_id'">
-                            [[chat_parameter_set_player.id_label]]
-                            <span v-if=p.new_chat_message>*</span>
+                               v-bind:for="'chat_invididual_' + p + '_id'">
+                            [[v.chat_parameter_set_player.id_label]]
+                            <span v-if=v.temp_p.new_chat_message>*</span>
                         </label>
                     </div>
 
