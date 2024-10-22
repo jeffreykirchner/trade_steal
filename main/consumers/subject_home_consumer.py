@@ -862,7 +862,8 @@ def take_update_groups(session_id, session_player_id):
         group_list = session_player.get_current_group_list()
 
         return {"value" : "success",
-                "result" : {"session_players" : [p.json_for_subject(session_player) for p in group_list]}}
+                "result" : {"session_players" : {str(p.id):p.json_for_subject(session_player) for p in group_list},
+                            "session_players_order" : [p.id for p in group_list]}}
 
     except ObjectDoesNotExist:
         logger.warning(f"take_update_groups: session not found, session {session_id}, session_player_id {session_player_id}")

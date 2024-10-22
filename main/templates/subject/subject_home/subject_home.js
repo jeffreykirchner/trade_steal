@@ -475,7 +475,8 @@ var app = Vue.createApp({
         takeUpdateGroups: function takeUpdateGroups(messageData){
             app.destroyPixiPlayers();
 
-            this.session.session_players = messageData.result.session_players;
+            app.session.session_players = messageData.result.session_players;
+            app.session.session_players_order = messageData.result.session_players_order;
 
             setTimeout(app.setupPixiPlayers, 250);
 
@@ -497,9 +498,10 @@ var app = Vue.createApp({
                 }
 
                 //deselect group chat
-                for(p in app.session.session_players_order)
+                for(p in app.session.session_players)
                 {
-                    let s = "chat_invididual_" + app.session.session_players[p].id + "_id";
+                    let session_player = app.session.session_players[p];
+                    let s = "chat_invididual_" + session_player.id + "_id";
                     let b = document.getElementById(s);
 
                     if(b)
