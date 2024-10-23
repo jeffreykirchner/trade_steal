@@ -498,8 +498,8 @@ def take_move_goods(session_id, session_player_id, data):
         try:        
             with transaction.atomic():
 
-                source_session_player = session.session_players.get(id=source_id)              
-                target_session_player = session.session_players.get(id=target_id)
+                source_session_player = session.session_players.select_for_update().get(id=source_id)              
+                target_session_player = session.session_players.select_for_update().get(id=target_id)
 
                 #check that stealing is allowed
                 if not session.parameter_set.allow_stealing and source_session_player != session_player:
@@ -655,6 +655,13 @@ def take_move_goods(session_id, session_player_id, data):
                 session_player_notice_1.show_on_staff = True
                 session_player_notice_1.save()
 
+                session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].append(session_player_notice_1.json())
+
+                if len(session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)]) > 100:
+                    session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].pop(0)
+
+                session_player.session.save()
+
                 #record notice for source player if source does not match mover
                 if source_session_player != session_player:
                     session_player_notice_2 = SessionPlayerNotice()
@@ -755,6 +762,13 @@ def take_chat(session_id, session_player_id, data):
     session_player_chat.current_period_phase = session.current_period_phase
 
     session_player_chat.save()
+
+    session.world_state["chat_all"][str(session_player.parameter_set_player.town)].append(session_player_chat.json_for_staff())
+
+    if len(session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)]) > 100:
+        session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)].pop(0)
+
+    session.save()
 
     session_player_group_list = session_player.get_current_group_list()
     if recipients == "all":
