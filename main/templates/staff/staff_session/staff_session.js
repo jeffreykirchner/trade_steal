@@ -395,16 +395,28 @@ var app = Vue.createApp({
          * update chat displayed based on town chosen
          */
         updateChatDisplay: function updateChatDisplay(force_scroll){
+            if(!("chat_all" in app.session.world_state))
+            {
+                app.chat_list_to_display = [];
+                return;
+            }
+
+
             let chat_all = app.session.world_state.chat_all;
-            this.chat_list_to_display=Array.from(chat_all[parseInt(this.current_town)]);
+            app.chat_list_to_display=Array.from(chat_all[parseInt(app.current_town)]);
         },
 
         /**
          * update chat displayed based on town chosen
          */
-        updateNoticeDisplay: function updateNoticeDisplay(forceScroll){        
+        updateNoticeDisplay: function updateNoticeDisplay(forceScroll){      
+            if(!("notices" in app.session.world_state))
+            {
+                app.notice_list_to_display = [];
+                return;  
+            }
             let notices =  app.session.world_state.notices;    
-            this.notice_list_to_display=Array.from(notices[parseInt(this.current_town)]);
+            app.notice_list_to_display=Array.from(notices[parseInt(app.current_town)]);
             // setTimeout(function() {  app.updateNoticeDisplayScrollStaff(forceScroll); }, 250);
         },
 
