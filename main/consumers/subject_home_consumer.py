@@ -58,11 +58,17 @@ class SubjectHomeConsumer(SocketConsumerMixin,
 
         self.connection_uuid = event["message_text"]["playerKey"]
         self.connection_type = "subject"
-        self.session_id = await sync_to_async(take_get_session_id, thread_sensitive=False)(self.connection_uuid)
 
-        await self.update_local_info(event)
-
-        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
+        #get session id for subject
+        try:
+            session_player = await SessionPlayer.objects.select_related('session').aget(player_key=self.connection_uuid)
+            self.session_id = session_player.session.id
+            self.session_player_id = session_player.id
+            self.controlling_channel =  session_player.session.controlling_channel
+        except ObjectDoesNotExist:
+            result = {"session" : None, "session_player" : None}
+        else:        
+            result = await sync_to_async(take_get_session_subject)(self.session_player_id)                
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -198,7 +204,8 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         '''
         only for subject screens
         '''
-        pass
+        event_data = json.loads(event["group_data"])
+        self.controlling_channel = event_data["controlling_channel"]
 
     #consumer updates
     async def update_start_experiment(self, event):

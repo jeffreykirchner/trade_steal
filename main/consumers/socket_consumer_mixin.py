@@ -95,15 +95,37 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
 
         message_type = text_data_json['messageType']   #name of child method to be called
         message_text = text_data_json['messageText']   #data passed to above method
+        message_target = text_data_json.get('message_target', None)  #group or individual channel
 
-        # Send message to room group
-        await self.channel_layer.send(
-            self.channel_name,
-            {
-                'type': message_type,
-                'message_text': message_text
-            }
-        )
+        # Check if staff users are logged in
+        if not self.scope["user"].id:
+            if self.player_key == self.room_name:
+                await self.send(text_data=json.dumps({"message":{"message_type":message_type,
+                                                      "status": "fail", 
+                                                      "message_text": "You must log in."}}))
+                return
+
+        # Send message to target
+        if not message_target or message_target == "self":
+            await self.channel_layer.send(
+                self.channel_name,
+                {
+                    'type': message_type,
+                    'message_text': message_text
+                }
+            )
+        elif message_target == "group":
+            if self.controlling_channel:
+
+                await self.channel_layer.send(
+                    self.controlling_channel,
+                    {
+                        'type': message_type,
+                        'message_text': message_text,
+                        'sender_channel_name': self.channel_name,
+                        'player_key': self.player_key,
+                    }
+                )
 
 def take_handle_dis_connect(connection_uuid, value):
     '''

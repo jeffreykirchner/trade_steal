@@ -36,7 +36,7 @@ class StaffSessionConsumer(SocketConsumerMixin,
     timer_running = False
     world_state_local = {}            #local copy of world state
     parameter_set_local = {}          #local copy of parameter set
-    
+    session_players_local = {}
         
     async def get_session(self, event):
         '''
@@ -56,6 +56,12 @@ class StaffSessionConsumer(SocketConsumerMixin,
 
         self.session_id = result["session"]["id"]
         self.timer_running = result["session"]["timer_running"]
+
+        self.session_players_local = {}
+
+        for p in result["session"]["session_players"]:
+            session_player = result["session"]["session_players"][p]
+            self.session_players_local[str(session_player["player_key"])] = {"id" : p}
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

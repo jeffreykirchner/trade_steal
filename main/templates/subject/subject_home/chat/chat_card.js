@@ -6,9 +6,9 @@ sendChat: function sendChat(){
     if(this.chat_recipients=="NONE") return;
     
     this.working = true;
-    app.sendMessage("chat", {"recipients" : this.chat_recipients,
-                             "text" : this.chat_text.trim(),
-                            });
+    app.sendMessage("chat", 
+                    {"recipients" : this.chat_recipients, "text" : this.chat_text.trim(),},
+                    "group");
 
     this.chat_text="";                   
 },
