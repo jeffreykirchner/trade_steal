@@ -382,10 +382,12 @@ var app = Vue.createApp({
             let chat = result.chat;
             let town = result.town;
 
-            if(this.session.chat_all[town].length>=100)
-                this.session.chat_all[town].shift();
+            let chat_all = app.session.world_state.chat_all;
+
+            if(chat_all[town].length>=100)
+                chat_all[town].shift();
             
-            this.session.chat_all[town].push(chat);
+            chat_all[town].push(chat);
             app.updateChatDisplay(false);
         },
 
@@ -393,15 +395,28 @@ var app = Vue.createApp({
          * update chat displayed based on town chosen
          */
         updateChatDisplay: function updateChatDisplay(force_scroll){
-            
-            this.chat_list_to_display=Array.from(this.session.chat_all[parseInt(this.current_town)]);
+            if(!("chat_all" in app.session.world_state))
+            {
+                app.chat_list_to_display = [];
+                return;
+            }
+
+
+            let chat_all = app.session.world_state.chat_all;
+            app.chat_list_to_display=Array.from(chat_all[parseInt(app.current_town)]);
         },
 
         /**
          * update chat displayed based on town chosen
          */
-        updateNoticeDisplay: function updateNoticeDisplay(forceScroll){            
-            this.notice_list_to_display=Array.from(this.session.notices[parseInt(this.current_town)]);
+        updateNoticeDisplay: function updateNoticeDisplay(forceScroll){      
+            if(!("notices" in app.session.world_state))
+            {
+                app.notice_list_to_display = [];
+                return;  
+            }
+            let notices =  app.session.world_state.notices;    
+            app.notice_list_to_display=Array.from(notices[parseInt(app.current_town)]);
             // setTimeout(function() {  app.updateNoticeDisplayScrollStaff(forceScroll); }, 250);
         },
 
@@ -411,6 +426,7 @@ var app = Vue.createApp({
         takeUpdateNotice: function takeUpdateNotice(messageData){
 
             let result = messageData.result;
+            let notices = app.session.world_state.notices;
 
             for(i=0;i<result.length;i++)
             {
@@ -422,10 +438,10 @@ var app = Vue.createApp({
                     let notice = result[i].notice;
                     if(notice.show_on_staff)
                     {
-                        if(this.session.notices[town].length >= 100)
-                            this.session.notices[town].shift();
+                        if(notices[town].length >= 100)
+                            notices[town].shift();
                         
-                        this.session.notices[town].push(notice);
+                        notices[town].push(notice);
                         this.updateNoticeDisplay(false);
                          //scroll to view
                        

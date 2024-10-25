@@ -498,8 +498,8 @@ def take_move_goods(session_id, session_player_id, data):
         try:        
             with transaction.atomic():
 
-                source_session_player = session.session_players.get(id=source_id)              
-                target_session_player = session.session_players.get(id=target_id)
+                source_session_player = session.session_players.select_for_update().get(id=source_id)              
+                target_session_player = session.session_players.select_for_update().get(id=target_id)
 
                 #check that stealing is allowed
                 if not session.parameter_set.allow_stealing and source_session_player != session_player:
@@ -655,6 +655,13 @@ def take_move_goods(session_id, session_player_id, data):
                 session_player_notice_1.show_on_staff = True
                 session_player_notice_1.save()
 
+                session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].append(session_player_notice_1.json())
+
+                if len(session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)]) > 100:
+                    session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].pop(0)
+
+                session_player.session.save()
+
                 #record notice for source player if source does not match mover
                 if source_session_player != session_player:
                     session_player_notice_2 = SessionPlayerNotice()
@@ -704,7 +711,7 @@ def take_chat(session_id, session_player_id, data):
     data : json : incoming json data
     '''
     logger = logging.getLogger(__name__) 
-    logger.info(f"take chat: {session_id} {session_player_id} {data}")
+    #logger.info(f"take chat: {session_id} {session_player_id} {data}")
 
     try:
         recipients = data["recipients"] 
@@ -755,6 +762,13 @@ def take_chat(session_id, session_player_id, data):
     session_player_chat.current_period_phase = session.current_period_phase
 
     session_player_chat.save()
+
+    session.world_state["chat_all"][str(session_player.parameter_set_player.town)].append(session_player_chat.json_for_staff())
+
+    if len(session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)]) > 100:
+        session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)].pop(0)
+
+    session.save()
 
     session_player_group_list = session_player.get_current_group_list()
     if recipients == "all":
@@ -862,7 +876,8 @@ def take_update_groups(session_id, session_player_id):
         group_list = session_player.get_current_group_list()
 
         return {"value" : "success",
-                "result" : {"session_players" : [p.json_for_subject(session_player) for p in group_list]}}
+                "result" : {"session_players" : {str(p.id):p.json_for_subject(session_player) for p in group_list},
+                            "session_players_order" : [p.id for p in group_list]}}
 
     except ObjectDoesNotExist:
         logger.warning(f"take_update_groups: session not found, session {session_id}, session_player_id {session_player_id}")
@@ -966,7 +981,7 @@ def take_update_next_phase(session_id, session_player_id):
         return {"value" : "success",
                 "session" : session_player.session.json_for_subject(session_player),
                 "session_player" : session_player.json(),
-                "session_players" : [p.json_for_subject(session_player) for p in group_list]}
+                "session_players" : {str(p.id):p.json_for_subject(session_player) for p in group_list}}
 
     except ObjectDoesNotExist:
         logger.warning(f"take_update_next_phase: session not found, session {session_id}, session_player_id {session_player_id}")
