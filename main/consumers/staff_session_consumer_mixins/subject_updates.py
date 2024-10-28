@@ -58,7 +58,9 @@ class SubjectUpdatesMixin():
 
         session = await Session.objects.aget(id=self.session_id)
         session_player = await session.session_players.aget(id=player_id)
-
+        parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
+        parameter_set_player = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]
+       
         if status == "success":
             if not session.started:
                 status = "fail"
@@ -108,25 +110,18 @@ class SubjectUpdatesMixin():
 
                 await session_player_chat.asave()
 
-                session.world_state["chat_all"][str(session_player.parameter_set_player.town)].append(session_player_chat.json_for_staff())
-
-                if len(session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)]) > 100:
-                    session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)].pop(0)
-
-                await session.asave()
-
                 parameter_set_player_group = await self.get_player_group(player_id, session.current_period)
-                groups = await self.get_group_memebers(parameter_set_player_group, session.current_period)
+                group_members = await self.get_group_members(parameter_set_player_group, session.current_period)
                 
                 # session_player_group_list = session_player.get_current_group_list()
 
                 if recipients == "all":
-                    session_player_chat.session_player_recipients.add(groups[str(parameter_set_player_group)])
+                    session_player_chat.session_player_recipients.add(*group_members)
 
-                    result["recipients"] = groups[str(parameter_set_player_group)]
+                    result["recipients"] = group_members
                 else:
                     sesson_player_target = await SessionPlayer.objects.aget(id=recipients)
-                    if recipients in groups[str(parameter_set_player_group)]:
+                    if recipients in group_members:
                         session_player_chat.session_player_recipients.add(recipients)
                     else:
                         session_player_chat.delete()
@@ -142,6 +137,21 @@ class SubjectUpdatesMixin():
                         result["recipients"].append(sesson_player_target.id)
                 
                 if status == "success":
+                    json_for_staff = {"id" : session_player_chat.id,
+                                  "sender_label" : parameter_set_player["id_label"],
+                                  "text" : chat_text,
+                                  "session_player_recipients" : [],
+                                  "chat_type" : session_player_chat.chat_type}   
+
+
+                    session.world_state["chat_all"][str(parameter_set_player["town"])].append(json_for_staff)
+
+                    if len(session_player.session.world_state["chat_all"][str(parameter_set_player["town"])]) > 100:
+                        session_player.session.world_state["chat_all"][str(parameter_set_player["town"])].pop(0)
+
+                await session.asave()
+                
+                if status == "success":
                     result["chat_for_subject"] = session_player_chat.json_for_subject()
                     result["chat_for_staff"] = session_player_chat.json_for_staff()
 
@@ -151,21 +161,28 @@ class SubjectUpdatesMixin():
                                 message_type=event['type'], send_to_client=False,
                                 send_to_group=True, target_list=target_list)
 
-    async def get_group_memebers(self, group_number, period_number):
+    async def get_group_members(self, group_number, period_number):
         '''
         return a list of group members for this period.
         '''
-        groups = {}
+        group_members = []
 
-        for p in self.parameter_set_local["parameter_set_players"]:
-            group = await self.get_player_group(p, period_number)
+        for p in self.world_state_local["session_players"]:
+            session_player = self.world_state_local["session_players"][str(p)]
+            parameter_set_player = self.parameter_set_local["parameter_set_players"][session_player["parameter_set_player_id"]]
+            
+            if parameter_set_player["group_number"] == group_number:
+                group_members.append(p)
 
-            if not groups.get(str(group), None):
-                groups[str(group)] = []
+        # for p in self.parameter_set_local["parameter_set_players"]:
+        #     group = await self.get_player_group(p, period_number)
 
-            groups[str(group)].append(p)
+        #     if not groups.get(str(group), None):
+        #         groups[str(group)] = []
+
+        #     groups[str(group)].append(p)
         
-        return groups
+        return group_members
     
     async def get_player_group(self, player_id, period_number):
         '''

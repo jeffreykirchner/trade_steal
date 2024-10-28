@@ -409,9 +409,20 @@ class Session(models.Model):
         self.world_state = {"last_update":str(datetime.now()), 
                             "last_store":str(datetime.now()),
                             "timer_history":[],
+                            "session_players":{},
+                            "session_players_order":[],
                             "chat_all":{str(i+1):[] for i in range(self.parameter_set.town_count)},
                             "notices":{str(i+1):[] for i in range(self.parameter_set.town_count)},
                            }
+        
+         #session players
+        for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
+                                                                                            'parameter_set_player__id' ):
+            v = {}
+            v['parameter_set_player_id'] = i['parameter_set_player__id']
+            
+            self.world_state["session_players"][str(i['id'])] = v
+            self.world_state["session_players_order"].append(i['id'])
         
         self.save()
 
@@ -420,25 +431,6 @@ class Session(models.Model):
         return json object of model
         '''
         
-        # chat = {}
-        # notices = {}
-        #for i in range(self.parameter_set.town_count):
-            # chat[str(i+1)] = [c.json_for_staff() for c in main.models.SessionPlayerChat.objects \
-            #                                            .filter(session_player__in=self.session_players.all())\
-            #                                            .filter(session_player__parameter_set_player__town=i+1)
-            #                                            .prefetch_related('session_player_recipients')
-            #                                            .select_related('session_player__parameter_set_player')
-            #                                            .order_by('-timestamp')[:100:-1]
-            #                  ]
-
-            # notices[str(i+1)] = [n.json() for n in main.models.SessionPlayerNotice.objects \
-            #                                            .filter(session_player__in=self.session_players.all()) \
-            #                                            .filter(session_player__parameter_set_player__town=i+1) \
-            #                                            .filter(show_on_staff=True) \
-            #                                            .order_by('-timestamp')[:100:-1]    
-            #                     ]                                               
-                             
-
         return{
             "id":self.id,
             "title":self.title,
@@ -456,8 +448,6 @@ class Session(models.Model):
             "session_periods":[i.json() for i in self.session_periods.all()],
             "session_players":{str(i.id):i.json(False) for i in self.session_players.all()},
             "session_players_order":[i.id for i in self.session_players.all()],
-            # "chat_all" : chat,
-            # "notices" : notices,
             "invitation_text" : self.invitation_text,
             "invitation_subject" : self.invitation_subject,
             "autarky_efficiency" : self.parameter_set.get_autarky_efficiency(),
