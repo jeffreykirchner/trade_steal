@@ -57,7 +57,7 @@ class SubjectUpdatesMixin():
         #result["recipients"] = []
 
         session = await Session.objects.aget(id=self.session_id)
-        session_player = await session.session_players.aget(id=player_id)
+        #session_player = await session.session_players.aget(id=player_id)
         parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
         parameter_set_player = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]
        
@@ -82,7 +82,7 @@ class SubjectUpdatesMixin():
 
             session_player_chat = SessionPlayerChat()
 
-            session_player_chat.session_player = session_player
+            session_player_chat.session_player_id = player_id
             session_player_chat.session_period = current_session_period
 
             if recipients == "all":
@@ -93,7 +93,7 @@ class SubjectUpdatesMixin():
 
                 session_player_chat.chat_type = ChatTypes.ALL
             else:
-                if not session.parameter_set.private_chat:
+                if not parameter_set["private_chat"]:
                     logger.warning(f"take chat: private chat not enabled :{self.session_id} {player_id} {event_data}")
                     status = "fail"
                     message = "Private chat not allowed."
@@ -116,46 +116,47 @@ class SubjectUpdatesMixin():
                 # session_player_group_list = session_player.get_current_group_list()
 
                 if recipients == "all":
-                    session_player_chat.session_player_recipients.add(*group_members)
+                    await session_player_chat.session_player_recipients.aadd(*group_members)
 
                     result["recipients"] = group_members
                 else:
-                    sesson_player_target = await SessionPlayer.objects.aget(id=recipients)
-                    if recipients in group_members:
-                        session_player_chat.session_player_recipients.add(recipients)
+                    sesson_player_target_id = recipients
+                    
+                    if str(sesson_player_target_id) in group_members:
+                        await session_player_chat.session_player_recipients.aadd(sesson_player_target_id)
                     else:
-                        session_player_chat.delete()
+                        await session_player_chat.adelete()
                         logger.warning(f"take chat: chat at none group member : {self.session_id} {player_id} {event_data}")
                         status = "fail"
                         message = "Player not in group."
                         
-
                     if status == "success":
-                        result["sesson_player_target"] = sesson_player_target.id
+                        result["sesson_player_target"] = sesson_player_target_id
 
-                        result["recipients"].append(session_player.id)
-                        result["recipients"].append(sesson_player_target.id)
-                
+                        result["recipients"].append(player_id)
+                        result["recipients"].append(sesson_player_target_id)
+
                 if status == "success":
-                    json_for_staff = {"id" : session_player_chat.id,
-                                  "sender_label" : parameter_set_player["id_label"],
-                                  "text" : chat_text,
-                                  "session_player_recipients" : [],
-                                  "chat_type" : session_player_chat.chat_type}   
+                    result["chat"] = {"id" : session_player_chat.id,
+                                      "sender_label" : parameter_set_player["id_label"],
+                                      "sender_id" : player_id,
+                                      "text" : chat_text,
+                                      "session_player_recipients" : group_members,
+                                      "chat_type" : session_player_chat.chat_type}   
 
+                    session.world_state["chat_all"][str(parameter_set_player["town"])].append(result["chat"])
 
-                    session.world_state["chat_all"][str(parameter_set_player["town"])].append(json_for_staff)
+                    if len(session.world_state["chat_all"][str(parameter_set_player["town"])]) > 100:
+                           session.world_state["chat_all"][str(parameter_set_player["town"])].pop(0)
 
-                    if len(session_player.session.world_state["chat_all"][str(parameter_set_player["town"])]) > 100:
-                        session_player.session.world_state["chat_all"][str(parameter_set_player["town"])].pop(0)
-
-                await session.asave()
-                
-                if status == "success":
-                    result["chat_for_subject"] = session_player_chat.json_for_subject()
-                    result["chat_for_staff"] = session_player_chat.json_for_staff()
-
+                    await session.asave()
                     await session_player_chat.asave()
+
+                    target_list = group_members
+
+        result["status"] = status
+        result["message"] = message
+        result["town"] = parameter_set_player["town"]
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False,
@@ -169,9 +170,10 @@ class SubjectUpdatesMixin():
 
         for p in self.world_state_local["session_players"]:
             session_player = self.world_state_local["session_players"][str(p)]
-            parameter_set_player = self.parameter_set_local["parameter_set_players"][session_player["parameter_set_player_id"]]
+            # parameter_set_player = self.parameter_set_local["parameter_set_players"][str(session_player["parameter_set_player_id"])]
             
-            if parameter_set_player["group_number"] == group_number:
+            parameter_set_player_group_number = await self.get_player_group(p, period_number)
+            if parameter_set_player_group_number == group_number:
                 group_members.append(p)
 
         # for p in self.parameter_set_local["parameter_set_players"]:
@@ -188,8 +190,9 @@ class SubjectUpdatesMixin():
         '''
         return the group number for this player
         '''
-        group_id = self.parameter_set_local["parameter_set_players"][str(player_id)]["period_groups_order"][period_number-1]
-        group = self.parameter_set_local["parameter_set_players"][str(player_id)]["period_groups_order"][str(group_id)]["group_number"]
+        parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
+        group_id = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]["period_groups_order"][period_number-1]
+        group = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]["period_groups"][str(group_id)]["group_number"]
 
         return group
         
@@ -200,7 +203,7 @@ class SubjectUpdatesMixin():
         '''
         result =  json.loads(event["group_data"])
 
-        await self.send_message(message_to_self=result["staff_result"], message_to_group=None,
+        await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_move_goods(self, event):

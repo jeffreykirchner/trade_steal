@@ -239,21 +239,12 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         send chat to clients, if clients can view it
         '''
 
+        if not str(self.session_player_id) in event["target_list"]:
+            return
+
         result = json.loads(event["group_data"])
 
-        if self.group_number != result['sender_group'] or \
-           self.town_number != result['sender_town'] or \
-           self.channel_name == result['sender_channel_name']:
-
-            return
-        
-        if result["subject_result"]['chat_type'] == "Individual" and \
-           result["subject_result"]['sesson_player_target'] != self.session_player_id and \
-           result["subject_result"]['chat']['sender_id'] != self.session_player_id:
-
-           return
-
-        await self.send_message(message_to_self=result["subject_result"], message_to_group=None,
+        await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_local_info(self, event):
