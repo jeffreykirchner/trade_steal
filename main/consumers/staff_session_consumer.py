@@ -36,7 +36,7 @@ class StaffSessionConsumer(SocketConsumerMixin,
     timer_running = False
     world_state_local = {}            #local copy of world state
     parameter_set_local = {}          #local copy of parameter set
-    
+    session_players_local = {}
         
     async def get_session(self, event):
         '''
@@ -56,6 +56,12 @@ class StaffSessionConsumer(SocketConsumerMixin,
 
         self.session_id = result["session"]["id"]
         self.timer_running = result["session"]["timer_running"]
+
+        self.session_players_local = {}
+
+        for p in result["session"]["session_players"]:
+            session_player = result["session"]["session_players"][p]
+            self.session_players_local[str(session_player["player_key"])] = {"id" : p}
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -85,6 +91,30 @@ class StaffSessionConsumer(SocketConsumerMixin,
 
         await self.send(text_data=json.dumps({'message': message}, 
                         cls=DjangoJSONEncoder))
+        
+    async def get_group_members(self, group_number, period_number):
+        '''
+        return a list of group members for this period.
+        '''
+        group_members = []
+
+        for p in self.world_state_local["session_players"]:
+           
+            parameter_set_player_group_number = await self.get_player_group(p, period_number)
+            if parameter_set_player_group_number == group_number:
+                group_members.append(p)
+        
+        return group_members
+    
+    async def get_player_group(self, player_id, period_number):
+        '''
+        return the group number for this player
+        '''
+        parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
+        group_id = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]["period_groups_order"][period_number-1]
+        group = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]["period_groups"][str(group_id)]["group_number"]
+
+        return group
         
     async def update_set_controlling_channel(self, event):
         '''

@@ -191,12 +191,15 @@ var app = Vue.createApp({
         /** send websocket message to server
         *    @param messageType {string} type of message sent to server
         *    @param messageText {json} body of message being sent to server
+        *    @param message_target {string} who message is being sent to
         */
-        sendMessage: function sendMessage(messageType, messageText) {            
+        sendMessage: function sendMessage(messageType, messageText, message_target="self") {
+            //send socket message to server
 
             this.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
+                    'message_target': message_target,
                 }));
         },
 
@@ -475,7 +478,8 @@ var app = Vue.createApp({
         takeUpdateGroups: function takeUpdateGroups(messageData){
             app.destroyPixiPlayers();
 
-            this.session.session_players = messageData.result.session_players;
+            app.session.session_players = messageData.result.session_players;
+            app.session.session_players_order = messageData.result.session_players_order;
 
             setTimeout(app.setupPixiPlayers, 250);
 
@@ -499,7 +503,8 @@ var app = Vue.createApp({
                 //deselect group chat
                 for(p in app.session.session_players)
                 {
-                    let s = "chat_invididual_" + app.session.session_players[p].id + "_id";
+                    let session_player = app.session.session_players[p];
+                    let s = "chat_invididual_" + session_player.id + "_id";
                     let b = document.getElementById(s);
 
                     if(b)

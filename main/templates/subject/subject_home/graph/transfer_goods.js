@@ -96,13 +96,15 @@ sendMoveGoods: function sendMoveGoods(){
     }
 
     this.working = true;
-    app.sendMessage("move_goods", {"sourceType" : pixi_transfer_source.name.type.toString(),
-                                   "sourceID" :  pixi_transfer_source.name.user_id.toString(),
+    app.sendMessage("move_goods",
+                     {"sourceType" : pixi_transfer_source.name.type.toString(),
+                      "sourceID" :  pixi_transfer_source.name.user_id.toString(),
 
-                                   "targetType" : pixi_transfer_target.name.type.toString(),
-                                   "targetID" : pixi_transfer_target.name.user_id.toString(),
+                      "targetType" : pixi_transfer_target.name.type.toString(),
+                      "targetID" : pixi_transfer_target.name.user_id.toString(),
 
-                                   "formData" : form_data,});
+                      "formData" : form_data,},
+                    "group");
 },
 
 /** take result of moving goods
@@ -139,7 +141,25 @@ closeMoveModal: function closeMoveModal(){
 *    @param messageData {json} session day in json format
 */
 takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
-    app.takeUpdateGoods(messageData);
+
+
+    if(messageData.value == "success")
+    {
+        app.takeUpdateGoods(messageData);    
+
+        if(parseInt(messageData.session_player_id) == app.session_player.id)
+        {
+            this.closeMoveModal();               
+        }
+    } 
+    else
+    {
+        if(parseInt(messageData.session_player_id) == app.session_player.id)
+        {
+            app.cancelModal=true;                           
+            app.displayErrors(messageData.errors);
+        }
+    }
 },
 
 /** update good counts of players in list

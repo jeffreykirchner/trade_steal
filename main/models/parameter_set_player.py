@@ -80,6 +80,8 @@ class ParameterSetPlayer(models.Model):
             p = main.models.ParameterSetPlayerGroup(parameter_set_player=self)
             p.from_dict(v)
 
+        self.update_group_period_count(self.parameter_set.period_count)
+
         return message
 
     def update_group_period_count(self, count):

@@ -48,8 +48,8 @@ class TimerMixin():
                                     message_type="start_timer", send_to_client=True, send_to_group=False)
 
         #update all that timer has started
-        await self.send_message(message_to_self=None, message_to_group=result,
-                                message_type="time", send_to_client=False, send_to_group=True)
+        # await self.send_message(message_to_self=None, message_to_group=result,
+        #                         message_type="time", send_to_client=False, send_to_group=True)
         
         logger.info(f"start_timer complete {event}")
 
@@ -93,13 +93,19 @@ class TimerMixin():
             self.world_state_local["timer_history"][-1]["count"] = math.floor(ts.seconds)
             await self.store_world_state(force_store=True)
 
+            # if len(result["result"]["session_players"])>0:
+            result["result"]["group"] = {}
+
+            for p in self.world_state_local["session_players"]:
+                result["result"]["group"][str(p)] = await self.get_player_group(p, result["result"]["current_period"])
+
             await self.send_message(message_to_self=None, message_to_group=result,
                                     message_type="time", send_to_client=False, send_to_group=True)
 
             if result["result"]["do_group_update"]:
                 await self.send_message(message_to_self=None, message_to_group={},
-                                    message_type="groups", send_to_client=False, send_to_group=True)
-                
+                                        message_type="groups", send_to_client=False, send_to_group=True)
+                  
     async def update_time(self, event):
         '''
         update running, phase and time status

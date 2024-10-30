@@ -7,7 +7,6 @@
     if(messageData.value == "success")
     {
         let result = messageData.result;
-        let session_players = app.session.session_players;
 
         session_player = app.findSessionPlayer(result.id);
 
@@ -32,7 +31,6 @@
     if(messageData.status == "success")
     {
         let group_list = messageData.group_list;
-        let session_players = app.session.session_players;
 
         for(let i=0; i<group_list.length; i++)
         {
@@ -281,14 +279,16 @@ hideEditSubject: function hideEditSubject(){
  */
 copyEarnings: function copyEarnings(){
 
-   var text="";
+   let text="";
 
-    for(i=0;i<app.session.session_players.length;i++)
+   for(i=0;i<app.session.session_players_order.length;i++)
     {
-        text += app.session.session_players[i].student_id + ",";
-        text += app.session.session_players[i].earnings;
+        let session_player_id = app.session.session_players_order[i];
 
-        if(i<app.session.session_players.length-1) text += "\r\n";
+        text += app.session.session_players[session_player_id].student_id + ",";
+        text += app.session.session_players[session_player_id].earnings;
+
+        if(i<app.session.session_players_order.length-1) text += "\r\n";
     }
 
    app.copyToClipboard(text);
