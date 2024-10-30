@@ -144,15 +144,17 @@ class SubjectUpdatesMixin():
                     if status == "success":
                         result["sesson_player_target"] = sesson_player_target_id
 
-                        result["recipients"].append(player_id)
-                        result["recipients"].append(sesson_player_target_id)
+                        # result["recipients"].append(player_id)
+                        parameter_set_id_target = self.world_state_local["session_players"][str(sesson_player_target_id)]["parameter_set_player_id"]
+                        parameter_set_player_target = self.parameter_set_local["parameter_set_players"][str(parameter_set_id_target)]
+                        result["recipients"].append(parameter_set_player_target["id_label"])
 
                 if status == "success":
                     result["chat"] = {"id" : session_player_chat.id,
                                       "sender_label" : parameter_set_player["id_label"],
                                       "sender_id" : player_id,
                                       "text" : chat_text,
-                                      "session_player_recipients" : group_members,
+                                      "session_player_recipients" :  result["recipients"],
                                       "chat_type" : session_player_chat.chat_type}   
 
                     session.world_state["chat_all"][str(parameter_set_player["town"])].append(result["chat"])
@@ -163,7 +165,10 @@ class SubjectUpdatesMixin():
                     await session.asave()
                     await session_player_chat.asave()
 
-                    target_list = group_members
+                    if recipients == "all":
+                        target_list = group_members
+                    else:
+                        target_list = [str(sesson_player_target_id), str(player_id)]
 
         result["status"] = status
         result["message"] = message
@@ -203,6 +208,8 @@ class SubjectUpdatesMixin():
             # await self.send_message(message_to_self=result, message_to_group=None,
             #                         message_type=event['type'], send_to_client=True, send_to_group=False)
 
+            result["session_player_id"] = player_id
+
             #if success send to all connected clients
             if result["value"] == "success":
                 parameter_set_player_group = await self.get_player_group(player_id, session.current_period)
@@ -240,8 +247,13 @@ class SubjectUpdatesMixin():
         # logger.info(f'update_goods{self.channel_name}')
 
         result =  json.loads(event["group_data"])
+        
+        if(result["value"] == "fail"):
+            return
 
-        await self.send_message(message_to_self=result["data"], message_to_group=None,
+        result = json.loads(event["group_data"])
+
+        await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_groups(self, event)  :

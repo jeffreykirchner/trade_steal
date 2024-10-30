@@ -267,6 +267,9 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         # logger = logging.getLogger(__name__) 
         # logger.info(f'update_goods{self.channel_name}')
 
+        if not str(self.session_player_id) in event["target_list"]:
+            return
+
         result =  json.loads(event["group_data"])
 
         # if self.channel_name == result['sender_channel_name']:
@@ -301,7 +304,7 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         #remove none group memebers
         session_players = []
         if len(event_data["result"]["session_players"]) > 0:
-            
+            group_number =  event_data["result"]["group"][str(self.session_player_id)]
             for session_player in event_data["result"]["session_players"]:
                 if session_player["group_number"] == group_number:
                     session_players.append(session_player)

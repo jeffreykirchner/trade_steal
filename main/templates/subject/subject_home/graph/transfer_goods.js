@@ -141,7 +141,25 @@ closeMoveModal: function closeMoveModal(){
 *    @param messageData {json} session day in json format
 */
 takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
-    app.takeUpdateGoods(messageData);
+
+
+    if(messageData.value == "success")
+    {
+        app.takeUpdateGoods(messageData);    
+
+        if(parseInt(messageData.session_player_id) == app.session_player.id)
+        {
+            this.closeMoveModal();               
+        }
+    } 
+    else
+    {
+        if(parseInt(messageData.session_player_id) == app.session_player.id)
+        {
+            app.cancelModal=true;                           
+            app.displayErrors(messageData.errors);
+        }
+    }
 },
 
 /** update good counts of players in list
