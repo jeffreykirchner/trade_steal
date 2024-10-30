@@ -92,6 +92,30 @@ class StaffSessionConsumer(SocketConsumerMixin,
         await self.send(text_data=json.dumps({'message': message}, 
                         cls=DjangoJSONEncoder))
         
+    async def get_group_members(self, group_number, period_number):
+        '''
+        return a list of group members for this period.
+        '''
+        group_members = []
+
+        for p in self.world_state_local["session_players"]:
+           
+            parameter_set_player_group_number = await self.get_player_group(p, period_number)
+            if parameter_set_player_group_number == group_number:
+                group_members.append(p)
+        
+        return group_members
+    
+    async def get_player_group(self, player_id, period_number):
+        '''
+        return the group number for this player
+        '''
+        parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
+        group_id = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]["period_groups_order"][period_number-1]
+        group = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]["period_groups"][str(group_id)]["group_number"]
+
+        return group
+        
     async def update_set_controlling_channel(self, event):
         '''
         update controlling channel

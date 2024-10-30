@@ -282,7 +282,7 @@ def take_update_parameterset(data):
         session.parameter_set.update_choice_avatar_counts()        
 
         session.parameter_set.update_json_local()
-        session.parameter_set.update_json_fk(update_avatar=True)
+        session.parameter_set.update_json_fk(update_avatar=True, update_player=True)
 
         return {"value" : "success"}                      
                                 

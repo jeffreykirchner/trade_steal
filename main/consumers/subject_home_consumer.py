@@ -300,9 +300,11 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         
         #remove none group memebers
         session_players = []
-        for session_player in event_data["result"]["session_players"]:
-            if session_player["group_number"] == self.group_number:
-                session_players.append(session_player)
+        if len(event_data["result"]["session_players"]) > 0:
+            group_number =  event_data["result"]["group"][str(self.session_player_id)]
+            for session_player in event_data["result"]["session_players"]:
+                if session_player["group_number"] == group_number:
+                    session_players.append(session_player)
         
         #remove other player notices
         notice_list = []
