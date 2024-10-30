@@ -630,7 +630,7 @@ var app = Vue.createApp({
 
     mounted(){
 
-        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
+        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
 
         window.addEventListener('resize', this.handleResize);
     },

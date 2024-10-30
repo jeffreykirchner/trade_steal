@@ -116,7 +116,7 @@ takeMoveGoods: function takeMoveGoods(messageData){
     if(messageData.value == "success")
     {
         app.takeUpdateGoods(messageData);    
-        this.closeMoveModal();               
+        app.closeMoveModal();               
     } 
     else
     {
@@ -158,6 +158,11 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
         {
             app.cancelModal=true;                           
             app.displayErrors(messageData.errors);
+
+            if(app.test_mode)
+            {
+                app.closeMoveModal();
+            }
         }
     }
 },

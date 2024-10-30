@@ -63,7 +63,7 @@ doTestMode: function doTestMode(){
        
     }
 
-    setTimeout(app.doTestMode, app.randomNumber(1000 , 10000));
+    setTimeout(app.doTestMode, app.randomNumber(1000 , 1500));
 },
 
 /**
@@ -192,7 +192,7 @@ doTestModeRun: function doTestModeRun()
  */
 doTestModeChat: function doTestModeChat(){
 
-    let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players.length-1)];
+    let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
     let session_player_local = app.session.session_players[session_player_id];
 
     if(session_player_local.id == app.session_player.id)
@@ -226,30 +226,38 @@ doTestModeMove: function doTestModeMove(){
     {
         if(app.session.parameter_set.allow_stealing == "True" && app.session.current_experiment_phase != "Instructions")
         {
-            let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players.length-1)];
+            let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
             session_player_source = app.session.session_players[session_player_id];        }
         else
         {
             session_player_source = app.session.session_players[app.session_player.id];            
         }
 
-        source_container =field_containers[session_player_source.id];        
+        let session_player_source_index = app.findSessionPlayerIndex(session_player_source.id);
+        source_container = field_containers[session_player_source_index];        
 
         app.transfer_good_one_amount = app.randomNumber(0, session_player_source.good_one_field);
         app.transfer_good_two_amount = app.randomNumber(0, session_player_source.good_two_field);
+
+        if(app.transfer_good_one_amount == 0 && app.transfer_good_two_amount == 0)
+        {
+            return;
+        }
     }
     else
     {
         if(app.session.parameter_set.allow_stealing == "True")
         {
-            session_player_source = app.session.session_players[app.randomNumber(0, app.session.session_players.length-1)];
+            let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+            session_player_source = app.session.session_players[session_player_id];  
         }
         else
         {
-            session_player_source = app.findSessionPlayer(app.session_player.id);  
+            session_player_source = app.session.session_players[app.session_player.id];     
         }            
 
-        source_container = house_containers[session_player_source.id];
+        let session_player_source_index = app.findSessionPlayerIndex(session_player_source.id);
+        source_container = house_containers[session_player_source_index];
 
         app.transfer_good_one_amount = app.randomNumber(0, session_player_source.good_one_house);
         app.transfer_good_two_amount = app.randomNumber(0, session_player_source.good_two_house);
@@ -258,16 +266,27 @@ doTestModeMove: function doTestModeMove(){
         {
             app.transfer_good_three_amount = app.randomNumber(0, session_player_source.good_three_house);
         }
+
+        if(app.transfer_good_one_amount == 0 && app.transfer_good_two_amount == 0)
+        {
+            return;
+        }
     }
 
     let session_player_target = null;
     
     if(app.session.current_experiment_phase == "Instructions")
-        session_player_target = app.findSessionPlayer(app.session_player.id);
+    {
+        session_player_target = app.session.session_players[app.session_player.id];   
+    }
     else
-        session_player_target = app.session.session_players[app.randomNumber(0, app.session.session_players.length-1)];
+    {
+        let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+        session_player_target = app.session.session_players[session_player_id]; 
+    }
 
-    let target_container = session_player_source[session_player_target.id];
+    let session_player_target_index = app.findSessionPlayerIndex(session_player_target.id);
+    let target_container = house_containers[session_player_target_index];
 
     app.handleContainerDown(source_container,
                                 {data: {global: {x:source_container.x, y:source_container.y}}})
