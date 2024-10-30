@@ -367,7 +367,8 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
                               sender_label : parameter_set_player_local.id_label,
                               sender_id : this.session_player.id,
                               id : randomNumber(1, 1000000)},
-                      chat_type:chat_type}
+                      chat_type:chat_type,
+                      status:"success"}
     }
     else
     {
@@ -378,7 +379,8 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
                                      sender_id : this.session_player.id,
                                      id : randomNumber(1, 1000000)},
                        sesson_player_target : this.chat_recipients,        
-                       chat_type:chat_type}
+                       chat_type:chat_type,
+                       status:"success"}
     }
 
     app.takeUpdateChat(messageData);

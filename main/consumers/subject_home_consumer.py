@@ -54,15 +54,21 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         return a list of sessions
         '''
         logger = logging.getLogger(__name__) 
-        logger.info(f"Get Session {event}")
+        # logger.info(f"Get Session {event}")
 
         self.connection_uuid = event["message_text"]["playerKey"]
         self.connection_type = "subject"
-        self.session_id = await sync_to_async(take_get_session_id, thread_sensitive=False)(self.connection_uuid)
 
-        await self.update_local_info(event)
-
-        result = await sync_to_async(take_get_session_subject)(self.session_player_id)
+        #get session id for subject
+        try:
+            session_player = await SessionPlayer.objects.select_related('session').aget(player_key=self.connection_uuid)
+            self.session_id = session_player.session.id
+            self.session_player_id = session_player.id
+            self.controlling_channel =  session_player.session.controlling_channel
+        except ObjectDoesNotExist:
+            result = {"session" : None, "session_player" : None}
+        else:        
+            result = await sync_to_async(take_get_session_subject)(self.session_player_id)                
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -88,44 +94,44 @@ class SubjectHomeConsumer(SocketConsumerMixin,
             await self.send_message(message_to_self=None, message_to_group=group_result,
                                     message_type=event['type'], send_to_client=False, send_to_group=True)
    
-    async def chat(self, event):
-        '''
-        take chat from client
-        '''        
-        result = await sync_to_async(take_chat, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
+    # async def chat(self, event):
+    #     '''
+    #     take chat from client
+    #     '''        
+    #     result = await sync_to_async(take_chat, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
-        if result["value"] == "fail":
-            await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
-            return
+    #     if result["value"] == "fail":
+    #         await self.send_message(message_to_self=result, message_to_group=None,
+    #                             message_type=event['type'], send_to_client=True, send_to_group=False)
+    #         return
 
-        event_result = result["result"]
+    #     event_result = result["result"]
 
-        subject_result = {}
-        subject_result["chat_type"] = event_result["chat_type"]
-        subject_result["sesson_player_target"] = event_result.get("sesson_player_target", -1)
-        subject_result["chat"] = event_result["chat_for_subject"]
-        subject_result["value"] = result["value"]
+    #     subject_result = {}
+    #     subject_result["chat_type"] = event_result["chat_type"]
+    #     subject_result["sesson_player_target"] = event_result.get("sesson_player_target", -1)
+    #     subject_result["chat"] = event_result["chat_for_subject"]
+    #     subject_result["value"] = result["value"]
 
-        staff_result = {}
-        staff_result["town"] = self.town_number
-        staff_result["chat"] = event_result["chat_for_staff"]
+    #     staff_result = {}
+    #     staff_result["town"] = self.town_number
+    #     staff_result["chat"] = event_result["chat_for_staff"]
 
-        # Send reply to sending channel
-        await self.send_message(message_to_self=subject_result, message_to_group=None,
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
+    #     # Send reply to sending channel
+    #     await self.send_message(message_to_self=subject_result, message_to_group=None,
+    #                             message_type=event['type'], send_to_client=True, send_to_group=False)
 
-        #if success send to all connected clients
-        if result["value"] == "success":
-            group_result = {"type": "update_chat",
-                            "subject_result": subject_result,
-                            "staff_result": staff_result,
-                            "sender_group" : self.group_number,
-                            "sender_town" : self.town_number,
-                            "sender_channel_name": self.channel_name}
+    #     #if success send to all connected clients
+    #     if result["value"] == "success":
+    #         group_result = {"type": "update_chat",
+    #                         "subject_result": subject_result,
+    #                         "staff_result": staff_result,
+    #                         "sender_group" : self.group_number,
+    #                         "sender_town" : self.town_number,
+    #                         "sender_channel_name": self.channel_name}
 
-            await self.send_message(message_to_self=None, message_to_group=group_result,
-                                    message_type=event['type'], send_to_client=False, send_to_group=True)
+    #         await self.send_message(message_to_self=None, message_to_group=group_result,
+    #                                 message_type=event['type'], send_to_client=False, send_to_group=True)
     
     async def production_time(self, event):
         '''
@@ -198,7 +204,8 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         '''
         only for subject screens
         '''
-        pass
+        event_data = json.loads(event["group_data"])
+        self.controlling_channel = event_data["controlling_channel"]
 
     #consumer updates
     async def update_start_experiment(self, event):
@@ -232,21 +239,12 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         send chat to clients, if clients can view it
         '''
 
+        if not str(self.session_player_id) in event["target_list"]:
+            return
+
         result = json.loads(event["group_data"])
 
-        if self.group_number != result['sender_group'] or \
-           self.town_number != result['sender_town'] or \
-           self.channel_name == result['sender_channel_name']:
-
-            return
-        
-        if result["subject_result"]['chat_type'] == "Individual" and \
-           result["subject_result"]['sesson_player_target'] != self.session_player_id and \
-           result["subject_result"]['chat']['sender_id'] != self.session_player_id:
-
-           return
-
-        await self.send_message(message_to_self=result["subject_result"], message_to_group=None,
+        await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_local_info(self, event):
@@ -269,18 +267,21 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         # logger = logging.getLogger(__name__) 
         # logger.info(f'update_goods{self.channel_name}')
 
+        if not str(self.session_player_id) in event["target_list"]:
+            return
+
         result =  json.loads(event["group_data"])
 
-        if self.channel_name == result['sender_channel_name']:
-            return
+        # if self.channel_name == result['sender_channel_name']:
+        #     return
 
-        if self.group_number != result['sender_group']:
-            return
+        # if self.group_number != result['sender_group']:
+        #     return
         
-        if self.town_number != result['sender_town']:
-            return
+        # if self.town_number != result['sender_town']:
+        #     return
 
-        await self.send_message(message_to_self=result["data"], message_to_group=None,
+        await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def update_time(self, event):
@@ -302,9 +303,11 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         
         #remove none group memebers
         session_players = []
-        for session_player in event_data["result"]["session_players"]:
-            if session_player["group_number"] == self.group_number:
-                session_players.append(session_player)
+        if len(event_data["result"]["session_players"]) > 0:
+            group_number =  event_data["result"]["group"][str(self.session_player_id)]
+            for session_player in event_data["result"]["session_players"]:
+                if session_player["group_number"] == group_number:
+                    session_players.append(session_player)
         
         #remove other player notices
         notice_list = []
@@ -433,368 +436,368 @@ def take_get_session_id(player_key):
 
     return session_player.session.id
   
-def take_move_goods(session_id, session_player_id, data):
-    '''
-    move goods between locations (house or field)
-    '''
+# def take_move_goods(session_id, session_player_id, data):
+#     '''
+#     move goods between locations (house or field)
+#     '''
 
-    logger = logging.getLogger(__name__) 
-    logger.info(f"Move goods: {session_id} {session_player_id} {data}")
+#     logger = logging.getLogger(__name__) 
+#     logger.info(f"Move goods: {session_id} {session_player_id} {data}")
 
-    try:
-        form_data = data["formData"]
+#     try:
+#         form_data = data["formData"]
     
-        form_data_dict = form_data
+#         form_data_dict = form_data
 
-        logger.info(f'form_data_dict : {form_data_dict}')       
+#         logger.info(f'form_data_dict : {form_data_dict}')       
 
-        source_type = data["sourceType"]
-        source_id = data["sourceID"]
+#         source_type = data["sourceType"]
+#         source_id = data["sourceID"]
 
-        target_type = data["targetType"]
-        target_id = data["targetID"]
+#         target_type = data["targetType"]
+#         target_id = data["targetID"]
 
-        session = Session.objects.get(id=session_id)
-        session_player = session.session_players.get(id=session_player_id)
+#         session = Session.objects.get(id=session_id)
+#         session_player = session.session_players.get(id=session_player_id)
 
-        form_type = ""       #form suffix for 2 or three goods        
-        if source_type == "house" and session.parameter_set.good_count == 3:
-            form = SessionPlayerMoveThreeForm(form_data_dict)
-            form_type = "3g"
-        else:
-            form = SessionPlayerMoveTwoForm(form_data_dict)
-            form_type = "2g"
+#         form_type = ""       #form suffix for 2 or three goods        
+#         if source_type == "house" and session.parameter_set.good_count == 3:
+#             form = SessionPlayerMoveThreeForm(form_data_dict)
+#             form_type = "3g"
+#         else:
+#             form = SessionPlayerMoveTwoForm(form_data_dict)
+#             form_type = "2g"
 
-        if not session.started:
-            return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session has not started."]},
-                    "message" : "Move Error"}
+#         if not session.started:
+#             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session has not started."]},
+#                     "message" : "Move Error"}
         
-        if session.finished:
-            return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session complete."]},
-                    "message" : "Move Error"}
+#         if session.finished:
+#             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session complete."]},
+#                     "message" : "Move Error"}
         
-        if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
-            return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session is not running."]},
-                    "message" : "Move Error"}
+#         if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
+#             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Session is not running."]},
+#                     "message" : "Move Error"}
         
-        if session.current_period_phase == PeriodPhase.PRODUCTION:
-             return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers during production phase."]},
-                     "message" : "Move Error"}
+#         if session.current_period_phase == PeriodPhase.PRODUCTION:
+#              return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers during production phase."]},
+#                      "message" : "Move Error"}
         
-        if not session.parameter_set.allow_stealing:
-            if target_type == "field":
-                return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers to fields."]},
-                        "message" : "Move Error"}
+#         if not session.parameter_set.allow_stealing:
+#             if target_type == "field":
+#                 return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers to fields."]},
+#                         "message" : "Move Error"}
         
-    except KeyError:
-            logger.warning(f"take_move_goods session, setup form: {session_id}")
-            return {"value" : "fail",
-                    "errors" : {f"transfer_good_one_amount_2g":[f"Move failed."], f"transfer_good_one_amount_3g":[f"Move failed."]}, 
-                    "message" : "Move Error",}
+#     except KeyError:
+#             logger.warning(f"take_move_goods session, setup form: {session_id}")
+#             return {"value" : "fail",
+#                     "errors" : {f"transfer_good_one_amount_2g":[f"Move failed."], f"transfer_good_one_amount_3g":[f"Move failed."]}, 
+#                     "message" : "Move Error",}
 
-    if form.is_valid():
-        #print("valid form") 
+#     if form.is_valid():
+#         #print("valid form") 
 
-        try:        
-            with transaction.atomic():
+#         try:        
+#             with transaction.atomic():
 
-                source_session_player = session.session_players.select_for_update().get(id=source_id)              
-                target_session_player = session.session_players.select_for_update().get(id=target_id)
+#                 source_session_player = session.session_players.select_for_update().get(id=source_id)              
+#                 target_session_player = session.session_players.select_for_update().get(id=target_id)
 
-                #check that stealing is allowed
-                if not session.parameter_set.allow_stealing and source_session_player != session_player:
-                    return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Invalid source."]},
-                            "message" : "Invalid source."}
+#                 #check that stealing is allowed
+#                 if not session.parameter_set.allow_stealing and source_session_player != session_player:
+#                     return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Invalid source."]},
+#                             "message" : "Invalid source."}
 
-                good_one_amount = form.cleaned_data[f"transfer_good_one_amount_{form_type}"]
-                good_two_amount = form.cleaned_data[f"transfer_good_two_amount_{form_type}"]
-                good_three_amount = 0
+#                 good_one_amount = form.cleaned_data[f"transfer_good_one_amount_{form_type}"]
+#                 good_two_amount = form.cleaned_data[f"transfer_good_two_amount_{form_type}"]
+#                 good_three_amount = 0
 
-                if good_one_amount == 0 and good_two_amount == 0:
-                    return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Nothing to transfer."]},
-                            "message" : "Move error."}
+#                 if good_one_amount == 0 and good_two_amount == 0:
+#                     return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Nothing to transfer."]},
+#                             "message" : "Move error."}
 
-                #check that target can accept goods
-                if good_one_amount > 0:
-                    if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_one):
-                        return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_one.label}."]},
-                                "message" : "Move Error"}
+#                 #check that target can accept goods
+#                 if good_one_amount > 0:
+#                     if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_one):
+#                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_one.label}."]},
+#                                 "message" : "Move Error"}
                 
-                if good_two_amount > 0:
-                    if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_two):
-                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_two.label}."]},
-                                "message" : "Move Error"}
+#                 if good_two_amount > 0:
+#                     if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_two):
+#                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_two.label}."]},
+#                                 "message" : "Move Error"}
 
-                if session.parameter_set.good_count == 3 and source_type == "house":
-                    good_three_amount = form.cleaned_data[f"transfer_good_three_amount_{form_type}"]
-                    if good_three_amount > 0:
-                        if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_three):
-                            return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_three.label}."]},
-                                    "message" : "Move Error"}
+#                 if session.parameter_set.good_count == 3 and source_type == "house":
+#                     good_three_amount = form.cleaned_data[f"transfer_good_three_amount_{form_type}"]
+#                     if good_three_amount > 0:
+#                         if not target_session_player.check_good_available_at_location(target_type, source_session_player.parameter_set_player.good_three):
+#                             return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"Target cannot accept {source_session_player.parameter_set_player.good_three.label}."]},
+#                                     "message" : "Move Error"}
 
-                #handle source
-                if source_type == "house":
-                    if round_half_away_from_zero(source_session_player.good_one_house, 0) < good_one_amount:
-                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
-                                "message" : "Move Error"}
+#                 #handle source
+#                 if source_type == "house":
+#                     if round_half_away_from_zero(source_session_player.good_one_house, 0) < good_one_amount:
+#                          return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
+#                                 "message" : "Move Error"}
                     
-                    #check enough good two
-                    if round_half_away_from_zero(source_session_player.good_two_house, 0) < good_two_amount:
-                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
-                                "message" : "Move Error"}
+#                     #check enough good two
+#                     if round_half_away_from_zero(source_session_player.good_two_house, 0) < good_two_amount:
+#                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
+#                                 "message" : "Move Error"}
 
-                    if round_half_away_from_zero(session.parameter_set.good_count, 0) == 3:
-                        if source_session_player.good_three_house < good_three_amount:
-                            return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_three.label}."]},
-                                    "message" : "Move Error"}
+#                     if round_half_away_from_zero(session.parameter_set.good_count, 0) == 3:
+#                         if source_session_player.good_three_house < good_three_amount:
+#                             return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_three.label}."]},
+#                                     "message" : "Move Error"}
 
-                        source_session_player.good_three_house -= good_three_amount
+#                         source_session_player.good_three_house -= good_three_amount
 
-                    source_session_player.good_one_house -= good_one_amount
-                    source_session_player.good_two_house -= good_two_amount 
+#                     source_session_player.good_one_house -= good_one_amount
+#                     source_session_player.good_two_house -= good_two_amount 
 
-                    if source_session_player.good_one_house < 0:
-                        source_session_player.good_one_house = 0
+#                     if source_session_player.good_one_house < 0:
+#                         source_session_player.good_one_house = 0
                     
-                    if source_session_player.good_two_house < 0:
-                        source_session_player.good_two_house = 0
+#                     if source_session_player.good_two_house < 0:
+#                         source_session_player.good_two_house = 0
                     
-                    if source_session_player.good_three_house < 0:
-                        source_session_player.good_three_house = 0
+#                     if source_session_player.good_three_house < 0:
+#                         source_session_player.good_three_house = 0
 
-                else:
-                    #check enough good one
-                    if round_half_away_from_zero(source_session_player.good_one_field, 0) < good_one_amount:
-                        return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
-                                "message" : "Move Error"}
+#                 else:
+#                     #check enough good one
+#                     if round_half_away_from_zero(source_session_player.good_one_field, 0) < good_one_amount:
+#                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
+#                                 "message" : "Move Error"}
                     
-                    #check enough good two
-                    if round_half_away_from_zero(source_session_player.good_two_field, 0) < good_two_amount:
-                        return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
-                                "message" : "Move Error"}
+#                     #check enough good two
+#                     if round_half_away_from_zero(source_session_player.good_two_field, 0) < good_two_amount:
+#                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
+#                                 "message" : "Move Error"}
                     
-                    source_session_player.good_one_field -= good_one_amount
-                    source_session_player.good_two_field -= good_two_amount
+#                     source_session_player.good_one_field -= good_one_amount
+#                     source_session_player.good_two_field -= good_two_amount
 
-                    if source_session_player.good_one_field < 0:
-                        source_session_player.good_one_field = 0
+#                     if source_session_player.good_one_field < 0:
+#                         source_session_player.good_one_field = 0
 
-                    if source_session_player.good_two_field < 0:
-                        source_session_player.good_two_field = 0
+#                     if source_session_player.good_two_field < 0:
+#                         source_session_player.good_two_field = 0
 
-                source_session_player.save()
+#                 source_session_player.save()
 
-                #handle target
-                target_session_player = session.session_players.get(id=target_id)
+#                 #handle target
+#                 target_session_player = session.session_players.get(id=target_id)
 
-                target_session_player.add_good_by_type(good_one_amount, target_type, source_session_player.parameter_set_player.good_one)
-                target_session_player.add_good_by_type(good_two_amount, target_type, source_session_player.parameter_set_player.good_two)
+#                 target_session_player.add_good_by_type(good_one_amount, target_type, source_session_player.parameter_set_player.good_one)
+#                 target_session_player.add_good_by_type(good_two_amount, target_type, source_session_player.parameter_set_player.good_two)
                 
-                if session.parameter_set.good_count == 3 and source_type == "house":
-                    target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three)
+#                 if session.parameter_set.good_count == 3 and source_type == "house":
+#                     target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three)
                 
-                #record move
-                session_player_move = SessionPlayerMove()
+#                 #record move
+#                 session_player_move = SessionPlayerMove()
 
-                session_player_move.session_period = session.get_current_session_period()
-                session_player_move.session_player_source = source_session_player
-                session_player_move.session_player_target = target_session_player
+#                 session_player_move.session_period = session.get_current_session_period()
+#                 session_player_move.session_player_source = source_session_player
+#                 session_player_move.session_player_target = target_session_player
 
-                session_player_move.good_one_amount = good_one_amount   
-                session_player_move.good_two_amount = good_two_amount
-                session_player_move.good_three_amount = good_three_amount        
+#                 session_player_move.good_one_amount = good_one_amount   
+#                 session_player_move.good_two_amount = good_two_amount
+#                 session_player_move.good_three_amount = good_three_amount        
 
-                session_player_move.time_remaining = session.time_remaining
-                session_player_move.current_period_phase = session.current_period_phase
+#                 session_player_move.time_remaining = session.time_remaining
+#                 session_player_move.current_period_phase = session.current_period_phase
 
-                if source_type == "house":
-                    session_player_move.source_container = ContainerTypes.HOUSE
-                else:
-                    session_player_move.source_container = ContainerTypes.FIELD
+#                 if source_type == "house":
+#                     session_player_move.source_container = ContainerTypes.HOUSE
+#                 else:
+#                     session_player_move.source_container = ContainerTypes.FIELD
                 
-                if target_type == "house":
-                    session_player_move.target_container = ContainerTypes.HOUSE
-                else:
-                    session_player_move.target_container = ContainerTypes.FIELD
+#                 if target_type == "house":
+#                     session_player_move.target_container = ContainerTypes.HOUSE
+#                 else:
+#                     session_player_move.target_container = ContainerTypes.FIELD
 
-                session_player_move.save()
+#                 session_player_move.save()
 
-                #record notice for source player
-                transfer_list = []
-                if good_one_amount > 0:
-                    transfer_list.append(f"{good_one_amount} {source_session_player.parameter_set_player.good_one.get_html()}")
+#                 #record notice for source player
+#                 transfer_list = []
+#                 if good_one_amount > 0:
+#                     transfer_list.append(f"{good_one_amount} {source_session_player.parameter_set_player.good_one.get_html()}")
                 
-                if good_two_amount > 0:
-                    transfer_list.append(f"{good_two_amount} {source_session_player.parameter_set_player.good_two.get_html()}")
+#                 if good_two_amount > 0:
+#                     transfer_list.append(f"{good_two_amount} {source_session_player.parameter_set_player.good_two.get_html()}")
                 
-                if good_three_amount > 0:
-                    transfer_list.append(f"{good_three_amount} {source_session_player.parameter_set_player.good_three.get_html()}")
+#                 if good_three_amount > 0:
+#                     transfer_list.append(f"{good_three_amount} {source_session_player.parameter_set_player.good_three.get_html()}")
 
-                transfer_string = ""
-                if len(transfer_list) == 1:
-                    transfer_string = f'{transfer_list[0]}'
-                elif len(transfer_list) == 2:
-                    transfer_string = f'{transfer_list[0]} and {transfer_list[1]}'
-                elif len(transfer_list) == 3:
-                    transfer_string = f'{transfer_list[0]}, {transfer_list[1]}, and {transfer_list[2]}'
-                else:
-                    transfer_string = "no goods"
+#                 transfer_string = ""
+#                 if len(transfer_list) == 1:
+#                     transfer_string = f'{transfer_list[0]}'
+#                 elif len(transfer_list) == 2:
+#                     transfer_string = f'{transfer_list[0]} and {transfer_list[1]}'
+#                 elif len(transfer_list) == 3:
+#                     transfer_string = f'{transfer_list[0]}, {transfer_list[1]}, and {transfer_list[2]}'
+#                 else:
+#                     transfer_string = "no goods"
 
-                #check for steal
-                if source_session_player != session_player:
-                    transfer_string = f"moved {transfer_string} from <u>Person {source_session_player.parameter_set_player.id_label}'s {source_type}</u> to <u>Person {target_session_player.parameter_set_player.id_label}'s {target_type}</u>."
-                else:
-                    transfer_string = f"moved {transfer_string} from Person {source_session_player.parameter_set_player.id_label}'s {source_type} to Person {target_session_player.parameter_set_player.id_label}'s {target_type}."
+#                 #check for steal
+#                 if source_session_player != session_player:
+#                     transfer_string = f"moved {transfer_string} from <u>Person {source_session_player.parameter_set_player.id_label}'s {source_type}</u> to <u>Person {target_session_player.parameter_set_player.id_label}'s {target_type}</u>."
+#                 else:
+#                     transfer_string = f"moved {transfer_string} from Person {source_session_player.parameter_set_player.id_label}'s {source_type} to Person {target_session_player.parameter_set_player.id_label}'s {target_type}."
 
-                session_player_notice_1 = SessionPlayerNotice()
+#                 session_player_notice_1 = SessionPlayerNotice()
 
-                session_player_notice_1.session_period = session.get_current_session_period()
-                session_player_notice_1.session_player = session_player
-                session_player_notice_1.text = f"You {transfer_string}"
-                session_player_notice_1.text = session_player_notice_1.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "your")
-                session_player_notice_1.show_on_staff = True
-                session_player_notice_1.save()
+#                 session_player_notice_1.session_period = session.get_current_session_period()
+#                 session_player_notice_1.session_player = session_player
+#                 session_player_notice_1.text = f"You {transfer_string}"
+#                 session_player_notice_1.text = session_player_notice_1.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "your")
+#                 session_player_notice_1.show_on_staff = True
+#                 session_player_notice_1.save()
 
-                session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].append(session_player_notice_1.json())
+#                 session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].append(session_player_notice_1.json())
 
-                if len(session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)]) > 100:
-                    session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].pop(0)
+#                 if len(session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)]) > 100:
+#                     session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].pop(0)
 
-                session_player.session.save()
+#                 session_player.session.save()
 
-                #record notice for source player if source does not match mover
-                if source_session_player != session_player:
-                    session_player_notice_2 = SessionPlayerNotice()
+#                 #record notice for source player if source does not match mover
+#                 if source_session_player != session_player:
+#                     session_player_notice_2 = SessionPlayerNotice()
 
-                    session_player_notice_2.session_period = session.get_current_session_period()
-                    session_player_notice_2.session_player = source_session_player
-                    session_player_notice_2.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
-                    session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {source_session_player.parameter_set_player.id_label}'s", "your")
-                    session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "their")
-                    session_player_notice_2.save()
+#                     session_player_notice_2.session_period = session.get_current_session_period()
+#                     session_player_notice_2.session_player = source_session_player
+#                     session_player_notice_2.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
+#                     session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {source_session_player.parameter_set_player.id_label}'s", "your")
+#                     session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "their")
+#                     session_player_notice_2.save()
                 
-                if target_session_player != session_player:
-                    session_player_notice_3 = SessionPlayerNotice()
+#                 if target_session_player != session_player:
+#                     session_player_notice_3 = SessionPlayerNotice()
 
-                    session_player_notice_3.session_period = session.get_current_session_period()
-                    session_player_notice_3.session_player = target_session_player
-                    session_player_notice_3.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
-                    session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {target_session_player.parameter_set_player.id_label}'s", "your")
-                    session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "their")
-                    session_player_notice_3.save()
+#                     session_player_notice_3.session_period = session.get_current_session_period()
+#                     session_player_notice_3.session_player = target_session_player
+#                     session_player_notice_3.text = f"Person {session_player.parameter_set_player.id_label} {transfer_string}"
+#                     session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {target_session_player.parameter_set_player.id_label}'s", "your")
+#                     session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {session_player.parameter_set_player.id_label}'s", "their")
+#                     session_player_notice_3.save()
 
-        except ObjectDoesNotExist:
-            logger.warning(f"take_move_goods session, not found ID: {session_id}")
-            return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
+#         except ObjectDoesNotExist:
+#             logger.warning(f"take_move_goods session, not found ID: {session_id}")
+#             return {"value" : "fail", "errors" : {}, "message" : "Move Error"}       
         
-        result = []
-        session_player = session.session_players.get(id=session_player_id)
-        result.append(session_player.json_min(session_player_notice_1))
+#         result = []
+#         session_player = session.session_players.get(id=session_player_id)
+#         result.append(session_player.json_min(session_player_notice_1))
 
-        if source_session_player != session_player:
-            result.append(source_session_player.json_min(session_player_notice_2))
+#         if source_session_player != session_player:
+#             result.append(source_session_player.json_min(session_player_notice_2))
 
-        if target_session_player != session_player:
-            result.append(target_session_player.json_min(session_player_notice_3))
+#         if target_session_player != session_player:
+#             result.append(target_session_player.json_min(session_player_notice_3))
         
         
-        return {"value" : "success", "result" : result}                      
+#         return {"value" : "success", "result" : result}                      
                                 
-    logger.info("Invalid session form")
-    return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
+#     logger.info("Invalid session form")
+#     return {"value" : "fail", "errors" : dict(form.errors.items()), "message" : ""}
 
-def take_chat(session_id, session_player_id, data):
-    '''
-    take chat from client
-    sesson_id : int : id of session
-    session_player_id : int : id of session player
-    data : json : incoming json data
-    '''
-    logger = logging.getLogger(__name__) 
-    #logger.info(f"take chat: {session_id} {session_player_id} {data}")
+# def take_chat(session_id, session_player_id, data):
+#     '''
+#     take chat from client
+#     sesson_id : int : id of session
+#     session_player_id : int : id of session player
+#     data : json : incoming json data
+#     '''
+#     logger = logging.getLogger(__name__) 
+#     #logger.info(f"take chat: {session_id} {session_player_id} {data}")
 
-    try:
-        recipients = data["recipients"] 
-        chat_text = data["text"]
-    except KeyError:
-         return {"value" : "fail", "result" : {"message" : "Invalid chat."}}
+#     try:
+#         recipients = data["recipients"] 
+#         chat_text = data["text"]
+#     except KeyError:
+#          return {"value" : "fail", "result" : {"message" : "Invalid chat."}}
 
-    result = {}
-    #result["recipients"] = []
+#     result = {}
+#     #result["recipients"] = []
 
-    session = Session.objects.get(id=session_id)
-    session_player = session.session_players.get(id=session_player_id)
+#     session = Session.objects.get(id=session_id)
+#     session_player = session.session_players.get(id=session_player_id)
     
-    session_player_chat = SessionPlayerChat()
+#     session_player_chat = SessionPlayerChat()
 
-    session_player_chat.session_player = session_player
-    session_player_chat.session_period = session.get_current_session_period()
+#     session_player_chat.session_player = session_player
+#     session_player_chat.session_period = session.get_current_session_period()
 
-    if not session.started:
-        return  {"value" : "fail", "result" : {"message" : "Session not started."}, }
+#     if not session.started:
+#         return  {"value" : "fail", "result" : {"message" : "Session not started."}, }
         
-    if session.finished:
-        return {"value" : "fail", "result" : {"message" : "Session finished."}}
+#     if session.finished:
+#         return {"value" : "fail", "result" : {"message" : "Session finished."}}
 
-    if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
-            return {"value" : "fail", "result" : {"message" : "Session not running."}}
+#     if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
+#             return {"value" : "fail", "result" : {"message" : "Session not running."}}
 
-    if recipients == "all":
-        if not session.parameter_set.group_chat:
-            logger.warning(f"take chat: group chat not enabled :{session_id} {session_player_id} {data}")
-            return {"value" : "fail",
-                    "result" : {"message" : "Group chat not allowed."}}
+#     if recipients == "all":
+#         if not session.parameter_set.group_chat:
+#             logger.warning(f"take chat: group chat not enabled :{session_id} {session_player_id} {data}")
+#             return {"value" : "fail",
+#                     "result" : {"message" : "Group chat not allowed."}}
 
-        session_player_chat.chat_type = ChatTypes.ALL
-    else:
-        if not session.parameter_set.private_chat:
-            logger.warning(f"take chat: private chat not enabled :{session_id} {session_player_id} {data}")
-            return {"value" : "fail",
-                    "result" : {"message" : "Private chat not allowed."}}
+#         session_player_chat.chat_type = ChatTypes.ALL
+#     else:
+#         if not session.parameter_set.private_chat:
+#             logger.warning(f"take chat: private chat not enabled :{session_id} {session_player_id} {data}")
+#             return {"value" : "fail",
+#                     "result" : {"message" : "Private chat not allowed."}}
 
-        session_player_chat.chat_type = ChatTypes.INDIVIDUAL
+#         session_player_chat.chat_type = ChatTypes.INDIVIDUAL
 
-    result["chat_type"] = session_player_chat.chat_type
-    result["recipients"] = []
+#     result["chat_type"] = session_player_chat.chat_type
+#     result["recipients"] = []
 
-    session_player_chat.text = chat_text
-    session_player_chat.time_remaining = session.time_remaining
-    session_player_chat.current_period_phase = session.current_period_phase
+#     session_player_chat.text = chat_text
+#     session_player_chat.time_remaining = session.time_remaining
+#     session_player_chat.current_period_phase = session.current_period_phase
 
-    session_player_chat.save()
+#     session_player_chat.save()
 
-    session.world_state["chat_all"][str(session_player.parameter_set_player.town)].append(session_player_chat.json_for_staff())
+#     session.world_state["chat_all"][str(session_player.parameter_set_player.town)].append(session_player_chat.json_for_staff())
 
-    if len(session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)]) > 100:
-        session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)].pop(0)
+#     if len(session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)]) > 100:
+#         session_player.session.world_state["chat_all"][str(session_player.parameter_set_player.town)].pop(0)
 
-    session.save()
+#     session.save()
 
-    session_player_group_list = session_player.get_current_group_list()
-    if recipients == "all":
-        session_player_chat.session_player_recipients.add(*session_player_group_list)
+#     session_player_group_list = session_player.get_current_group_list()
+#     if recipients == "all":
+#         session_player_chat.session_player_recipients.add(*session_player_group_list)
 
-        result["recipients"] = [i.id for i in session_player_group_list]
-    else:
-        sesson_player_target = SessionPlayer.objects.get(id=recipients)
-        if sesson_player_target in session_player_group_list:
-            session_player_chat.session_player_recipients.add(sesson_player_target)
-        else:
-            session_player_chat.delete()
-            logger.warning(f"take chat: chat at none group member : {session_id} {session_player_id} {data}")
-            return {"value" : "fail", "result" : {"Player not in group."}}
+#         result["recipients"] = [i.id for i in session_player_group_list]
+#     else:
+#         sesson_player_target = SessionPlayer.objects.get(id=recipients)
+#         if sesson_player_target in session_player_group_list:
+#             session_player_chat.session_player_recipients.add(sesson_player_target)
+#         else:
+#             session_player_chat.delete()
+#             logger.warning(f"take chat: chat at none group member : {session_id} {session_player_id} {data}")
+#             return {"value" : "fail", "result" : {"Player not in group."}}
 
-        result["sesson_player_target"] = sesson_player_target.id
+#         result["sesson_player_target"] = sesson_player_target.id
 
-        result["recipients"].append(session_player.id)
-        result["recipients"].append(sesson_player_target.id)
+#         result["recipients"].append(session_player.id)
+#         result["recipients"].append(sesson_player_target.id)
     
-    result["chat_for_subject"] = session_player_chat.json_for_subject()
-    result["chat_for_staff"] = session_player_chat.json_for_staff()
+#     result["chat_for_subject"] = session_player_chat.json_for_subject()
+#     result["chat_for_staff"] = session_player_chat.json_for_staff()
 
-    session_player_chat.save()
+#     session_player_chat.save()
 
-    return {"value" : "success", "result" : result}
+#     return {"value" : "success", "result" : result}
 
 def take_update_local_info(session_id, player_key, data):
     '''

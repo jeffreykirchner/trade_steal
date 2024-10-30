@@ -6,9 +6,9 @@ sendChat: function sendChat(){
     if(this.chat_recipients=="NONE") return;
     
     this.working = true;
-    app.sendMessage("chat", {"recipients" : this.chat_recipients,
-                             "text" : this.chat_text.trim(),
-                            });
+    app.sendMessage("chat", 
+                    {"recipients" : this.chat_recipients, "text" : this.chat_text.trim(),},
+                    "group");
 
     this.chat_text="";                   
 },
@@ -39,49 +39,51 @@ takeUpdateChat: function takeUpdateChat(messageData){
     let session_player = this.session_player;
 
     // if(app.chat_recipients=="NONE") return;
-
-    if(result.chat_type=="All")
+    if(result.status == "success")
     {
-        if(session_player.chat_all.length >= 100)
-            session_player.chat_all.shift();
-
-        session_player.chat_all.push(chat);
-        if(this.chat_recipients != "all")
+        if(result.chat_type=="All")
         {
-            session_player.new_chat_message = true;
-        }
-    }
-    else if(result.chat_type=="Individual")
-    {
-        var sesson_player_target =  result.sesson_player_target;
+            if(session_player.chat_all.length >= 100)
+                session_player.chat_all.shift();
 
-        var target = -1;
-        if(sesson_player_target == session_player.id)
-        {
-            target = result.chat.sender_id;
-        }
-        else
-        {
-            target = sesson_player_target;
-        }
-
-        session_player = app.session.session_players[target];
-        session_player_index = app.findSessionPlayerIndex(target);
-
-        if(session_player)
-        {
-            if(session_player.chat_individual.length >= 100)
-               session_player.chat_individual.shift();
-
-            session_player.chat_individual.push(chat);
-
-            if(session_player_index != this.chat_recipients_index)
+            session_player.chat_all.push(chat);
+            if(this.chat_recipients != "all")
             {
                 session_player.new_chat_message = true;
             }
-        }       
-    }
+        }
+        else if(result.chat_type=="Individual")
+        {
+            var sesson_player_target =  result.sesson_player_target;
 
+            var target = -1;
+            if(sesson_player_target == session_player.id)
+            {
+                target = result.chat.sender_id;
+            }
+            else
+            {
+                target = sesson_player_target;
+            }
+
+            session_player = app.session.session_players[target];
+            session_player_index = app.findSessionPlayerIndex(target);
+
+            if(session_player)
+            {
+                if(session_player.chat_individual.length >= 100)
+                session_player.chat_individual.shift();
+
+                session_player.chat_individual.push(chat);
+
+                if(session_player_index != this.chat_recipients_index)
+                {
+                    session_player.new_chat_message = true;
+                }
+            }       
+        }
+    }
+    
     app.updateChatDisplay();
 },
 

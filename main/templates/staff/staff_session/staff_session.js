@@ -251,11 +251,13 @@ var app = Vue.createApp({
         *    @param messageType {string} type of message sent to server
         *    @param messageText {json} body of message being sent to server
         */
-        sendMessage:function sendMessage(messageType, messageText) {            
+        sendMessage: function sendMessage(messageType, messageText, message_target="self") {
+            //send socket message to server
 
             this.chatSocket.send(JSON.stringify({
                     'messageType': messageType,
                     'messageText': messageText,
+                    'message_target': message_target,
                 }));
         },
 
