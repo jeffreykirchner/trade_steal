@@ -96,13 +96,15 @@ sendMoveGoods: function sendMoveGoods(){
     }
 
     this.working = true;
-    app.sendMessage("move_goods", {"sourceType" : pixi_transfer_source.name.type.toString(),
-                                   "sourceID" :  pixi_transfer_source.name.user_id.toString(),
+    app.sendMessage("move_goods",
+                     {"sourceType" : pixi_transfer_source.name.type.toString(),
+                      "sourceID" :  pixi_transfer_source.name.user_id.toString(),
 
-                                   "targetType" : pixi_transfer_target.name.type.toString(),
-                                   "targetID" : pixi_transfer_target.name.user_id.toString(),
+                      "targetType" : pixi_transfer_target.name.type.toString(),
+                      "targetID" : pixi_transfer_target.name.user_id.toString(),
 
-                                   "formData" : form_data,});
+                      "formData" : form_data,},
+                    "group");
 },
 
 /** take result of moving goods
