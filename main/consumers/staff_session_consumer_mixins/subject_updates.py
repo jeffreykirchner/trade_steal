@@ -405,7 +405,7 @@ def take_move_goods(session_id, session_player_id, data):
     
         form_data_dict = form_data
 
-        logger.info(f'form_data_dict : {form_data_dict}')       
+        # logger.info(f'form_data_dict : {form_data_dict}')       
 
         source_type = data["sourceType"]
         source_id = data["sourceID"]

@@ -43,9 +43,9 @@ class TimerMixin():
         await self.store_world_state(force_store=True)
 
         #Send reply to sending channel
-        if self.timer_running == True:
-            await self.send_message(message_to_self=result, message_to_group=None,
-                                    message_type="start_timer", send_to_client=True, send_to_group=False)
+        #if self.timer_running == True:
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type="start_timer", send_to_client=True, send_to_group=False)
 
         #update all that timer has started
         # await self.send_message(message_to_self=None, message_to_group=result,
