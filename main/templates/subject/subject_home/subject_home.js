@@ -21,6 +21,7 @@ var app = Vue.createApp({
                     session_player : null, 
                     session : null,
                     reconnection_count : 0,
+                    test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
                     tick_tock : 0,
 
