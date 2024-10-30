@@ -822,7 +822,7 @@ def take_production_time(session_id, session_player_id, data):
     '''
 
     logger = logging.getLogger(__name__) 
-    logger.info(f"take production time: {session_id} {session_player_id} {data}")
+    # logger.info(f"take production time: {session_id} {session_player_id} {data}")
 
     try:
         good_one_production_rate = int(data["production_slider_one"])
