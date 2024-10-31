@@ -76,6 +76,7 @@ var app = Vue.createApp({
 
                     avatar_choice_grid_selected_row : 0,
                     avatar_choice_grid_selected_col : 0,
+                    avatar_choice_grid_selected_id : null,
 
                     instructions : {{instructions|safe}},
                     instruction_pages_show_scroll : false,

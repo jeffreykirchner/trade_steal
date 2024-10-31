@@ -77,6 +77,10 @@ doTestMode: function doTestMode(){
         let r = app.randomNumber(1, app.session.parameter_set.avatar_grid_row_count);
         let c = app.randomNumber(1, app.session.parameter_set.avatar_grid_col_count);
 
+        let parameter_set_avatar = app.get_grid_avatar(r, c);
+
+        if(parameter_set_avatar.avatar == null) return;
+
         document.getElementById('choice_grid_' + r + '_' + c + '_id').click();
     }
     else if(app.session_player.avatar == null)
