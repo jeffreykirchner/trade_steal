@@ -83,6 +83,11 @@ takeUpdateChat: function takeUpdateChat(messageData){
             }       
         }
     }
+
+    if(parseInt(messageData.session_player_id) == app.session_player.id)
+    { 
+        app.working = false;           
+    }
     
     app.updateChatDisplay();
 },

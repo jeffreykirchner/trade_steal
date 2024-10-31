@@ -130,7 +130,7 @@ var app = Vue.createApp({
                     app.takeGetSession(messageData);
                     break; 
                 case "move_goods":
-                    app.takeMoveGoods(messageData);
+                    // app.takeMoveGoods(messageData);
                     break;  
                 case "update_move_goods":
                     app.takeUpdateMoveGoods(messageData);
@@ -142,7 +142,7 @@ var app = Vue.createApp({
                     app.takeUpdateResetExperiment(messageData);
                     break;
                 case "chat":
-                    app.takeChat(messageData);
+                    // app.takeChat(messageData);
                     break;
                 case "update_chat":
                     app.takeUpdateChat(messageData);
@@ -185,7 +185,7 @@ var app = Vue.createApp({
             //     }
             // }
 
-            this.working = false;
+            //this.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
         },
 
