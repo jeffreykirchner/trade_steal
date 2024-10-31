@@ -155,7 +155,7 @@ class SubjectUpdatesMixin():
                     if len(self.world_state_local["chat_all"][str(parameter_set_player["town"])]) > 100:
                            self.world_state_local["chat_all"][str(parameter_set_player["town"])].pop(0)
 
-                    await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
+                    await self.store_world_state(force_store=True)
                     await session_player_chat.asave()
 
                     if recipients == "all":
