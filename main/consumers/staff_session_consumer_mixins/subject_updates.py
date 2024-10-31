@@ -40,7 +40,7 @@ class SubjectUpdatesMixin():
             return
         
         logger = logging.getLogger(__name__)
-        logger.info(f'chat {event}')
+        # logger.info(f'chat {event}')
 
         status = "success"
         message = ""
@@ -50,22 +50,16 @@ class SubjectUpdatesMixin():
         try:
             player_id = self.session_players_local[event["player_key"]]["id"]
             event_data = event["message_text"]
+            recipients = event_data["recipients"] 
+            chat_text = event_data["text"]
         except:
             logger.warning(f"chat: invalid data, {event['message_text']}")
             status = "fail"
             message = "Invalid data."
         
-        target_list = [player_id]
-
         if status == "success":
-            try:
-                recipients = event_data["recipients"] 
-                chat_text = event_data["text"]
-            except KeyError:
-                message =  "Invalid chat."
-
-        result = {}
-        #result["recipients"] = []
+            target_list = [player_id]
+            result["session_player_id"] = player_id
 
         session = await Session.objects.aget(id=self.session_id)
         #session_player = await session.session_players.aget(id=player_id)

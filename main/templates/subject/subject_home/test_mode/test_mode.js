@@ -13,11 +13,11 @@ randomNumber: function randomNumber(min, max){
 randomString: function randomString(min_length, max_length){
 
     s = "";
-    r = this.randomNumber(min_length, max_length);
+    r = app.randomNumber(min_length, max_length);
 
     for(let i=0;i<r;i++)
     {
-        v = this.randomNumber(48, 122);
+        v = app.randomNumber(48, 122);
         s += String.fromCharCode(v);
     }
 
@@ -29,41 +29,47 @@ doTestMode: function doTestMode(){
     console.log("Do Test Mode");
     {%endif%}
 
-    if(this.end_game_modal_visible)
-    {
-        if(this.session_player.name == "")
-        {
-            document.getElementById("id_name").value =  this.randomString(5, 20);
-            document.getElementById("id_student_id").value =  this.randomNumber(1000, 10000);
+    if(worker) worker.terminate();
 
-            this.sendName();
+    if(app.end_game_modal_visible)
+    {
+        if(app.session_player.name == "")
+        {
+            document.getElementById("id_name").value =  app.randomString(5, 20);
+            document.getElementById("id_student_id").value =  app.randomNumber(1000, 10000);
+
+            app.sendName();
         }
 
         return;
     }
 
-    if(this.session.started &&
-       this.session.parameter_set.test_mode
-       )
+    if(app.session.started && app.test_mode)
     {
-        
-        switch (this.session.current_experiment_phase)
+        switch (app.session.current_experiment_phase)
         {
             case "Selection":
-                this.doTestModeSelection();
+                app.doTestModeSelection();
                 break;
             case "Instructions":
-                this.doTestModeInstructions();
+                app.doTestModeInstructions();
                 break;
             case "Run":
-                this.doTestModeRun();
+                app.doTestModeRun();
                 break;
             
         }        
        
     }
 
-    setTimeout(this.doTestMode, this.randomNumber(1000 , 10000));
+    // setTimeout(app.doTestMode, app.randomNumber(1000 , 1500));
+    worker = new Worker("/static/js/worker_test_mode.js");
+
+    worker.onmessage = function (evt) {   
+        app.doTestMode();
+    };
+
+    worker.postMessage(0);
 },
 
 /**
@@ -72,14 +78,18 @@ doTestMode: function doTestMode(){
  doTestModeSelection: function doTestModeSelection()
  {
 
-    if(this.avatar_choice_grid_selected_row == 0 && this.avatar_choice_grid_selected_col == 0)
+    if(app.avatar_choice_grid_selected_row == 0 && app.avatar_choice_grid_selected_col == 0)
     {
-        let r = this.randomNumber(1, this.session.parameter_set.avatar_grid_row_count);
-        let c = this.randomNumber(1, this.session.parameter_set.avatar_grid_col_count);
+        let r = app.randomNumber(1, app.session.parameter_set.avatar_grid_row_count);
+        let c = app.randomNumber(1, app.session.parameter_set.avatar_grid_col_count);
+
+        let parameter_set_avatar = app.get_grid_avatar(r, c);
+
+        if(parameter_set_avatar.avatar == null) return;
 
         document.getElementById('choice_grid_' + r + '_' + c + '_id').click();
     }
-    else if(this.session_player.avatar == null)
+    else if(app.session_player.avatar == null)
     {
         document.getElementById('submit_avatar_choice_id').click();
     }
@@ -91,45 +101,45 @@ doTestMode: function doTestMode(){
  */
  doTestModeInstructions: function doTestModeInstructions()
  {
-    if(this.session_player.instructions_finished) return;
-    if(this.working) return;
+    if(app.session_player.instructions_finished) return;
+    if(app.working) return;
     
-    if(this.session_player.current_instruction == this.session_player.current_instruction_complete)
+    if(app.session_player.current_instruction == app.session_player.current_instruction_complete)
     {
 
-        if(this.session_player.current_instruction == this.instructions.instruction_pages.length)
+        if(app.session_player.current_instruction == app.instructions.instruction_pages.length)
             document.getElementById("instructions_start_id").click();
         else
             document.getElementById("instructions_next_id").click();
 
     }else
     {
-        switch (this.session_player.current_instruction)
+        switch (app.session_player.current_instruction)
         {            
-            case this.instructions.action_page_production:
+            case app.instructions.action_page_production:
                 document.getElementById("simulate_production_id").click();
                 break;
-            case this.instructions.action_page_move:
-                if(this.pixi_modal_open)
+            case app.instructions.action_page_move:
+                if(app.pixi_modal_open)
                 {
-                    if(this.session.parameter_set.good_count==2)
+                    if(app.session.parameter_set.good_count==2)
                         document.getElementById("move_two_id").click();
                     else           
                         document.getElementById("move_three_id").click();        
                 }
                 else
                 {
-                    this.doTestModeMove();
+                    app.doTestModeMove();
                 }
                 break;
-            case this.instructions.action_page_chat:
-                if(this.chat_text != "")
+            case app.instructions.action_page_chat:
+                if(app.chat_text != "")
                 {
                     document.getElementById("send_chat_id").click();                   
                 }
                 else
                 {
-                    this.doTestModeChat();
+                    app.doTestModeChat();
                 }
                 break;
         }
@@ -147,7 +157,7 @@ doTestModeRun: function doTestModeRun()
     let go = true;
 
     if(go)
-        if(this.chat_text != "")
+        if(app.chat_text != "")
         {
             document.getElementById("send_chat_id").click();
             go=false;
@@ -155,34 +165,34 @@ doTestModeRun: function doTestModeRun()
 
     //move goods
     if(go)
-        if(this.pixi_modal_open)
+        if(app.pixi_modal_open)
         {
-            this.sendMoveGoods();
+            app.sendMoveGoods();
             go=false;
         }
     
     //update production
     if(go)
-        if(this.production_slider_one != this.session_player.good_one_production_rate)
+        if(app.production_slider_one != app.session_player.good_one_production_rate)
         {
-            this.sendProdution();
+            app.sendProdution();
             go=false;
         }
     
     if(app.session.finished) return;
         
     if(go)
-        switch (this.randomNumber(1, 3)){
+        switch (app.randomNumber(1, 3)){
             case 1:
-                this.doTestModeChat();
+                app.doTestModeChat();
                 break;
             
             case 2:
-                this.doTestModeMove();
+                app.doTestModeMove();
                 break;
             
             case 3:
-                this.doTestModeProductionUpdate();
+                app.doTestModeProductionUpdate();
                 break;
         }
 },
@@ -192,14 +202,15 @@ doTestModeRun: function doTestModeRun()
  */
 doTestModeChat: function doTestModeChat(){
 
-    session_player_local = this.session.session_players[this.randomNumber(0,  this.session.session_players.length-1)];
+    let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+    let session_player_local = app.session.session_players[session_player_id];
 
-    if(session_player_local.id == this.session_player.id)
+    if(session_player_local.id == app.session_player.id)
     {
         if(app.session.parameter_set.group_chat=='True')
         {
             document.getElementById("chat_all_id").click();
-            this.chat_text = this.randomString(5, 20);
+            app.chat_text = app.randomString(5, 20);
         }
     }
     else
@@ -207,7 +218,7 @@ doTestModeChat: function doTestModeChat(){
         if(app.session.parameter_set.private_chat=='True')
         {
             document.getElementById('chat_invididual_' + session_player_local.id + '_id').click();
-            this.chat_text = this.randomString(5, 20);
+            app.chat_text = app.randomString(5, 20);
         }
     }
 
@@ -221,56 +232,76 @@ doTestModeMove: function doTestModeMove(){
     let session_player_source = null;
     let source_container = null;
 
-    if(this.randomNumber(1, 2) == 1 || this.session.current_experiment_phase == "Instructions")
+    if(app.randomNumber(1, 2) == 1 || app.session.current_experiment_phase == "Instructions")
     {
-        if(this.session.parameter_set.allow_stealing == "True" && this.session.current_experiment_phase != "Instructions")
+        if(app.session.parameter_set.allow_stealing == "True" && app.session.current_experiment_phase != "Instructions")
         {
-            session_player_source = this.session.session_players[this.randomNumber(0, this.session.session_players.length-1)];        }
+            let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+            session_player_source = app.session.session_players[session_player_id];        }
         else
         {
-            session_player_source = this.findSessionPlayer(this.session_player.id);            
+            session_player_source = app.session.session_players[app.session_player.id];            
         }
 
-        source_container =field_containers[session_player_source.id];        
+        let session_player_source_index = app.findSessionPlayerIndex(session_player_source.id);
+        source_container = field_containers[session_player_source_index];        
 
-        this.transfer_good_one_amount = this.randomNumber(0, session_player_source.good_one_field);
-        this.transfer_good_two_amount = this.randomNumber(0, session_player_source.good_two_field);
+        app.transfer_good_one_amount = app.randomNumber(0, session_player_source.good_one_field);
+        app.transfer_good_two_amount = app.randomNumber(0, session_player_source.good_two_field);
+
+        if(app.transfer_good_one_amount == 0 && app.transfer_good_two_amount == 0)
+        {
+            return;
+        }
     }
     else
     {
-        if(this.session.parameter_set.allow_stealing == "True")
+        if(app.session.parameter_set.allow_stealing == "True")
         {
-            session_player_source = this.session.session_players[this.randomNumber(0, this.session.session_players.length-1)];
+            let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+            session_player_source = app.session.session_players[session_player_id];  
         }
         else
         {
-            session_player_source = this.findSessionPlayer(this.session_player.id);  
+            session_player_source = app.session.session_players[app.session_player.id];     
         }            
 
-        source_container = house_containers[session_player_source.id];
+        let session_player_source_index = app.findSessionPlayerIndex(session_player_source.id);
+        source_container = house_containers[session_player_source_index];
 
-        this.transfer_good_one_amount = this.randomNumber(0, session_player_source.good_one_house);
-        this.transfer_good_two_amount = this.randomNumber(0, session_player_source.good_two_house);
+        app.transfer_good_one_amount = app.randomNumber(0, session_player_source.good_one_house);
+        app.transfer_good_two_amount = app.randomNumber(0, session_player_source.good_two_house);
 
-        if(this.session.parameter_set.good_count==3)
+        if(app.session.parameter_set.good_count==3)
         {
-            this.transfer_good_three_amount = this.randomNumber(0, session_player_source.good_three_house);
+            app.transfer_good_three_amount = app.randomNumber(0, session_player_source.good_three_house);
+        }
+
+        if(app.transfer_good_one_amount == 0 && app.transfer_good_two_amount == 0)
+        {
+            return;
         }
     }
 
     let session_player_target = null;
     
-    if(this.session.current_experiment_phase == "Instructions")
-        session_player_target = this.findSessionPlayer(this.session_player.id);
+    if(app.session.current_experiment_phase == "Instructions")
+    {
+        session_player_target = app.session.session_players[app.session_player.id];   
+    }
     else
-        session_player_target = this.session.session_players[this.randomNumber(0, this.session.session_players.length-1)];
+    {
+        let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+        session_player_target = app.session.session_players[session_player_id]; 
+    }
 
-    let target_container = session_player_source[session_player_target.id];
+    let session_player_target_index = app.findSessionPlayerIndex(session_player_target.id);
+    let target_container = house_containers[session_player_target_index];
 
-    this.handleContainerDown(source_container,
+    app.handleContainerDown(source_container,
                                 {data: {global: {x:source_container.x, y:source_container.y}}})
     
-    this.handleContainerUp(target_container,
+    app.handleContainerUp(target_container,
                             {data: {global: {x:target_container.x, y:target_container.y}}})
 },
 
@@ -278,7 +309,7 @@ doTestModeMove: function doTestModeMove(){
  * test mode update production percentages
  */
 doTestModeProductionUpdate: function doTestModeProductionUpdate(){
-    this.production_slider = this.randomNumber(-50, 50)
-    this.update_production_slider();
+    app.production_slider = app.randomNumber(-50, 50)
+    app.update_production_slider();
 },
 {%endif%}

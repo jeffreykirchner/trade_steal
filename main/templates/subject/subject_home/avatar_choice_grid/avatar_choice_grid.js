@@ -3,8 +3,8 @@
  */
 get_grid_image_html: function get_grid_image_html(r, c){
 
-    let parameter_set_avatars = this.session.parameter_set.parameter_set_avatars;
-    let parameter_set_avatars_order = this.session.parameter_set.parameter_set_avatars_order;
+    let parameter_set_avatars = app.session.parameter_set.parameter_set_avatars;
+    let parameter_set_avatars_order = app.session.parameter_set.parameter_set_avatars_order;
 
     image_id="blank.png";
 
@@ -28,14 +28,34 @@ get_grid_image_html: function get_grid_image_html(r, c){
 },
 
 /**
+ * given a row and column return the avatar from the parameter set
+ */
+get_grid_avatar: function get_grid_avatar(r, c){
+    
+    let parameter_set_avatars = app.session.parameter_set.parameter_set_avatars;
+    let parameter_set_avatars_order = app.session.parameter_set.parameter_set_avatars_order;
+
+    for(let i=0; i<parameter_set_avatars_order.length;i++)
+    {
+        let id = parameter_set_avatars_order[i];
+        if(parameter_set_avatars[id].grid_location_row == r && parameter_set_avatars[id].grid_location_col == c)
+        {
+            return parameter_set_avatars[id];
+        }
+    }
+
+    return null;
+},
+
+/**
  * handle choice grid click
  */
 take_choice_grid_click: function take_choice_grid_click(r, c){
 
-    if(this.working) return;
-    if(this.session_player.avatar != null) return;
+    if(app.working) return;
+    if(app.session_player.avatar != null) return;
 
-    let parameter_set_avatars = this.session.parameter_set.parameter_set_avatars;
+    let parameter_set_avatars = app.session.parameter_set.parameter_set_avatars;
 
     //check for blank
     for(let i=0; i<parameter_set_avatars.length;i++)
@@ -50,8 +70,8 @@ take_choice_grid_click: function take_choice_grid_click(r, c){
     }
 
 
-    this.avatar_choice_grid_selected_row = r;
-    this.avatar_choice_grid_selected_col = c;
+    app.avatar_choice_grid_selected_row = r;
+    app.avatar_choice_grid_selected_col = c;
 },
 
 /**
@@ -59,7 +79,7 @@ take_choice_grid_click: function take_choice_grid_click(r, c){
  */
  take_choice_grid_label: function take_choice_grid_label(label){
 
-    let parameter_set_avatars = this.session.parameter_set.parameter_set_avatars;
+    let parameter_set_avatars = app.session.parameter_set.parameter_set_avatars;
 
     //check for blank
     for(let i=0; i<parameter_set_avatars.length;i++)
@@ -67,8 +87,8 @@ take_choice_grid_click: function take_choice_grid_click(r, c){
 
         if(parameter_set_avatars[i].avatar && parameter_set_avatars[i].avatar.label == label)
         {
-            this.avatar_choice_grid_selected_row = parameter_set_avatars[i].grid_location_row;
-            this.avatar_choice_grid_selected_col = parameter_set_avatars[i].grid_location_col;
+            app.avatar_choice_grid_selected_row = parameter_set_avatars[i].grid_location_row;
+            app.avatar_choice_grid_selected_col = parameter_set_avatars[i].grid_location_col;
 
             return
         }
@@ -80,16 +100,16 @@ take_choice_grid_click: function take_choice_grid_click(r, c){
  */
 sendAvatar: function sendAvatar(){
 
-    if(this.working) return;
+    if(app.working) return;
 
-    if(this.avatar_choice_grid_selected_row == 0) return;
-    if(this.avatar_choice_grid_selected_col == 0) return;
+    if(app.avatar_choice_grid_selected_row == 0) return;
+    if(app.avatar_choice_grid_selected_col == 0) return;
 
-    if(this.session_player.avatar != null) return;
+    if(app.session_player.avatar != null) return;
     
     app.working = true;
-    app.sendMessage("avatar", {"row" : this.avatar_choice_grid_selected_row,
-                               "col" : this.avatar_choice_grid_selected_col,
+    app.sendMessage("avatar", {"row" : app.avatar_choice_grid_selected_row,
+                               "col" : app.avatar_choice_grid_selected_col,
                             });             
 },
 
@@ -99,9 +119,11 @@ takeAvatar: function takeAvatar(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
+    app.working = false;
+
     if(messageData.value == "success")
     {
-        this.session_player.avatar = messageData.result.avatar;         
+        app.session_player.avatar = messageData.result.avatar;         
     } 
     else
     {
