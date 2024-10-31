@@ -45,6 +45,8 @@ takeNextInstruction: function takeNextInstruction(messageData){
     {
         
     }
+
+    app.working = false;
     
 },
 
@@ -74,6 +76,8 @@ takeFinishInstructions: function takeFinishInstructions(messageData){
     {
         
     }
+
+    app.working = false;
 },
 
 /**
