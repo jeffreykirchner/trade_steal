@@ -150,13 +150,12 @@ class SubjectUpdatesMixin():
                                       "text" : chat_text,
                                       "session_player_recipients" :  result["recipients"],
                                       "chat_type" : session_player_chat.chat_type}   
+                    
+                    self.world_state_local["chat_all"][str(parameter_set_player["town"])].append(result["chat"])
+                    if len(self.world_state_local["chat_all"][str(parameter_set_player["town"])]) > 100:
+                           self.world_state_local["chat_all"][str(parameter_set_player["town"])].pop(0)
 
-                    session.world_state["chat_all"][str(parameter_set_player["town"])].append(result["chat"])
-
-                    if len(session.world_state["chat_all"][str(parameter_set_player["town"])]) > 100:
-                           session.world_state["chat_all"][str(parameter_set_player["town"])].pop(0)
-
-                    await session.asave()
+                    await Session.objects.filter(id=self.session_id).aupdate(world_state=self.world_state_local)
                     await session_player_chat.asave()
 
                     if recipients == "all":

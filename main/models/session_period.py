@@ -33,12 +33,12 @@ class SessionPeriod(models.Model):
         verbose_name_plural = 'Session Periods'
         ordering = ['period_number']
 
-    def update_efficiency(self):
+    def update_efficiency(self, ce_earnings):
         '''
         calc player efficiency for period
         '''
         for p in self.session_player_periods_a.all():
-            p.update_efficiency()
+            p.update_efficiency(ce_earnings)
         
 
     #return json object of class
