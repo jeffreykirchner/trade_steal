@@ -7,6 +7,7 @@ import logging
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.html import strip_tags
 
 from main.models import Session
 from main.models import SessionPlayer
@@ -51,7 +52,7 @@ class SubjectUpdatesMixin():
             player_id = self.session_players_local[event["player_key"]]["id"]
             event_data = event["message_text"]
             recipients = event_data["recipients"] 
-            chat_text = event_data["text"]
+            chat_text = strip_tags(event_data["text"])
         except:
             logger.warning(f"chat: invalid data, {event['message_text']}")
             status = "fail"
