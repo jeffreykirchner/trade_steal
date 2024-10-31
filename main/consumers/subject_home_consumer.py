@@ -903,7 +903,7 @@ def take_name(session_id, session_player_id, data):
 
     except KeyError:
         logger.warning(f"take_name , setup form: {session_player_id}")
-        return {"value" : "fail", "errors" : {f"name":["Invalid Entry."]}}
+        return {"value" : "fail", "errors" : {f"name":["Invalid entry."]}}
     
     session = Session.objects.get(id=session_id)
     session_player = session.session_players.get(id=session_player_id)

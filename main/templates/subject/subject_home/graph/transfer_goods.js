@@ -72,7 +72,7 @@ sendMoveGoods: function sendMoveGoods(){
            app.transfer_good_two_amount == 0 &&
            app.transfer_good_three_amount == 0)
         {
-            let errors = {transfer_good_one_amount_3g:["Invalid Entry."]};
+            let errors = {transfer_good_one_amount_3g:["Invalid entry."]};
             app.displayErrors(errors);
             return;
         }
@@ -86,9 +86,14 @@ sendMoveGoods: function sendMoveGoods(){
          if(app.transfer_good_one_amount == 0 && 
             app.transfer_good_two_amount == 0)
          {
-             let errors = {transfer_good_one_amount_2g:["Invalid Entry."]};
-             app.displayErrors(errors);
-             return;
+            if(app.test_mode)
+            {
+                app.closeMoveModal();
+            }
+
+            let errors = {transfer_good_one_amount_2g:["Invalid entry."]};
+            app.displayErrors(errors);
+            return;
          }
 
         var form_data = {transfer_good_one_amount_2g: app.transfer_good_one_amount,
