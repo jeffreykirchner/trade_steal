@@ -6,6 +6,11 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 {%include "subject/subject_home/graph/pixi_globals.js"%}
 
+//prevent right click
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+let worker = null;
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],

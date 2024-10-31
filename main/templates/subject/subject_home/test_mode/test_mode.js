@@ -29,6 +29,8 @@ doTestMode: function doTestMode(){
     console.log("Do Test Mode");
     {%endif%}
 
+    if(worker) worker.terminate();
+
     if(app.end_game_modal_visible)
     {
         if(app.session_player.name == "")
@@ -42,11 +44,8 @@ doTestMode: function doTestMode(){
         return;
     }
 
-    if(app.session.started &&
-       app.session.parameter_set.test_mode
-       )
+    if(app.session.started && app.test_mode)
     {
-        
         switch (app.session.current_experiment_phase)
         {
             case "Selection":
@@ -63,7 +62,14 @@ doTestMode: function doTestMode(){
        
     }
 
-    setTimeout(app.doTestMode, app.randomNumber(1000 , 1500));
+    // setTimeout(app.doTestMode, app.randomNumber(1000 , 1500));
+    worker = new Worker("/static/js/worker_test_mode.js");
+
+    worker.onmessage = function (evt) {   
+        app.doTestMode();
+    };
+
+    worker.postMessage(0);
 },
 
 /**
