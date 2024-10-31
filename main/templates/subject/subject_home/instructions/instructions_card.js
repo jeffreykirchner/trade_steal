@@ -78,6 +78,7 @@ takeFinishInstructions: function takeFinishInstructions(messageData){
     }
 
     app.working = false;
+    app.closeMoveModal();
 },
 
 /**
@@ -290,7 +291,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
     if(transfer_good_one_amount_2g == 0 && transfer_good_two_amount_2g == 0)
     {
 
-        let errors = {transfer_good_one_amount_2g:["Invalid Entry."],};
+        let errors = {transfer_good_one_amount_2g:["Invalid entry."],};
         this.displayErrors(errors);
         return;
     }
