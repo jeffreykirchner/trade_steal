@@ -397,6 +397,8 @@ var app = Vue.createApp({
          * update chat displayed based on town chosen
          */
         updateChatDisplay: function updateChatDisplay(force_scroll){
+            if(!app.session.world_state) return;
+
             if(!("chat_all" in app.session.world_state))
             {
                 app.chat_list_to_display = [];
@@ -411,7 +413,9 @@ var app = Vue.createApp({
         /**
          * update chat displayed based on town chosen
          */
-        updateNoticeDisplay: function updateNoticeDisplay(forceScroll){      
+        updateNoticeDisplay: function updateNoticeDisplay(forceScroll){    
+            if(!app.session.world_state) return;
+              
             if(!("notices" in app.session.world_state))
             {
                 app.notice_list_to_display = [];
