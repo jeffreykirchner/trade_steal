@@ -99,6 +99,7 @@ var app = Vue.createApp({
         */
         handleSocketConnected: function handleSocketConnected(){            
             app.sendGetSession();
+            app.working = false;
         },
 
          /** fire trys to connect to server
