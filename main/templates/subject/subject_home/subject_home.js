@@ -426,6 +426,7 @@ var app = Vue.createApp({
                this.session.time_remaining==this.session.parameter_set.period_length_production)
             {
                 this.closeMoveModal();
+                app.working = false;
             }
 
             //session complete
