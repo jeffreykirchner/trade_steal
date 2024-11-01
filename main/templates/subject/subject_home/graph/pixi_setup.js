@@ -547,9 +547,9 @@ setupGrid: function setupGrid(){
 /**destroy house and field containers
  */
 destroyPixiPlayers: function destroyPixiPlayers(){
-    let session_players = app.session.session_players;
+    // let session_players = app.session.session_players;
     
-    for(let i=0;i<session_players.length;i++)
+    for(let i=0;i<app.session.session_players_order.length;i++)
     {
         if(house_containers[i])
         {

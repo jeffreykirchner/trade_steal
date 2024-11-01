@@ -5,11 +5,11 @@
  */
 getInstructionPage: function getInstructionPage(pageNumber){
 
-    for(i=0;i<this.instructions.instruction_pages.length;i++)
+    for(i=0;i<app.instructions.instruction_pages.length;i++)
     {
-        if(this.instructions.instruction_pages[i].page_number==pageNumber)
+        if(app.instructions.instruction_pages[i].page_number==pageNumber)
         {
-            return this.instructions.instruction_pages[i].text_html;
+            return app.instructions.instruction_pages[i].text_html;
         }
     }
 
@@ -21,10 +21,10 @@ getInstructionPage: function getInstructionPage(pageNumber){
  */
 sendNextInstruction: function sendNextInstruction(direction){
 
-    if(this.working) return;
+    if(app.working) return;
     
-    this.working = true;
-    this.sendMessage("next_instruction", {"direction" : direction});
+    app.working = true;
+    app.sendMessage("next_instruction", {"direction" : direction});
 },
 
 /**
@@ -35,11 +35,11 @@ takeNextInstruction: function takeNextInstruction(messageData){
     {
         result = messageData.result;       
         
-        this.session_player.current_instruction = result.current_instruction;
-        this.session_player.current_instruction_complete = result.current_instruction_complete;
+        app.session_player.current_instruction = result.current_instruction;
+        app.session_player.current_instruction_complete = result.current_instruction_complete;
 
-        this.processInstructionPage();
-        this.instructionDisplayScroll();
+        app.processInstructionPage();
+        app.instructionDisplayScroll();
     } 
     else
     {
@@ -55,10 +55,10 @@ takeNextInstruction: function takeNextInstruction(messageData){
  */
 sendFinishInstructions: function sendFinishInstructions(){
 
-    if(this.working) return;
+    if(app.working) return;
     
-    this.working = true;
-    this.sendMessage("finish_instructions", {});
+    app.working = true;
+    app.sendMessage("finish_instructions", {});
 },
 
 /**
@@ -69,8 +69,8 @@ takeFinishInstructions: function takeFinishInstructions(messageData){
     {
         result = messageData.result;       
         
-        this.session_player.instructions_finished = result.instructions_finished;
-        this.session_player.current_instruction_complete = result.current_instruction_complete;
+        app.session_player.instructions_finished = result.instructions_finished;
+        app.session_player.current_instruction_complete = result.current_instruction_complete;
     } 
     else
     {
@@ -86,27 +86,27 @@ takeFinishInstructions: function takeFinishInstructions(messageData){
  */
 processInstructionPage: function processInstructionPage(){
 
-    switch(this.session_player.current_instruction){
-        case this.instructions.action_page_production:
+    switch(app.session_player.current_instruction){
+        case app.instructions.action_page_production:
             return;
             break; 
-        case this.instructions.action_page_move:
-            if(this.session_player.current_instruction_complete < this.session_player.current_instruction)
+        case app.instructions.action_page_move:
+            if(app.session_player.current_instruction_complete < app.session_player.current_instruction)
             {
-                this.session.current_period_phase = 'Trade';
-                this.setup_page_3_instructions();
+                app.session.current_period_phase = 'Trade';
+                app.setup_page_3_instructions();
             }
             return;
             break;
-        case this.instructions.action_page_chat:
+        case app.instructions.action_page_chat:
             return;
             break;
             
     }
 
-    if(this.session_player.current_instruction_complete < this.session_player.current_instruction)
+    if(app.session_player.current_instruction_complete < app.session_player.current_instruction)
         {
-            this.session_player.current_instruction_complete = this.session_player.current_instruction;
+            app.session_player.current_instruction_complete = app.session_player.current_instruction;
         }
 
         
@@ -133,18 +133,18 @@ instructionDisplayScroll: function instructionDisplayScroll(){
  * simulate production on page 2
  */
 simulateProductionInstructions: function simulateProductionInstructions(){
-    if(this.session.current_experiment_phase != 'Instructions') return;
-    if(this.session_player.current_instruction != this.instructions.action_page_production) return;
+    if(app.session.current_experiment_phase != 'Instructions') return;
+    if(app.session_player.current_instruction != app.instructions.action_page_production) return;
 
     document.getElementById("graph_card").scrollIntoView();
 
-    this.working = true;
-    this.session.time_remaining = this.session.parameter_set.period_length_production;
+    app.working = true;
+    app.session.time_remaining = app.session.parameter_set.period_length_production;
     
     app.simulate_clear_goods_instructions();
 
-    if(this.productionSimulationTimeout) clearTimeout(this.productionSimulationTimeout);
-    this.productionSimulationTimeout = setTimeout(this.simulate_do_period_production, 1000);
+    if(app.productionSimulationTimeout) clearTimeout(app.productionSimulationTimeout);
+    app.productionSimulationTimeout = setTimeout(app.simulate_do_period_production, 1000);
 },
 
 /**
@@ -152,50 +152,50 @@ simulateProductionInstructions: function simulateProductionInstructions(){
  */
 simulate_do_period_production: function simulate_do_period_production(){
 
-    if(this.session.current_experiment_phase != 'Instructions') return;
-    if(this.session_player.current_instruction !=  this.instructions.action_page_production) return;
+    if(app.session.current_experiment_phase != 'Instructions') return;
+    if(app.session_player.current_instruction !=  app.instructions.action_page_production) return;
 
     let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
 
     let parameter_set_type = parameter_set_player_local.parameter_set_type;
 
-    good_one_field = this.simulate_do_period_production_function(parameter_set_type.good_one_production_1,
+    good_one_field = app.simulate_do_period_production_function(parameter_set_type.good_one_production_1,
                                                             parameter_set_type.good_one_production_2,
                                                             parameter_set_type.good_one_production_3,
-                                                            this.session_player.good_one_production_rate);
+                                                            app.session_player.good_one_production_rate);
 
-    good_two_field = this.simulate_do_period_production_function(parameter_set_type.good_two_production_1,
+    good_two_field = app.simulate_do_period_production_function(parameter_set_type.good_two_production_1,
                                                             parameter_set_type.good_two_production_2,
                                                             parameter_set_type.good_two_production_3,
-                                                            this.session_player.good_two_production_rate);
+                                                            app.session_player.good_two_production_rate);
     let result = [];
 
     result.push({
-        id : this.session_player.id,
+        id : app.session_player.id,
 
         good_one_house : 0,
         good_two_house : 0,
         good_three_house : 0,
 
-        good_one_field : good_one_field + this.session_player.good_one_field,
-        good_two_field : good_two_field + this.session_player.good_two_field,
+        good_one_field : good_one_field + app.session_player.good_one_field,
+        good_two_field : good_two_field + app.session_player.good_two_field,
 
         notice : null,
     })
     
     app.takeUpdateGoods({result : result});
 
-    this.session.time_remaining -= 1;
+    app.session.time_remaining -= 1;
 
-    if(this.session.time_remaining > 0){
-         this.productionSimulationTimeout = setTimeout(this.simulate_do_period_production, 1000);
+    if(app.session.time_remaining > 0){
+         app.productionSimulationTimeout = setTimeout(app.simulate_do_period_production, 1000);
     }
     else
     {
-        if(this.session_player.current_instruction == this.instructions.action_page_production)
+        if(app.session_player.current_instruction == app.instructions.action_page_production)
         {
-            this.session_player.current_instruction_complete=this.instructions.action_page_production;
-            this.working = false;
+            app.session_player.current_instruction_complete=app.instructions.action_page_production;
+            app.working = false;
         }
     }
 
@@ -206,12 +206,12 @@ simulate_do_period_production: function simulate_do_period_production(){
  */
 setup_page_3_instructions: function setup_page_3_instructions(){
 
-    this.simulate_clear_goods_instructions();
+    app.simulate_clear_goods_instructions();
 
     let result = [];
 
     result.push({
-        id : this.session_player.id,
+        id : app.session_player.id,
 
         good_one_house : 0,
         good_two_house : 0,
@@ -231,13 +231,15 @@ setup_page_3_instructions: function setup_page_3_instructions(){
  */
 simulate_clear_goods_instructions: function simulate_clear_goods_instructions(){
 
-    let session_players = this.session.session_players;
+    // let session_players = app.session.session_players;
     let result = [];
 
-    for(i=0; i<session_players.length;i++)
+    for(i=0; i<app.session.session_players_order.length;i++)
     {
+        let session_player_id = app.session.session_players_order[i];
+
         result.push({
-            id : session_players[i].id,
+            id : app.session.session_players[session_player_id].id,
 
             good_one_house : 0,
             good_two_house : 0,
@@ -258,7 +260,7 @@ simulate_clear_goods_instructions: function simulate_clear_goods_instructions(){
  */
 simulate_do_period_production_function: function simulate_do_period_production_function(good_production_1, good_production_2, good_production_3, production_rate){
 
-    let total_time = this.session.parameter_set.period_length_production;
+    let total_time = app.session.parameter_set.period_length_production;
 
     let good_time =  total_time * parseFloat(production_rate)/parseFloat('100');
     let production = parseFloat(good_production_1) + parseFloat(good_production_2) * good_time ** parseFloat(good_production_3);
@@ -270,29 +272,29 @@ simulate_do_period_production_function: function simulate_do_period_production_f
  * simulate goods transfer on page 3
  */
 simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
-    this.clearMainFormErrors();
+    app.clearMainFormErrors();
 
     if(pixi_transfer_source.name.type.toString() != "field" ||
        pixi_transfer_target.name.type.toString() != "house" ||
-       pixi_transfer_source.name.user_id != this.session_player.id ||
-       pixi_transfer_target.name.user_id != this.session_player.id) 
+       pixi_transfer_source.name.user_id != app.session_player.id ||
+       pixi_transfer_target.name.user_id != app.session_player.id) 
     {
         let errors = {transfer_good_one_amount_2g:["For the purposes of the instructions, please transfer items from your field to your house."]};
-        this.displayErrors(errors);
+        app.displayErrors(errors);
         return;
     }
 
-    let form_data = {transfer_good_one_amount_2g: this.transfer_good_one_amount,
-                     transfer_good_two_amount_2g: this.transfer_good_two_amount};
+    let form_data = {transfer_good_one_amount_2g: app.transfer_good_one_amount,
+                     transfer_good_two_amount_2g: app.transfer_good_two_amount};
 
-    let transfer_good_one_amount_2g = Number(this.transfer_good_one_amount);
-    let transfer_good_two_amount_2g = Number(this.transfer_good_two_amount);
+    let transfer_good_one_amount_2g = Number(app.transfer_good_one_amount);
+    let transfer_good_two_amount_2g = Number(app.transfer_good_two_amount);
 
     if(transfer_good_one_amount_2g == 0 && transfer_good_two_amount_2g == 0)
     {
 
         let errors = {transfer_good_one_amount_2g:["Invalid entry."],};
-        this.displayErrors(errors);
+        app.displayErrors(errors);
         return;
     }
 
@@ -300,7 +302,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
         parseInt(transfer_good_one_amount_2g) < 0)
     {
         let errors = {transfer_good_one_amount_2g:["Invalid entry."]};
-        this.displayErrors(errors);
+        app.displayErrors(errors);
         return;
     }
 
@@ -308,69 +310,69 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
         parseInt(transfer_good_two_amount_2g) < 0)
     {
         let errors = {transfer_good_two_amount_2g:["Invalid entry."]};
-        this.displayErrors(errors);
+        app.displayErrors(errors);
         return;
     }
 
-    if(parseInt(transfer_good_one_amount_2g) > this.session_player.good_one_field)
+    if(parseInt(transfer_good_one_amount_2g) > app.session_player.good_one_field)
     {
         let errors = {transfer_good_one_amount_2g:["There are not enough goods on your field."]};
-        this.displayErrors(errors);
+        app.displayErrors(errors);
         return;
     }
 
-    if(parseInt(transfer_good_two_amount_2g) > this.session_player.good_two_field)
+    if(parseInt(transfer_good_two_amount_2g) > app.session_player.good_two_field)
     {
         let errors = {transfer_good_two_amount_2g:["There are not enough goods on your field."]};
-        this.displayErrors(errors);
+        app.displayErrors(errors);
         return;
     }
 
     let result = [];
 
     result.push({
-        id : this.session_player.id,
+        id : app.session_player.id,
 
-        good_one_house : this.session_player.good_one_house + parseInt(transfer_good_one_amount_2g),
-        good_two_house : this.session_player.good_two_house + parseInt(transfer_good_two_amount_2g),
+        good_one_house : app.session_player.good_one_house + parseInt(transfer_good_one_amount_2g),
+        good_two_house : app.session_player.good_two_house + parseInt(transfer_good_two_amount_2g),
         good_three_house : 0,
 
-        good_one_field : this.session_player.good_one_field - parseInt(transfer_good_one_amount_2g),
-        good_two_field : this.session_player.good_two_field - parseInt(transfer_good_two_amount_2g),
+        good_one_field : app.session_player.good_one_field - parseInt(transfer_good_one_amount_2g),
+        good_two_field : app.session_player.good_two_field - parseInt(transfer_good_two_amount_2g),
 
         notice : null,
     });
     
     app.takeUpdateGoods({result : result});
 
-    if(this.session_player.current_instruction == this.instructions.action_page_move)
+    if(app.session_player.current_instruction == app.instructions.action_page_move)
     {
-        this.session_player.current_instruction_complete=this.instructions.action_page_move;
+        app.session_player.current_instruction_complete=app.instructions.action_page_move;
     }
 
-    this.closeMoveModal();
+    app.closeMoveModal();
 },
 
 /**
  * simulate goods transfer on page 4
  */
  simulateChatInstructions: function simulateChatInstructions(){
-    if(this.session_player.current_instruction != this.instructions.action_page_chat) return;
+    if(app.session_player.current_instruction != app.instructions.action_page_chat) return;
 
-    if(this.chat_text.trim() == "") return;
-    if(this.chat_text.trim().length > 200) return;
+    if(app.chat_text.trim() == "") return;
+    if(app.chat_text.trim().length > 200) return;
 
-    if(this.chat_recipients == "NONE") return;
+    if(app.chat_recipients == "NONE") return;
 
     let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
 
-    if(this.chat_recipients == "all")
+    if(app.chat_recipients == "all")
     {
         chat_type = "All";
 
-        messageData = {chat: {text : this.chat_text.trim(),
+        messageData = {chat: {text : app.chat_text.trim(),
                               sender_label : parameter_set_player_local.id_label,
-                              sender_id : this.session_player.id,
+                              sender_id : app.session_player.id,
                               id : randomNumber(1, 1000000)},
                       chat_type:chat_type,
                       status:"success"}
@@ -379,23 +381,23 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
     {
         chat_type = "Individual";
 
-        messageData = {chat: {text : this.chat_text.trim(),
+        messageData = {chat: {text : app.chat_text.trim(),
                                      sender_label : parameter_set_player_local.id_label,
-                                     sender_id : this.session_player.id,
+                                     sender_id : app.session_player.id,
                                      id : randomNumber(1, 1000000)},
-                       sesson_player_target : this.chat_recipients,        
+                       sesson_player_target : app.chat_recipients,        
                        chat_type:chat_type,
                        status:"success"}
     }
 
     app.takeUpdateChat(messageData);
 
-    if(this.session_player.current_instruction == this.instructions.action_page_chat)
+    if(app.session_player.current_instruction == app.instructions.action_page_chat)
     {
-        this.session_player.current_instruction_complete= this.instructions.action_page_chat;
+        app.session_player.current_instruction_complete= app.instructions.action_page_chat;
     }
 
-    this.chat_text="";
+    app.chat_text="";
 },
 
 scroll_update: function scroll_update()
