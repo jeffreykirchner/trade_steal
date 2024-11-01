@@ -433,6 +433,7 @@ var app = Vue.createApp({
             //session complete
             if(app.session.finished)
             {
+                this.closeMoveModal();
                 this.showEndGameModal();
             }            
         },
