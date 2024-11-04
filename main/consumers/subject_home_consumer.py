@@ -140,6 +140,8 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         #update subject count
         result = await sync_to_async(take_production_time, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
 
+        result["session_player_id"] = self.session_player_id
+
         # Send reply to sending channel
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
@@ -901,7 +903,7 @@ def take_name(session_id, session_player_id, data):
 
     except KeyError:
         logger.warning(f"take_name , setup form: {session_player_id}")
-        return {"value" : "fail", "errors" : {f"name":["Invalid Entry."]}}
+        return {"value" : "fail", "errors" : {f"name":["Invalid entry."]}}
     
     session = Session.objects.get(id=session_id)
     session_player = session.session_players.get(id=session_player_id)

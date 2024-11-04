@@ -16,6 +16,7 @@ import main
 
 from main.models import Session
 from main.models import Parameters
+from main.models import ParameterSet
 
 class ExperimentControlsMixin():
     '''
@@ -53,7 +54,15 @@ class ExperimentControlsMixin():
         set the current period as the last period
         '''
 
+        session = await Session.objects.aget(id=self.session_id)
+        self.parameter_set_local["period_count"] = session.current_period
+        
         result = await sync_to_async(take_end_early)(self.session_id)
+
+        await ParameterSet.objects.filter(id=self.parameter_set_local["id"]).aupdate(period_count=self.parameter_set_local["period_count"], 
+                                                                                     json_for_session=self.parameter_set_local)
+        
+        result = {"value" : "success", "period_count" : self.parameter_set_local["period_count"]}
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

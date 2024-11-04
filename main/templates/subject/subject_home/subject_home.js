@@ -6,6 +6,11 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 {%include "subject/subject_home/graph/pixi_globals.js"%}
 
+//prevent right click
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+let worker = null;
+
 //vue app
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
@@ -21,6 +26,7 @@ var app = Vue.createApp({
                     session_player : null, 
                     session : null,
                     reconnection_count : 0,
+                    test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
                     tick_tock : 0,
 
@@ -75,6 +81,7 @@ var app = Vue.createApp({
 
                     avatar_choice_grid_selected_row : 0,
                     avatar_choice_grid_selected_col : 0,
+                    avatar_choice_grid_selected_id : null,
 
                     instructions : {{instructions|safe}},
                     instruction_pages_show_scroll : false,
@@ -92,6 +99,7 @@ var app = Vue.createApp({
         */
         handleSocketConnected: function handleSocketConnected(){            
             app.sendGetSession();
+            app.working = false;
         },
 
          /** fire trys to connect to server
@@ -129,7 +137,7 @@ var app = Vue.createApp({
                     app.takeGetSession(messageData);
                     break; 
                 case "move_goods":
-                    app.takeMoveGoods(messageData);
+                    // app.takeMoveGoods(messageData);
                     break;  
                 case "update_move_goods":
                     app.takeUpdateMoveGoods(messageData);
@@ -141,7 +149,7 @@ var app = Vue.createApp({
                     app.takeUpdateResetExperiment(messageData);
                     break;
                 case "chat":
-                    app.takeChat(messageData);
+                    // app.takeChat(messageData);
                     break;
                 case "update_chat":
                     app.takeUpdateChat(messageData);
@@ -184,7 +192,7 @@ var app = Vue.createApp({
             //     }
             // }
 
-            this.working = false;
+            //this.working = false;
             //Vue.nextTick(app.update_sdgraph_canvas());
         },
 
@@ -419,11 +427,13 @@ var app = Vue.createApp({
                this.session.time_remaining==this.session.parameter_set.period_length_production)
             {
                 this.closeMoveModal();
+                app.working = false;
             }
 
             //session complete
             if(app.session.finished)
             {
+                this.closeMoveModal();
                 this.showEndGameModal();
             }            
         },
@@ -629,7 +639,7 @@ var app = Vue.createApp({
 
     mounted(){
 
-        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 10000)); {%endif%}
+        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
 
         window.addEventListener('resize', this.handleResize);
     },

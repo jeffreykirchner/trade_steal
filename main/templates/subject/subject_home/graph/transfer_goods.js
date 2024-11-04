@@ -59,43 +59,48 @@ hideTransferModal:function hideTransferModal(){
 
 sendMoveGoods: function sendMoveGoods(){
     
-    if(this.working == true) return;
+    if(app.working == true) return;
     if(!pixi_transfer_source) return;
     if(!pixi_transfer_target) return; 
 
     app.clearMainFormErrors();
 
     if(pixi_transfer_source.name.type == "house" &&
-       this.session.parameter_set.good_count == 3)
+       app.session.parameter_set.good_count == 3)
     {
-        if(this.transfer_good_one_amount == 0 && 
-           this.transfer_good_two_amount == 0 &&
-           this.transfer_good_three_amount == 0)
+        if(app.transfer_good_one_amount == 0 && 
+           app.transfer_good_two_amount == 0 &&
+           app.transfer_good_three_amount == 0)
         {
-            let errors = {transfer_good_one_amount_3g:["Invalid Entry."]};
-            this.displayErrors(errors);
+            let errors = {transfer_good_one_amount_3g:["Invalid entry."]};
+            app.displayErrors(errors);
             return;
         }
 
-        var form_data = {transfer_good_one_amount_3g: this.transfer_good_one_amount,
-                         transfer_good_two_amount_3g: this.transfer_good_two_amount,
-                         transfer_good_three_amount_3g: this.transfer_good_three_amount};
+        var form_data = {transfer_good_one_amount_3g: app.transfer_good_one_amount,
+                         transfer_good_two_amount_3g: app.transfer_good_two_amount,
+                         transfer_good_three_amount_3g: app.transfer_good_three_amount};
     }
     else
     {
-         if(this.transfer_good_one_amount == 0 && 
-            this.transfer_good_two_amount == 0)
+         if(app.transfer_good_one_amount == 0 && 
+            app.transfer_good_two_amount == 0)
          {
-             let errors = {transfer_good_one_amount_2g:["Invalid Entry."]};
-             this.displayErrors(errors);
-             return;
+            if(app.test_mode)
+            {
+                app.closeMoveModal();
+            }
+
+            let errors = {transfer_good_one_amount_2g:["Invalid entry."]};
+            app.displayErrors(errors);
+            return;
          }
 
-        var form_data = {transfer_good_one_amount_2g: this.transfer_good_one_amount,
-                         transfer_good_two_amount_2g: this.transfer_good_two_amount};
+        var form_data = {transfer_good_one_amount_2g: app.transfer_good_one_amount,
+                         transfer_good_two_amount_2g: app.transfer_good_two_amount};
     }
 
-    this.working = true;
+    app.working = true;
     app.sendMessage("move_goods",
                      {"sourceType" : pixi_transfer_source.name.type.toString(),
                       "sourceID" :  pixi_transfer_source.name.user_id.toString(),
@@ -116,7 +121,7 @@ takeMoveGoods: function takeMoveGoods(messageData){
     if(messageData.value == "success")
     {
         app.takeUpdateGoods(messageData);    
-        this.closeMoveModal();               
+        app.closeMoveModal();               
     } 
     else
     {
@@ -132,9 +137,9 @@ closeMoveModal: function closeMoveModal(){
     app.moveTwoGoodsModal.hide();
     app.moveThreeGoodsModal.hide();
 
-    this.transfer_good_one_amount = 0;  
-    this.transfer_good_two_amount = 0;  
-    this.transfer_good_three_amount = 0;
+    app.transfer_good_one_amount = 0;  
+    app.transfer_good_two_amount = 0;  
+    app.transfer_good_three_amount = 0;
 },
 
 /** take updated data from goods being moved by another player
@@ -149,7 +154,8 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
 
         if(parseInt(messageData.session_player_id) == app.session_player.id)
         {
-            this.closeMoveModal();               
+            app.closeMoveModal();    
+            app.working = false;           
         }
     } 
     else
@@ -158,6 +164,12 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
         {
             app.cancelModal=true;                           
             app.displayErrors(messageData.errors);
+            app.working = false;
+
+            if(app.test_mode)
+            {
+                app.closeMoveModal();
+            }
         }
     }
 },
@@ -168,13 +180,13 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
 takeUpdateGoods: function takeUpdateGoods(messageData){
     results = messageData.result;
 
-    let session_player = this.session_player;
+    let session_player = app.session_player;
 
     for(let r=0; r<results.length; r++){
         player_id = results[r].id;
         
         //update session player
-        if(this.is_subject)
+        if(app.is_subject)
         {
             if(player_id == session_player.id)
             {
@@ -198,7 +210,7 @@ takeUpdateGoods: function takeUpdateGoods(messageData){
             }
         }
 
-        player = this.findSessionPlayer(player_id);
+        player = app.findSessionPlayer(player_id);
 
         if(player)
         {
@@ -209,21 +221,21 @@ takeUpdateGoods: function takeUpdateGoods(messageData){
             player.good_one_field = results[r].good_one_field;
             player.good_two_field = results[r].good_two_field;               
 
-            player_index = this.findSessionPlayerIndex(player_id);
+            player_index = app.findSessionPlayerIndex(player_id);
 
             app.setupSingleHouse(player_index);
             app.setupSingleField(player_index);
         }        
     }
 
-    if(this.is_subject) app.calcWaste();
+    if(app.is_subject) app.calcWaste();
 },
 
 /**
  * scroll notice text to the bottom
  */
 updateNoticeDisplayScroll: function updateNoticeDisplayScroll(){
-    // if(this.session_player.notices.length==0) return;
+    // if(app.session_player.notices.length==0) return;
 
     // var elmnt = document.getElementById("notice_id_" + app.session_player.notices[app.session_player.notices.length-1].id.toString());
     // elmnt.scrollIntoView(); 

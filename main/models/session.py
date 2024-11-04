@@ -253,7 +253,7 @@ class Session(models.Model):
                 else:
                     self.do_period_consumption(parameter_set_local)
                     
-                    # period_update = self.get_current_session_period()
+                    period_update = self.get_current_session_period()
                     # if period_update:
                     #     period_update.update_efficiency()
 

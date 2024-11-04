@@ -112,10 +112,21 @@ class SessionAdmin(admin.ModelAdmin):
                 '%d sessions are refreshed.',
                 queryset.count(),
         ) % queryset.count(), messages.SUCCESS)
+    
+    def reset(self, request, queryset):
+
+        for i in queryset.all():
+            i.reset_experiment()
+            
+        self.message_user(request, ngettext(
+                '%d session is reset.',
+                '%d sessions are reset.',
+                queryset.count(),
+        ) % queryset.count(), messages.SUCCESS)
 
     readonly_fields = ['parameter_set', 'channel_key', 'controlling_channel']
     inlines = [SessionPlayerInline]
-    actions = ['refresh']
+    actions = ['reset', 'refresh']
 
 admin.site.register(SessionPlayerChat)
 admin.site.register(SessionPlayerMove)

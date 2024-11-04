@@ -7,6 +7,7 @@ import logging
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.html import strip_tags
 
 from main.models import Session
 from main.models import SessionPlayer
@@ -40,7 +41,7 @@ class SubjectUpdatesMixin():
             return
         
         logger = logging.getLogger(__name__)
-        logger.info(f'chat {event}')
+        # logger.info(f'chat {event}')
 
         status = "success"
         message = ""
@@ -50,22 +51,16 @@ class SubjectUpdatesMixin():
         try:
             player_id = self.session_players_local[event["player_key"]]["id"]
             event_data = event["message_text"]
+            recipients = event_data["recipients"] 
+            chat_text = strip_tags(event_data["text"])
         except:
             logger.warning(f"chat: invalid data, {event['message_text']}")
             status = "fail"
             message = "Invalid data."
         
-        target_list = [player_id]
-
         if status == "success":
-            try:
-                recipients = event_data["recipients"] 
-                chat_text = event_data["text"]
-            except KeyError:
-                message =  "Invalid chat."
-
-        result = {}
-        #result["recipients"] = []
+            target_list = [player_id]
+            result["session_player_id"] = player_id
 
         session = await Session.objects.aget(id=self.session_id)
         #session_player = await session.session_players.aget(id=player_id)
@@ -156,13 +151,12 @@ class SubjectUpdatesMixin():
                                       "text" : chat_text,
                                       "session_player_recipients" :  result["recipients"],
                                       "chat_type" : session_player_chat.chat_type}   
+                    
+                    self.world_state_local["chat_all"][str(parameter_set_player["town"])].append(result["chat"])
+                    if len(self.world_state_local["chat_all"][str(parameter_set_player["town"])]) > 100:
+                           self.world_state_local["chat_all"][str(parameter_set_player["town"])].pop(0)
 
-                    session.world_state["chat_all"][str(parameter_set_player["town"])].append(result["chat"])
-
-                    if len(session.world_state["chat_all"][str(parameter_set_player["town"])]) > 100:
-                           session.world_state["chat_all"][str(parameter_set_player["town"])].pop(0)
-
-                    await session.asave()
+                    await self.store_world_state(force_store=True)
                     await session_player_chat.asave()
 
                     if recipients == "all":
