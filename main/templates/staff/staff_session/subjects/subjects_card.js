@@ -292,6 +292,7 @@ copyEarnings: function copyEarnings(){
     }
 
    app.copyToClipboard(text);
+   app.earnings_copied = true;
 },
 
 //copy text to clipboard
