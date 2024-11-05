@@ -328,7 +328,7 @@ class Session(models.Model):
         writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
         writer.writerow(["Session ID", "Period", "Town", "Group", "Location", "Client #", "Label", "Good One Production", "Good One Production %", "Good Two Production", "Good Two Production %",
-                         "Good One Consumption", "Good Two Consumption", "Earnings ¢", "Efficiency"])
+                         "Good One Consumption", "Good Two Consumption", "Good One Field", "Good Two Field", "Earnings ¢", "Efficiency"])
 
         session_player_periods = main.models.SessionPlayerPeriod.objects.filter(session_player__in=self.session_players.all()) \
                                                                         .order_by('session_period__period_number', 
