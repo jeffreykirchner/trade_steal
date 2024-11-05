@@ -156,7 +156,7 @@ class SubjectUpdatesMixin():
                     if len(self.world_state_local["chat_all"][str(parameter_set_player["town"])]) > 100:
                            self.world_state_local["chat_all"][str(parameter_set_player["town"])].pop(0)
 
-                    await self.store_world_state(force_store=True)
+                    await self.store_world_state()
                     await session_player_chat.asave()
 
                     if recipients == "all":
@@ -206,9 +206,19 @@ class SubjectUpdatesMixin():
 
             #if success send to all connected clients
             if result["value"] == "success":
+               
+                parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
+                parameter_set_player = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]
+
                 parameter_set_player_group = await self.get_player_group(player_id, session.current_period)
                 group_members = await self.get_group_members(parameter_set_player_group, session.current_period)
                 target_list = group_members
+
+                self.world_state_local["notices"][str(parameter_set_player["town"])].append(result["result"][0]["notice"])
+                if len(self.world_state_local["notices"][str(parameter_set_player["town"])]) > 100:
+                    self.world_state_local["notices"][str(parameter_set_player["town"])].pop(0)
+
+                await self.store_world_state()
 
             await self.send_message(message_to_self=None, message_to_group=result,
                                     message_type=event['type'], send_to_client=False, 
@@ -608,7 +618,7 @@ def take_move_goods(session_id, session_player_id, data):
                 session_player_notice_1.show_on_staff = True
                 session_player_notice_1.save()
 
-                session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].append(session_player_notice_1.json())
+                # session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].append(session_player_notice_1.json())
 
                 if len(session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)]) > 100:
                     session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].pop(0)
