@@ -360,8 +360,8 @@ class SessionPlayer(models.Model):
         session_player_period.good_three_consumption = int(self.good_three_house)
 
         #record field inventory
-        session_player_period.good_one_field = int(self.good_one_field)
-        session_player_period.good_two_field = int(self.good_two_field)
+        session_player_period.good_one_field = round_half_away_from_zero(self.good_one_field, 0)
+        session_player_period.good_two_field = round_half_away_from_zero(self.good_two_field, 0)
 
         #convert goods to earnings
 
