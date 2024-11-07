@@ -196,7 +196,7 @@ class SubjectUpdatesMixin():
             target_list = [player_id]
 
         if status == "success":
-            result = await sync_to_async(take_move_goods)(self.session_id, player_id, event_data)
+            result = await sync_to_async(take_move_goods, thread_sensitive=False)(self.session_id, player_id, event_data)
 
             # Send reply to sending channel
             # await self.send_message(message_to_self=result, message_to_group=None,
@@ -497,16 +497,16 @@ def take_move_goods(session_id, session_player_id, data):
 
                 #handle source
                 if source_type == "house":
-                    if round_half_away_from_zero(source_session_player.good_one_house, 0) < good_one_amount:
+                    if source_session_player.good_one_house < good_one_amount:
                          return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                     
                     #check enough good two
-                    if round_half_away_from_zero(source_session_player.good_two_house, 0) < good_two_amount:
+                    if source_session_player.good_two_house < good_two_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
 
-                    if round_half_away_from_zero(session.parameter_set.good_count, 0) == 3:
+                    if session.parameter_set.good_count == 3:
                         if source_session_player.good_three_house < good_three_amount:
                             return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_three.label}."]},
                                     "message" : "Move Error"}
@@ -527,12 +527,12 @@ def take_move_goods(session_id, session_player_id, data):
 
                 else:
                     #check enough good one
-                    if round_half_away_from_zero(source_session_player.good_one_field, 0) < good_one_amount:
+                    if source_session_player.good_one_field < good_one_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                     
                     #check enough good two
-                    if round_half_away_from_zero(source_session_player.good_two_field, 0) < good_two_amount:
+                    if source_session_player.good_two_field < good_two_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
                     
@@ -548,7 +548,7 @@ def take_move_goods(session_id, session_player_id, data):
                 source_session_player.save()
 
                 #handle target
-                target_session_player = session.session_players.get(id=target_id)
+                target_session_player = session.session_players.select_for_update().get(id=target_id)
 
                 target_session_player.add_good_by_type(good_one_amount, target_type, source_session_player.parameter_set_player.good_one)
                 target_session_player.add_good_by_type(good_two_amount, target_type, source_session_player.parameter_set_player.good_two)
@@ -556,6 +556,9 @@ def take_move_goods(session_id, session_player_id, data):
                 if session.parameter_set.good_count == 3 and source_type == "house":
                     target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three)
                 
+                
+                # target_session_player.save()
+
                 #record move
                 session_player_move = SessionPlayerMove()
 

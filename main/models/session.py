@@ -68,6 +68,7 @@ class Session(models.Model):
     invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
 
     world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
+    # world_state_session_players = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session Players State")       #world state session players at this point in session
 
     soft_delete =  models.BooleanField(default=False)                            #hide session if true
 
@@ -415,7 +416,7 @@ class Session(models.Model):
                             "notices":{str(i+1):[] for i in range(self.parameter_set.town_count)},
                            }
         
-         #session players
+        #session players
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
                                                                                             'parameter_set_player__id' ):
             v = {}
