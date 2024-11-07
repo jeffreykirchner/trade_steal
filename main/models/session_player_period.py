@@ -26,6 +26,9 @@ class SessionPlayerPeriod(models.Model):
     good_two_consumption = models.IntegerField(verbose_name='Good two amount consumed', default=0)        #amount of good two consumed
     good_three_consumption = models.IntegerField(verbose_name='Good three amount consumed', default=0)      #amount of good three consumed
 
+    good_one_field = models.IntegerField(verbose_name='Good one field', default=-1)        #amount of good one left in field
+    good_two_field = models.IntegerField(verbose_name='Good two field', default=-1)        #amount of good two left in field
+
     good_one_production_rate = models.IntegerField(verbose_name='Good one production setting 0-100', default=0)        #amount of time producing good one
     good_two_production_rate = models.IntegerField(verbose_name='Good two production setting 0-100', default=0)        #amount of time producing good two
 
@@ -67,6 +70,8 @@ class SessionPlayerPeriod(models.Model):
                          self.good_two_production_rate,
                          self.good_one_consumption,
                          self.good_two_consumption,
+                         self.good_one_field,
+                         self.good_two_field,
                          self.earnings,
                          self.efficiency,
                          ])

@@ -375,6 +375,10 @@ class SessionPlayer(models.Model):
         session_player_period.good_one_field = self.good_one_field
         session_player_period.good_two_field = self.good_two_field
 
+        #record field inventory
+        session_player_period.good_one_field = round_half_away_from_zero(self.good_one_field, 0)
+        session_player_period.good_two_field = round_half_away_from_zero(self.good_two_field, 0)
+
         #convert goods to earnings
         parameter_set_type = parameter_set_player_local["parameter_set_type"]
 
@@ -389,6 +393,9 @@ class SessionPlayer(models.Model):
               self.good_one_house -= parameter_set_type["good_one_amount"]
               self.good_two_house -= parameter_set_type["good_two_amount"]
 
+        session_player_period.save()
+        session_player_period.update_efficiency(parameter_set_player_local["parameter_set_type"]["ce_earnings"])
+
         self.good_one_house = 0
         self.good_two_house = 0
         self.good_three_house = 0
@@ -400,8 +407,6 @@ class SessionPlayer(models.Model):
         self.good_two_field_production = 0
 
         self.save()
-        session_player_period.save()
-        session_player_period.update_efficiency(parameter_set_player_local["parameter_set_type"]["ce_earnings"])
 
     def get_instruction_set(self):
         '''
