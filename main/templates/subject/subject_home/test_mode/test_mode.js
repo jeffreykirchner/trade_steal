@@ -167,6 +167,12 @@ doTestModeRun: function doTestModeRun()
     if(go)
         if(app.pixi_modal_open)
         {
+            if(app.session.current_period_phase != "Trade")
+            {
+                app.closeMoveModal();
+                return;
+            }
+
             app.sendMoveGoods();
             go=false;
         }
@@ -175,6 +181,11 @@ doTestModeRun: function doTestModeRun()
     if(go)
         if(app.production_slider_one != app.session_player.good_one_production_rate)
         {
+            if(app.session.current_period_phase != "Trade")
+            {
+                return;
+            }
+
             app.sendProdution();
             go=false;
         }
@@ -229,6 +240,12 @@ doTestModeChat: function doTestModeChat(){
  * test mode move
  */
 doTestModeMove: function doTestModeMove(){
+    if(app.session.current_period_phase != "Trade")
+    {
+        app.closeMoveModal();
+        return;
+    }
+
     let session_player_source = null;
     let source_container = null;
 
@@ -309,6 +326,8 @@ doTestModeMove: function doTestModeMove(){
  * test mode update production percentages
  */
 doTestModeProductionUpdate: function doTestModeProductionUpdate(){
+    if(app.session.current_period_phase != "Trade") return;
+
     app.production_slider = app.randomNumber(-50, 50)
     app.update_production_slider();
 },
