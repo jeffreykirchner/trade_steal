@@ -23,6 +23,7 @@ from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.utils.timezone import now
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 
 import main
 
@@ -298,8 +299,11 @@ class Session(models.Model):
 
         notice_list=[]
 
-        for p in self.session_players.all():
-            notice_list.append(p.record_period_production())
+        session_players = self.session_players.select_for_update().all()
+
+        with transaction.atomic():
+            for p in session_players:
+                notice_list.append(p.record_period_production())
 
         return notice_list
     
@@ -316,9 +320,12 @@ class Session(models.Model):
         covert goods in house to earnings
         '''
 
-        for p in self.session_players.prefetch_related("parameter_set_player").all():
-            parameter_set_player_local = parameter_set_local["parameter_set_players"][str(p.parameter_set_player.id)]
-            p.do_period_consumption(parameter_set_player_local)
+        session_players = self.session_players.select_for_update().all()
+
+        with transaction.atomic():
+            for p in session_players:
+                parameter_set_player_local = parameter_set_local["parameter_set_players"][str(p.parameter_set_player.id)]
+                p.do_period_consumption(parameter_set_player_local)
 
     def get_download_summary_csv(self):
         '''

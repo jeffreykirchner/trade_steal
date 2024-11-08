@@ -100,7 +100,7 @@ class SessionPlayer(models.Model):
 
         return False
     
-    def add_good_by_type(self, amount, good_location, parameter_set_good):
+    def add_good_by_type(self, amount, good_location, parameter_set_good, do_save=True):
         '''
         add amount to good of specificed type
         amount : int
@@ -146,7 +146,8 @@ class SessionPlayer(models.Model):
                 good_number = "two"
                 status = "success"
 
-        self.save()
+        if do_save:
+            self.save()
 
         if status == "fail":
             logger.error(f"add_good_by_type: failed to move good {parameter_set_good} to {good_location} for {self}")

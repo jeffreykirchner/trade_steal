@@ -73,26 +73,26 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
-    async def move_goods(self, event):
-        '''
-        move goods between two containers
-        '''
-        result = await sync_to_async(take_move_goods)(self.session_id, self.session_player_id, event["message_text"])
+    # async def move_goods(self, event):
+    #     '''
+    #     move goods between two containers
+    #     '''
+    #     result = await sync_to_async(take_move_goods)(self.session_id, self.session_player_id, event["message_text"])
 
-        # Send reply to sending channel
-        await self.send_message(message_to_self=result, message_to_group=None,
-                                message_type=event['type'], send_to_client=True, send_to_group=False)
+    #     # Send reply to sending channel
+    #     await self.send_message(message_to_self=result, message_to_group=None,
+    #                             message_type=event['type'], send_to_client=True, send_to_group=False)
 
-        #if success send to all connected clients
-        if result["value"] == "success":
-            group_result = {"type": "update_move_goods",
-                            "data": result,
-                            'sender_channel_name': self.channel_name,
-                            'sender_group' : self.group_number,
-                            "sender_town" : self.town_number,}
+    #     #if success send to all connected clients
+    #     if result["value"] == "success":
+    #         group_result = {"type": "update_move_goods",
+    #                         "data": result,
+    #                         'sender_channel_name': self.channel_name,
+    #                         'sender_group' : self.group_number,
+    #                         "sender_town" : self.town_number,}
 
-            await self.send_message(message_to_self=None, message_to_group=group_result,
-                                    message_type=event['type'], send_to_client=False, send_to_group=True)
+    #         await self.send_message(message_to_self=None, message_to_group=group_result,
+    #                                 message_type=event['type'], send_to_client=False, send_to_group=True)
    
     # async def chat(self, event):
     #     '''

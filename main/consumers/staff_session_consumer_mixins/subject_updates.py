@@ -195,12 +195,13 @@ class SubjectUpdatesMixin():
             message = "Invalid data."
             target_list = [player_id]
 
-        if status == "success":
-            result = await sync_to_async(take_move_goods, thread_sensitive=False)(self.session_id, player_id, event_data)
+        if session.time_remaining == 0:
+            status = "fail"
+            message = "Period complete."
+            target_list = [player_id]
 
-            # Send reply to sending channel
-            # await self.send_message(message_to_self=result, message_to_group=None,
-            #                         message_type=event['type'], send_to_client=True, send_to_group=False)
+        if status == "success":
+            result = await sync_to_async(take_move_goods)(self.session_id, player_id, event_data)
 
             result["session_player_id"] = player_id
 
@@ -223,12 +224,15 @@ class SubjectUpdatesMixin():
             await self.send_message(message_to_self=None, message_to_group=result,
                                     message_type=event['type'], send_to_client=False, 
                                     send_to_group=True, target_list=target_list)
-       
-            # result = {"value" : "fail", "errors" : {}, "message" : message}
 
-            # await self.send_message(message_to_self=None, message_to_group=group_result,
-            #                         message_type=event['type'], send_to_client=False, 
-            #                         send_to_group=True, target_list=target_list)
+        else:
+            result = {"value" : "fail", "errors" :
+                      {f"transfer_good_one_amount_2g":[f"{message}"]}, 
+                      "message" : message}
+
+            await self.send_message(message_to_self=result, message_to_group=None,
+                                    message_type=event['type'], send_to_client=True, 
+                                    send_to_group=False, target_list=target_list)
 
     #update functions
     async def update_chat(self, event):
@@ -462,7 +466,11 @@ def take_move_goods(session_id, session_player_id, data):
             with transaction.atomic():
 
                 source_session_player = session.session_players.select_for_update().get(id=source_id)              
-                target_session_player = session.session_players.select_for_update().get(id=target_id)
+
+                if source_id == target_id:
+                    target_session_player = source_session_player
+                else:
+                    target_session_player = session.session_players.select_for_update().get(id=target_id)
 
                 #check that stealing is allowed
                 if not session.parameter_set.allow_stealing and source_session_player != session_player:
@@ -516,14 +524,14 @@ def take_move_goods(session_id, session_player_id, data):
                     source_session_player.good_one_house -= good_one_amount
                     source_session_player.good_two_house -= good_two_amount 
 
-                    if source_session_player.good_one_house < 0:
-                        source_session_player.good_one_house = 0
+                    # if source_session_player.good_one_house < 0:
+                    #     source_session_player.good_one_house = 0
                     
-                    if source_session_player.good_two_house < 0:
-                        source_session_player.good_two_house = 0
+                    # if source_session_player.good_two_house < 0:
+                    #     source_session_player.good_two_house = 0
                     
-                    if source_session_player.good_three_house < 0:
-                        source_session_player.good_three_house = 0
+                    # if source_session_player.good_three_house < 0:
+                    #     source_session_player.good_three_house = 0
 
                 else:
                     #check enough good one
@@ -539,25 +547,24 @@ def take_move_goods(session_id, session_player_id, data):
                     source_session_player.good_one_field -= good_one_amount
                     source_session_player.good_two_field -= good_two_amount
 
-                    if source_session_player.good_one_field < 0:
-                        source_session_player.good_one_field = 0
+                    # if source_session_player.good_one_field < 0:
+                    #     source_session_player.good_one_field = 0
 
-                    if source_session_player.good_two_field < 0:
-                        source_session_player.good_two_field = 0
+                    # if source_session_player.good_two_field < 0:
+                    #     source_session_player.good_two_field = 0
 
-                source_session_player.save()
+                # if source_session_player != target_session_player:
 
-                #handle target
-                target_session_player = session.session_players.select_for_update().get(id=target_id)
-
-                target_session_player.add_good_by_type(good_one_amount, target_type, source_session_player.parameter_set_player.good_one)
-                target_session_player.add_good_by_type(good_two_amount, target_type, source_session_player.parameter_set_player.good_two)
+                target_session_player.add_good_by_type(good_one_amount, target_type, source_session_player.parameter_set_player.good_one, False)
+                target_session_player.add_good_by_type(good_two_amount, target_type, source_session_player.parameter_set_player.good_two, False)
                 
                 if session.parameter_set.good_count == 3 and source_type == "house":
-                    target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three)
+                    target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three, False)
                 
+                if source_session_player != target_session_player:
+                    target_session_player.save()
                 
-                # target_session_player.save()
+                source_session_player.save()
 
                 #record move
                 session_player_move = SessionPlayerMove()
