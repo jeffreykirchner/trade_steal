@@ -199,7 +199,7 @@ doTestModeRun: function doTestModeRun()
                 break;
             
             case 2:
-                // app.doTestModeMove();
+                app.doTestModeMove();
                 break;
             
             case 3:

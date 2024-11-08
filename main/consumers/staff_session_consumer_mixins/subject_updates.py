@@ -452,6 +452,10 @@ def take_move_goods(session_id, session_player_id, data):
             if target_type == "field":
                 return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers to fields."]},
                         "message" : "Move Error"}
+            
+        if source_type == target_type and source_id == target_id:
+            return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Source and target are the same."]},
+                    "message" : "Move Error"}
         
     except KeyError:
             logger.warning(f"take_move_goods session, setup form: {session_id}")
