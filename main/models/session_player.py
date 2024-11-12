@@ -528,7 +528,7 @@ class SessionPlayer(models.Model):
             "post_experiment_link" : self.process_survey_link(self.session.parameter_set.post_forward_link),
         }
     
-    def json_for_subject(self, session_player):
+    def json_for_subject(self, session_player=None):
         '''
         json model for subject screen
         session_player_id : int : id number of session player for induvidual chat
@@ -553,7 +553,7 @@ class SessionPlayer(models.Model):
                                                                             .filter(Q(Q(session_player_recipients=session_player) & Q(session_player=self)) |
                                                                                     Q(Q(session_player_recipients=self) & Q(session_player=session_player)))
                                                                             .order_by('-timestamp')[:100:-1]
-                                ],
+                                ] if session_player else [],
 
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 

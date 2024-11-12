@@ -424,13 +424,12 @@ class Session(models.Model):
                            }
         
         #session players
-        for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
-                                                                                            'parameter_set_player__id' ):
-            v = {}
-            v['parameter_set_player_id'] = i['parameter_set_player__id']
+        for i in self.session_players.all():
+            v = i.json_for_subject()
+            # v['parameter_set_player_id'] = i['parameter_set_player__id']
             
-            self.world_state["session_players"][str(i['id'])] = v
-            self.world_state["session_players_order"].append(i['id'])
+            self.world_state["session_players"][str(i.id)] = v
+            self.world_state["session_players_order"].append(i.id)
         
         self.save()
 
