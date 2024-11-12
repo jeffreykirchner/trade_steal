@@ -17,6 +17,7 @@ from main.globals import ChatTypes
 from main.globals import ContainerTypes
 from main.globals import PeriodPhase
 from main.globals import round_half_away_from_zero
+from main.globals import is_positive_integer
 
 from main.models import SessionPlayerMove
 from main.models import SessionPlayerNotice
@@ -183,24 +184,73 @@ class SubjectUpdatesMixin():
         message = ""
         target_list = []
         player_id = None
+        result = {}
+        error_message = {}
 
         try:
             session = await Session.objects.aget(id=self.session_id)
             player_id = self.session_players_local[event["player_key"]]["id"]
+            session_player = await session.session_players.aget(id=player_id)
+
             event_data = event["message_text"]
             target_list = [player_id]
+
+            form_data = event_data["formData"]           
         except:
             logger.warning(f"move_goods: invalid data, {event['message_text']}")
             status = "fail"
             message = "Invalid data."
+            error_message.append({"id":"transfer_good_one_amount_2g", "message": "Invalid amount."})
             target_list = [player_id]
 
+        #check period is not complete
         if session.time_remaining == 0:
             status = "fail"
             message = "Period complete."
             target_list = [player_id]
 
+        
+        if self.parameter_set_local["good_count"] == 3:
+            good_one_amount = form_data["transfer_good_one_amount_3g"]
+            good_two_amount = form_data["transfer_good_two_amount_3g"]
+            good_three_amount = form_data["transfer_good_three_amount_3g"]
+        else:
+            good_one_amount = form_data["transfer_good_one_amount_2g"]
+            good_two_amount = form_data["transfer_good_two_amount_2g"]
+            good_three_amount = 0
+
+        #check for valid form data
+        if not await is_positive_integer(good_one_amount):
+            status = "fail"
+            if self.parameter_set_local["good_count"] == 3:
+                error_message["transfer_good_one_amount_3g"] =["Invalid amount."]
+            else:
+                error_message["transfer_good_one_amount_2g"] =["Invalid amount."]
+        
+        if not await is_positive_integer(good_two_amount):
+            status = "fail"
+            if self.parameter_set_local["good_count"] == 3:
+                error_message["transfer_good_two_amount_3g"] =["Invalid amount."]
+            else:
+                error_message["transfer_good_two_amount_2g"] =["Invalid amount."]
+
+        if self.parameter_set_local["good_count"] == 3:
+            if not await is_positive_integer(good_three_amount):
+                status = "fail"
+                error_message["transfer_good_three_amount_3g"] =["Invalid amount."]
+
+        if self.parameter_set_local["good_count"] == 3:
+            if good_one_amount == 0 and good_two_amount == 0 and good_three_amount == 0:
+                status = "fail"
+                error_message["transfer_good_three_amount_3g"] =["Nothing to transfer."]
+        else:
+            if good_one_amount == 0 and good_two_amount == 0:
+                status = "fail"
+                error_message["transfer_good_two_amount_2g"] =["Nothing to transfer."]
+
         if status == "success":
+            pass
+
             result = await sync_to_async(take_move_goods)(self.session_id, player_id, event_data)
 
             result["session_player_id"] = player_id
@@ -221,18 +271,16 @@ class SubjectUpdatesMixin():
 
                 await self.store_world_state()
 
-            await self.send_message(message_to_self=None, message_to_group=result,
-                                    message_type=event['type'], send_to_client=False, 
-                                    send_to_group=True, target_list=target_list)
-
         else:
-            result = {"value" : "fail", "errors" :
-                      {f"transfer_good_one_amount_2g":[f"{message}"]}, 
+            result = {"value" : "fail", 
+                      "session_player_id" : player_id,
+                      "errors" : error_message, 
                       "message" : message}
 
-            await self.send_message(message_to_self=result, message_to_group=None,
-                                    message_type=event['type'], send_to_client=True, 
-                                    send_to_group=False, target_list=target_list)
+        
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=target_list)
 
     #update functions
     async def update_chat(self, event):
