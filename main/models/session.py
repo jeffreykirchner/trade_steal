@@ -221,68 +221,68 @@ class Session(models.Model):
 
             new_session_player.save()
 
-    def do_period_timer(self, parameter_set_local):
-        '''
-        do period timer actions
-        '''
+    # def do_period_timer(self, parameter_set_local):
+    #     '''
+    #     do period timer actions
+    #     '''
 
-        status = "success"
-        end_game = False
-        period_update = None
+    #     status = "success"
+    #     end_game = False
+    #     period_update = None
 
-        #check session over
-        if self.time_remaining == 0 and \
-           self.current_period_phase == PeriodPhase.TRADE and \
-           self.current_period >= parameter_set_local["period_count"]:
+    #     #check session over
+    #     if self.time_remaining == 0 and \
+    #        self.current_period_phase == PeriodPhase.TRADE and \
+    #        self.current_period >= parameter_set_local["period_count"]:
 
-            self.do_period_consumption(parameter_set_local)
-            period_update = self.get_current_session_period()
-            self.finished = True
-            end_game = True
+    #         self.do_period_consumption(parameter_set_local)
+    #         period_update = self.get_current_session_period()
+    #         self.finished = True
+    #         end_game = True
 
-        notice_list = []
+    #     notice_list = []
         
-        if not status == "fail" and not end_game:
+    #     if not status == "fail" and not end_game:
 
-            if self.time_remaining == 0:
+    #         if self.time_remaining == 0:
 
-                if self.current_period_phase == PeriodPhase.PRODUCTION:
-                    notice_list = self.record_period_production()
+    #             if self.current_period_phase == PeriodPhase.PRODUCTION:
+    #                 notice_list = self.record_period_production()
                                        
-                    #start trade phase
-                    self.current_period_phase = PeriodPhase.TRADE
-                    self.time_remaining = parameter_set_local["period_length_trade"]
-                else:
-                    self.do_period_consumption(parameter_set_local)
+    #                 #start trade phase
+    #                 self.current_period_phase = PeriodPhase.TRADE
+    #                 self.time_remaining = parameter_set_local["period_length_trade"]
+    #             else:
+    #                 self.do_period_consumption(parameter_set_local)
                     
-                    period_update = self.get_current_session_period()
-                    # if period_update:
-                    #     period_update.update_efficiency()
+    #                 period_update = self.get_current_session_period()
+    #                 # if period_update:
+    #                 #     period_update.update_efficiency()
 
-                    self.current_period += 1
-                    self.current_period_phase = PeriodPhase.PRODUCTION
-                    self.time_remaining = parameter_set_local["period_length_production"]                       
+    #                 self.current_period += 1
+    #                 self.current_period_phase = PeriodPhase.PRODUCTION
+    #                 self.time_remaining = parameter_set_local["period_length_production"]                       
 
-                    if self.current_period % parameter_set_local["break_period_frequency"] == 0:
-                        notice_list = self.add_notice_to_all(f"<center>*** Break period, chat only, no production. ***</center>")           
-            else:
+    #                 if self.current_period % parameter_set_local["break_period_frequency"] == 0:
+    #                     notice_list = self.add_notice_to_all(f"<center>*** Break period, chat only, no production. ***</center>")           
+    #         else:
                 
-                if self.current_period_phase == PeriodPhase.PRODUCTION:
+    #             if self.current_period_phase == PeriodPhase.PRODUCTION:
 
-                    if self.current_period % parameter_set_local["break_period_frequency"] != 0 :
-                        self.do_period_production()                        
+    #                 if self.current_period % parameter_set_local["break_period_frequency"] != 0 :
+    #                     self.do_period_production()                        
 
-                self.time_remaining -= 1
+    #             self.time_remaining -= 1
 
-        self.save()
+    #     self.save()
 
-        result = self.json_for_timmer()
+    #     result = self.json_for_timmer()
 
-        return {"value" : status,
-                "result" : result,
-                "period_update" : period_update.json() if period_update else None,
-                "notice_list" : notice_list,
-                "end_game" : end_game}
+    #     return {"value" : status,
+    #             "result" : result,
+    #             "period_update" : period_update.json() if period_update else None,
+    #             "notice_list" : notice_list,
+    #             "end_game" : end_game}
 
     def do_period_production(self):
         '''
@@ -416,6 +416,12 @@ class Session(models.Model):
         '''
         self.world_state = {"last_update":str(datetime.now()), 
                             "last_store":str(datetime.now()),
+                            "started": False,
+                            "current_period":self.current_period,
+                            "current_period_phase":self.current_period_phase,
+                            "time_remaining":self.time_remaining,
+                            "timer_running":self.timer_running,
+                            "finished":self.finished,
                             "timer_history":[],
                             "session_players":{},
                             "session_players_order":[],
@@ -425,7 +431,20 @@ class Session(models.Model):
         
         #session players
         for i in self.session_players.all():
-            v = i.json_for_subject()
+            v = {
+                "good_one_house" : 0,
+                "good_two_house" : 0,
+                "good_three_house" : 0,
+
+                "good_one_field" : 0,
+                "good_two_field" : 0,
+
+                "good_one_field_production" : 0,
+                "good_two_field_production" : 0,
+
+                "good_one_production_rate" : 50,
+                "good_two_production_rate" : 50,
+            }
             # v['parameter_set_player_id'] = i['parameter_set_player__id']
             
             self.world_state["session_players"][str(i.id)] = v
