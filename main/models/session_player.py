@@ -269,43 +269,43 @@ class SessionPlayer(models.Model):
         '''
         return self.parameter_set_player.town
 
-    def do_period_production(self, current_time):
-        '''
-        do one second of production
-        '''
+    # def do_period_production(self, current_time):
+    #     '''
+    #     do one second of production
+    #     '''
 
-        # Good Production = P1 + P2 x Time ^ P3
+    #     # Good Production = P1 + P2 x Time ^ P3
 
         
-        parameter_set_type = self.parameter_set_player.parameter_set_type
+    #     parameter_set_type = self.parameter_set_player.parameter_set_type
   
-        self.good_one_field_production += self.do_period_production_function(parameter_set_type.good_one_production_1,
-                                                                  parameter_set_type.good_one_production_2,
-                                                                  parameter_set_type.good_one_production_3,
-                                                                  self.good_one_production_rate)
+    #     self.good_one_field_production += self.do_period_production_function(parameter_set_type.good_one_production_1,
+    #                                                               parameter_set_type.good_one_production_2,
+    #                                                               parameter_set_type.good_one_production_3,
+    #                                                               self.good_one_production_rate)
 
-        self.good_two_field_production += self.do_period_production_function(parameter_set_type.good_two_production_1,
-                                                                  parameter_set_type.good_two_production_2,
-                                                                  parameter_set_type.good_two_production_3,
-                                                                  self.good_two_production_rate)
+    #     self.good_two_field_production += self.do_period_production_function(parameter_set_type.good_two_production_1,
+    #                                                               parameter_set_type.good_two_production_2,
+    #                                                               parameter_set_type.good_two_production_3,
+    #                                                               self.good_two_production_rate)
         
-        #round to int
-        self.good_one_field = int(round_half_away_from_zero(self.good_one_field_production, 0))
-        self.good_two_field = int(round_half_away_from_zero(self.good_two_field_production, 0))
+    #     #round to int
+    #     self.good_one_field = int(round_half_away_from_zero(self.good_one_field_production, 0))
+    #     self.good_two_field = int(round_half_away_from_zero(self.good_two_field_production, 0))
 
-        self.save()
+    #     self.save()
 
-    def do_period_production_function(self, good_production_1, good_production_2, good_production_3, production_rate):
-        '''
-        return production for single good
-        '''
-        total_time = Decimal(self.parameter_set_player.parameter_set.period_length_production)
+    # def do_period_production_function(self, good_production_1, good_production_2, good_production_3, production_rate):
+    #     '''
+    #     return production for single good
+    #     '''
+    #     total_time = Decimal(self.parameter_set_player.parameter_set.period_length_production)
 
-        good_time =  total_time * Decimal(production_rate)/Decimal('100')
-        production = good_production_1 + good_production_2 * good_time ** good_production_3
-        production *= Decimal('1')/total_time
+    #     good_time =  total_time * Decimal(production_rate)/Decimal('100')
+    #     production = good_production_1 + good_production_2 * good_time ** good_production_3
+    #     production *= Decimal('1')/total_time
 
-        return round(production, 9)
+    #     return round(production, 9)
 
     def record_period_production(self):
         '''

@@ -284,13 +284,13 @@ class Session(models.Model):
     #             "notice_list" : notice_list,
     #             "end_game" : end_game}
 
-    def do_period_production(self):
-        '''
-        do one second of production for all players
-        '''
+    # def do_period_production(self):
+    #     '''
+    #     do one second of production for all players
+    #     '''
 
-        for p in self.session_players.all():
-            p.do_period_production(self.time_remaining)
+    #     for p in self.session_players.all():
+    #         p.do_period_production(self.time_remaining)
     
     def record_period_production(self):
         '''

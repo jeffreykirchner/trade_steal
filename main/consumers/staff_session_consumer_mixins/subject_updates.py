@@ -282,6 +282,95 @@ class SubjectUpdatesMixin():
                                 message_type=event['type'], send_to_client=False, 
                                 send_to_group=True, target_list=target_list)
 
+    
+    async def production_time(self, event):
+        '''
+        take update to production time between goods one and two
+        '''
+        logger = logging.getLogger(__name__)
+
+        target_list = []
+        player_id = None
+        result = {}
+        error_message = []
+        message = ""
+        status = "success"
+        
+        try:
+            session = await Session.objects.aget(id=self.session_id)
+            player_id = self.session_players_local[event["player_key"]]["id"]
+            session_player = await session.session_players.aget(id=player_id)
+
+            event_data = event["message_text"]
+            target_list = [player_id]
+        
+        except:
+            logger.warning(f"move_goods: invalid data, {event['message_text']}")
+            status = "fail"
+            message = "Invalid data."
+            error_message.append({"id":"transfer_good_one_amount_2g", "message": "Invalid amount."})
+            target_list = [player_id]
+
+
+        #update subject count
+        #result = await sync_to_async(take_production_time, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
+
+
+        try:
+            good_one_production_rate = int(event_data["production_slider_one"])
+            good_two_production_rate = int(event_data["production_slider_two"])
+        except KeyError:
+            message = "Invalid values."
+            status = "fail"
+            logger.warning(f"take production time: {message}")
+            
+        except ValueError:
+            message = "Invalid values."
+            status = "fail"
+            logger.warning(f"take production time: {message}")
+
+        if good_one_production_rate + good_two_production_rate != 100 or \
+           good_one_production_rate < 0 or good_two_production_rate < 0:
+
+            message = "Invalid values."
+            status = "fail"
+            logger.warning(f"take production time: {message}")
+
+            
+        if session.current_period_phase == PeriodPhase.PRODUCTION and \
+            session.current_period > 1:
+
+            message = "Not updates during production."
+            status = "fail"
+            logger.warning(f"take production time: {message}")
+
+        if status == "success":
+
+            self.world_state_local["session_players"][str(player_id)]["good_one_production_rate"] = good_one_production_rate
+            self.world_state_local["session_players"][str(player_id)]["good_two_production_rate"] = good_two_production_rate
+
+            session_player.good_one_production_rate = good_one_production_rate
+            session_player.good_two_production_rate = good_two_production_rate
+
+            await session_player.asave()
+
+        result["value"] = status
+        result["message"] = message
+        result["result"] = {"good_one_production_rate" : session_player.good_one_production_rate,
+                            "good_two_production_rate" : session_player.good_two_production_rate,
+                            "id" : player_id}
+        
+        result["session_player_id"] = player_id
+
+        # Send reply to sending channel
+        # await self.send_message(message_to_self=result, message_to_group=None,
+        #                         message_type=event['type'], send_to_client=True, send_to_group=False)
+
+
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=target_list)
+
     #update functions
     async def update_chat(self, event):
         '''
@@ -432,6 +521,9 @@ class SubjectUpdatesMixin():
         # logger.info("Eng game update")
 
         result =  json.loads(event["group_data"])
+
+        if result["value"] == "fail":
+            return
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
