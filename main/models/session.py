@@ -315,17 +315,17 @@ class Session(models.Model):
 
         return notice_list
     
-    def do_period_consumption(self, parameter_set_local):
-        '''
-        covert goods in house to earnings
-        '''
+    # def do_period_consumption(self, parameter_set_local):
+    #     '''
+    #     covert goods in house to earnings
+    #     '''
 
-        session_players = self.session_players.select_for_update().all()
+    #     session_players = self.session_players.select_for_update().all()
 
-        with transaction.atomic():
-            for p in session_players:
-                parameter_set_player_local = parameter_set_local["parameter_set_players"][str(p.parameter_set_player.id)]
-                p.do_period_consumption(parameter_set_player_local)
+    #     with transaction.atomic():
+    #         for p in session_players:
+    #             parameter_set_player_local = parameter_set_local["parameter_set_players"][str(p.parameter_set_player.id)]
+    #             p.do_period_consumption(parameter_set_player_local)
 
     def get_download_summary_csv(self):
         '''

@@ -360,54 +360,54 @@ class SessionPlayer(models.Model):
 
         return session_player_notice.json()
 
-    def do_period_consumption(self, parameter_set_player_local):
-        '''
-        covert goods in house to earnings
-        '''
+    # def do_period_consumption(self, parameter_set_player_local):
+    #     '''
+    #     covert goods in house to earnings
+    #     '''
 
-        #record house inventory
-        session_player_period = self.session_player_periods_b.get(session_period=self.session.get_current_session_period())
+    #     #record house inventory
+    #     session_player_period = self.session_player_periods_b.get(session_period=self.session.get_current_session_period())
 
-        session_player_period.good_one_consumption = self.good_one_house
-        session_player_period.good_two_consumption = self.good_two_house
-        session_player_period.good_three_consumption = self.good_three_house
+    #     session_player_period.good_one_consumption = self.good_one_house
+    #     session_player_period.good_two_consumption = self.good_two_house
+    #     session_player_period.good_three_consumption = self.good_three_house
 
-        #record field inventory
-        session_player_period.good_one_field = self.good_one_field
-        session_player_period.good_two_field = self.good_two_field
+    #     #record field inventory
+    #     session_player_period.good_one_field = self.good_one_field
+    #     session_player_period.good_two_field = self.good_two_field
 
-        #record field inventory
-        session_player_period.good_one_field = round_half_away_from_zero(self.good_one_field, 0)
-        session_player_period.good_two_field = round_half_away_from_zero(self.good_two_field, 0)
+    #     #record field inventory
+    #     session_player_period.good_one_field = round_half_away_from_zero(self.good_one_field, 0)
+    #     session_player_period.good_two_field = round_half_away_from_zero(self.good_two_field, 0)
 
-        #convert goods to earnings
-        parameter_set_type = parameter_set_player_local["parameter_set_type"]
+    #     #convert goods to earnings
+    #     parameter_set_type = parameter_set_player_local["parameter_set_type"]
 
-        earnings_per_unit = max(parameter_set_type["good_one_amount"], parameter_set_type["good_two_amount"])
+    #     earnings_per_unit = max(parameter_set_type["good_one_amount"], parameter_set_type["good_two_amount"])
 
-        while self.good_one_house >= parameter_set_type["good_one_amount"] and \
-              self.good_two_house >= parameter_set_type["good_two_amount"]:
+    #     while self.good_one_house >= parameter_set_type["good_one_amount"] and \
+    #           self.good_two_house >= parameter_set_type["good_two_amount"]:
 
-              self.earnings += earnings_per_unit
-              session_player_period.earnings += earnings_per_unit
+    #           self.earnings += earnings_per_unit
+    #           session_player_period.earnings += earnings_per_unit
 
-              self.good_one_house -= parameter_set_type["good_one_amount"]
-              self.good_two_house -= parameter_set_type["good_two_amount"]
+    #           self.good_one_house -= parameter_set_type["good_one_amount"]
+    #           self.good_two_house -= parameter_set_type["good_two_amount"]
 
-        session_player_period.save()
-        session_player_period.update_efficiency(parameter_set_player_local["parameter_set_type"]["ce_earnings"])
+    #     session_player_period.save()
+    #     session_player_period.update_efficiency(parameter_set_player_local["parameter_set_type"]["ce_earnings"])
 
-        self.good_one_house = 0
-        self.good_two_house = 0
-        self.good_three_house = 0
+    #     self.good_one_house = 0
+    #     self.good_two_house = 0
+    #     self.good_three_house = 0
 
-        self.good_one_field = 0
-        self.good_two_field = 0
+    #     self.good_one_field = 0
+    #     self.good_two_field = 0
 
-        self.good_one_field_production = 0
-        self.good_two_field_production = 0
+    #     self.good_one_field_production = 0
+    #     self.good_two_field_production = 0
 
-        self.save()
+    #     self.save()
 
     def get_instruction_set(self):
         '''

@@ -110,7 +110,7 @@ class TimerMixin():
            self.world_state_local["current_period_phase"] == PeriodPhase.TRADE and \
            self.world_state_local["current_period"] >= self.parameter_set_local["period_count"]:
 
-            await sync_to_async(session.do_period_consumption)(self.parameter_set_local)
+            await do_period_consumption(session, self.world_state_local, self.parameter_set_local)
             period_update = await sync_to_async(session.get_current_session_period)()
             self.world_state_local["finished"] = True
             end_game = True
@@ -128,7 +128,7 @@ class TimerMixin():
                     self.world_state_local["current_period_phase"] = PeriodPhase.TRADE
                     self.world_state_local["time_remaining"] = self.parameter_set_local["period_length_trade"]
                 else:
-                    await sync_to_async(session.do_period_consumption)(self.parameter_set_local)
+                    await do_period_consumption(session, self.world_state_local, self.parameter_set_local)
                     
                     period_update = await sync_to_async(session.get_current_session_period)()
 
@@ -186,6 +186,73 @@ class TimerMixin():
         await self.send_message(message_to_self=result, message_to_group=None,
                                     message_type=event['type'], send_to_client=True, send_to_group=False)
 
+
+async def do_period_consumption(session, world_state_local, parameter_set_local):
+    '''
+    do period consumption
+    '''
+    logger = logging.getLogger(__name__)
+
+    # logger.info(f"do_period_consumption: {session}")
+
+    session_players = world_state_local["session_players"]
+    current_session_period = await sync_to_async(session.get_current_session_period)()
+
+    for p in session_players:
+        session_player = session_players[str(p)]
+        player = await session.session_players.prefetch_related("session_player_periods_b").aget(id=p)
+        session_player_period = await player.session_player_periods_b.aget(session_period=current_session_period)
+
+        session_player_period.good_one_consumption = session_player["good_one_house"]
+        session_player_period.good_two_consumption = session_player["good_two_house"]
+        session_player_period.good_three_consumption = session_player["good_three_house"]
+
+        #record field inventory
+        session_player_period.good_one_field = session_player["good_one_field"]
+        session_player_period.good_two_field = session_player["good_two_field"]
+
+        #record field inventory
+        session_player_period.good_one_field = round_half_away_from_zero(session_player["good_one_field"], 0)
+        session_player_period.good_two_field = round_half_away_from_zero(session_player["good_two_field"], 0)
+
+        #convert goods to earnings
+        parameter_set_type = parameter_set_local["parameter_set_players"][str(session_player["parameter_set_player_id"])]["parameter_set_type"]
+
+        earnings_per_unit = max(parameter_set_type["good_one_amount"], parameter_set_type["good_two_amount"])
+
+        while session_player["good_one_house"] >= parameter_set_type["good_one_amount"] and \
+              session_player["good_two_house"] >= parameter_set_type["good_two_amount"]:
+
+              player.earnings += earnings_per_unit
+              session_player_period.earnings += earnings_per_unit
+
+              session_player["good_one_house"] -= parameter_set_type["good_one_amount"]
+              session_player["good_two_house"] -= parameter_set_type["good_two_amount"]
+
+        await session_player_period.asave()
+        await sync_to_async(session_player_period.update_efficiency)(parameter_set_type["ce_earnings"])
+
+        session_player["good_one_house"] = 0
+        session_player["good_two_house"] = 0
+        session_player["good_three_house"] = 0
+
+        session_player["good_one_field"] = 0
+        session_player["good_two_field"] = 0
+
+        session_player["good_one_field_production"] = 0
+        session_player["good_two_field_production"] = 0
+
+        player.good_one_house = session_player["good_one_house"]
+        player.good_two_house = session_player["good_two_house"]
+        player.good_three_house = session_player["good_three_house"]
+
+        player.good_one_field = session_player["good_one_field"]
+        player.good_two_field = session_player["good_two_field"]
+
+        player.good_one_field_production = session_player["good_one_field_production"]
+        player.good_two_field_production = session_player["good_two_field_production"]
+
+        await player.asave()
 
 async def do_period_production(session, world_state_local, parameter_set_local):
     '''
