@@ -444,6 +444,8 @@ class Session(models.Model):
 
                 "good_one_production_rate" : 50,
                 "good_two_production_rate" : 50,
+
+                "parameter_set_player_id" : i.parameter_set_player.id,
             }
             # v['parameter_set_player_id'] = i['parameter_set_player__id']
             

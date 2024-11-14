@@ -10,8 +10,10 @@ from django.db import transaction
 from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import Session
+from main.models import SessionPlayer
 
 from main.globals import PeriodPhase
+from main.globals import round_half_away_from_zero
 
 class TimerMixin():
     '''
@@ -141,7 +143,7 @@ class TimerMixin():
                 if self.world_state_local["current_period_phase"] == PeriodPhase.PRODUCTION:
 
                     if self.world_state_local["current_period"] % self.parameter_set_local["break_period_frequency"] != 0 :
-                        await sync_to_async(do_period_production)(session, self.world_state_local, self.parameter_set_local)                        
+                        await do_period_production(session, self.world_state_local, self.parameter_set_local)                        
 
                 self.world_state_local["time_remaining"] -= 1
 
@@ -195,13 +197,66 @@ async def do_period_production(session, world_state_local, parameter_set_local):
 
     session_players = world_state_local["session_players"]
 
+    #update world state
     for p in session_players:
-        pass
+        session_player = session_players[str(p)]
+        parameter_set_type = parameter_set_local["parameter_set_players"][str(session_player["parameter_set_player_id"])]["parameter_set_type"]
+    
+        session_player["good_one_field_production"] += await do_period_production_function(
+                                                                Decimal(parameter_set_type["good_one_production_1"]),
+                                                                Decimal(parameter_set_type["good_one_production_2"]),
+                                                                Decimal(parameter_set_type["good_one_production_3"]),
+                                                                Decimal(session_player["good_one_production_rate"]),
+                                                                parameter_set_local)
+
+        session_player["good_two_field_production"] += await do_period_production_function(
+                                                                Decimal(parameter_set_type["good_two_production_1"]),
+                                                                Decimal(parameter_set_type["good_two_production_2"]),
+                                                                Decimal(parameter_set_type["good_two_production_3"]),
+                                                                Decimal(session_player["good_two_production_rate"]),
+                                                                parameter_set_local)
+        #round to int
+        session_player["good_one_field"] = int(round_half_away_from_zero(session_player["good_one_field_production"], 0))
+        session_player["good_two_field"] = int(round_half_away_from_zero(session_player["good_two_field_production"], 0))
 
 
-    # session.save()
+    #store result in session players
+    objects = []
 
-    return
+    for p in session_players:
+        session_player = session_players[str(p)]
+        player = await session.session_players.aget(id=p)
+
+        player.good_one_field_production = session_player["good_one_field_production"]
+        player.good_two_field_production = session_player["good_two_field_production"]
+
+        player.good_one_field = session_player["good_one_field"]
+        player.good_two_field = session_player["good_two_field"]
+        
+        objects.append(player)
+
+    await SessionPlayer.objects.abulk_update(objects, 
+                                             ["good_one_field_production", 
+                                              "good_two_field_production",
+                                              "good_one_field", 
+                                              "good_two_field"])
+    
+
+async def do_period_production_function(good_production_1: Decimal, 
+                                        good_production_2: Decimal, 
+                                        good_production_3 : Decimal, 
+                                        production_rate: Decimal,
+                                        parameter_set_local):
+        '''
+        return production for single good
+        '''
+        total_time = Decimal(parameter_set_local["period_length_production"])
+
+        good_time =  total_time * Decimal(production_rate)/Decimal('100')
+        production = good_production_1 + good_production_2 * good_time ** good_production_3
+        production *= Decimal('1')/total_time
+
+        return round(production, 9)
 # def take_start_timer(session_id, data):
 #     '''
 #     start timer
