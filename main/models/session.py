@@ -432,6 +432,8 @@ class Session(models.Model):
         #session players
         for i in self.session_players.all():
             v = {
+                "id" : i.id,
+                
                 "good_one_house" : 0,
                 "good_two_house" : 0,
                 "good_three_house" : 0,
