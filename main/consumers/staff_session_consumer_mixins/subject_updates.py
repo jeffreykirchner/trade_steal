@@ -200,16 +200,9 @@ class SubjectUpdatesMixin():
             logger.warning(f"move_goods: invalid data, {event['message_text']}")
             status = "fail"
             message = "Invalid data."
-            error_message.append({"id":"transfer_good_one_amount_2g", "message": "Invalid amount."})
+            error_message["transfer_good_one_amount_2g"] = ["Invalid amount."]
             target_list = [player_id]
 
-        #check period is not complete
-        if session.time_remaining == 0:
-            status = "fail"
-            message = "Period complete."
-            target_list = [player_id]
-
-        
         source_type = event_data["sourceType"]
         source_id = event_data["sourceID"]
 
@@ -221,6 +214,46 @@ class SubjectUpdatesMixin():
 
         target_player = self.world_state_local["session_players"][str(target_id)]
         target_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(target_player["parameter_set_player_id"])]
+
+        parameter_set_player_group = await self.get_player_group(player_id, session.current_period)
+        group_members = await self.get_group_members(parameter_set_player_group, session.current_period)
+        
+        #check experiment in correct state
+        if session.time_remaining == 0:
+            status = "fail"
+            message = "Period complete."
+            error_message["transfer_good_one_amount_2g"] = ["Period complete."]
+
+        if target_id not in group_members or source_id not in group_members:
+            status = "fail"
+            message = "Player not in group."
+            error_message["transfer_good_one_amount_2g"] = ["Invalid target."]
+
+        if not session.started:
+            status = "fail"
+            message = "Session not started."
+            error_message["transfer_good_one_amount_2g"] = ["Session not started."]
+           
+        if session.finished:
+            status = "fail"
+            message = "Session complete."
+            error_message["transfer_good_one_amount_2g"] = ["Session complete."]
+        
+        if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
+            status = "fail"
+            message = "Session not running."
+            error_message["transfer_good_one_amount_2g"] = ["Session not running."]
+        
+        if session.current_period_phase == PeriodPhase.PRODUCTION:
+            status = "fail"
+            message = "No transfers during production phase."
+            error_message["transfer_good_one_amount_2g"] = ["No transfers during production phase."]
+        
+        if not self.parameter_set_local["allow_stealing"]:
+            if target_type == "field":
+                status = "fail"
+                message = "No transfers to fields."
+                error_message["transfer_good_one_amount_2g"] = ["No transfers to fields."]
 
         if self.parameter_set_local["good_count"] == 3:
             good_one_amount = form_data["transfer_good_one_amount_3g"]
@@ -313,8 +346,6 @@ class SubjectUpdatesMixin():
                 result.append(target_player)
                 result[1]["notice"] = "target notice here"
 
-            parameter_set_player_group = await self.get_player_group(player_id, session.current_period)
-            group_members = await self.get_group_members(parameter_set_player_group, session.current_period)
             target_list = group_members
 
             self.world_state_local["notices"][str(source_parameter_set_player["town"])].append(result[0]["notice"])
