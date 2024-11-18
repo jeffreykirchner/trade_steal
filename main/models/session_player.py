@@ -31,12 +31,15 @@ class SessionPlayer(models.Model):
     parameter_set_player = models.ForeignKey(ParameterSetPlayer, on_delete=models.CASCADE, related_name="session_players_paramterset")
     avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE, related_name="session_players_b", null=True, blank=True)
 
-    good_one_house = models.DecimalField(verbose_name = 'Good one in house', decimal_places=0, default=0, max_digits=3)
-    good_two_house =  models.DecimalField(verbose_name = 'Good two in house', decimal_places=0, default=0, max_digits=3)
-    good_three_house =  models.DecimalField(verbose_name = 'Good three in house', decimal_places=0, default=0, max_digits=3)
+    good_one_house = models.IntegerField(verbose_name = 'Good one in house', default=0)
+    good_two_house =  models.IntegerField(verbose_name = 'Good two in house', default=0)
+    good_three_house =  models.IntegerField(verbose_name = 'Good three in house', default=0)
 
-    good_one_field = models.DecimalField(verbose_name = 'Good one in field', decimal_places=9, default=0, max_digits=12)
-    good_two_field = models.DecimalField(verbose_name = 'Good two in field', decimal_places=9, default=0, max_digits=12)
+    good_one_field = models.IntegerField(verbose_name = 'Good one in field', default=0)
+    good_two_field = models.IntegerField(verbose_name = 'Good two in field', default=0)
+
+    good_one_field_production = models.DecimalField(verbose_name = 'Good one in field', decimal_places=9, default=0, max_digits=12)
+    good_two_field_production = models.DecimalField(verbose_name = 'Good two in field', decimal_places=9, default=0, max_digits=12)
 
     good_one_production_rate = models.IntegerField(verbose_name='Good one production rate (0-100)', default=50)        #percent of time to devote to good one production
     good_two_production_rate = models.IntegerField(verbose_name='Good two production rate (0-100)', default=50)        #percent of time to devote to good two production
@@ -97,13 +100,15 @@ class SessionPlayer(models.Model):
 
         return False
     
-    def add_good_by_type(self, amount, good_location, parameter_set_good):
+    def add_good_by_type(self, amount, good_location, parameter_set_good, do_save=True):
         '''
         add amount to good of specificed type
         amount : int
         good_location : string : house or field
         parameter_set_good : ParametersetGood()
         '''
+
+        logger = logging.getLogger(__name__)
 
         status = "fail"
         good_number = ""
@@ -141,9 +146,11 @@ class SessionPlayer(models.Model):
                 good_number = "two"
                 status = "success"
 
-        self.save()
+        if do_save:
+            self.save()
 
         if status == "fail":
+            logger.error(f"add_good_by_type: failed to move good {parameter_set_good} to {good_location} for {self}")
             return {"status" : "fail", "amount" : 0}
         else:
            return {"status" : "success", "good_number" : good_number}
@@ -165,7 +172,9 @@ class SessionPlayer(models.Model):
 
         self.good_one_field = 0
         self.good_two_field = 0
-        self.good_three_field = 0
+
+        self.good_one_field_production = 0
+        self.good_two_field_production = 0
 
         self.earnings = 0
         self.name = ""
@@ -260,39 +269,43 @@ class SessionPlayer(models.Model):
         '''
         return self.parameter_set_player.town
 
-    def do_period_production(self, current_time):
-        '''
-        do one second of production
-        '''
+    # def do_period_production(self, current_time):
+    #     '''
+    #     do one second of production
+    #     '''
 
-        # Good Production = P1 + P2 x Time ^ P3
+    #     # Good Production = P1 + P2 x Time ^ P3
 
         
-        parameter_set_type = self.parameter_set_player.parameter_set_type
+    #     parameter_set_type = self.parameter_set_player.parameter_set_type
   
-        self.good_one_field += self.do_period_production_function(parameter_set_type.good_one_production_1,
-                                                                  parameter_set_type.good_one_production_2,
-                                                                  parameter_set_type.good_one_production_3,
-                                                                  self.good_one_production_rate)
+    #     self.good_one_field_production += self.do_period_production_function(parameter_set_type.good_one_production_1,
+    #                                                               parameter_set_type.good_one_production_2,
+    #                                                               parameter_set_type.good_one_production_3,
+    #                                                               self.good_one_production_rate)
 
-        self.good_two_field += self.do_period_production_function(parameter_set_type.good_two_production_1,
-                                                                  parameter_set_type.good_two_production_2,
-                                                                  parameter_set_type.good_two_production_3,
-                                                                  self.good_two_production_rate)
+    #     self.good_two_field_production += self.do_period_production_function(parameter_set_type.good_two_production_1,
+    #                                                               parameter_set_type.good_two_production_2,
+    #                                                               parameter_set_type.good_two_production_3,
+    #                                                               self.good_two_production_rate)
+        
+    #     #round to int
+    #     self.good_one_field = int(round_half_away_from_zero(self.good_one_field_production, 0))
+    #     self.good_two_field = int(round_half_away_from_zero(self.good_two_field_production, 0))
 
-        self.save()
+    #     self.save()
 
-    def do_period_production_function(self, good_production_1, good_production_2, good_production_3, production_rate):
-        '''
-        return production for single good
-        '''
-        total_time = Decimal(self.parameter_set_player.parameter_set.period_length_production)
+    # def do_period_production_function(self, good_production_1, good_production_2, good_production_3, production_rate):
+    #     '''
+    #     return production for single good
+    #     '''
+    #     total_time = Decimal(self.parameter_set_player.parameter_set.period_length_production)
 
-        good_time =  total_time * Decimal(production_rate)/Decimal('100')
-        production = good_production_1 + good_production_2 * good_time ** good_production_3
-        production *= Decimal('1')/total_time
+    #     good_time =  total_time * Decimal(production_rate)/Decimal('100')
+    #     production = good_production_1 + good_production_2 * good_time ** good_production_3
+    #     production *= Decimal('1')/total_time
 
-        return round(production, 9)
+    #     return round(production, 9)
 
     def record_period_production(self):
         '''
@@ -301,8 +314,8 @@ class SessionPlayer(models.Model):
 
         session_player_period = self.session_player_periods_b.get(session_period=self.session.get_current_session_period())
 
-        session_player_period.good_one_production = round_half_away_from_zero(self.good_one_field, 0)
-        session_player_period.good_two_production = round_half_away_from_zero(self.good_two_field, 0)
+        session_player_period.good_one_production = self.good_one_field
+        session_player_period.good_two_production = self.good_two_field
 
         session_player_period.good_one_production_rate = self.good_one_production_rate
         session_player_period.good_two_production_rate = self.good_two_production_rate
@@ -347,48 +360,54 @@ class SessionPlayer(models.Model):
 
         return session_player_notice.json()
 
-    def do_period_consumption(self, parameter_set_player_local):
-        '''
-        covert goods in house to earnings
-        '''
+    # def do_period_consumption(self, parameter_set_player_local):
+    #     '''
+    #     covert goods in house to earnings
+    #     '''
 
-        #record house inventory
-        session_player_period = self.session_player_periods_b.get(session_period=self.session.get_current_session_period())
+    #     #record house inventory
+    #     session_player_period = self.session_player_periods_b.get(session_period=self.session.get_current_session_period())
 
-        session_player_period.good_one_consumption = int(self.good_one_house)
-        session_player_period.good_two_consumption = int(self.good_two_house)
-        session_player_period.good_three_consumption = int(self.good_three_house)
+    #     session_player_period.good_one_consumption = self.good_one_house
+    #     session_player_period.good_two_consumption = self.good_two_house
+    #     session_player_period.good_three_consumption = self.good_three_house
 
-        #record field inventory
-        session_player_period.good_one_field = round_half_away_from_zero(self.good_one_field, 0)
-        session_player_period.good_two_field = round_half_away_from_zero(self.good_two_field, 0)
+    #     #record field inventory
+    #     session_player_period.good_one_field = self.good_one_field
+    #     session_player_period.good_two_field = self.good_two_field
 
-        #convert goods to earnings
+    #     #record field inventory
+    #     session_player_period.good_one_field = round_half_away_from_zero(self.good_one_field, 0)
+    #     session_player_period.good_two_field = round_half_away_from_zero(self.good_two_field, 0)
 
-        parameter_set_type = parameter_set_player_local["parameter_set_type"]
+    #     #convert goods to earnings
+    #     parameter_set_type = parameter_set_player_local["parameter_set_type"]
 
-        earnings_per_unit = max(parameter_set_type["good_one_amount"], parameter_set_type["good_two_amount"])
+    #     earnings_per_unit = max(parameter_set_type["good_one_amount"], parameter_set_type["good_two_amount"])
 
-        while self.good_one_house >= parameter_set_type["good_one_amount"] and \
-              self.good_two_house >= parameter_set_type["good_two_amount"]:
+    #     while self.good_one_house >= parameter_set_type["good_one_amount"] and \
+    #           self.good_two_house >= parameter_set_type["good_two_amount"]:
 
-              self.earnings += earnings_per_unit
-              session_player_period.earnings += earnings_per_unit
+    #           self.earnings += earnings_per_unit
+    #           session_player_period.earnings += earnings_per_unit
 
-              self.good_one_house -= parameter_set_type["good_one_amount"]
-              self.good_two_house -= parameter_set_type["good_two_amount"]
+    #           self.good_one_house -= parameter_set_type["good_one_amount"]
+    #           self.good_two_house -= parameter_set_type["good_two_amount"]
 
-        session_player_period.save()
-        session_player_period.update_efficiency(parameter_set_player_local["parameter_set_type"]["ce_earnings"])
+    #     session_player_period.save()
+    #     session_player_period.update_efficiency(parameter_set_player_local["parameter_set_type"]["ce_earnings"])
 
-        self.good_one_house = 0
-        self.good_two_house = 0
-        self.good_three_house = 0
+    #     self.good_one_house = 0
+    #     self.good_two_house = 0
+    #     self.good_three_house = 0
 
-        self.good_one_field = 0
-        self.good_two_field = 0
+    #     self.good_one_field = 0
+    #     self.good_two_field = 0
 
-        self.save()
+    #     self.good_one_field_production = 0
+    #     self.good_two_field_production = 0
+
+    #     self.save()
 
     def get_instruction_set(self):
         '''
@@ -467,12 +486,12 @@ class SessionPlayer(models.Model):
             "student_id" : self.student_id,   
             "email" : self.email,
 
-            "good_one_house" : round_half_away_from_zero(self.good_one_house, 0),
-            "good_two_house" : round_half_away_from_zero(self.good_two_house, 0),
-            "good_three_house" : round_half_away_from_zero(self.good_three_house, 0),
+            "good_one_house" : self.good_one_house,
+            "good_two_house" : self.good_two_house,
+            "good_three_house" : self.good_three_house,
 
-            "good_one_field" : round_half_away_from_zero(self.good_one_field, 0),
-            "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
+            "good_one_field" : self.good_one_field,
+            "good_two_field" : self.good_two_field,
 
             "earnings" : self.earnings,
 
@@ -509,7 +528,7 @@ class SessionPlayer(models.Model):
             "post_experiment_link" : self.process_survey_link(self.session.parameter_set.post_forward_link),
         }
     
-    def json_for_subject(self, session_player):
+    def json_for_subject(self, session_player=None):
         '''
         json model for subject screen
         session_player_id : int : id number of session player for induvidual chat
@@ -518,12 +537,12 @@ class SessionPlayer(models.Model):
         return{
             "id" : self.id,  
 
-            "good_one_house" : round_half_away_from_zero(self.good_one_house, 0),
-            "good_two_house" : round_half_away_from_zero(self.good_two_house, 0),
-            "good_three_house" : round_half_away_from_zero(self.good_three_house, 0),
+            "good_one_house" :self.good_one_house,
+            "good_two_house" : self.good_two_house,
+            "good_three_house" : self.good_three_house,
 
-            "good_one_field" : round_half_away_from_zero(self.good_one_field, 0),
-            "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
+            "good_one_field" : self.good_one_field,
+            "good_two_field" : self.good_two_field,
 
             "player_number" : self.player_number,
 
@@ -534,7 +553,7 @@ class SessionPlayer(models.Model):
                                                                             .filter(Q(Q(session_player_recipients=session_player) & Q(session_player=self)) |
                                                                                     Q(Q(session_player_recipients=self) & Q(session_player=session_player)))
                                                                             .order_by('-timestamp')[:100:-1]
-                                ],
+                                ] if session_player else [],
 
             "new_chat_message" : False,           #true on client side when a new un read message comes in
 
@@ -552,12 +571,12 @@ class SessionPlayer(models.Model):
         return{
             "id" : self.id,    
 
-            "good_one_house" : round_half_away_from_zero(self.good_one_house, 0),
-            "good_two_house" : round_half_away_from_zero(self.good_two_house, 0),
-            "good_three_house" : round_half_away_from_zero(self.good_three_house, 0),
+            "good_one_house" : self.good_one_house,
+            "good_two_house" : self.good_two_house,
+            "good_three_house" : self.good_three_house,
 
-            "good_one_field" : round_half_away_from_zero(self.good_one_field, 0),
-            "good_two_field" : round_half_away_from_zero(self.good_two_field, 0),
+            "good_one_field" : self.good_one_field,
+            "good_two_field" : self.good_two_field,
 
             "group_number" : self.get_current_group_number(),
 

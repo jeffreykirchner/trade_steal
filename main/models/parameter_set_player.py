@@ -143,6 +143,14 @@ class ParameterSetPlayer(models.Model):
 
             "session_player_number" : session_player.player_number if session_player else "---",
 
+            "good_to_color_map" : {"good_one" : self.good_one.id, 
+                                   "good_two" : self.good_two.id, 
+                                   "good_three" : self.good_three.id},
+
+            "color_to_good_map" : {str(self.good_one.id) : "good_one",
+                                   str(self.good_two.id) : "good_two",
+                                   str(self.good_three.id) : "good_three"},
+
             "period_groups_order" : list(self.parameter_set_player_groups.all().values_list('id', flat=True)),
             "period_groups" : {str(g.id):g.json() for g in self.parameter_set_player_groups.all()},
         }

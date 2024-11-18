@@ -136,9 +136,6 @@ var app = Vue.createApp({
                 case "get_session":
                     app.takeGetSession(messageData);
                     break; 
-                case "move_goods":
-                    // app.takeMoveGoods(messageData);
-                    break;  
                 case "update_move_goods":
                     app.takeUpdateMoveGoods(messageData);
                     break;
@@ -148,16 +145,13 @@ var app = Vue.createApp({
                 case "update_reset_experiment":
                     app.takeUpdateResetExperiment(messageData);
                     break;
-                case "chat":
-                    // app.takeChat(messageData);
-                    break;
                 case "update_chat":
                     app.takeUpdateChat(messageData);
                     break;
                 case "update_time":
                     app.takeUpdateTime(messageData);
                     break;
-                case "production_time":
+                case "update_production_time":
                     app.takeProduction(messageData);
                     break;
                 case "update_groups":
