@@ -12,11 +12,14 @@ from django.utils.html import strip_tags
 from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerChat
+from main.models import SessionPlayerNotice
+from main.models import ParameterSetGood
 
 from main.globals import ChatTypes
 from main.globals import ContainerTypes
 from main.globals import PeriodPhase
 from main.globals import round_half_away_from_zero
+from main.globals import is_positive_integer
 
 from main.models import SessionPlayerMove
 from main.models import SessionPlayerNotice
@@ -183,52 +186,380 @@ class SubjectUpdatesMixin():
         message = ""
         target_list = []
         player_id = None
+        result = []
+        error_message = {}
 
         try:
             session = await Session.objects.aget(id=self.session_id)
             player_id = self.session_players_local[event["player_key"]]["id"]
+            session_player = await session.session_players.aget(id=player_id)
+
             event_data = event["message_text"]
             target_list = [player_id]
+
+            form_data = event_data["formData"]           
         except:
             logger.warning(f"move_goods: invalid data, {event['message_text']}")
             status = "fail"
             message = "Invalid data."
+            error_message["transfer_good_one_amount_2g"] = ["Invalid amount."]
             target_list = [player_id]
 
+        current_session_period = await session.aget_current_session_period()
+
+        parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
+        parameter_set_player = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]
+
+        source_type = event_data["sourceType"]
+        source_id = event_data["sourceID"]
+
+        target_type = event_data["targetType"]
+        target_id = event_data["targetID"]
+
+        source_player = self.world_state_local["session_players"][str(source_id)]
+        source_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(source_player["parameter_set_player_id"])]
+
+        target_player = self.world_state_local["session_players"][str(target_id)]
+        target_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(target_player["parameter_set_player_id"])]
+
+        parameter_set_player_group = await self.get_player_group(player_id, session.current_period)
+        group_members = await self.get_group_members(parameter_set_player_group, session.current_period)
+        
+        #check experiment in correct state
+        if session.time_remaining == 0:
+            status = "fail"
+            message = "Period complete."
+            error_message["transfer_good_one_amount_2g"] = ["Period complete."]
+
+        if target_id not in group_members or source_id not in group_members:
+            status = "fail"
+            message = "Player not in group."
+            error_message["transfer_good_one_amount_2g"] = ["Invalid target."]
+
+        if not session.started:
+            status = "fail"
+            message = "Session not started."
+            error_message["transfer_good_one_amount_2g"] = ["Session not started."]
+           
+        if session.finished:
+            status = "fail"
+            message = "Session complete."
+            error_message["transfer_good_one_amount_2g"] = ["Session complete."]
+        
+        if session.current_experiment_phase != main.globals.ExperimentPhase.RUN:
+            status = "fail"
+            message = "Session not running."
+            error_message["transfer_good_one_amount_2g"] = ["Session not running."]
+        
+        if session.current_period_phase == PeriodPhase.PRODUCTION:
+            status = "fail"
+            message = "No transfers during production phase."
+            error_message["transfer_good_one_amount_2g"] = ["No transfers during production phase."]
+        
+        if not self.parameter_set_local["allow_stealing"]:
+            if target_type == "field":
+                status = "fail"
+                message = "No transfers to fields."
+                error_message["transfer_good_one_amount_2g"] = ["No transfers to fields."]
+
+        if self.parameter_set_local["good_count"] == 3:
+            good_one_amount = form_data["transfer_good_one_amount_3g"]
+            good_two_amount = form_data["transfer_good_two_amount_3g"]
+            good_three_amount = form_data["transfer_good_three_amount_3g"]
+        else:
+            good_one_amount = form_data["transfer_good_one_amount_2g"]
+            good_two_amount = form_data["transfer_good_two_amount_2g"]
+            good_three_amount = 0
+
+        #check for valid form data
+        if not await is_positive_integer(good_one_amount):
+            status = "fail"
+            if self.parameter_set_local["good_count"] == 3:
+                error_message["transfer_good_one_amount_3g"] =["Invalid amount."]
+            else:
+                error_message["transfer_good_one_amount_2g"] =["Invalid amount."]
+        
+        if not await is_positive_integer(good_two_amount):
+            status = "fail"
+            if self.parameter_set_local["good_count"] == 3:
+                error_message["transfer_good_two_amount_3g"] = ["Invalid amount."]
+            else:
+                error_message["transfer_good_two_amount_2g"] = ["Invalid amount."]
+
+        if self.parameter_set_local["good_count"] == 3:
+            if not await is_positive_integer(good_three_amount):
+                status = "fail"
+                error_message["transfer_good_three_amount_3g"] =["Invalid amount."]
+
+        if self.parameter_set_local["good_count"] == 3:
+            if good_one_amount == 0 and good_two_amount == 0 and good_three_amount == 0:
+                status = "fail"
+                error_message["transfer_good_three_amount_3g"] =["Nothing to transfer."]
+        else:
+            if good_one_amount == 0 and good_two_amount == 0:
+                status = "fail"
+                error_message["transfer_good_two_amount_2g"] =["Nothing to transfer."]
+
+        #check for sufficient goods
         if status == "success":
-            result = await sync_to_async(take_move_goods)(self.session_id, player_id, event_data)
+            if source_type == "house":
+                if good_one_amount > source_player["good_one_house"]:
+                    status = "fail"
+                    error_message["transfer_good_one_amount_2g"] = [f"House does not have enough {source_parameter_set_player['good_one']['label']}."]
+                
+                if good_two_amount > source_player["good_two_house"]:
+                    status = "fail"
+                    error_message["transfer_good_two_amount_2g"] = [f"House does not have enough {source_parameter_set_player['good_two']['label']}."]
 
-            # Send reply to sending channel
-            # await self.send_message(message_to_self=result, message_to_group=None,
-            #                         message_type=event['type'], send_to_client=True, send_to_group=False)
+                if self.parameter_set_local["good_count"] == 3:
+                    if good_three_amount > source_player["good_three_house"]:
+                        status = "fail"
+                        error_message["transfer_good_three_amount_3g"] = [f"House does not have enough {source_parameter_set_player['good_three']['label']}."]
+            else:
+                if good_one_amount > source_player["good_one_field"]:
+                    status = "fail"
+                    error_message["transfer_good_one_amount_2g"] = [f"Field does not have enough {source_parameter_set_player['good_one']['label']}."]
+                
+                if good_two_amount > source_player["good_two_field"]:
+                    status = "fail"
+                    error_message["transfer_good_two_amount_2g"] = [f"Field does not have enough {source_parameter_set_player['good_two']['label']}."]
 
-            result["session_player_id"] = player_id
+        #move the goods
+        if status == "success":
 
-            #if success send to all connected clients
-            if result["value"] == "success":
-               
-                parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
-                parameter_set_player = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]
+            #map goods to colors
+            source_player_good_one_id = source_parameter_set_player["good_to_color_map"]["good_one"]
+            source_player_good_two_id = source_parameter_set_player["good_to_color_map"]["good_two"]
 
-                parameter_set_player_group = await self.get_player_group(player_id, session.current_period)
-                group_members = await self.get_group_members(parameter_set_player_group, session.current_period)
-                target_list = group_members
+            target_player_good_one = target_parameter_set_player["color_to_good_map"][str(source_player_good_one_id)]
+            target_player_good_two = target_parameter_set_player["color_to_good_map"][str(source_player_good_two_id)]
+            
+            #do move
+            source_player["good_one_" + source_type] -= good_one_amount
+            source_player["good_two_" + source_type] -= good_two_amount
 
-                self.world_state_local["notices"][str(parameter_set_player["town"])].append(result["result"][0]["notice"])
-                if len(self.world_state_local["notices"][str(parameter_set_player["town"])]) > 100:
-                    self.world_state_local["notices"][str(parameter_set_player["town"])].pop(0)
+            target_player[target_player_good_one + "_" + target_type] += good_one_amount
+            target_player[target_player_good_two + "_" + target_type] += good_two_amount
 
-                await self.store_world_state()
+            if self.parameter_set_local["good_count"] == 3:
+                pass
 
-            await self.send_message(message_to_self=None, message_to_group=result,
-                                    message_type=event['type'], send_to_client=False, 
-                                    send_to_group=True, target_list=target_list)
-       
-            # result = {"value" : "fail", "errors" : {}, "message" : message}
+            #record move
+            session_player_move = SessionPlayerMove()
 
-            # await self.send_message(message_to_self=None, message_to_group=group_result,
-            #                         message_type=event['type'], send_to_client=False, 
-            #                         send_to_group=True, target_list=target_list)
+            session_player_move.session_period = current_session_period
+            session_player_move.session_player_source_id = source_id
+            session_player_move.session_player_target_id = target_id
+
+            session_player_move.good_one_amount = good_one_amount   
+            session_player_move.good_two_amount = good_two_amount
+            session_player_move.good_three_amount = good_three_amount        
+
+            session_player_move.time_remaining = self.world_state_local["time_remaining"] 
+            session_player_move.current_period_phase =  self.world_state_local["current_period_phase"]
+
+            if source_type == "house":
+                session_player_move.source_container = ContainerTypes.HOUSE
+            else:
+                session_player_move.source_container = ContainerTypes.FIELD
+            
+            if target_type == "house":
+                session_player_move.target_container = ContainerTypes.HOUSE
+            else:
+                session_player_move.target_container = ContainerTypes.FIELD
+
+            await session_player_move.asave()
+
+            #record notice for source player
+            transfer_list = []
+            if good_one_amount > 0:
+                parameter_set_good = await ParameterSetGood.objects.aget(id=source_parameter_set_player["good_one"]["id"])
+                transfer_list.append(f"{good_one_amount} {await sync_to_async(parameter_set_good.get_html)()}")
+            
+            if good_two_amount > 0:
+                parameter_set_good = await ParameterSetGood.objects.aget(id=source_parameter_set_player["good_two"]["id"])
+                transfer_list.append(f"{good_two_amount} {await sync_to_async(parameter_set_good.get_html)()}")
+            
+            if good_three_amount > 0:
+                parameter_set_good = await ParameterSetGood.objects.aget(id=source_parameter_set_player["good_three"]["id"])
+                transfer_list.append(f"{good_three_amount} {await sync_to_async(parameter_set_good.get_html)()}")
+
+            transfer_string = ""
+            if len(transfer_list) == 1:
+                transfer_string = f'{transfer_list[0]}'
+            elif len(transfer_list) == 2:
+                transfer_string = f'{transfer_list[0]} and {transfer_list[1]}'
+            elif len(transfer_list) == 3:
+                transfer_string = f'{transfer_list[0]}, {transfer_list[1]}, and {transfer_list[2]}'
+            else:
+                transfer_string = "no goods"
+
+            #check for steal
+            if source_id != player_id:
+                transfer_string = f"moved {transfer_string} from <u>Person {source_parameter_set_player["id_label"]}'s {source_type}</u> to <u>Person {target_parameter_set_player["id_label"]}'s {target_type}</u>."
+            else:
+                transfer_string = f"moved {transfer_string} from Person {source_parameter_set_player["id_label"]}'s {source_type} to Person {target_parameter_set_player["id_label"]}'s {target_type}."
+
+            session_player_notice_1 = SessionPlayerNotice()
+
+            session_player_notice_1.session_period = current_session_period
+            session_player_notice_1.session_player_id = player_id
+            session_player_notice_1.text = f"You {transfer_string}"
+            session_player_notice_1.text = session_player_notice_1.text.replace(f"Person {parameter_set_player["id_label"]}'s", "your")
+            session_player_notice_1.show_on_staff = True
+            await session_player_notice_1.asave()
+
+            #record notice for source player if source does not match mover
+            if source_id != player_id:
+                session_player_notice_2 = SessionPlayerNotice()
+
+                session_player_notice_2.session_period = current_session_period
+                session_player_notice_2.session_player_id = source_id
+                session_player_notice_2.text = f"Person {parameter_set_player["id_label"]} {transfer_string}"
+                session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {source_parameter_set_player["id_label"]}'s", "your")
+                session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {parameter_set_player["id_label"]}'s", "their")
+                await session_player_notice_2.asave()
+            
+            if target_id != player_id:
+                session_player_notice_3 = SessionPlayerNotice()
+
+                session_player_notice_3.session_period = current_session_period
+                session_player_notice_3.session_player_id = target_id
+                session_player_notice_3.text = f"Person {parameter_set_player["id_label"]} {transfer_string}"
+                session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {target_parameter_set_player["id_label"]}'s", "your")
+                session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {parameter_set_player["id_label"]}'s", "their")
+                await session_player_notice_3.asave()
+
+            result = []
+            result.append(self.world_state_local["session_players"][str(player_id)])
+            result[-1]["notice"] = await sync_to_async(session_player_notice_1.json)()
+
+            if source_id != player_id:
+                result.append(self.world_state_local["session_players"][str(source_id)])
+                result[-1]["notice"] = await sync_to_async(session_player_notice_2.json)()
+
+            if target_id != player_id:
+                result.append(self.world_state_local["session_players"][str(target_id)])
+                result[-1]["notice"] = await sync_to_async(session_player_notice_3.json)()
+
+            target_list = group_members
+
+            self.world_state_local["notices"][str(source_parameter_set_player["town"])].append(result[0]["notice"])
+            if len(self.world_state_local["notices"][str(source_parameter_set_player["town"])]) > 100:
+                self.world_state_local["notices"][str(source_parameter_set_player["town"])].pop(0)
+
+            await SessionPlayer.objects.filter(id=source_id).aupdate(good_one_house=source_player["good_one_house"],
+                                                                     good_two_house=source_player["good_two_house"],
+                                                                     good_three_house=source_player["good_three_house"],
+                                                                     good_one_field=source_player["good_one_field"],
+                                                                     good_two_field=source_player["good_two_field"])
+            if source_id != target_id:
+                await SessionPlayer.objects.filter(id=target_id).aupdate(good_one_house=target_player["good_one_house"],
+                                                                         good_two_house=target_player["good_two_house"],
+                                                                         good_three_house=target_player["good_three_house"],
+                                                                         good_one_field=target_player["good_one_field"],
+                                                                         good_two_field=target_player["good_two_field"])
+
+            await self.store_world_state()
+
+        result = {"value" : status, 
+                  "result" : result,
+                  "session_player_id" : player_id,
+                  "errors" : error_message, 
+                  "message" : message}
+
+        
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=target_list)
+        
+    async def production_time(self, event):
+        '''
+        take update to production time between goods one and two
+        '''
+        logger = logging.getLogger(__name__)
+
+        target_list = []
+        player_id = None
+        result = {}
+        error_message = []
+        message = ""
+        status = "success"
+        
+        try:
+            session = await Session.objects.aget(id=self.session_id)
+            player_id = self.session_players_local[event["player_key"]]["id"]
+            session_player = await session.session_players.aget(id=player_id)
+
+            event_data = event["message_text"]
+            target_list = [player_id]
+        
+        except:
+            logger.warning(f"move_goods: invalid data, {event['message_text']}")
+            status = "fail"
+            message = "Invalid data."
+            error_message.append({"id":"transfer_good_one_amount_2g", "message": "Invalid amount."})
+            target_list = [player_id]
+
+
+        #update subject count
+        #result = await sync_to_async(take_production_time, thread_sensitive=False)(self.session_id, self.session_player_id, event["message_text"])
+
+
+        try:
+            good_one_production_rate = int(event_data["production_slider_one"])
+            good_two_production_rate = int(event_data["production_slider_two"])
+        except KeyError:
+            message = "Invalid values."
+            status = "fail"
+            logger.warning(f"take production time: {message}")
+            
+        except ValueError:
+            message = "Invalid values."
+            status = "fail"
+            logger.warning(f"take production time: {message}")
+
+        if good_one_production_rate + good_two_production_rate != 100 or \
+           good_one_production_rate < 0 or good_two_production_rate < 0:
+
+            message = "Invalid values."
+            status = "fail"
+            logger.warning(f"take production time: {message}")
+
+            
+        if session.current_period_phase == PeriodPhase.PRODUCTION and \
+            session.current_period > 1:
+
+            message = "Not updates during production."
+            status = "fail"
+            logger.warning(f"take production time: {message}")
+
+        if status == "success":
+
+            self.world_state_local["session_players"][str(player_id)]["good_one_production_rate"] = good_one_production_rate
+            self.world_state_local["session_players"][str(player_id)]["good_two_production_rate"] = good_two_production_rate
+
+            session_player.good_one_production_rate = good_one_production_rate
+            session_player.good_two_production_rate = good_two_production_rate
+
+            await session_player.asave()
+
+        result["value"] = status
+        result["message"] = message
+        result["result"] = {"good_one_production_rate" : session_player.good_one_production_rate,
+                            "good_two_production_rate" : session_player.good_two_production_rate,
+                            "id" : player_id}
+        
+        result["session_player_id"] = player_id
+
+        # Send reply to sending channel
+        # await self.send_message(message_to_self=result, message_to_group=None,
+        #                         message_type=event['type'], send_to_client=True, send_to_group=False)
+
+
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=target_list)
 
     #update functions
     async def update_chat(self, event):
@@ -381,6 +712,9 @@ class SubjectUpdatesMixin():
 
         result =  json.loads(event["group_data"])
 
+        if result["value"] == "fail":
+            return
+
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
 
@@ -448,6 +782,10 @@ def take_move_goods(session_id, session_player_id, data):
             if target_type == "field":
                 return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["No transfers to fields."]},
                         "message" : "Move Error"}
+            
+        if source_type == target_type and source_id == target_id:
+            return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":["Source and target are the same."]},
+                    "message" : "Move Error"}
         
     except KeyError:
             logger.warning(f"take_move_goods session, setup form: {session_id}")
@@ -462,7 +800,11 @@ def take_move_goods(session_id, session_player_id, data):
             with transaction.atomic():
 
                 source_session_player = session.session_players.select_for_update().get(id=source_id)              
-                target_session_player = session.session_players.select_for_update().get(id=target_id)
+
+                if source_id == target_id:
+                    target_session_player = source_session_player
+                else:
+                    target_session_player = session.session_players.select_for_update().get(id=target_id)
 
                 #check that stealing is allowed
                 if not session.parameter_set.allow_stealing and source_session_player != session_player:
@@ -497,16 +839,16 @@ def take_move_goods(session_id, session_player_id, data):
 
                 #handle source
                 if source_type == "house":
-                    if round_half_away_from_zero(source_session_player.good_one_house, 0) < good_one_amount:
+                    if source_session_player.good_one_house < good_one_amount:
                          return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                     
                     #check enough good two
-                    if round_half_away_from_zero(source_session_player.good_two_house, 0) < good_two_amount:
+                    if source_session_player.good_two_house < good_two_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
 
-                    if round_half_away_from_zero(session.parameter_set.good_count, 0) == 3:
+                    if session.parameter_set.good_count == 3:
                         if source_session_player.good_three_house < good_three_amount:
                             return {"value" : "fail", "errors" : {f"transfer_good_three_amount_{form_type}":[f"House does not have enough {source_session_player.parameter_set_player.good_three.label}."]},
                                     "message" : "Move Error"}
@@ -516,46 +858,48 @@ def take_move_goods(session_id, session_player_id, data):
                     source_session_player.good_one_house -= good_one_amount
                     source_session_player.good_two_house -= good_two_amount 
 
-                    if source_session_player.good_one_house < 0:
-                        source_session_player.good_one_house = 0
+                    # if source_session_player.good_one_house < 0:
+                    #     source_session_player.good_one_house = 0
                     
-                    if source_session_player.good_two_house < 0:
-                        source_session_player.good_two_house = 0
+                    # if source_session_player.good_two_house < 0:
+                    #     source_session_player.good_two_house = 0
                     
-                    if source_session_player.good_three_house < 0:
-                        source_session_player.good_three_house = 0
+                    # if source_session_player.good_three_house < 0:
+                    #     source_session_player.good_three_house = 0
 
                 else:
                     #check enough good one
-                    if round_half_away_from_zero(source_session_player.good_one_field, 0) < good_one_amount:
+                    if source_session_player.good_one_field < good_one_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_one_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_one.label}."]},
                                 "message" : "Move Error"}
                     
                     #check enough good two
-                    if round_half_away_from_zero(source_session_player.good_two_field, 0) < good_two_amount:
+                    if source_session_player.good_two_field < good_two_amount:
                         return {"value" : "fail", "errors" : {f"transfer_good_two_amount_{form_type}":[f"Field does not have enough {source_session_player.parameter_set_player.good_two.label}."]},
                                 "message" : "Move Error"}
                     
                     source_session_player.good_one_field -= good_one_amount
                     source_session_player.good_two_field -= good_two_amount
 
-                    if source_session_player.good_one_field < 0:
-                        source_session_player.good_one_field = 0
+                    # if source_session_player.good_one_field < 0:
+                    #     source_session_player.good_one_field = 0
 
-                    if source_session_player.good_two_field < 0:
-                        source_session_player.good_two_field = 0
+                    # if source_session_player.good_two_field < 0:
+                    #     source_session_player.good_two_field = 0
 
-                source_session_player.save()
+                # if source_session_player != target_session_player:
 
-                #handle target
-                target_session_player = session.session_players.get(id=target_id)
-
-                target_session_player.add_good_by_type(good_one_amount, target_type, source_session_player.parameter_set_player.good_one)
-                target_session_player.add_good_by_type(good_two_amount, target_type, source_session_player.parameter_set_player.good_two)
+                target_session_player.add_good_by_type(good_one_amount, target_type, source_session_player.parameter_set_player.good_one, False)
+                target_session_player.add_good_by_type(good_two_amount, target_type, source_session_player.parameter_set_player.good_two, False)
                 
                 if session.parameter_set.good_count == 3 and source_type == "house":
-                    target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three)
+                    target_session_player.add_good_by_type(good_three_amount, target_type, source_session_player.parameter_set_player.good_three, False)
                 
+                if source_session_player != target_session_player:
+                    target_session_player.save()
+                
+                source_session_player.save()
+
                 #record move
                 session_player_move = SessionPlayerMove()
 

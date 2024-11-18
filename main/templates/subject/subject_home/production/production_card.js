@@ -33,9 +33,10 @@ sendProdution: function sendProdution(){
     if(app.working) return;
     
     app.working = true;
-    app.sendMessage("production_time", {"production_slider_one" : app.production_slider_one,
-                                        "production_slider_two" : app.production_slider_two,
-                            });                   
+    app.sendMessage("production_time", 
+                    {"production_slider_one" : app.production_slider_one,
+                     "production_slider_two" : app.production_slider_two,},
+                    "group");                   
 },
 
 /** take result of production rate updates

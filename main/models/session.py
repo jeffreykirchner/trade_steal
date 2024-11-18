@@ -23,6 +23,7 @@ from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.utils.timezone import now
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 
 import main
 
@@ -68,6 +69,7 @@ class Session(models.Model):
     invitation_subject = HTMLField(default="", verbose_name="Invitation Subject")
 
     world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
+    # world_state_session_players = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session Players State")       #world state session players at this point in session
 
     soft_delete =  models.BooleanField(default=False)                            #hide session if true
 
@@ -219,76 +221,76 @@ class Session(models.Model):
 
             new_session_player.save()
 
-    def do_period_timer(self, parameter_set_local):
-        '''
-        do period timer actions
-        '''
+    # def do_period_timer(self, parameter_set_local):
+    #     '''
+    #     do period timer actions
+    #     '''
 
-        status = "success"
-        end_game = False
-        period_update = None
+    #     status = "success"
+    #     end_game = False
+    #     period_update = None
 
-        #check session over
-        if self.time_remaining == 0 and \
-           self.current_period_phase == PeriodPhase.TRADE and \
-           self.current_period >= parameter_set_local["period_count"]:
+    #     #check session over
+    #     if self.time_remaining == 0 and \
+    #        self.current_period_phase == PeriodPhase.TRADE and \
+    #        self.current_period >= parameter_set_local["period_count"]:
 
-            self.do_period_consumption(parameter_set_local)
-            period_update = self.get_current_session_period()
-            self.finished = True
-            end_game = True
+    #         self.do_period_consumption(parameter_set_local)
+    #         period_update = self.get_current_session_period()
+    #         self.finished = True
+    #         end_game = True
 
-        notice_list = []
+    #     notice_list = []
         
-        if not status == "fail" and not end_game:
+    #     if not status == "fail" and not end_game:
 
-            if self.time_remaining == 0:
+    #         if self.time_remaining == 0:
 
-                if self.current_period_phase == PeriodPhase.PRODUCTION:
-                    notice_list = self.record_period_production()
+    #             if self.current_period_phase == PeriodPhase.PRODUCTION:
+    #                 notice_list = self.record_period_production()
                                        
-                    #start trade phase
-                    self.current_period_phase = PeriodPhase.TRADE
-                    self.time_remaining = parameter_set_local["period_length_trade"]
-                else:
-                    self.do_period_consumption(parameter_set_local)
+    #                 #start trade phase
+    #                 self.current_period_phase = PeriodPhase.TRADE
+    #                 self.time_remaining = parameter_set_local["period_length_trade"]
+    #             else:
+    #                 self.do_period_consumption(parameter_set_local)
                     
-                    period_update = self.get_current_session_period()
-                    # if period_update:
-                    #     period_update.update_efficiency()
+    #                 period_update = self.get_current_session_period()
+    #                 # if period_update:
+    #                 #     period_update.update_efficiency()
 
-                    self.current_period += 1
-                    self.current_period_phase = PeriodPhase.PRODUCTION
-                    self.time_remaining = parameter_set_local["period_length_production"]                       
+    #                 self.current_period += 1
+    #                 self.current_period_phase = PeriodPhase.PRODUCTION
+    #                 self.time_remaining = parameter_set_local["period_length_production"]                       
 
-                    if self.current_period % parameter_set_local["break_period_frequency"] == 0:
-                        notice_list = self.add_notice_to_all(f"<center>*** Break period, chat only, no production. ***</center>")           
-            else:
+    #                 if self.current_period % parameter_set_local["break_period_frequency"] == 0:
+    #                     notice_list = self.add_notice_to_all(f"<center>*** Break period, chat only, no production. ***</center>")           
+    #         else:
                 
-                if self.current_period_phase == PeriodPhase.PRODUCTION:
+    #             if self.current_period_phase == PeriodPhase.PRODUCTION:
 
-                    if self.current_period % parameter_set_local["break_period_frequency"] != 0 :
-                        self.do_period_production()                        
+    #                 if self.current_period % parameter_set_local["break_period_frequency"] != 0 :
+    #                     self.do_period_production()                        
 
-                self.time_remaining -= 1
+    #             self.time_remaining -= 1
 
-        self.save()
+    #     self.save()
 
-        result = self.json_for_timmer()
+    #     result = self.json_for_timmer()
 
-        return {"value" : status,
-                "result" : result,
-                "period_update" : period_update.json() if period_update else None,
-                "notice_list" : notice_list,
-                "end_game" : end_game}
+    #     return {"value" : status,
+    #             "result" : result,
+    #             "period_update" : period_update.json() if period_update else None,
+    #             "notice_list" : notice_list,
+    #             "end_game" : end_game}
 
-    def do_period_production(self):
-        '''
-        do one second of production for all players
-        '''
+    # def do_period_production(self):
+    #     '''
+    #     do one second of production for all players
+    #     '''
 
-        for p in self.session_players.all():
-            p.do_period_production(self.time_remaining)
+    #     for p in self.session_players.all():
+    #         p.do_period_production(self.time_remaining)
     
     def record_period_production(self):
         '''
@@ -297,8 +299,11 @@ class Session(models.Model):
 
         notice_list=[]
 
-        for p in self.session_players.all():
-            notice_list.append(p.record_period_production())
+        session_players = self.session_players.select_for_update().all()
+
+        with transaction.atomic():
+            for p in session_players:
+                notice_list.append(p.record_period_production())
 
         return notice_list
     
@@ -310,14 +315,17 @@ class Session(models.Model):
 
         return notice_list
     
-    def do_period_consumption(self, parameter_set_local):
-        '''
-        covert goods in house to earnings
-        '''
+    # def do_period_consumption(self, parameter_set_local):
+    #     '''
+    #     covert goods in house to earnings
+    #     '''
 
-        for p in self.session_players.prefetch_related("parameter_set_player").all():
-            parameter_set_player_local = parameter_set_local["parameter_set_players"][str(p.parameter_set_player.id)]
-            p.do_period_consumption(parameter_set_player_local)
+    #     session_players = self.session_players.select_for_update().all()
+
+    #     with transaction.atomic():
+    #         for p in session_players:
+    #             parameter_set_player_local = parameter_set_local["parameter_set_players"][str(p.parameter_set_player.id)]
+    #             p.do_period_consumption(parameter_set_player_local)
 
     def get_download_summary_csv(self):
         '''
@@ -408,6 +416,12 @@ class Session(models.Model):
         '''
         self.world_state = {"last_update":str(datetime.now()), 
                             "last_store":str(datetime.now()),
+                            "started": False,
+                            "current_period":self.current_period,
+                            "current_period_phase":self.current_period_phase,
+                            "time_remaining":self.time_remaining,
+                            "timer_running":self.timer_running,
+                            "finished":self.finished,
                             "timer_history":[],
                             "session_players":{},
                             "session_players_order":[],
@@ -415,14 +429,30 @@ class Session(models.Model):
                             "notices":{str(i+1):[] for i in range(self.parameter_set.town_count)},
                            }
         
-         #session players
-        for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
-                                                                                            'parameter_set_player__id' ):
-            v = {}
-            v['parameter_set_player_id'] = i['parameter_set_player__id']
+        #session players
+        for i in self.session_players.all():
+            v = {
+                "id" : i.id,
+                
+                "good_one_house" : 0,
+                "good_two_house" : 0,
+                "good_three_house" : 0,
+
+                "good_one_field" : 0,
+                "good_two_field" : 0,
+
+                "good_one_field_production" : 0,
+                "good_two_field_production" : 0,
+
+                "good_one_production_rate" : 50,
+                "good_two_production_rate" : 50,
+
+                "parameter_set_player_id" : i.parameter_set_player.id,
+            }
+            # v['parameter_set_player_id'] = i['parameter_set_player__id']
             
-            self.world_state["session_players"][str(i['id'])] = v
-            self.world_state["session_players_order"].append(i['id'])
+            self.world_state["session_players"][str(i.id)] = v
+            self.world_state["session_players_order"].append(i.id)
         
         self.save()
 

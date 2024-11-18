@@ -11,6 +11,8 @@ from .sessions import PeriodPhase
 from .sessions import ExperimentPhase
 from .sessions import InformationModes
 
+from .validate_input import is_positive_integer
+
 from .round_half_away_from_zero import round_half_away_from_zero
 
 from .generate_css_sprite_sheet import generate_css_sprite_sheet
