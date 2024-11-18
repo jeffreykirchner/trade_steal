@@ -205,6 +205,8 @@ class SubjectUpdatesMixin():
             error_message["transfer_good_one_amount_2g"] = ["Invalid amount."]
             target_list = [player_id]
 
+        current_session_period = await session.aget_current_session_period()
+
         parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
         parameter_set_player = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]
 
@@ -322,7 +324,6 @@ class SubjectUpdatesMixin():
                     status = "fail"
                     error_message["transfer_good_two_amount_2g"] = [f"Field does not have enough {source_parameter_set_player['good_two']['label']}."]
 
-        
         #move the goods
         if status == "success":
 
@@ -343,10 +344,33 @@ class SubjectUpdatesMixin():
             if self.parameter_set_local["good_count"] == 3:
                 pass
 
-            #record notice for source player
-            # source_session_player = await SessionPlayer.objects.aget(id=source_id)
-            # target_session_player = await SessionPlayer.objects.aget(id=target_id)
+            #record move
+            session_player_move = SessionPlayerMove()
 
+            session_player_move.session_period = current_session_period
+            session_player_move.session_player_source_id = source_id
+            session_player_move.session_player_target_id = target_id
+
+            session_player_move.good_one_amount = good_one_amount   
+            session_player_move.good_two_amount = good_two_amount
+            session_player_move.good_three_amount = good_three_amount        
+
+            session_player_move.time_remaining = self.world_state_local["time_remaining"] 
+            session_player_move.current_period_phase =  self.world_state_local["current_period_phase"]
+
+            if source_type == "house":
+                session_player_move.source_container = ContainerTypes.HOUSE
+            else:
+                session_player_move.source_container = ContainerTypes.FIELD
+            
+            if target_type == "house":
+                session_player_move.target_container = ContainerTypes.HOUSE
+            else:
+                session_player_move.target_container = ContainerTypes.FIELD
+
+            await session_player_move.asave()
+
+            #record notice for source player
             transfer_list = []
             if good_one_amount > 0:
                 parameter_set_good = await ParameterSetGood.objects.aget(id=source_parameter_set_player["good_one"]["id"])
@@ -378,21 +402,12 @@ class SubjectUpdatesMixin():
 
             session_player_notice_1 = SessionPlayerNotice()
 
-            current_session_period = await session.aget_current_session_period()
-
             session_player_notice_1.session_period = current_session_period
             session_player_notice_1.session_player_id = player_id
             session_player_notice_1.text = f"You {transfer_string}"
             session_player_notice_1.text = session_player_notice_1.text.replace(f"Person {parameter_set_player["id_label"]}'s", "your")
             session_player_notice_1.show_on_staff = True
             await session_player_notice_1.asave()
-
-            # session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].append(session_player_notice_1.json())
-
-            # if len(session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)]) > 100:
-            #     session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].pop(0)
-
-            #session_player.session.save()
 
             #record notice for source player if source does not match mover
             if source_id != player_id:
@@ -415,9 +430,7 @@ class SubjectUpdatesMixin():
                 session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {parameter_set_player["id_label"]}'s", "their")
                 await session_player_notice_3.asave()
 
-            
             result = []
-            # session_player = session.session_players.get(id=session_player_id)
             result.append(self.world_state_local["session_players"][str(player_id)])
             result[-1]["notice"] = await sync_to_async(session_player_notice_1.json)()
 
