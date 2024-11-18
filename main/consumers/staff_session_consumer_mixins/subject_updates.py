@@ -12,6 +12,8 @@ from django.utils.html import strip_tags
 from main.models import Session
 from main.models import SessionPlayer
 from main.models import SessionPlayerChat
+from main.models import SessionPlayerNotice
+from main.models import ParameterSetGood
 
 from main.globals import ChatTypes
 from main.globals import ContainerTypes
@@ -203,6 +205,9 @@ class SubjectUpdatesMixin():
             error_message["transfer_good_one_amount_2g"] = ["Invalid amount."]
             target_list = [player_id]
 
+        parameter_set_player_id = self.world_state_local["session_players"][str(player_id)]["parameter_set_player_id"]
+        parameter_set_player = self.parameter_set_local["parameter_set_players"][str(parameter_set_player_id)]
+
         source_type = event_data["sourceType"]
         source_id = event_data["sourceID"]
 
@@ -338,13 +343,91 @@ class SubjectUpdatesMixin():
             if self.parameter_set_local["good_count"] == 3:
                 pass
 
-            result.append(source_player)
+            #record notice for source player
+            # source_session_player = await SessionPlayer.objects.aget(id=source_id)
+            # target_session_player = await SessionPlayer.objects.aget(id=target_id)
 
-            result[0]["notice"] = "source notice here"
+            transfer_list = []
+            if good_one_amount > 0:
+                parameter_set_good = await ParameterSetGood.objects.aget(id=source_parameter_set_player["good_one"]["id"])
+                transfer_list.append(f"{good_one_amount} {await sync_to_async(parameter_set_good.get_html)()}")
+            
+            if good_two_amount > 0:
+                parameter_set_good = await ParameterSetGood.objects.aget(id=source_parameter_set_player["good_two"]["id"])
+                transfer_list.append(f"{good_two_amount} {await sync_to_async(parameter_set_good.get_html)()}")
+            
+            if good_three_amount > 0:
+                parameter_set_good = await ParameterSetGood.objects.aget(id=source_parameter_set_player["good_three"]["id"])
+                transfer_list.append(f"{good_three_amount} {await sync_to_async(parameter_set_good.get_html)()}")
 
-            if source_id != target_id:
-                result.append(target_player)
-                result[1]["notice"] = "target notice here"
+            transfer_string = ""
+            if len(transfer_list) == 1:
+                transfer_string = f'{transfer_list[0]}'
+            elif len(transfer_list) == 2:
+                transfer_string = f'{transfer_list[0]} and {transfer_list[1]}'
+            elif len(transfer_list) == 3:
+                transfer_string = f'{transfer_list[0]}, {transfer_list[1]}, and {transfer_list[2]}'
+            else:
+                transfer_string = "no goods"
+
+            #check for steal
+            if source_id != player_id:
+                transfer_string = f"moved {transfer_string} from <u>Person {source_parameter_set_player["id_label"]}'s {source_type}</u> to <u>Person {target_parameter_set_player["id_label"]}'s {target_type}</u>."
+            else:
+                transfer_string = f"moved {transfer_string} from Person {source_parameter_set_player["id_label"]}'s {source_type} to Person {target_parameter_set_player["id_label"]}'s {target_type}."
+
+            session_player_notice_1 = SessionPlayerNotice()
+
+            current_session_period = await session.aget_current_session_period()
+
+            session_player_notice_1.session_period = current_session_period
+            session_player_notice_1.session_player_id = player_id
+            session_player_notice_1.text = f"You {transfer_string}"
+            session_player_notice_1.text = session_player_notice_1.text.replace(f"Person {parameter_set_player["id_label"]}'s", "your")
+            session_player_notice_1.show_on_staff = True
+            await session_player_notice_1.asave()
+
+            # session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].append(session_player_notice_1.json())
+
+            # if len(session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)]) > 100:
+            #     session_player.session.world_state["notices"][str(session_player.parameter_set_player.town)].pop(0)
+
+            #session_player.session.save()
+
+            #record notice for source player if source does not match mover
+            if source_id != player_id:
+                session_player_notice_2 = SessionPlayerNotice()
+
+                session_player_notice_2.session_period = current_session_period
+                session_player_notice_2.session_player_id = source_id
+                session_player_notice_2.text = f"Person {parameter_set_player["id_label"]} {transfer_string}"
+                session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {source_parameter_set_player["id_label"]}'s", "your")
+                session_player_notice_2.text = session_player_notice_2.text.replace(f"Person {parameter_set_player["id_label"]}'s", "their")
+                await session_player_notice_2.asave()
+            
+            if target_id != player_id:
+                session_player_notice_3 = SessionPlayerNotice()
+
+                session_player_notice_3.session_period = current_session_period
+                session_player_notice_3.session_player_id = target_id
+                session_player_notice_3.text = f"Person {parameter_set_player["id_label"]} {transfer_string}"
+                session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {target_parameter_set_player["id_label"]}'s", "your")
+                session_player_notice_3.text = session_player_notice_3.text.replace(f"Person {parameter_set_player["id_label"]}'s", "their")
+                await session_player_notice_3.asave()
+
+            
+            result = []
+            # session_player = session.session_players.get(id=session_player_id)
+            result.append(self.world_state_local["session_players"][str(player_id)])
+            result[-1]["notice"] = await sync_to_async(session_player_notice_1.json)()
+
+            if source_id != player_id:
+                result.append(self.world_state_local["session_players"][str(source_id)])
+                result[-1]["notice"] = await sync_to_async(session_player_notice_2.json)()
+
+            if target_id != player_id:
+                result.append(self.world_state_local["session_players"][str(target_id)])
+                result[-1]["notice"] = await sync_to_async(session_player_notice_3.json)()
 
             target_list = group_members
 
