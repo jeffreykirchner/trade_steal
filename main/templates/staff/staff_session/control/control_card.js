@@ -23,7 +23,17 @@ takeUpdateStartExperiment: function takeUpdateStartExperiment(messageData){
 *    @param messageData {json} session day in json format
 */
 takeUpdateResetExperiment: function takeUpdateResetExperiment(messageData){
+    app.change_town_view()
+    app.chat_list_to_display=[];
     app.takeGetSession(messageData);
+
+    Vue.nextTick(app.update_graph_canvas());
+
+    if(app.timer_warning_timeout)
+    {
+        clearTimeout(app.timer_warning_timeout);
+        app.timer_warning = false;
+    }
 },
 
 /**reset experiment, remove all bids, asks and trades
@@ -40,20 +50,22 @@ reset_experiment: function reset_experiment(){
     app.sendMessage("reset_experiment", {});
 },
 
-/** take reset experiment response
- * @param messageData {json}
-*/
-takeResetExperiment: function takeResetExperiment(messageData){
-    app.change_town_view()
-    app.chat_list_to_display=[];
-    app.takeGetSession(messageData);
+// /** take reset experiment response
+//  * @param messageData {json}
+// */
+// takeResetExperiment: function takeResetExperiment(messageData){
+//     app.change_town_view()
+//     app.chat_list_to_display=[];
+//     app.takeGetSession(messageData);
 
-    if(app.timer_warning_timeout)
-    {
-        clearTimeout(app.timer_warning_timeout);
-        app.timer_warning = false;
-    }
-},
+//     Vue.nextTick(app.update_graph_canvas());
+
+//     if(app.timer_warning_timeout)
+//     {
+//         clearTimeout(app.timer_warning_timeout);
+//         app.timer_warning = false;
+//     }
+// },
 
 resetConnections: function resetConnections(){
     if (!confirm('Reset connection status?.')) {
