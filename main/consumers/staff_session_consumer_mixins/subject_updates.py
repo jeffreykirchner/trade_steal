@@ -192,7 +192,7 @@ class SubjectUpdatesMixin():
         try:
             session = await Session.objects.aget(id=self.session_id)
             player_id = self.session_players_local[event["player_key"]]["id"]
-            session_player = await session.session_players.aget(id=player_id)
+            #session_player = await session.session_players.aget(id=player_id)
 
             event_data = event["message_text"]
             target_list = [player_id]
@@ -348,6 +348,8 @@ class SubjectUpdatesMixin():
             session_player_move = SessionPlayerMove()
 
             session_player_move.session_period = current_session_period
+
+            session_player_move.session_player_id = player_id
             session_player_move.session_player_source_id = source_id
             session_player_move.session_player_target_id = target_id
 

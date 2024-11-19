@@ -109,7 +109,13 @@ class ExperimentControlsMixin():
         refresh client and server screens
         '''
 
-        result = await sync_to_async(take_refresh_screens)(self.session_id,  event["message_text"])
+        logger = logging.getLogger(__name__)
+   
+        session = await Session.objects.select_related("parameter_set").aget(id=self.session_id)
+        self.parameter_set_local = await sync_to_async(session.parameter_set.json)(update_required=True)
+
+        result = {}
+        result["session"] = await sync_to_async(session.json)()
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
