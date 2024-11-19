@@ -205,6 +205,7 @@ draw_efficiency_line:function draw_efficiency_line(chartID, marginY, marginX, ma
     ctx.beginPath();    
 
     if(session.session_periods.length == 0) return;
+    if(session.started == false) return;
     if(session.current_experiment_phase == "Instructions" || 
        session.current_experiment_phase == "Selection") return;
 
