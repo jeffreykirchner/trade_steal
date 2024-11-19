@@ -403,84 +403,11 @@ class ParameterSet(models.Model):
                                 update_type=True)
 
         return self.json_for_session
-
-        return{
-            "id" : self.id,
-            "town_count" : self.town_count,
-            "good_count" : self.good_count,
-            "period_count" : self.period_count,
-
-            "period_length_production" : self.period_length_production,
-            "period_length_trade" : self.period_length_trade,
-            "break_period_frequency" : self.break_period_frequency,
-
-            "allow_stealing" : "True" if self.allow_stealing else "False",
-            "group_chat" : "True" if self.group_chat else "False",
-            "private_chat" : "True" if self.private_chat else "False",
-            "show_instructions" : "True" if self.show_instructions else "False",
-            "instruction_set" : self.instruction_set.json_min(),
-
-            "show_avatars" : "True" if self.show_avatars else "False",
-            "avatar_assignment_mode" : self.avatar_assignment_mode,
-            "avatar_grid_row_count" : self.avatar_grid_row_count,
-            "avatar_grid_col_count" : self.avatar_grid_col_count,
-            "avatar_grid_text" : self.avatar_grid_text,
-
-            "parameter_set_goods" : [p.json() for p in self.parameter_set_goods.all()],
-            "parameter_set_types" : [p.json() for p in self.parameter_set_types.all()],
-            "parameter_set_players" : [p.json() for p in self.parameter_set_players.all()],
-
-            "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
-
-            "survey_required" : "True" if self.survey_required else "False",
-            "survey_link" : self.survey_link,
-
-            "prolific_mode" : "True" if self.prolific_mode else "False", 
-            "post_forward_link" : self.post_forward_link,
-
-            "information_mode" : self.information_mode,
-
-            "test_mode" : "True" if self.test_mode else "False",
-        }
     
     def json_for_subject(self):
         '''
         return json object for subject
         '''
         return self.json()
-    
-        return{
-            "id" : self.id,
 
-            "town_count" : self.town_count,
-            "good_count" : self.good_count,
-            
-            "period_length_production" : self.period_length_production,
-            "period_length_trade" : self.period_length_trade,
-
-            "break_period_frequency" : self.break_period_frequency,
-            "allow_stealing" : "True" if self.allow_stealing else "False",
-            "group_chat" : "True" if self.group_chat else "False",
-            "private_chat" : "True" if self.private_chat else "False",
-            "show_instructions" : "True" if self.show_instructions else "False",
-            
-            "show_avatars" : "True" if self.show_avatars else "False",
-            "avatar_assignment_mode" : self.avatar_assignment_mode,
-            "avatar_grid_row_count" : self.avatar_grid_row_count,
-            "avatar_grid_col_count" : self.avatar_grid_col_count,
-            "avatar_grid_text" : self.avatar_grid_text,
-
-            "parameter_set_avatars" : [a.json() for a in self.parameter_set_avatars_a.all()],
-            "parameter_set_players" : [p.json_for_subject() for p in self.parameter_set_players.all()],
-
-            "survey_required" : "True" if self.survey_required else "False",
-            "survey_link" : self.survey_link,
-
-            "prolific_mode" : "True" if self.prolific_mode else "False", 
-            "post_forward_link" : self.post_forward_link,
-
-            "information_mode" : self.information_mode,
-
-            "test_mode" : self.test_mode,
-        }
 

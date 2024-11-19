@@ -19,6 +19,7 @@ class SessionPlayerMove(models.Model):
     session player move model
     '''
     session_period = models.ForeignKey(SessionPeriod, on_delete=models.CASCADE, related_name="session_player_moves_a")
+    session_player = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_moves_d", null=True, blank=True)
 
     session_player_source = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_moves_b")
     session_player_target = models.ForeignKey(SessionPlayer, on_delete=models.CASCADE, related_name="session_player_moves_c")
@@ -60,13 +61,13 @@ class SessionPlayerMove(models.Model):
 
         writer.writerow([self.session_period.session.id,
                         self.session_period.period_number,
-                        self.session_player_source.parameter_set_player.town,
+                        self.session_player.parameter_set_player.town if self.session_player else '',
                         self.current_period_phase,
                         self.time_remaining,
-                        self.session_player_source.get_group_number(self.session_period.period_number),
-                        self.session_player_source.parameter_set_player.location,
-                        self.session_player_source.player_number,
-                        self.session_player_source.parameter_set_player.id_label,
+                        self.session_player.get_group_number(self.session_period.period_number) if self.session_player else '',
+                        self.session_player.parameter_set_player.location if self.session_player else '',
+                        self.session_player.player_number if self.session_player else '',
+                        self.session_player.parameter_set_player.id_label if self.session_player else '',
                         "Move",
                         f'P{self.session_player_source.player_number}->P{self.session_player_target.player_number} | ' +
                            f'{self.source_container}->{self.target_container} | ' +
@@ -100,6 +101,9 @@ class SessionPlayerMove(models.Model):
         '''
         return{
             "id" : self.id,         
+
+            "session_period" : self.session_period.id,
+            "session_player" : self.session_player.id,
 
             "session_player_source" : self.session_player_source,
             "session_player_target" : self.session_player_target,
