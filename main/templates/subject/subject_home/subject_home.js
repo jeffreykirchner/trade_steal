@@ -370,6 +370,8 @@ var app = Vue.createApp({
         *    @param messageData {json} session day in json format
         */
         takeUpdateResetExperiment: function takeUpdateResetExperiment(messageData){
+            app.destroyPixiPlayers();
+            
             app.takeGetSession(messageData);
 
             this.production_slider_one = 50;
