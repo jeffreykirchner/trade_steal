@@ -2,7 +2,7 @@
  * take update player groups
  * @param messageData {json} session day in json format
  */
-  takeUpdateConnectionStatus: function takeUpdateConnectionStatus(messageData){
+  take_update_connection_status: function take_update_connection_status(messageData){
             
     if(messageData.value == "success")
     {
@@ -26,7 +26,7 @@
  * take update player groups
  * @param messageData {json} session day in json format
  */
- takeUpdateGroups: function takeUpdateGroups(messageData){
+ take_update_groups: function take_update_groups(messageData){
     
     if(messageData.status == "success")
     {
@@ -47,7 +47,7 @@
 /** take name and student id
 * @param messageData {json} session day in json format
 */
-takeUpdateName: function takeUpdateName(messageData){
+take_update_name: function take_update_name(messageData){
            
     if(messageData.value == "success")
     {
@@ -66,7 +66,7 @@ takeUpdateName: function takeUpdateName(messageData){
 /** take name and student id
 * @param messageData {json} session day in json format
 */
-takeUpdateAvatar: function takeUpdateAvatar(messageData){
+take_update_avatar: function take_update_avatar(messageData){
            
     if(messageData.value == "success")
     {
@@ -85,7 +85,7 @@ takeUpdateAvatar: function takeUpdateAvatar(messageData){
 /** take name and student id
 * @param messageData {json} session day in json format
 */
-takeNextInstruction: function takeNextInstruction(messageData){
+take_next_instruction: function take_next_instruction(messageData){
            
     if(messageData.value == "success")
     {
@@ -104,7 +104,7 @@ takeNextInstruction: function takeNextInstruction(messageData){
  /** take name and student id
 * @param messageData {json} session day in json format
 */
-takeFinishedInstructions: function takeFinishedInstructions(messageData){
+take_finished_instructions: function take_finished_instructions(messageData){
            
     if(messageData.value == "success")
     {

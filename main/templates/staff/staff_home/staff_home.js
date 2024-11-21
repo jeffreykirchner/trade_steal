@@ -38,10 +38,10 @@ var app = Vue.createApp({
                     app.takeCreateSession(messageData);
                     break;
                 case "get_sessions":
-                    app.takeGetSessions(messageData);
+                    app.take_get_Sessions(messageData);
                     break;
                 case "get_sessions_admin":
-                    app.takeGetSessionsAdmin(messageData);
+                    app.take_get_SessionsAdmin(messageData);
                     break;
     
             }
@@ -64,7 +64,7 @@ var app = Vue.createApp({
             app.sendMessage("get_sessions",{});
         },
 
-        takeGetSessions: function takeGetSessions(messageData){
+        take_get_Sessions: function take_get_Sessions(messageData){
             //process list of sessions
 
             app.sessions = messageData.sessions;

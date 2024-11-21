@@ -59,7 +59,7 @@ takeUpdateParametersetPlayer(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.takeGetSession(messageData);       
+        app.take_get_Session(messageData);       
         app.editParametersetPlayerModal.hide();     
     } 
     else
@@ -117,7 +117,7 @@ takeUpdateParametersetPlayerGroup(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.takeGetSession(messageData);       
+        app.take_get_Session(messageData);       
         app.editParametersetPlayerGroupModal.hide();            
     } 
     else
@@ -142,7 +142,7 @@ takeCopyGroupForward(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
-    app.takeGetSession(messageData);   
+    app.take_get_Session(messageData);   
 },
 
 /** copy specified period's groups forward to future groups
@@ -160,7 +160,7 @@ sendRemoveParameterSetPlayer(){
 takeRemoveParameterSetPlayer(messageData){
     app.cancelModal=false;
     //app.clearMainFormErrors();
-    app.takeGetSession(messageData);   
+    app.take_get_Session(messageData);   
     app.editParametersetPlayerModal.hide();
 },
 
@@ -177,5 +177,5 @@ sendAddParameterSetPlayer(player_id){
 takeAddParameterSetPlayer(messageData){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
-    app.takeGetSession(messageData); 
+    app.take_get_Session(messageData); 
 },

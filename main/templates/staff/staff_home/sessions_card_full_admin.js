@@ -5,7 +5,7 @@ sendGetSessionsAdmin: function sendGetSessionsAdmin(){
     app.sendMessage("get_sessions_admin",{});
 },
 
-takeGetSessionsAdmin: function takeGetSessionsAdmin(messageData){
+take_get_SessionsAdmin: function take_get_SessionsAdmin(messageData){
     //process list of all sessions
     app.working = false;
     app.sessions_full_admin = messageData.sessions_admin;

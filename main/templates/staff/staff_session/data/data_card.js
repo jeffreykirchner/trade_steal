@@ -9,7 +9,7 @@ downloadSummaryData: function downloadSummaryData(){
 /** take download summary data
  * @param messageData {json}
 */
-takeDownloadSummaryData: function takeDownloadSummaryData(messageData){
+take_download_summary_data: function take_download_summary_data(messageData){
 
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", messageData.result]);
@@ -35,7 +35,7 @@ downloadActionsData: function downloadActionsData(){
 /** take download summary data
  * @param messageData {json}
 */
-takeDownloadActionData: function takeDownloadActionData(messageData){
+take_download_action_data: function take_download_action_data(messageData){
 
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", messageData.result]);
@@ -61,7 +61,7 @@ downloadRecruiterData: function downloadRecruiterData(){
 /** take download recruiter data
  * @param messageData {json}
 */
-takeDownloadRecruiterData: function takeDownloadRecruiterData(messageData){
+take_download_recruiter_data: function take_download_recruiter_data(messageData){
 
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", messageData.result]);
@@ -91,7 +91,7 @@ downloadPaymentData: function downloadPaymentData(){
 /** take download payment data
  * @param messageData {json}
 */
-takeDownloadPaymentData: function takeDownloadPaymentData(messageData){
+take_download_payment_data: function take_download_payment_data(messageData){
 
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", messageData.result]);

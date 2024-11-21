@@ -120,7 +120,7 @@ takeMoveGoods: function takeMoveGoods(messageData){
 
     if(messageData.value == "success")
     {
-        app.takeUpdateGoods(messageData);    
+        app.take_update_goods(messageData);    
         app.closeMoveModal();               
     } 
     else
@@ -150,7 +150,7 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
 
     if(messageData.value == "success")
     {
-        app.takeUpdateGoods(messageData);    
+        app.take_update_goods(messageData);    
 
         if(parseInt(messageData.session_player_id) == app.session_player.id)
         {
@@ -177,7 +177,7 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
 /** update good counts of players in list
 *    @param messageData {json} session day in json format
 */
-takeUpdateGoods: function takeUpdateGoods(messageData){
+take_update_goods: function take_update_goods(messageData){
     results = messageData.result;
 
     let session_player = app.session_player;

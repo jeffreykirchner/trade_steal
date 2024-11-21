@@ -15,7 +15,7 @@ takeImportParameters(){
 
     if(messageData.status.status == "success")
     {
-        app.takeGetSession(messageData);       
+        app.take_get_Session(messageData);       
         app.import_parameters_message = messageData.status.message;
         location.reload();    
     } 

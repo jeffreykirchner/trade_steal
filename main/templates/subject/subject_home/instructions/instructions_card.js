@@ -30,7 +30,7 @@ sendNextInstruction: function sendNextInstruction(direction){
 /**
  * advance to next instruction page
  */
-takeNextInstruction: function takeNextInstruction(messageData){
+take_next_instruction: function take_next_instruction(messageData){
     if(messageData.value == "success")
     {
         result = messageData.result;       
@@ -183,7 +183,7 @@ simulate_do_period_production: function simulate_do_period_production(){
         notice : null,
     })
     
-    app.takeUpdateGoods({result : result});
+    app.take_update_goods({result : result});
 
     app.session.time_remaining -= 1;
 
@@ -223,7 +223,7 @@ setup_page_3_instructions: function setup_page_3_instructions(){
         notice : null,
     })
     
-    app.takeUpdateGoods({result : result});
+    app.take_update_goods({result : result});
 },
 
 /**
@@ -252,7 +252,7 @@ simulate_clear_goods_instructions: function simulate_clear_goods_instructions(){
         })
     }
 
-    app.takeUpdateGoods({result : result});
+    app.take_update_goods({result : result});
 },
 
 /**
@@ -343,7 +343,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
         notice : null,
     });
     
-    app.takeUpdateGoods({result : result});
+    app.take_update_goods({result : result});
 
     if(app.session_player.current_instruction == app.instructions.action_page_move)
     {
@@ -390,7 +390,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
                        status:"success"}
     }
 
-    app.takeUpdateChat(messageData);
+    app.take_update_chat(messageData);
 
     if(app.session_player.current_instruction == app.instructions.action_page_chat)
     {

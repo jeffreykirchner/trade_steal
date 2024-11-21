@@ -28,9 +28,6 @@ var app = Vue.createApp({
                     move_to_next_phase_text : 'Start Next Experiment Phase',
 
                     pixi_loaded : false,             //true when pixi is loaded
-                    // pixi_transfer_line : null,       //transfer line between two pixi containers  
-                    //pixi_transfer_source : null,     //source of transfer
-                    //pixi_transfer_target : null,     //target of transfer
                     pixi_modal_open : false,         //true whe pixi modal is open
                     pixi_transfer_source_modal_string : "",   //source string shown on transfer modal
                     pixi_transfer_target_modal_string : "" ,  //target string shown on transfer modal
@@ -107,80 +104,80 @@ var app = Vue.createApp({
 
             switch(messageType) {                
                 case "get_session":
-                    app.takeGetSession(messageData);
+                    app.take_get_Session(messageData);
                     break;
                 case "update_session":
-                    app.takeUpdateSession(messageData);
+                    app.take_update_session(messageData);
                     break;
-                case "start_experiment":
-                    app.takeStartExperiment(messageData);
-                    break;
+                // case "start_experiment":
+                //     app.take_start_experiment(messageData);
+                //     break;
                 case "update_start_experiment":
-                    app.takeUpdateStartExperiment(messageData);
+                    app.take_update_start_experiment(messageData);
                     break;
                 // case "reset_experiment":
                 //     app.takeResetExperiment(messageData);
                 //     break;
-                case "next_phase":
-                    app.takeNextPhase(messageData);
-                    break; 
+                // case "next_phase":
+                //     app.take_next_phase(messageData);
+                //     break; 
                 case "update_next_phase":
-                    app.takeUpdateNextPhase(messageData);
+                    app.take_update_next_phase(messageData);
                     break; 
                 case "update_move_goods":
-                    app.takeUpdateGoods(messageData);
-                    app.takeUpdateNotice(messageData);
+                    app.take_update_goods(messageData);
+                    app.take_update_notice(messageData);
                     break;  
                 case "update_reset_experiment":
-                    app.takeUpdateResetExperiment(messageData);
+                    app.take_update_reset_experiment(messageData);
                     break;
                 case "update_chat":
-                    app.takeUpdateChat(messageData);
+                    app.take_update_chat(messageData);
                     break;
                 case "update_time":
-                    app.takeUpdateTime(messageData);
+                    app.take_update_time(messageData);
                     break;
                 case "start_timer":
-                    app.takeStartTimer(messageData);
+                    app.take_start_timer(messageData);
                     break;   
                 case "update_groups":
-                    app.takeUpdateGroups(messageData);
+                    app.take_update_groups(messageData);
                     break;  
                 case "update_connection_status":
-                    app.takeUpdateConnectionStatus(messageData);
+                    app.take_update_connection_status(messageData);
                     break;   
-                case "reset_connections":
-                    app.takeResetConnections(messageData);
-                    break; 
+                // case "reset_connections":
+                //     app.takeResetConnections(messageData);
+                //     break; 
                 case "update_reset_connections":
-                    app.takeUpdateResetConnections(messageData);
+                    app.take_update_reset_connections(messageData);
                     break; 
                 case "update_name":
-                    app.takeUpdateName(messageData);
+                    app.take_update_name(messageData);
                     break;         
                 case "download_summary_data":
-                    app.takeDownloadSummaryData(messageData);
+                    app.take_download_summary_data(messageData);
                     break;
                 case "download_action_data":
-                    app.takeDownloadActionData(messageData);
+                    app.take_download_action_data(messageData);
                     break;
                 case "download_recruiter_data":
-                    app.takeDownloadRecruiterData(messageData);
+                    app.take_download_recruiter_data(messageData);
                     break;
                 case "download_payment_data":
-                    app.takeDownloadPaymentData(messageData);
+                    app.take_download_payment_data(messageData);
                     break;
                 case "update_avatar":
-                    app.takeUpdateAvatar(messageData);
+                    app.take_update_avatar(messageData);
                     break;
                 case "update_next_instruction":
-                    app.takeNextInstruction(messageData);
+                    app.take_next_instruction(messageData);
                     break;
                 case "update_finish_instructions":
-                    app.takeFinishedInstructions(messageData);
+                    app.take_finished_instructions(messageData);
                     break;
                 case "help_doc":
-                    app.takeLoadHelpDoc(messageData);
+                    app.take_load_help_doc(messageData);
                     break;
                 case "end_early":
                     app.takeEndEarly(messageData);
@@ -271,7 +268,7 @@ var app = Vue.createApp({
         /** take create new session
         *    @param messageData {json} session day in json format
         */
-        takeGetSession: function takeGetSession(messageData){
+        take_get_Session: function take_get_Session(messageData){
             
             app.session = messageData.session;
             app.destroyPixiPlayers();
@@ -320,7 +317,7 @@ var app = Vue.createApp({
             {
                 let v = {};
                 v.timer_running = app.session.timer_running;
-                app.takeStartTimer(v);
+                app.take_start_timer(v);
             }
         },
 
@@ -379,7 +376,7 @@ var app = Vue.createApp({
         /** take updated data from goods being moved by another player
         *    @param messageData {json} session day in json format
         */
-        takeUpdateChat: function takeUpdateChat(messageData){
+        take_update_chat: function take_update_chat(messageData){
             
             let result = messageData;
             let chat = result.chat;
@@ -430,7 +427,7 @@ var app = Vue.createApp({
         /**
          * show applicable notices.
          */
-        takeUpdateNotice: function takeUpdateNotice(messageData){
+        take_update_notice: function take_update_notice(messageData){
 
             let result = messageData.result;
             let notices = app.session.world_state.notices;
@@ -475,7 +472,7 @@ var app = Vue.createApp({
         /**
          * update time and start status
          */
-        takeUpdateTime: function takeUpdateTime(messageData){
+        take_update_time: function take_update_time(messageData){
 
             let result = messageData.result;
             let status = messageData.value;
@@ -489,7 +486,7 @@ var app = Vue.createApp({
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
 
-            app.takeUpdateGoods({result : result.session_players});
+            app.take_update_goods({result : result.session_players});
             app.takeUpdateEarnings(messageData);
             app.takeUpdatePeriod(messageData.period_update);
 

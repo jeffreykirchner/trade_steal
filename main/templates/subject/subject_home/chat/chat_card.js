@@ -27,7 +27,7 @@ takeChat: function takeChat(messageData){
 
     if(messageData.value == "success")
     {
-        app.takeUpdateChat(messageData);                        
+        app.take_update_chat(messageData);                        
     } 
     else
     {
@@ -38,7 +38,7 @@ takeChat: function takeChat(messageData){
 /** take updated data from goods being moved by another player
 *    @param messageData {json} session day in json format
 */
-takeUpdateChat: function takeUpdateChat(messageData){
+take_update_chat: function take_update_chat(messageData){
     
     let result = messageData;
     let chat = result.chat;

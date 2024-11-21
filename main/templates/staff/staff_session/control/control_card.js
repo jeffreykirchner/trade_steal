@@ -8,24 +8,24 @@ start_experiment: function start_experiment(){
 /** take start experiment response
  * @param messageData {json}
 */
-takeStartExperiment: function takeStartExperiment(messageData){
-    app.takeGetSession(messageData);
+take_start_experiment: function take_start_experiment(messageData){
+    app.take_get_Session(messageData);
 },
 
 /** update start status
 *    @param messageData {json} session day in json format
 */
-takeUpdateStartExperiment: function takeUpdateStartExperiment(messageData){
-    app.takeGetSession(messageData);
+take_update_start_experiment: function take_update_start_experiment(messageData){
+    app.take_get_Session(messageData);
 },
 
 /** update start status
 *    @param messageData {json} session day in json format
 */
-takeUpdateResetExperiment: function takeUpdateResetExperiment(messageData){
+take_update_reset_experiment: function take_update_reset_experiment(messageData){
     app.change_town_view()
     app.chat_list_to_display=[];
-    app.takeGetSession(messageData);
+    app.take_get_Session(messageData);
 
     Vue.nextTick(app.update_graph_canvas());
 
@@ -56,7 +56,7 @@ reset_experiment: function reset_experiment(){
 // takeResetExperiment: function takeResetExperiment(messageData){
 //     app.change_town_view()
 //     app.chat_list_to_display=[];
-//     app.takeGetSession(messageData);
+//     app.take_get_Session(messageData);
 
 //     Vue.nextTick(app.update_graph_canvas());
 
@@ -79,15 +79,15 @@ resetConnections: function resetConnections(){
 /** update start status
 *    @param messageData {json} session day in json format
 */
-takeUpdateResetConnections: function takeUpdateResetConnections(messageData){
-    app.takeGetSession(messageData);
+take_update_reset_connections: function take_update_reset_connections(messageData){
+    app.take_get_Session(messageData);
 },
 
 /** take reset experiment response
  * @param messageData {json}
 */
 takeResetConnections: function takeResetConnections(messageData){
-    app.takeGetSession(messageData);
+    app.take_get_Session(messageData);
 },
 
 /**advance to next phase
@@ -105,7 +105,7 @@ next_experiment_phase: function next_experiment_phase(){
 /** take next period response
  * @param messageData {json}
 */
-takeNextPhase: function takeNextPhase(messageData){
+take_next_phase: function take_next_phase(messageData){
     
     this.session.current_experiment_phase = messageData.current_experiment_phase;
     this.updatePhaseButtonText();
@@ -115,7 +115,7 @@ takeNextPhase: function takeNextPhase(messageData){
 /** take next period response
  * @param messageData {json}
 */
-takeUpdateNextPhase: function takeUpdateNextPhase(messageData){
+take_update_next_phase: function take_update_next_phase(messageData){
     
     this.session.current_experiment_phase = messageData.current_experiment_phase;
     this.updatePhaseButtonText();
@@ -146,10 +146,10 @@ startTimer: function startTimer(){
 /** take start experiment response
  * @param messageData {json}
 */
-takeStartTimer: function takeStartTimer(messageData){
+take_start_timer: function take_start_timer(messageData){
     if(worker) worker.terminate();
 
-    if("result" in messageData) app.takeUpdateTime(messageData);
+    if("result" in messageData) app.take_update_time(messageData);
     // app.session.timer_running = messageData.result.timer_running;
 
     if(app.session.timer_running)

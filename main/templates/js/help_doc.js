@@ -19,7 +19,7 @@ sendLoadHelpDoc: function sendLoadHelpDoc(title){
  * take help text load request
  * @param messageData : json
  */
-takeLoadHelpDoc: function takeLoadHelpDoc(messageData){
+take_load_help_doc: function take_load_help_doc(messageData){
 
     if(messageData.status.value == "success")
     {

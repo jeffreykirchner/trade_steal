@@ -135,28 +135,28 @@ var app = Vue.createApp({
 
             switch(messageType) {                
                 case "get_session":
-                    app.takeGetSession(messageData);
+                    app.take_get_Session(messageData);
                     break; 
                 case "update_move_goods":
                     app.takeUpdateMoveGoods(messageData);
                     break;
                 case "update_start_experiment":
-                    app.takeUpdateStartExperiment(messageData);
+                    app.take_update_start_experiment(messageData);
                     break;
                 case "update_reset_experiment":
-                    app.takeUpdateResetExperiment(messageData);
+                    app.take_update_reset_experiment(messageData);
                     break;
                 case "update_chat":
-                    app.takeUpdateChat(messageData);
+                    app.take_update_chat(messageData);
                     break;
                 case "update_time":
-                    app.takeUpdateTime(messageData);
+                    app.take_update_time(messageData);
                     break;
                 case "update_production_time":
                     app.takeProduction(messageData);
                     break;
                 case "update_groups":
-                    app.takeUpdateGroups(messageData);
+                    app.take_update_groups(messageData);
                     break;
                 case "update_end_game":
                     app.takeEndGame(messageData);
@@ -168,10 +168,10 @@ var app = Vue.createApp({
                     app.takeAvatar(messageData);
                     break;
                 case "update_next_phase":
-                    app.takeUpdateNextPhase(messageData);
+                    app.take_update_next_phase(messageData);
                     break;
                 case "next_instruction":
-                    app.takeNextInstruction(messageData);
+                    app.take_next_instruction(messageData);
                     break;
                 case "finish_instructions":
                     app.takeFinishInstructions(messageData);
@@ -253,7 +253,7 @@ var app = Vue.createApp({
         /** take create new session
         *    @param messageData {json} session day in json format
         */
-        takeGetSession: function takeGetSession(messageData){
+        take_get_Session: function take_get_Session(messageData){
             
             app.session = messageData.session;
             app.session_player = messageData.session_player;
@@ -355,8 +355,8 @@ var app = Vue.createApp({
         /** update start status
         *    @param messageData {json} session day in json format
         */
-        takeUpdateStartExperiment: function takeUpdateStartExperiment(messageData){
-            app.takeGetSession(messageData);
+        take_update_start_experiment: function take_update_start_experiment(messageData){
+            app.take_get_Session(messageData);
 
             if(app.session.current_experiment_phase == "Instructions")
             {
@@ -370,10 +370,10 @@ var app = Vue.createApp({
         /** update reset status
         *    @param messageData {json} session day in json format
         */
-        takeUpdateResetExperiment: function takeUpdateResetExperiment(messageData){
+        take_update_reset_experiment: function take_update_reset_experiment(messageData){
             app.destroyPixiPlayers();
 
-            app.takeGetSession(messageData);
+            app.take_get_Session(messageData);
 
             this.production_slider_one = 50;
             this.production_slider_two = 50;
@@ -383,12 +383,13 @@ var app = Vue.createApp({
 
             app.endGameModal.hide();
             this.closeMoveModal();
+            app.avatarChoiceGridModal.hide();
         },
 
         /**
         * update time and start status
         */
-        takeUpdateTime: function takeUpdateTime(messageData){
+        take_update_time: function take_update_time(messageData){
             let result = messageData.result;
             let status = messageData.value;
             let notice_list = messageData.notice_list;
@@ -404,7 +405,7 @@ var app = Vue.createApp({
 
             this.tick_tock = this.session.time_remaining % 2;
 
-            app.takeUpdateGoods({result : result.session_players});
+            app.take_update_goods({result : result.session_players});
 
             //update subject earnings
             this.session_player.earnings = result.session_player_earnings.earnings;
@@ -482,7 +483,7 @@ var app = Vue.createApp({
         /**
          * update players in group
          */
-        takeUpdateGroups: function takeUpdateGroups(messageData){
+        take_update_groups: function take_update_groups(messageData){
             app.destroyPixiPlayers();
 
             app.session.session_players = messageData.result.session_players;
@@ -528,7 +529,7 @@ var app = Vue.createApp({
         /** take next period response
          * @param messageData {json}
         */
-        takeUpdateNextPhase: function takeUpdateNextPhase(messageData){
+        take_update_next_phase: function take_update_next_phase(messageData){
             app.avatarChoiceGridModal.hide();
             app.endGameModal.hide();
 

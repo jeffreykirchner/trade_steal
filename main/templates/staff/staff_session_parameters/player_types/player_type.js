@@ -42,7 +42,7 @@ takeUpdateParametersetType(messageData){
 
     if(messageData.status.value == "success")
     {
-        app.takeGetSession(messageData);       
+        app.take_get_Session(messageData);       
         app.editParametersetTypeModal.hide();         
     } 
     else

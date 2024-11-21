@@ -9,12 +9,12 @@ sendUpdateSession: function sendUpdateSession(){
 /** take update session reponse
  * @param messageData {json} result of update, either sucess or fail with errors
 */
-takeUpdateSession: function takeUpdateSession(messageData){
+take_update_session: function take_update_session(messageData){
     app.clearMainFormErrors();
 
     if(messageData.value == "success")
     {
-        app.takeGetSession(messageData);       
+        app.take_get_Session(messageData);       
         app.edit_session_modal.hide();    
     } 
     else
