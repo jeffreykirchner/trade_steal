@@ -34,28 +34,28 @@ sendUpdateParameterset(){
         form_data[v]=app.session.parameter_set[v];
     }
 
-    app.sendMessage("update_parameterset", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset", {"sessionID" : app.sessionID,
                                             "formData" : form_data,});
 },
 
 /** handle result of updating parameter set
 */
-takeUpdateParameterset(messageData){
+takeUpdateParameterset(message_data){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
     app.cancelModal=false;
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(message_data.status.value == "success")
     {
-        app.take_get_Session(messageData);       
+        app.take_get_Session(message_data);       
         app.editParametersetModal.hide();           
     } 
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        app.displayErrors(message_data.status.errors);
     } 
 },
 

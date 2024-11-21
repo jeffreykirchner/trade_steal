@@ -108,22 +108,22 @@ sendAvatar: function sendAvatar(){
     if(app.session_player.avatar != null) return;
     
     app.working = true;
-    app.sendMessage("avatar", {"row" : app.avatar_choice_grid_selected_row,
+    app.send_message("avatar", {"row" : app.avatar_choice_grid_selected_row,
                                "col" : app.avatar_choice_grid_selected_col,
                             });             
 },
 
 /** take result of moving goods
 */
-takeAvatar: function takeAvatar(messageData){
+takeAvatar: function takeAvatar(message_data){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
     app.working = false;
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        app.session_player.avatar = messageData.result.avatar;         
+        app.session_player.avatar = message_data.result.avatar;         
     } 
     else
     {

@@ -98,8 +98,8 @@ var app = Vue.createApp({
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected: function handleSocketConnected(){            
-            app.sendGetSession();
+        handle_socket_connected: function handle_socket_connected(){            
+            app.send_get_session();
             app.working = false;
         },
 
@@ -124,57 +124,57 @@ var app = Vue.createApp({
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage: function takeMessage(data) {
+        take_message: function take_message(data) {
 
             {%if DEBUG%}
             console.log(data);
             {%endif%}
 
-            messageType = data.message.message_type;
-            messageData = data.message.message_data;
+            message_type = data.message.message_type;
+            message_data = data.message.message_data;
 
-            switch(messageType) {                
+            switch(message_type) {                
                 case "get_session":
-                    app.take_get_Session(messageData);
+                    app.take_get_Session(message_data);
                     break; 
                 case "update_move_goods":
-                    app.takeUpdateMoveGoods(messageData);
+                    app.takeUpdateMoveGoods(message_data);
                     break;
                 case "update_start_experiment":
-                    app.take_update_start_experiment(messageData);
+                    app.take_update_start_experiment(message_data);
                     break;
                 case "update_reset_experiment":
-                    app.take_update_reset_experiment(messageData);
+                    app.take_update_reset_experiment(message_data);
                     break;
                 case "update_chat":
-                    app.take_update_chat(messageData);
+                    app.take_update_chat(message_data);
                     break;
                 case "update_time":
-                    app.take_update_time(messageData);
+                    app.take_update_time(message_data);
                     break;
                 case "update_production_time":
-                    app.takeProduction(messageData);
+                    app.takeProduction(message_data);
                     break;
                 case "update_groups":
-                    app.take_update_groups(messageData);
+                    app.take_update_groups(message_data);
                     break;
                 case "update_end_game":
-                    app.takeEndGame(messageData);
+                    app.takeEndGame(message_data);
                     break;
                 case "name":
-                    app.takeName(messageData);
+                    app.takeName(message_data);
                     break;
                 case "avatar":
-                    app.takeAvatar(messageData);
+                    app.takeAvatar(message_data);
                     break;
                 case "update_next_phase":
-                    app.take_update_next_phase(messageData);
+                    app.take_update_next_phase(message_data);
                     break;
                 case "next_instruction":
-                    app.take_next_instruction(messageData);
+                    app.take_next_instruction(message_data);
                     break;
                 case "finish_instructions":
-                    app.takeFinishInstructions(messageData);
+                    app.takeFinishInstructions(message_data);
                     break;
                 
             }
@@ -192,16 +192,16 @@ var app = Vue.createApp({
         },
 
         /** send websocket message to server
-        *    @param messageType {string} type of message sent to server
-        *    @param messageText {json} body of message being sent to server
+        *    @param message_type {string} type of message sent to server
+        *    @param message_text {json} body of message being sent to server
         *    @param message_target {string} who message is being sent to
         */
-        sendMessage: function sendMessage(messageType, messageText, message_target="self") {
+        send_message: function send_message(message_type, message_text, message_target="self") {
             //send socket message to server
 
             this.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+                    'message_type': message_type,
+                    'message_text': message_text,
                     'message_target': message_target,
                 }));
         },
@@ -246,17 +246,17 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        sendGetSession: function sendGetSession(){
-            app.sendMessage("get_session", {"playerKey" : this.playerKey});
+        send_get_session: function send_get_session(){
+            app.send_message("get_session", {"playerKey" : this.playerKey});
         },
         
         /** take create new session
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        take_get_Session: function take_get_Session(messageData){
+        take_get_Session: function take_get_Session(message_data){
             
-            app.session = messageData.session;
-            app.session_player = messageData.session_player;
+            app.session = message_data.session;
+            app.session_player = message_data.session_player;
 
             let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
 
@@ -353,10 +353,10 @@ var app = Vue.createApp({
         },
 
         /** update start status
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        take_update_start_experiment: function take_update_start_experiment(messageData){
-            app.take_get_Session(messageData);
+        take_update_start_experiment: function take_update_start_experiment(message_data){
+            app.take_get_Session(message_data);
 
             if(app.session.current_experiment_phase == "Instructions")
             {
@@ -368,12 +368,12 @@ var app = Vue.createApp({
         },
 
         /** update reset status
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        take_update_reset_experiment: function take_update_reset_experiment(messageData){
+        take_update_reset_experiment: function take_update_reset_experiment(message_data){
             app.destroyPixiPlayers();
 
-            app.take_get_Session(messageData);
+            app.take_get_Session(message_data);
 
             this.production_slider_one = 50;
             this.production_slider_two = 50;
@@ -389,10 +389,10 @@ var app = Vue.createApp({
         /**
         * update time and start status
         */
-        take_update_time: function take_update_time(messageData){
-            let result = messageData.result;
-            let status = messageData.value;
-            let notice_list = messageData.notice_list;
+        take_update_time: function take_update_time(message_data){
+            let result = message_data.result;
+            let status = message_data.value;
+            let notice_list = message_data.notice_list;
 
             if(status == "fail") return;
 
@@ -476,18 +476,18 @@ var app = Vue.createApp({
          /**
          * take end of game notice
          */
-        takeEndGame: function takeEndGame(messageData){
+        takeEndGame: function takeEndGame(message_data){
 
         },
 
         /**
          * update players in group
          */
-        take_update_groups: function take_update_groups(messageData){
+        take_update_groups: function take_update_groups(message_data){
             app.destroyPixiPlayers();
 
-            app.session.session_players = messageData.result.session_players;
-            app.session.session_players_order = messageData.result.session_players_order;
+            app.session.session_players = message_data.result.session_players;
+            app.session.session_players_order = message_data.result.session_players_order;
 
             setTimeout(app.setupPixiPlayers, 250);
 
@@ -527,17 +527,17 @@ var app = Vue.createApp({
         },
 
         /** take next period response
-         * @param messageData {json}
+         * @param message_data {json}
         */
-        take_update_next_phase: function take_update_next_phase(messageData){
+        take_update_next_phase: function take_update_next_phase(message_data){
             app.avatarChoiceGridModal.hide();
             app.endGameModal.hide();
 
             app.destroyPixiPlayers();
 
-            this.session.current_experiment_phase = messageData.session.current_experiment_phase;
-            this.session.session_players = messageData.session_players;
-            this.session_player = messageData.session_player;
+            this.session.current_experiment_phase = message_data.session.current_experiment_phase;
+            this.session.session_players = message_data.session_players;
+            this.session_player = message_data.session_player;
 
             Vue.nextTick(() => {
                 // setTimeout(app.setupPixiPlayers, 250);

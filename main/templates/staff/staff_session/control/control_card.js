@@ -2,30 +2,30 @@
 */
 start_experiment: function start_experiment(){
     app.working = true;
-    app.sendMessage("start_experiment", {});
+    app.send_message("start_experiment", {});
 },
 
 /** take start experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-take_start_experiment: function take_start_experiment(messageData){
-    app.take_get_Session(messageData);
+take_start_experiment: function take_start_experiment(message_data){
+    app.take_get_Session(message_data);
 },
 
 /** update start status
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-take_update_start_experiment: function take_update_start_experiment(messageData){
-    app.take_get_Session(messageData);
+take_update_start_experiment: function take_update_start_experiment(message_data){
+    app.take_get_Session(message_data);
 },
 
 /** update start status
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-take_update_reset_experiment: function take_update_reset_experiment(messageData){
+take_update_reset_experiment: function take_update_reset_experiment(message_data){
     app.change_town_view()
     app.chat_list_to_display=[];
-    app.take_get_Session(messageData);
+    app.take_get_Session(message_data);
 
     Vue.nextTick(app.update_graph_canvas());
 
@@ -47,16 +47,16 @@ reset_experiment: function reset_experiment(){
     app.session.timer_running = false;
 
     app.working = true;
-    app.sendMessage("reset_experiment", {});
+    app.send_message("reset_experiment", {});
 },
 
 // /** take reset experiment response
-//  * @param messageData {json}
+//  * @param message_data {json}
 // */
-// takeResetExperiment: function takeResetExperiment(messageData){
+// takeResetExperiment: function takeResetExperiment(message_data){
 //     app.change_town_view()
 //     app.chat_list_to_display=[];
-//     app.take_get_Session(messageData);
+//     app.take_get_Session(message_data);
 
 //     Vue.nextTick(app.update_graph_canvas());
 
@@ -73,21 +73,21 @@ resetConnections: function resetConnections(){
     }
 
     app.working = true;
-    app.sendMessage("reset_connections", {});
+    app.send_message("reset_connections", {});
 },
 
 /** update start status
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-take_update_reset_connections: function take_update_reset_connections(messageData){
-    app.take_get_Session(messageData);
+take_update_reset_connections: function take_update_reset_connections(message_data){
+    app.take_get_Session(message_data);
 },
 
 /** take reset experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeResetConnections: function takeResetConnections(messageData){
-    app.take_get_Session(messageData);
+takeResetConnections: function takeResetConnections(message_data){
+    app.take_get_Session(message_data);
 },
 
 /**advance to next phase
@@ -99,28 +99,28 @@ next_experiment_phase: function next_experiment_phase(){
     }
     
     app.working = true;
-    app.sendMessage("next_phase", {});
+    app.send_message("next_phase", {});
 },
 
 /** take next period response
- * @param messageData {json}
+ * @param message_data {json}
 */
-take_next_phase: function take_next_phase(messageData){
+take_next_phase: function take_next_phase(message_data){
     
-    this.session.current_experiment_phase = messageData.current_experiment_phase;
+    this.session.current_experiment_phase = message_data.current_experiment_phase;
     this.updatePhaseButtonText();
 
 },
 
 /** take next period response
- * @param messageData {json}
+ * @param message_data {json}
 */
-take_update_next_phase: function take_update_next_phase(messageData){
+take_update_next_phase: function take_update_next_phase(message_data){
     
-    this.session.current_experiment_phase = messageData.current_experiment_phase;
+    this.session.current_experiment_phase = message_data.current_experiment_phase;
     this.updatePhaseButtonText();
     
-    app.takeUpdatePeriod(messageData.period_update);
+    app.takeUpdatePeriod(message_data.period_update);
 },
 
 /**
@@ -140,24 +140,24 @@ startTimer: function startTimer(){
         action = "start";
     }
 
-    app.sendMessage("start_timer", {action : action});
+    app.send_message("start_timer", {action : action});
 },
 
 /** take start experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-take_start_timer: function take_start_timer(messageData){
+take_start_timer: function take_start_timer(message_data){
     if(worker) worker.terminate();
 
-    if("result" in messageData) app.take_update_time(messageData);
-    // app.session.timer_running = messageData.result.timer_running;
+    if("result" in message_data) app.take_update_time(message_data);
+    // app.session.timer_running = message_data.result.timer_running;
 
     if(app.session.timer_running)
     {
         worker = new Worker("/static/js/worker_timer.js");
 
         worker.onmessage = function (evt) {   
-            app.sendMessage("continue_timer", {});
+            app.send_message("continue_timer", {});
         };
 
         worker.postMessage(0);
@@ -179,23 +179,23 @@ endEarly: function endEarly(){
     }
 
     app.working = true;
-    app.sendMessage("end_early", {});
+    app.send_message("end_early", {});
 },
 
 /** take reset experiment response
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeEndEarly: function takeEndEarly(messageData){
-   this.session.parameter_set.period_count = messageData.period_count;
+take_end_early: function take_end_early(message_data){
+   this.session.parameter_set.period_count = message_data.period_count;
 },
 
 /** send invitations
 */
 sendSendInvitations: function sendSendInvitations(){
 
-    this.sendMessageModalForm.text = tinymce.get("id_invitation_text").getContent();
+    this.send_messageModalForm.text = tinymce.get("id_invitation_text").getContent();
 
-    if(this.sendMessageModalForm.subject == "" || this.sendMessageModalForm.text == "")
+    if(this.send_messageModalForm.subject == "" || this.send_messageModalForm.text == "")
     {
         this.emailResult = "Error: Please enter a subject and email body.";
         return;
@@ -205,26 +205,26 @@ sendSendInvitations: function sendSendInvitations(){
     this.working = true;
     this.emailResult = "Sending ...";
 
-    app.sendMessage("send_invitations",
-                   {"formData" : this.sendMessageModalForm});
+    app.send_message("send_invitations",
+                   {"formData" : this.send_messageModalForm});
 },
 
 /** take update subject response
- * @param messageData {json} result of update, either sucess or fail with errors
+ * @param message_data {json} result of update, either sucess or fail with errors
 */
-takeSendInvitations: function takeSendInvitations(messageData){
+take_send_invitations: function take_send_invitations(message_data){
     app.clearMainFormErrors();
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {           
-        this.emailResult = "Result: " + messageData.result.email_result.mail_count.toString() + " messages sent.";
+        this.emailResult = "Result: " + message_data.result.email_result.mail_count.toString() + " messages sent.";
 
-        this.session.invitation_subject = messageData.result.invitation_subject;
-        this.session.invitation_text = messageData.result.invitation_text;
+        this.session.invitation_subject = message_data.result.invitation_subject;
+        this.session.invitation_text = message_data.result.invitation_text;
     } 
     else
     {
-        this.emailResult = messageData.result;
+        this.emailResult = message_data.result;
     } 
 },
 
@@ -234,10 +234,10 @@ showSendInvitations: function showSendInvitations(){
 
     app.cancelModal=true;
 
-    app.sendMessageModalForm.subject = app.session.invitation_subject;
-    app.sendMessageModalForm.text = app.session.invitation_text;
+    app.send_messageModalForm.subject = app.session.invitation_subject;
+    app.send_messageModalForm.text = app.session.invitation_text;
 
-    tinymce.get("id_invitation_text").setContent(app.sendMessageModalForm.text);
+    tinymce.get("id_invitation_text").setContent(app.send_messageModalForm.text);
     
     app.send_message_modal.show();
 },
@@ -252,7 +252,7 @@ hideSendInvitations: function hideSendInvitations(){
  * fill invitation with default values
  */
 fillDefaultInvitation: function fillDefaultInvitation(){
-    this.sendMessageModalForm.subject = this.emailDefaultSubject;
+    this.send_messageModalForm.subject = this.emailDefaultSubject;
     
     tinymce.get("id_invitation_text").setContent(this.emailDefaultText);
 },
@@ -266,7 +266,7 @@ send_refresh_screens: function send_refresh_screens(message_data){
     }
 
     app.working = true;
-    app.sendMessage("refresh_screens", {});
+    app.send_message("refresh_screens", {});
 },
 
 /**

@@ -1,12 +1,12 @@
  /**
  * take update player groups
- * @param messageData {json} session day in json format
+ * @param message_data {json} session day in json format
  */
-  take_update_connection_status: function take_update_connection_status(messageData){
+  take_update_connection_status: function take_update_connection_status(message_data){
             
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        let result = messageData.result;
+        let result = message_data.result;
 
         session_player = app.findSessionPlayer(result.id);
 
@@ -24,13 +24,13 @@
 
 /**
  * take update player groups
- * @param messageData {json} session day in json format
+ * @param message_data {json} session day in json format
  */
- take_update_groups: function take_update_groups(messageData){
+ take_update_groups: function take_update_groups(message_data){
     
-    if(messageData.status == "success")
+    if(message_data.status == "success")
     {
-        let group_list = messageData.group_list;
+        let group_list = message_data.group_list;
 
         for(let i=0; i<group_list.length; i++)
         {
@@ -45,13 +45,13 @@
 },
 
 /** take name and student id
-* @param messageData {json} session day in json format
+* @param message_data {json} session day in json format
 */
-take_update_name: function take_update_name(messageData){
+take_update_name: function take_update_name(message_data){
            
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        let result = messageData.result;
+        let result = message_data.result;
 
         session_player = app.findSessionPlayer(result.id);
 
@@ -64,13 +64,13 @@ take_update_name: function take_update_name(messageData){
 },
 
 /** take name and student id
-* @param messageData {json} session day in json format
+* @param message_data {json} session day in json format
 */
-take_update_avatar: function take_update_avatar(messageData){
+take_update_avatar: function take_update_avatar(message_data){
            
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        let result = messageData.result;
+        let result = message_data.result;
 
         session_player = app.findSessionPlayer(result.id);
 
@@ -83,13 +83,13 @@ take_update_avatar: function take_update_avatar(messageData){
  },
 
 /** take name and student id
-* @param messageData {json} session day in json format
+* @param message_data {json} session day in json format
 */
-take_next_instruction: function take_next_instruction(messageData){
+take_next_instruction: function take_next_instruction(message_data){
            
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        let result = messageData.result;
+        let result = message_data.result;
 
         session_player = this.findSessionPlayer(result.id);
 
@@ -102,13 +102,13 @@ take_next_instruction: function take_next_instruction(messageData){
  },
 
  /** take name and student id
-* @param messageData {json} session day in json format
+* @param message_data {json} session day in json format
 */
-take_finished_instructions: function take_finished_instructions(messageData){
+take_finished_instructions: function take_finished_instructions(message_data){
            
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        let result = messageData.result;
+        let result = message_data.result;
 
         session_player = this.findSessionPlayer(result.id);
 
@@ -122,13 +122,13 @@ take_finished_instructions: function take_finished_instructions(messageData){
 
  /**
   * update subject earnings
-  *  @param messageData {json} session day in json format
+  *  @param message_data {json} session day in json format
   */
- takeUpdateEarnings: function takeUpdateEarnings(messageData){
+ takeUpdateEarnings: function takeUpdateEarnings(message_data){
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        let session_player_earnings = messageData.result.session_player_earnings;
+        let session_player_earnings = message_data.result.session_player_earnings;
         let session_players = this.session.session_players;
 
         for(let i=0; i<session_player_earnings.length; i++)
@@ -146,15 +146,15 @@ take_finished_instructions: function take_finished_instructions(messageData){
 /**
  * take update subjects production
  */
-takeUpdateProductionTime: function takeUpdateProductionTime(messageData){
+take_update_production_time: function take_update_production_time(message_data){
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
        
-        session_player = app.findSessionPlayer(messageData.result.id);
+        session_player = app.findSessionPlayer(message_data.result.id);
         
-        session_player.good_one_production_rate = messageData.result.good_one_production_rate; 
-        session_player.good_two_production_rate = messageData.result.good_two_production_rate;    
+        session_player.good_one_production_rate = message_data.result.good_one_production_rate; 
+        session_player.good_two_production_rate = message_data.result.good_two_production_rate;    
     }
 },
 
@@ -164,21 +164,21 @@ sendEmailList: function sendEmailList(){
     this.cancelModal = false;
     this.working = true;
 
-    app.sendMessage("email_list",
+    app.send_message("email_list",
                    {"csv_data" : this.csv_email_list});
 },
 
 /** take update subject response
- * @param messageData {json} result of update, either sucess or fail with errors
+ * @param message_data {json} result of update, either sucess or fail with errors
 */
-takeUpdateEmailList: function takeUpdateEmailList(messageData){
+take_update_email_list: function take_update_email_list(message_data){
     app.clearMainFormErrors();
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {            
         app.upload_email_modal.hide(); 
 
-        result = messageData.result;
+        result = message_data.result;
 
         for(i=0; i<result.length; i++)
         {
@@ -190,7 +190,7 @@ takeUpdateEmailList: function takeUpdateEmailList(messageData){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.errors);
+        app.displayErrors(message_data.errors);
     } 
 },
 
@@ -221,29 +221,29 @@ hideSendEmailList: function hideSendEmailList(){
 sendUpdateSubject: function sendUpdateSubject(){
     this.cancelModal = false;
     this.working = true;
-    app.sendMessage("update_subject",
+    app.send_message("update_subject",
                    {"formData" : this.staffEditNameEtcForm});
 },
 
 /** take update subject response
- * @param messageData {json} result of update, either sucess or fail with errors
+ * @param message_data {json} result of update, either sucess or fail with errors
 */
-takeUpdateSubject: function takeUpdateSubject(messageData){
+take_update_subject: function take_update_subject(message_data){
     app.clearMainFormErrors();
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {            
         app.edit_subject_modal.hide();    
 
-        let session_player = app.findSessionPlayer(messageData.session_player.id);
-        session_player.name = messageData.session_player.name;
-        session_player.student_id = messageData.session_player.student_id;
-        session_player.email = messageData.session_player.email;
+        let session_player = app.findSessionPlayer(message_data.session_player.id);
+        session_player.name = message_data.session_player.name;
+        session_player.student_id = message_data.session_player.student_id;
+        session_player.email = message_data.session_player.email;
     } 
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.errors);
+        app.displayErrors(message_data.errors);
     } 
 },
 
@@ -333,19 +333,19 @@ sendAnonymizeData: function sendAnonymizeData(){
     }
 
     this.working = true;
-    app.sendMessage("anonymize_data",{});
+    app.send_message("anonymize_data",{});
 },
 
 /** take update subject response
- * @param messageData {json} result of update, either sucess or fail with errors
+ * @param message_data {json} result of update, either sucess or fail with errors
 */
-takeAnonymizeData: function takeAnonymizeData(messageData){
+take_anonymize_data: function take_anonymize_data(message_data){
     app.clearMainFormErrors();
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {            
 
-        let session_player_updates = messageData.result;
+        let session_player_updates = message_data.result;
         let session_players = this.session.session_players;
 
         for(let i=0; i<session_player_updates.length; i++)

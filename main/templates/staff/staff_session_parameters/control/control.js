@@ -3,7 +3,7 @@
 sendImportParameters(){
     
     app.working = true;
-    app.sendMessage("import_parameters", {"sessionID" : app.sessionID,
+    app.send_message("import_parameters", {"sessionID" : app.sessionID,
                                           "formData" : {session:app.session_import},});
 },
 
@@ -13,15 +13,15 @@ takeImportParameters(){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
-    if(messageData.status.status == "success")
+    if(message_data.status.status == "success")
     {
-        app.take_get_Session(messageData);       
-        app.import_parameters_message = messageData.status.message;
+        app.take_get_Session(message_data);       
+        app.import_parameters_message = message_data.status.message;
         location.reload();    
     } 
     else
     {
-        app.import_parameters_message = messageData.status.message;
+        app.import_parameters_message = message_data.status.message;
     } 
 },
 
@@ -43,20 +43,20 @@ hideImportParameters:function(){
 sendDownloadParameters(){
     
     app.working = true;
-    app.sendMessage("download_parameters", {"sessionID" : app.sessionID,});
+    app.send_message("download_parameters", {"sessionID" : app.sessionID,});
 },
 
 /** download parameter set into a file 
- @param messageData {json} result of file request, either sucess or fail with errors
+ @param message_data {json} result of file request, either sucess or fail with errors
 */
-takeDownloadParameters(messageData){
+takeDownloadParameters(message_data){
 
-    if(messageData.status == "success")
+    if(message_data.status == "success")
     {                  
-        console.log(messageData.parameter_set);
+        console.log(message_data.parameter_set);
 
         var downloadLink = document.createElement("a");
-        var jsonse = JSON.stringify(messageData.parameter_set);
+        var jsonse = JSON.stringify(message_data.parameter_set);
         var blob = new Blob([jsonse], {type: "application/json"});
         var url = URL.createObjectURL(blob);
         downloadLink.href = url;

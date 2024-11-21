@@ -12,22 +12,22 @@ sendLoadHelpDoc: function sendLoadHelpDoc(title){
 
     myModal.toggle();
 
-    app.sendMessage("help_doc", {title : title});
+    app.send_message("help_doc", {title : title});
 },
 
 /**
  * take help text load request
- * @param messageData : json
+ * @param message_data : json
  */
-take_load_help_doc: function take_load_help_doc(messageData){
+take_load_help_doc: function take_load_help_doc(message_data){
 
-    if(messageData.status.value == "success")
+    if(message_data.status.value == "success")
     {
-        this.helpText = messageData.status.result.help_doc.text;
+        this.helpText = message_data.status.result.help_doc.text;
     }
     else
     {
-        this.helpText = messageData.status.message;
+        this.helpText = message_data.status.message;
     }
 },
 

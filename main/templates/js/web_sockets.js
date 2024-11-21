@@ -8,7 +8,7 @@ doWebSockets = function()
     
         app.chatSocket.onmessage = function(e) {
             var data = JSON.parse(e.data);                       
-            app.takeMessage(data);
+            app.take_message(data);
         };
     
         app.chatSocket.onclose = function(e) {
@@ -27,7 +27,7 @@ doWebSockets = function()
         app.chatSocket.onopen = function(e) {
             console.log('Socket connected.');     
             app.reconnecting=false;   
-            app.handleSocketConnected();                      
+            app.handle_socket_connected();                      
         };                
 };
 

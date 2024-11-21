@@ -87,8 +87,8 @@ var app = Vue.createApp({
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected(){            
-            // app.sendGetSession();
+        handle_socket_connected(){            
+            // app.send_get_session();
             if(!app.first_load_done)
             {
                 Vue.nextTick(() => {
@@ -105,54 +105,54 @@ var app = Vue.createApp({
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage(data) {
+        take_message(data) {
 
             {%if DEBUG%}
             console.log(data);
             {%endif%}
 
-            messageType = data.message.messageType;
-            messageData = data.message.messageData;
+            message_type = data.message.message_type;
+            message_data = data.message.message_data;
 
-            switch(messageType) {                
+            switch(message_type) {                
                 case "get_session":
-                    app.take_get_Session(messageData);
+                    app.take_get_Session(message_data);
                     break;
                 case "update_parameterset":
-                    app.takeUpdateParameterset(messageData);
+                    app.takeUpdateParameterset(message_data);
                     break;         
                 case "update_parameterset_type":
-                    app.takeUpdateParametersetType(messageData);
+                    app.takeUpdateParametersetType(message_data);
                     break;    
                 case "update_parameterset_good":
-                    app.takeUpdateParametersetGood(messageData);
+                    app.takeUpdateParametersetGood(message_data);
                     break; 
                 case "update_parameterset_player":
-                    app.takeUpdateParametersetPlayer(messageData);
+                    app.takeUpdateParametersetPlayer(message_data);
                     break;     
                 case "remove_parameterset_player":
-                    app.takeRemoveParameterSetPlayer(messageData);
+                    app.takeRemoveParameterSetPlayer(message_data);
                     break;
                 case "add_parameterset_player":
-                    app.takeAddParameterSetPlayer(messageData);
+                    app.takeAddParameterSetPlayer(message_data);
                     break;
                 case "update_parameterset_player_group":
-                    app.takeUpdateParametersetPlayerGroup(messageData);
+                    app.takeUpdateParametersetPlayerGroup(message_data);
                     break;
                 case "copy_group_forward":
-                    app.takeCopyGroupForward(messageData);
+                    app.takeCopyGroupForward(message_data);
                     break;
                 case "import_parameters":
-                    app.takeImportParameters(messageData);
+                    app.takeImportParameters(message_data);
                     break;
                 case "download_parameters":
-                    app.takeDownloadParameters(messageData);
+                    app.takeDownloadParameters(message_data);
                     break;
                 case "update_parameterset_avatar":
-                    app.takeUpdateParametersetAvatar(messageData);
+                    app.takeUpdateParametersetAvatar(message_data);
                     break;
                 case "help_doc":
-                    app.take_load_help_doc(messageData);
+                    app.take_load_help_doc(message_data);
                     break;
             }
 
@@ -171,15 +171,15 @@ var app = Vue.createApp({
         },
 
         /** send websocket message to server
-        *    @param messageType {string} type of message sent to server
-        *    @param messageText {json} body of message being sent to server
+        *    @param message_type {string} type of message sent to server
+        *    @param message_text {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {
+        send_message(message_type, message_text) {
             
 
             app.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+                    'message_type': message_type,
+                    'message_text': message_text,
                 }));
         },
 
@@ -208,11 +208,11 @@ var app = Vue.createApp({
         },
 
         /** take create new session
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        take_get_Session(messageData){
+        take_get_Session(message_data){
             
-            app.session = messageData.session;
+            app.session = message_data.session;
 
             if(!app.first_load_done)
             {
@@ -233,8 +233,8 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        // sendGetSession(){
-        //     app.sendMessage("get_session",{"sessionID" : app.sessionID});
+        // send_get_session(){
+        //     app.send_message("get_session",{"sessionID" : app.sessionID});
         // },
 
         //do nothing on when enter pressed for post

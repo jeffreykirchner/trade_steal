@@ -26,29 +26,29 @@ hideEditParametersetType:function(){
 sendUpdateParametersetType(){
     
     app.working = true;
-    app.sendMessage("update_parameterset_type", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset_type", {"sessionID" : app.sessionID,
                                                  "parameterset_type_id" : app.current_parameterset_type.id,
                                                  "formData" : app.current_parameterset_type,});
 },
 
 /** handle result of updating parameter set type
 */
-takeUpdateParametersetType(messageData){
+takeUpdateParametersetType(message_data){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
     app.cancelModal=false;
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(message_data.status.value == "success")
     {
-        app.take_get_Session(messageData);       
+        app.take_get_Session(message_data);       
         app.editParametersetTypeModal.hide();         
     } 
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        app.displayErrors(message_data.status.errors);
     } 
 },
 

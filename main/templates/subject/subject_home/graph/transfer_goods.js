@@ -101,7 +101,7 @@ sendMoveGoods: function sendMoveGoods(){
     }
 
     app.working = true;
-    app.sendMessage("move_goods",
+    app.send_message("move_goods",
                      {"sourceType" : pixi_transfer_source.name.type.toString(),
                       "sourceID" :  pixi_transfer_source.name.user_id.toString(),
 
@@ -114,19 +114,19 @@ sendMoveGoods: function sendMoveGoods(){
 
 /** take result of moving goods
 */
-takeMoveGoods: function takeMoveGoods(messageData){
+takeMoveGoods: function takeMoveGoods(message_data){
     //app.cancelModal=false;
     app.clearMainFormErrors();
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        app.take_update_goods(messageData);    
+        app.take_update_goods(message_data);    
         app.closeMoveModal();               
     } 
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.errors);
+        app.displayErrors(message_data.errors);
     }
 },
 
@@ -143,16 +143,16 @@ closeMoveModal: function closeMoveModal(){
 },
 
 /** take updated data from goods being moved by another player
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
+takeUpdateMoveGoods: function takeUpdateMoveGoods(message_data){
 
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        app.take_update_goods(messageData);    
+        app.take_update_goods(message_data);    
 
-        if(parseInt(messageData.session_player_id) == app.session_player.id)
+        if(parseInt(message_data.session_player_id) == app.session_player.id)
         {
             app.closeMoveModal();    
             app.working = false;           
@@ -160,10 +160,10 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
     } 
     else
     {
-        if(parseInt(messageData.session_player_id) == app.session_player.id)
+        if(parseInt(message_data.session_player_id) == app.session_player.id)
         {
             app.cancelModal=true;                           
-            app.displayErrors(messageData.errors);
+            app.displayErrors(message_data.errors);
             app.working = false;
 
             if(app.test_mode)
@@ -175,10 +175,10 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(messageData){
 },
 
 /** update good counts of players in list
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-take_update_goods: function take_update_goods(messageData){
-    results = messageData.result;
+take_update_goods: function take_update_goods(message_data){
+    results = message_data.result;
 
     let session_player = app.session_player;
 

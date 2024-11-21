@@ -24,16 +24,16 @@ sendNextInstruction: function sendNextInstruction(direction){
     if(app.working) return;
     
     app.working = true;
-    app.sendMessage("next_instruction", {"direction" : direction});
+    app.send_message("next_instruction", {"direction" : direction});
 },
 
 /**
  * advance to next instruction page
  */
-take_next_instruction: function take_next_instruction(messageData){
-    if(messageData.value == "success")
+take_next_instruction: function take_next_instruction(message_data){
+    if(message_data.value == "success")
     {
-        result = messageData.result;       
+        result = message_data.result;       
         
         app.session_player.current_instruction = result.current_instruction;
         app.session_player.current_instruction_complete = result.current_instruction_complete;
@@ -58,16 +58,16 @@ sendFinishInstructions: function sendFinishInstructions(){
     if(app.working) return;
     
     app.working = true;
-    app.sendMessage("finish_instructions", {});
+    app.send_message("finish_instructions", {});
 },
 
 /**
  * finish instructions
  */
-takeFinishInstructions: function takeFinishInstructions(messageData){
-    if(messageData.value == "success")
+takeFinishInstructions: function takeFinishInstructions(message_data){
+    if(message_data.value == "success")
     {
-        result = messageData.result;       
+        result = message_data.result;       
         
         app.session_player.instructions_finished = result.instructions_finished;
         app.session_player.current_instruction_complete = result.current_instruction_complete;
@@ -370,7 +370,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
     {
         chat_type = "All";
 
-        messageData = {chat: {text : app.chat_text.trim(),
+        message_data = {chat: {text : app.chat_text.trim(),
                               sender_label : parameter_set_player_local.id_label,
                               sender_id : app.session_player.id,
                               id : randomNumber(1, 1000000)},
@@ -381,7 +381,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
     {
         chat_type = "Individual";
 
-        messageData = {chat: {text : app.chat_text.trim(),
+        message_data = {chat: {text : app.chat_text.trim(),
                                      sender_label : parameter_set_player_local.id_label,
                                      sender_id : app.session_player.id,
                                      id : randomNumber(1, 1000000)},
@@ -390,7 +390,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
                        status:"success"}
     }
 
-    app.take_update_chat(messageData);
+    app.take_update_chat(message_data);
 
     if(app.session_player.current_instruction == app.instructions.action_page_chat)
     {

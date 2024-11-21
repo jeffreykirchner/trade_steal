@@ -48,8 +48,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
@@ -64,8 +64,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_parameterset"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -80,8 +80,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_parameterset_type"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_type"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -96,8 +96,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_parameterset_good"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_good"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -112,8 +112,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_parameterset_player"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_player"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
@@ -128,8 +128,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "remove_parameterset_player"
-        message["messageData"] = message_data
+        message["message_type"] = "remove_parameterset_player"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))   
@@ -144,8 +144,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "add_parameterset_player"
-        message["messageData"] = message_data
+        message["message_type"] = "add_parameterset_player"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -160,8 +160,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_parameterset_player_group"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_player_group"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
@@ -175,8 +175,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "copy_group_forward"
-        message["messageData"] = message_data
+        message["message_type"] = "copy_group_forward"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
@@ -192,8 +192,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "import_parameters"
-        message["messageData"] = message_data
+        message["message_type"] = "import_parameters"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -204,8 +204,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         '''
         #download parameters to a file
         message = {}
-        message["messageType"] = "download_parameters"
-        message["messageData"] = await sync_to_async(take_download_parameters)(event["message_text"])
+        message["message_type"] = "download_parameters"
+        message["message_data"] = await sync_to_async(take_download_parameters)(event["message_text"])
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -220,8 +220,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         #message_data["session"] = await get_session(event["message_text"]["sessionID"])
 
         message = {}
-        message["messageType"] = "update_parameterset_avatar"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_avatar"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))

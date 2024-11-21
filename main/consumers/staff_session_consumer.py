@@ -86,8 +86,8 @@ class StaffSessionConsumer(SocketConsumerMixin,
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, 
                         cls=DjangoJSONEncoder))

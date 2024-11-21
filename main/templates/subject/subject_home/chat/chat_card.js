@@ -12,7 +12,7 @@ sendChat: function sendChat(){
     app.chat_error_message = "";
     app.working = true;
 
-    app.sendMessage("chat", 
+    app.send_message("chat", 
                     {"recipients" : app.chat_recipients, "text" : app.chat_text.trim(),},
                     "group");
 
@@ -21,13 +21,13 @@ sendChat: function sendChat(){
 
 /** take result of moving goods
 */
-takeChat: function takeChat(messageData){
+takeChat: function takeChat(message_data){
     //app.cancelModal=false;
     //app.clearMainFormErrors();
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        app.take_update_chat(messageData);                        
+        app.take_update_chat(message_data);                        
     } 
     else
     {
@@ -36,11 +36,11 @@ takeChat: function takeChat(messageData){
 },
 
 /** take updated data from goods being moved by another player
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-take_update_chat: function take_update_chat(messageData){
+take_update_chat: function take_update_chat(message_data){
     
-    let result = messageData;
+    let result = message_data;
     let chat = result.chat;
     let session_player = app.session_player;
 
@@ -90,7 +90,7 @@ take_update_chat: function take_update_chat(messageData){
         }
     }
 
-    if(parseInt(messageData.session_player_id) == app.session_player.id)
+    if(parseInt(message_data.session_player_id) == app.session_player.id)
     { 
         app.working = false;           
     }
@@ -99,7 +99,7 @@ take_update_chat: function take_update_chat(messageData){
 },
 
 /** update who should receive chat
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
 updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipients_index){
 

@@ -28,27 +28,27 @@ hideEditParametersetGood:function(){
 sendUpdateParametersetGood(){
     
     app.working = true;
-    app.sendMessage("update_parameterset_good", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset_good", {"sessionID" : app.sessionID,
                                                  "parameterset_good_id" : app.current_parameter_set_good.id,
                                                  "formData" : app.current_parameter_set_good,});
 },
 
 /** handle result of updating parameter set good
 */
-takeUpdateParametersetGood(messageData){
+takeUpdateParametersetGood(message_data){
 
     app.cancelModal=false;
     app.clearMainFormErrors();
 
-    if(messageData.status.value == "success")
+    if(message_data.status.value == "success")
     {
-        app.take_get_Session(messageData);       
+        app.take_get_Session(message_data);       
         app.editParametersetGoodModal.hide();       
         location.reload();    
     } 
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        app.displayErrors(message_data.status.errors);
     } 
 },

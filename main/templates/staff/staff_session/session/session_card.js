@@ -3,24 +3,24 @@
 sendUpdateSession: function sendUpdateSession(){
     this.cancelModal = false;
     this.working = true;
-    app.sendMessage("update_session",{"formData" : {title:app.session.title}});
+    app.send_message("update_session",{"formData" : {title:app.session.title}});
 },
 
 /** take update session reponse
- * @param messageData {json} result of update, either sucess or fail with errors
+ * @param message_data {json} result of update, either sucess or fail with errors
 */
-take_update_session: function take_update_session(messageData){
+take_update_session: function take_update_session(message_data){
     app.clearMainFormErrors();
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        app.take_get_Session(messageData);       
+        app.take_get_Session(message_data);       
         app.edit_session_modal.hide();    
     } 
     else
     {
         this.cancelModal=true;                           
-        app.displayErrors(messageData.errors);
+        app.displayErrors(message_data.errors);
     } 
 },
 
