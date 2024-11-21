@@ -1,16 +1,22 @@
 sendChat: function sendChat(){
 
-    if(this.working) return;
-    if(this.chat_text.trim() == "") return;
-    if(this.chat_text.trim().length > 200) return;
-    if(this.chat_recipients=="NONE") return;
-    
-    this.working = true;
+    if(app.working) return;
+    if(app.chat_text.trim() == "") return;
+    if(app.chat_text.trim().length > 200) return;
+    if(app.chat_recipients=="NONE")
+    {
+        app.chat_error_message = "Please select a recipient.";
+        return;
+    }
+
+    app.chat_error_message = "";
+    app.working = true;
+
     app.sendMessage("chat", 
-                    {"recipients" : this.chat_recipients, "text" : this.chat_text.trim(),},
+                    {"recipients" : app.chat_recipients, "text" : app.chat_text.trim(),},
                     "group");
 
-    this.chat_text="";                   
+    app.chat_text="";                   
 },
 
 /** take result of moving goods
@@ -36,7 +42,7 @@ takeUpdateChat: function takeUpdateChat(messageData){
     
     let result = messageData;
     let chat = result.chat;
-    let session_player = this.session_player;
+    let session_player = app.session_player;
 
     // if(app.chat_recipients=="NONE") return;
     if(result.status == "success")
@@ -47,7 +53,7 @@ takeUpdateChat: function takeUpdateChat(messageData){
                 session_player.chat_all.shift();
 
             session_player.chat_all.push(chat);
-            if(this.chat_recipients != "all")
+            if(app.chat_recipients != "all")
             {
                 session_player.new_chat_message = true;
             }
@@ -76,7 +82,7 @@ takeUpdateChat: function takeUpdateChat(messageData){
 
                 session_player.chat_individual.push(chat);
 
-                if(session_player_index != this.chat_recipients_index)
+                if(session_player_index != app.chat_recipients_index)
                 {
                     session_player.new_chat_message = true;
                 }
@@ -97,23 +103,23 @@ takeUpdateChat: function takeUpdateChat(messageData){
 */
 updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipients_index){
 
-    this.chat_recipients = chat_recipients;
+    app.chat_recipients = chat_recipients;
     
-    this.chat_recipients_index = chat_recipients_index;
+    app.chat_recipients_index = chat_recipients_index;
 
     app.updateChatDisplay();
 
-    if(this.chat_recipients=="all")
+    if(app.chat_recipients=="all")
     {
-        this.chat_button_label = "Everyone";
-        this.session_player.new_chat_message = false;
+        app.chat_button_label = "Everyone";
+        app.session_player.new_chat_message = false;
     }
     else
     {
         let parameter_set_player = app.get_parameter_set_player_from_player_id(chat_recipients);
-        this.chat_button_label = "Person " + parameter_set_player.id_label;
-        let session_player_id = this.session.session_players_order[chat_recipients_index];
-        let session_player = this.session.session_players[session_player_id];
+        app.chat_button_label = "Person " + parameter_set_player.id_label;
+        let session_player_id = app.session.session_players_order[chat_recipients_index];
+        let session_player = app.session.session_players[session_player_id];
         session_player.new_chat_message = false;
     }
 },
@@ -124,21 +130,21 @@ updateChatDisplay: function updateChatDisplay(){
 
     if(app.chat_recipients=="NONE") return;
 
-    if(this.chat_recipients=="all")
+    if(app.chat_recipients=="all")
     {
-        this.chat_list_to_display=Array.from(this.session_player.chat_all);
+        app.chat_list_to_display=Array.from(app.session_player.chat_all);
     }
     else
     {
-        let session_player_id = this.session.session_players_order[this.chat_recipients_index];
-        let session_player = this.session.session_players[session_player_id];
-        this.chat_list_to_display=Array.from(session_player.chat_individual);
+        let session_player_id = app.session.session_players_order[app.chat_recipients_index];
+        let session_player = app.session.session_players[session_player_id];
+        app.chat_list_to_display=Array.from(session_player.chat_individual);
     }
 
 },
 
 updateChatDisplayScroll: function updateChatDisplayScroll(){
-    // var elmnt = document.getElementById("chat_id_" + this.chat_list_to_display[this.chat_list_to_display.length-1].id.toString());
+    // var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
     // elmnt.scrollIntoView(); 
 },
 

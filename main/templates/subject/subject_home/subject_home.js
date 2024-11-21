@@ -65,6 +65,7 @@ var app = Vue.createApp({
                     chat_recipients_index : 0,
                     chat_button_label : "{{default_chat_label}}",
                     chat_list_to_display : [],                //list of chats to display on screen
+                    chat_error_message : "",
 
                     production_slider : 0,
                     production_slider_one : 50,
@@ -371,7 +372,7 @@ var app = Vue.createApp({
         */
         takeUpdateResetExperiment: function takeUpdateResetExperiment(messageData){
             app.destroyPixiPlayers();
-            
+
             app.takeGetSession(messageData);
 
             this.production_slider_one = 50;
