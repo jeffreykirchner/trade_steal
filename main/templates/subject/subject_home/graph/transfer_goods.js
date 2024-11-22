@@ -25,7 +25,7 @@ showTransferModal: function showTransferModal(container){
     app.transfer_modal_good_two_name = pixi_transfer_source.name.good_b_label;
 
     app.pixi_modal_open = true;
-    app.cancelModal=true;
+    app.cancel_modal=true;
 
     if(parameter_set.good_count == 2 || pixi_transfer_source.name.type == "field")
     {
@@ -46,7 +46,7 @@ hideTransferModal:function hideTransferModal(){
     
     app.clear_main_form_errors();
 
-    if(app.cancelModal)
+    if(app.cancel_modal)
     {
        app.transfer_good_one_amount = 0;
        app.transfer_good_two_amount = 0;
@@ -115,7 +115,7 @@ sendMoveGoods: function sendMoveGoods(){
 /** take result of moving goods
 */
 takeMoveGoods: function takeMoveGoods(message_data){
-    //app.cancelModal=false;
+    //app.cancel_modal=false;
     app.clear_main_form_errors();
 
     if(message_data.value == "success")
@@ -125,7 +125,7 @@ takeMoveGoods: function takeMoveGoods(message_data){
     } 
     else
     {
-        app.cancelModal=true;                           
+        app.cancel_modal=true;                           
         app.display_errors(message_data.errors);
     }
 },
@@ -162,7 +162,7 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(message_data){
     {
         if(parseInt(message_data.session_player_id) == app.session_player.id)
         {
-            app.cancelModal=true;                           
+            app.cancel_modal=true;                           
             app.display_errors(message_data.errors);
             app.working = false;
 
@@ -210,7 +210,7 @@ take_update_goods: function take_update_goods(message_data){
             }
         }
 
-        player = app.findSessionPlayer(player_id);
+        player = app.find_session_player(player_id);
 
         if(player)
         {
@@ -221,7 +221,7 @@ take_update_goods: function take_update_goods(message_data){
             player.good_one_field = results[r].good_one_field;
             player.good_two_field = results[r].good_two_field;               
 
-            player_index = app.findSessionPlayerIndex(player_id);
+            player_index = app.find_session_playerIndex(player_id);
 
             app.setupSingleHouse(player_index);
             app.setupSingleField(player_index);

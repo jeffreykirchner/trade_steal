@@ -9,14 +9,14 @@ start_experiment: function start_experiment(){
  * @param message_data {json}
 */
 take_start_experiment: function take_start_experiment(message_data){
-    app.take_get_Session(message_data);
+    app.take_get_session(message_data);
 },
 
 /** update start status
 *    @param message_data {json} session day in json format
 */
 take_update_start_experiment: function take_update_start_experiment(message_data){
-    app.take_get_Session(message_data);
+    app.take_get_session(message_data);
 },
 
 /** update start status
@@ -25,7 +25,7 @@ take_update_start_experiment: function take_update_start_experiment(message_data
 take_update_reset_experiment: function take_update_reset_experiment(message_data){
     app.change_town_view()
     app.chat_list_to_display=[];
-    app.take_get_Session(message_data);
+    app.take_get_session(message_data);
 
     Vue.nextTick(app.update_graph_canvas());
 
@@ -56,7 +56,7 @@ reset_experiment: function reset_experiment(){
 // takeResetExperiment: function takeResetExperiment(message_data){
 //     app.change_town_view()
 //     app.chat_list_to_display=[];
-//     app.take_get_Session(message_data);
+//     app.take_get_session(message_data);
 
 //     Vue.nextTick(app.update_graph_canvas());
 
@@ -80,14 +80,14 @@ reset_connections: function reset_connections(){
 *    @param message_data {json} session day in json format
 */
 take_update_reset_connections: function take_update_reset_connections(message_data){
-    app.take_get_Session(message_data);
+    app.take_get_session(message_data);
 },
 
 /** take reset experiment response
  * @param message_data {json}
 */
 takereset_connections: function takereset_connections(message_data){
-    app.take_get_Session(message_data);
+    app.take_get_session(message_data);
 },
 
 /**advance to next phase
@@ -201,7 +201,7 @@ send_send_invitations: function send_send_invitations(){
         return;
     }
 
-    this.cancelModal = false;
+    this.cancel_modal = false;
     this.working = true;
     this.email_result = "Sending ...";
 
@@ -232,7 +232,7 @@ take_send_invitations: function take_send_invitations(message_data){
 */
 show_send_invitations: function show_send_invitations(){
 
-    app.cancelModal=true;
+    app.cancel_modal=true;
 
     app.send_message_modal_form.subject = app.session.invitation_subject;
     app.send_message_modal_form.text = app.session.invitation_text;

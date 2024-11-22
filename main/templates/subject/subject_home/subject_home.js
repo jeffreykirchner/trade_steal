@@ -135,7 +135,7 @@ var app = Vue.createApp({
 
             switch(message_type) {                
                 case "get_session":
-                    app.take_get_Session(message_data);
+                    app.take_get_session(message_data);
                     break; 
                 case "update_move_goods":
                     app.takeUpdateMoveGoods(message_data);
@@ -253,7 +253,7 @@ var app = Vue.createApp({
         /** take create new session
         *    @param message_data {json} session day in json format
         */
-        take_get_Session: function take_get_Session(message_data){
+        take_get_session: function take_get_session(message_data){
             
             app.session = message_data.session;
             app.session_player = message_data.session_player;
@@ -356,7 +356,7 @@ var app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_update_start_experiment: function take_update_start_experiment(message_data){
-            app.take_get_Session(message_data);
+            app.take_get_session(message_data);
 
             if(app.session.current_experiment_phase == "Instructions")
             {
@@ -373,7 +373,7 @@ var app = Vue.createApp({
         take_update_reset_experiment: function take_update_reset_experiment(message_data){
             app.destroy_pixi_players();
 
-            app.take_get_Session(message_data);
+            app.take_get_session(message_data);
 
             this.production_slider_one = 50;
             this.production_slider_two = 50;

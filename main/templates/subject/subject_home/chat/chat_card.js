@@ -22,7 +22,7 @@ sendChat: function sendChat(){
 /** take result of moving goods
 */
 takeChat: function takeChat(message_data){
-    //app.cancelModal=false;
+    //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
     if(message_data.value == "success")
@@ -73,7 +73,7 @@ take_update_chat: function take_update_chat(message_data){
             }
 
             session_player = app.session.session_players[target];
-            session_player_index = app.findSessionPlayerIndex(target);
+            session_player_index = app.find_session_playerIndex(target);
 
             if(session_player)
             {

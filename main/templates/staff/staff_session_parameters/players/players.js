@@ -5,7 +5,7 @@
     if(app.session.started) return;
     
     app.clear_main_form_errors();
-    app.cancelModal=true;
+    app.cancel_modal=true;
     app.parametersetPlayerBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_players[index]);
     app.parametersetPlayerBeforeEdit.good_one =  Object.assign({}, app.session.parameter_set.parameter_set_players[index].good_one);
     app.parametersetPlayerBeforeEdit.good_two =  Object.assign({}, app.session.parameter_set.parameter_set_players[index].good_two);
@@ -23,7 +23,7 @@
 /** hide edit parmeter set player
 */
 hideEditParametersetPlayer:function(){
-    if(app.cancelModal)
+    if(app.cancel_modal)
     {
         Object.assign(app.session.parameter_set.parameter_set_players[app.parametersetPlayerBeforeEditIndex], app.parametersetPlayerBeforeEdit);
 
@@ -51,20 +51,20 @@ sendUpdateParametersetPlayer(){
 /** handle result of updating parameter set player
 */
 takeUpdateParametersetPlayer(message_data){
-    //app.cancelModal=false;
+    //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
-    app.cancelModal=false;
+    app.cancel_modal=false;
     app.clear_main_form_errors();
 
     if(message_data.status.value == "success")
     {
-        app.take_get_Session(message_data);       
+        app.take_get_session(message_data);       
         app.editParametersetPlayerModal.hide();     
     } 
     else
     {
-        app.cancelModal=true;                           
+        app.cancel_modal=true;                           
         app.display_errors(message_data.status.errors);
     } 
 },
@@ -76,7 +76,7 @@ takeUpdateParametersetPlayer(message_data){
     if(app.session.started) return;
 
     app.clear_main_form_errors();
-    app.cancelModal=true;
+    app.cancel_modal=true;
     app.parametersetPlayerGroupBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_players[player_id].period_groups[period_id]);
     app.parametersetPlayerBeforeEditIndex = player_id;
     app.parametersetPlayerGroupBeforeEditIndex = period_id;
@@ -88,7 +88,7 @@ takeUpdateParametersetPlayer(message_data){
 /** hide edit parmeter set player group
 */
 hideEditParametersetPlayerGroup:function(){
-    if(app.cancelModal)
+    if(app.cancel_modal)
     {
         Object.assign(app.session.parameter_set.parameter_set_players[app.parametersetPlayerBeforeEditIndex].period_groups[app.parametersetPlayerGroupBeforeEditIndex],
                       app.parametersetPlayerGroupBeforeEdit);
@@ -109,20 +109,20 @@ sendUpdateParametersetPlayerGroup(){
 /** handle result of updating parameter set player group
 */
 takeUpdateParametersetPlayerGroup(message_data){
-    //app.cancelModal=false;
+    //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
-    app.cancelModal=false;
+    app.cancel_modal=false;
     app.clear_main_form_errors();
 
     if(message_data.status.value == "success")
     {
-        app.take_get_Session(message_data);       
+        app.take_get_session(message_data);       
         app.editParametersetPlayerGroupModal.hide();            
     } 
     else
     {
-        app.cancelModal=true;                           
+        app.cancel_modal=true;                           
         app.display_errors(message_data.status.errors);
     } 
 },
@@ -139,10 +139,10 @@ sendCopyGroupForward(period_number){
 /** handle result of copying groups forward
 */
 takeCopyGroupForward(message_data){
-    //app.cancelModal=false;
+    //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
-    app.take_get_Session(message_data);   
+    app.take_get_session(message_data);   
 },
 
 /** copy specified period's groups forward to future groups
@@ -158,9 +158,9 @@ sendRemoveParameterSetPlayer(){
 /** handle result of copying groups forward
 */
 takeRemoveParameterSetPlayer(message_data){
-    app.cancelModal=false;
+    app.cancel_modal=false;
     //app.clear_main_form_errors();
-    app.take_get_Session(message_data);   
+    app.take_get_session(message_data);   
     app.editParametersetPlayerModal.hide();
 },
 
@@ -175,7 +175,7 @@ sendAddParameterSetPlayer(player_id){
 /** handle result of copying groups forward
 */
 takeAddParameterSetPlayer(message_data){
-    //app.cancelModal=false;
+    //app.cancel_modal=false;
     //app.clear_main_form_errors();
-    app.take_get_Session(message_data); 
+    app.take_get_session(message_data); 
 },

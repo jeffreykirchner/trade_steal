@@ -12,7 +12,7 @@ send_create_session: function send_create_session(){
  */
 take_create_session: function take_create_session(message_data){    
     this.create_session_button_text ='Create Session <i class="fas fa-plus"></i>';
-    app.take_get_Sessions(message_data);
+    app.take_get_sessions(message_data);
 },
 
 /**

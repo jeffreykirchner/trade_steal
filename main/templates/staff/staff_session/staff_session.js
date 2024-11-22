@@ -104,7 +104,7 @@ var app = Vue.createApp({
 
             switch(message_type) {                
                 case "get_session":
-                    app.take_get_Session(message_data);
+                    app.take_get_session(message_data);
                     break;
                 case "update_session":
                     app.take_update_session(message_data);
@@ -268,7 +268,7 @@ var app = Vue.createApp({
         /** take create new session
         *    @param message_data {json} session day in json format
         */
-        take_get_Session: function take_get_Session(message_data){
+        take_get_session: function take_get_session(message_data){
             
             app.session = message_data.session;
             app.destroy_pixi_players();
@@ -436,7 +436,7 @@ var app = Vue.createApp({
             {
                 if(result[i].notice)
                 {
-                    let session_player = app.findSessionPlayer(result[0].id);
+                    let session_player = app.find_session_player(result[0].id);
                     let notice_parameter_set_player = app.get_parameter_set_player_from_player_id(session_player.id);
                     let town = notice_parameter_set_player.town; 
                     let notice = result[i].notice;

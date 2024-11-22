@@ -1,8 +1,8 @@
 /** send session update form   
 */
-sendUpdateSession: function sendUpdateSession(){
-    this.cancelModal = false;
-    this.working = true;
+send_update_session: function send_update_session(){
+    app.cancel_modal = false;
+    app.working = true;
     app.send_message("update_session",{"formData" : {title:app.session.title}});
 },
 
@@ -14,32 +14,32 @@ take_update_session: function take_update_session(message_data){
 
     if(message_data.value == "success")
     {
-        app.take_get_Session(message_data);       
+        app.take_get_session(message_data);       
         app.edit_session_modal.hide();    
     } 
     else
     {
-        this.cancelModal=true;                           
+        app.cancel_modal=true;                           
         app.display_errors(message_data.errors);
     } 
 },
 
 /** show edit session modal
 */
-showEditSession:function showEditSession(){
+show_edit_session:function show_edit_session(){
     app.clear_main_form_errors();
-    this.cancelModal=true;
-    this.sessionBeforeEdit = Object.assign({}, this.session);
+    app.cancel_modal=true;
+    app.session_before_edit = Object.assign({}, app.session);
 
     app.edit_session_modal.show();
 },
 
 /** hide edit session modal
 */
-hideEditSession:function hideEditSession(){
-    if(this.cancelModal)
+hide_edit_session:function hide_edit_session(){
+    if(app.cancel_modal)
     {
-        Object.assign(this.session, this.sessionBeforeEdit);
-        this.sessionBeforeEdit=null;
+        Object.assign(app.session, app.session_before_edit);
+        app.session_before_edit=null;
     }
 },

@@ -35,7 +35,7 @@
                         <tr v-for="(p, index) in session.parameter_set.parameter_set_avatars_order" 
                             v-bind:key="p"
                             :set="temp_p=session.parameter_set.parameter_set_avatars[p]"
-                            v-on:click="showEditParametersetAvatar(p)">                           
+                            v-on:click="show_edit_parameterset_avatar(p)">                           
 
                             <td class="player_table_cell">
                                 <span v-if="temp_p.avatar">

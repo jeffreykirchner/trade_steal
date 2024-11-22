@@ -5,7 +5,7 @@ get_parameter_set_player_from_player_id: function get_parameter_set_player_from_
 {
     try 
     {
-        let session_player = app.findSessionPlayer(player_id);
+        let session_player = app.find_session_player(player_id);
     
         return app.session.parameter_set.parameter_set_players[session_player.parameter_set_player_id];
     }
@@ -17,7 +17,7 @@ get_parameter_set_player_from_player_id: function get_parameter_set_player_from_
  /**
   * return session player that has specified id
   */
- findSessionPlayer: function findSessionPlayer(id){
+ find_session_player: function find_session_player(id){
 
     if(id in app.session.session_players)
     {
@@ -30,7 +30,7 @@ get_parameter_set_player_from_player_id: function get_parameter_set_player_from_
 /**
  * return session player index that has specified id
  */
-findSessionPlayerIndex: function findSessionPlayerIndex(id){
+find_session_playerIndex: function find_session_playerIndex(id){
 
     
     for(let i=0; i<app.session.session_players_order.length; i++)

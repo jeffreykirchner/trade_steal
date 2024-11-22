@@ -8,7 +8,7 @@
     {
         let result = message_data.result;
 
-        session_player = app.findSessionPlayer(result.id);
+        session_player = app.find_session_player(result.id);
 
         if(session_player)
         {
@@ -34,7 +34,7 @@
 
         for(let i=0; i<group_list.length; i++)
         {
-            session_player = app.findSessionPlayer(group_list[i].id);
+            session_player = app.find_session_player(group_list[i].id);
 
             if(session_player)
             {
@@ -53,7 +53,7 @@ take_update_name: function take_update_name(message_data){
     {
         let result = message_data.result;
 
-        session_player = app.findSessionPlayer(result.id);
+        session_player = app.find_session_player(result.id);
 
         if(session_player)
         {
@@ -72,12 +72,12 @@ take_update_avatar: function take_update_avatar(message_data){
     {
         let result = message_data.result;
 
-        session_player = app.findSessionPlayer(result.id);
+        session_player = app.find_session_player(result.id);
 
         if(session_player)
         {
             session_player.avatar = result.avatar;
-            this.setupSingleAvatar(this.findSessionPlayerIndex(result.id));
+            this.setupSingleAvatar(this.find_session_playerIndex(result.id));
         }       
     }
  },
@@ -91,7 +91,7 @@ take_next_instruction: function take_next_instruction(message_data){
     {
         let result = message_data.result;
 
-        session_player = this.findSessionPlayer(result.id);
+        session_player = this.find_session_player(result.id);
 
         if(session_player)
         {
@@ -110,7 +110,7 @@ take_finished_instructions: function take_finished_instructions(message_data){
     {
         let result = message_data.result;
 
-        session_player = this.findSessionPlayer(result.id);
+        session_player = this.find_session_player(result.id);
 
         if(session_player)
         {
@@ -133,7 +133,7 @@ take_finished_instructions: function take_finished_instructions(message_data){
 
         for(let i=0; i<session_player_earnings.length; i++)
         {
-            session_player = app.findSessionPlayer(session_player_earnings[i].id);
+            session_player = app.find_session_player(session_player_earnings[i].id);
 
             if(session_player)
             {
@@ -151,7 +151,7 @@ take_update_production_time: function take_update_production_time(message_data){
     if(message_data.value == "success")
     {
        
-        session_player = app.findSessionPlayer(message_data.result.id);
+        session_player = app.find_session_player(message_data.result.id);
         
         session_player.good_one_production_rate = message_data.result.good_one_production_rate; 
         session_player.good_two_production_rate = message_data.result.good_two_production_rate;    
@@ -160,8 +160,8 @@ take_update_production_time: function take_update_production_time(message_data){
 
 /** send session update form   
 */
-sendEmailList: function sendEmailList(){
-    this.cancelModal = false;
+send_email_list: function send_email_list(){
+    this.cancel_modal = false;
     this.working = true;
 
     app.send_message("email_list",
@@ -182,23 +182,23 @@ take_update_email_list: function take_update_email_list(message_data){
 
         for(i=0; i<result.length; i++)
         {
-            let session_player = app.findSessionPlayer(result[i].id);
+            let session_player = app.find_session_player(result[i].id);
             session_player.email = result[i].email;
             session_player.student_id = result[i].student_id;
         }
     } 
     else
     {
-        app.cancelModal=true;                           
+        app.cancel_modal=true;                           
         app.display_errors(message_data.errors);
     } 
 },
 
 /** show edit subject modal
 */
-showSendEmailList: function showSendEmailList(){
+show_send_email_list: function show_send_email_list(){
     app.clear_main_form_errors();
-    this.cancelModal=true;
+    this.cancel_modal=true;
 
     this.csv_email_list = "";
     
@@ -207,10 +207,10 @@ showSendEmailList: function showSendEmailList(){
 
 /** hide edit subject modal
 */
-hideSendEmailList: function hideSendEmailList(){
+hide_send_email_list: function hide_send_email_list(){
     this.csv_email_list = "";
 
-    if(this.cancelModal)
+    if(this.cancel_modal)
     {      
        
     }
@@ -218,8 +218,8 @@ hideSendEmailList: function hideSendEmailList(){
 
 /** send session update form   
 */
-sendUpdateSubject: function sendUpdateSubject(){
-    this.cancelModal = false;
+send_update_subject: function send_update_subject(){
+    this.cancel_modal = false;
     this.working = true;
     app.send_message("update_subject",
                    {"formData" : this.staff_edit_name_etc_form});
@@ -235,27 +235,27 @@ take_update_subject: function take_update_subject(message_data){
     {            
         app.edit_subject_modal.hide();    
 
-        let session_player = app.findSessionPlayer(message_data.session_player.id);
+        let session_player = app.find_session_player(message_data.session_player.id);
         session_player.name = message_data.session_player.name;
         session_player.student_id = message_data.session_player.student_id;
         session_player.email = message_data.session_player.email;
     } 
     else
     {
-        app.cancelModal=true;                           
+        app.cancel_modal=true;                           
         app.display_errors(message_data.errors);
     } 
 },
 
 /** show edit subject modal
 */
-showEditSubject: function showEditSubject(id){
+show_edit_subject: function show_edit_subject(id){
     app.clear_main_form_errors();
-    this.cancelModal=true;
+    this.cancel_modal=true;
 
     this.staff_edit_name_etc_form.id = id;
 
-    let session_player = app.findSessionPlayer(id);
+    let session_player = app.find_session_player(id);
 
     this.staff_edit_name_etc_form.name = session_player.name;
     this.staff_edit_name_etc_form.student_id = session_player.student_id;
@@ -266,8 +266,8 @@ showEditSubject: function showEditSubject(id){
 
 /** hide edit subject modal
 */
-hideEditSubject: function hideEditSubject(){
-    if(this.cancelModal)
+hide_edit_subject: function hide_edit_subject(){
+    if(this.cancel_modal)
     {
        
        
@@ -277,7 +277,7 @@ hideEditSubject: function hideEditSubject(){
 /**
  * copy earnings to clipboard
  */
-copyEarnings: function copyEarnings(){
+copy_earnings: function copy_earnings(){
 
    let text="";
 
@@ -291,12 +291,12 @@ copyEarnings: function copyEarnings(){
         if(i<app.session.session_players_order.length-1) text += "\r\n";
     }
 
-   app.copyToClipboard(text);
+   app.copy_to_clipboard(text);
    app.earnings_copied = true;
 },
 
 //copy text to clipboard
-copyToClipboard: function copyToClipboard(text){
+copy_to_clipboard: function copy_to_clipboard(text){
 
     // Create a dummy input to copy the string array inside it
     var dummy = document.createElement("textarea");
@@ -326,7 +326,7 @@ copyToClipboard: function copyToClipboard(text){
 
 /** send session update form   
 */
-sendAnonymizeData: function sendAnonymizeData(){
+send_anonymize_data: function send_anonymize_data(){
     
     if (!confirm('Anonymize data? Identifying information will be permanent removed.')) {
         return;
@@ -350,7 +350,7 @@ take_anonymize_data: function take_anonymize_data(message_data){
 
         for(let i=0; i<session_player_updates.length; i++)
         {
-            session_player = app.findSessionPlayer(session_player_updates[i].id);
+            session_player = app.find_session_player(session_player_updates[i].id);
 
             if(session_player)
             {
@@ -369,6 +369,6 @@ take_anonymize_data: function take_anonymize_data(message_data){
 take_update_survey_complete: function take_update_survey_complete(message_data){
     result = message_data;
 
-    session_player = app.findSessionPlayer(result.player_id);
+    session_player = app.find_session_player(result.player_id);
     session_player.survey_complete = true;
 },

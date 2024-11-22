@@ -65,18 +65,18 @@ var app = Vue.createApp({
 
                     upload_file: null,
                     upload_file_name:'Choose File',
-                    uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
-                    uploadParametersetMessaage:'',
+                    upload_parameterset_button_text:'Upload  <i class="fas fa-upload"></i>',
+                    upload_parameterset_messaage:'',
                     // show_parameters:false,
                     import_parameters_message : "",
 
-                    importParametersModal : null,
+                    import_parameters_modal : null,
                     editParametersetModal : null,
                     editParametersetTypeModal : null,
                     editParametersetPlayerModal : null,
                     editParametersetPlayerGroupModal : null,
                     editParametersetGoodModal : null,
-                    editAvatarsModal : null,
+                    edit_avatars_modal : null,
                     parameterSetModal : null,
 
                     //form paramters
@@ -116,7 +116,7 @@ var app = Vue.createApp({
 
             switch(message_type) {                
                 case "get_session":
-                    app.take_get_Session(message_data);
+                    app.take_get_session(message_data);
                     break;
                 case "update_parameterset":
                     app.takeUpdateParameterset(message_data);
@@ -143,13 +143,13 @@ var app = Vue.createApp({
                     app.takeCopyGroupForward(message_data);
                     break;
                 case "import_parameters":
-                    app.takeImportParameters(message_data);
+                    app.take_import_parameters(message_data);
                     break;
                 case "download_parameters":
-                    app.takeDownloadParameters(message_data);
+                    app.take_download_parameters(message_data);
                     break;
                 case "update_parameterset_avatar":
-                    app.takeUpdateParametersetAvatar(message_data);
+                    app.take_update_parameterset_avatar(message_data);
                     break;
                 case "help_doc":
                     app.take_load_help_doc(message_data);
@@ -186,22 +186,22 @@ var app = Vue.createApp({
         do_first_load: function do_first_load()
         {
             
-            app.importParametersModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('importParametersModal'), {keyboard: false})
+            app.import_parameters_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('import_parameters_modal'), {keyboard: false})
             app.editParametersetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetModal'), {keyboard: false})
             app.editParametersetTypeModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetTypeModal'), {keyboard: false})
             app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})
             app.editParametersetPlayerGroupModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerGroupModal'), {keyboard: false})
             app.editParametersetGoodModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetGoodModal'), {keyboard: false})
-            app.editAvatarsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editAvatarsModal'), {keyboard: false})
+            app.edit_avatars_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_avatars_modal'), {keyboard: false})
             app.parameterSetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('parameterSetModal'), {keyboard: false})
 
-            document.getElementById('importParametersModal').addEventListener('hidden.bs.modal', app.hideImportParameters);
+            document.getElementById('import_parameters_modal').addEventListener('hidden.bs.modal', app.hide_import_parameters);
             document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
             document.getElementById('editParametersetTypeModal').addEventListener('hidden.bs.modal', app.hideEditParametersetType);
             document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
             document.getElementById('editParametersetPlayerGroupModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayerGroup);
             document.getElementById('editParametersetGoodModal').addEventListener('hidden.bs.modal', app.hideEditParametersetGood);
-            document.getElementById('editAvatarsModal').addEventListener('hidden.bs.modal', app.hideEditParametersetAvatar);
+            document.getElementById('edit_avatars_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_avatar);
             document.getElementById('parameterSetModal').addEventListener('hidden.bs.modal', app.hideParameterSet);
 
             app.first_load_done = true;
@@ -210,7 +210,7 @@ var app = Vue.createApp({
         /** take create new session
         *    @param message_data {json} session day in json format
         */
-        take_get_Session(message_data){
+        take_get_session(message_data){
             
             app.session = message_data.session;
 

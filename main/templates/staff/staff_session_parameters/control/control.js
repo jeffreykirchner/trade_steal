@@ -1,6 +1,8 @@
 /** copy parameters from another period
 */
-sendImportParameters(){
+send_import_parameters(){
+    
+    if(!app.session_import) return;
     
     app.working = true;
     app.send_message("import_parameters", {"session_id" : app.session_id,
@@ -9,13 +11,13 @@ sendImportParameters(){
 
 /** show parameters copied from another period 
 */
-takeImportParameters(){
-    //app.cancelModal=false;
+take_import_parameters(){
+    //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
     if(message_data.status.status == "success")
     {
-        app.take_get_Session(message_data);       
+        app.take_get_session(message_data);       
         app.import_parameters_message = message_data.status.message;
         location.reload();    
     } 
@@ -27,20 +29,20 @@ takeImportParameters(){
 
 /** show edit session modal
 */
-showImportParameters:function(){
+show_import_parameters:function(){
     
-   app.importParametersModal.show();
+   app.import_parameters_modal.show();
 },
 
 /** hide edit session modal
 */
-hideImportParameters:function(){
+hide_import_parameters:function(){
     
 },
 
 /** send request to download parameters to a file 
 */
-sendDownloadParameters(){
+send_download_parameters(){
     
     app.working = true;
     app.send_message("download_parameters", {"session_id" : app.session_id,});
@@ -49,7 +51,7 @@ sendDownloadParameters(){
 /** download parameter set into a file 
  @param message_data {json} result of file request, either sucess or fail with errors
 */
-takeDownloadParameters(message_data){
+take_download_parameters(message_data){
 
     if(message_data.status == "success")
     {                  
@@ -72,7 +74,7 @@ takeDownloadParameters(message_data){
 
 /**upload a parameter set file
 */
-uploadParameterset:function(){  
+upload_parameterset:function(){  
 
     let formData = new FormData();
     formData.append('file', app.upload_file);
@@ -86,9 +88,9 @@ uploadParameterset:function(){
             )
             .then(function (response) {     
 
-                app.uploadParametersetMessaage = response.data.message.message;
+                app.upload_parameterset_messaage = response.data.message.message;
                 app.session = response.data.session;
-                app.uploadParametersetButtonText= 'Upload <i class="fas fa-upload"></i>';
+                app.upload_parameterset_button_text= 'Upload <i class="fas fa-upload"></i>';
                 location.reload();
 
             })
@@ -99,16 +101,16 @@ uploadParameterset:function(){
 },
 
 //direct upload button click
-uploadAction:function(){
+upload_action:function(){
     if(app.upload_file == null)
         return;
 
-    app.uploadParametersetMessaage = "";
-    app.uploadParametersetButtonText = '<i class="fas fa-spinner fa-spin"></i>';
+    app.upload_parameterset_messaage = "";
+    app.upload_parameterset_button_text = '<i class="fas fa-spinner fa-spin"></i>';
 
     if(app.upload_mode == "parameters")
     {
-        this.uploadParameterset();
+        this.upload_parameterset();
     }
     else
     {
@@ -118,21 +120,21 @@ uploadAction:function(){
 },
 
 //file upload
-handleFileUpload:function(){
+handle_file_upload:function(){
     app.upload_file = this.$refs.file.files[0];
     app.upload_file_name = app.upload_file.name;
 },
 
 /** show upload parameters modal
 */
-showUploadParameters:function(upload_mode){
+show_upload_parameters:function(upload_mode){
     app.upload_mode = upload_mode;
-    app.uploadParametersetMessaage = "";
+    app.upload_parameterset_messaage = "";
 
     app.parameterSetModal.show();
 },
 
 /**hide upload parameters modal
 */
-hideUploadParameters:function(){
+hide_upload_parameters:function(){
 },

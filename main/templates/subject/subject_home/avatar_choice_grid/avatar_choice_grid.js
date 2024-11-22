@@ -116,7 +116,7 @@ sendAvatar: function sendAvatar(){
 /** take result of moving goods
 */
 takeAvatar: function takeAvatar(message_data){
-    //app.cancelModal=false;
+    //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
     app.working = false;
