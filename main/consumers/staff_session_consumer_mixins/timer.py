@@ -269,14 +269,16 @@ async def do_period_production(session, world_state_local, parameter_set_local):
         session_player = session_players[str(p)]
         parameter_set_type = parameter_set_local["parameter_set_players"][str(session_player["parameter_set_player_id"])]["parameter_set_type"]
     
-        session_player["good_one_field_production"] += await do_period_production_function(
+        session_player["good_one_field_production"] = Decimal(session_player["good_one_field_production"]) + \
+                                                      await do_period_production_function(
                                                                 Decimal(parameter_set_type["good_one_production_1"]),
                                                                 Decimal(parameter_set_type["good_one_production_2"]),
                                                                 Decimal(parameter_set_type["good_one_production_3"]),
                                                                 Decimal(session_player["good_one_production_rate"]),
                                                                 parameter_set_local)
 
-        session_player["good_two_field_production"] += await do_period_production_function(
+        session_player["good_two_field_production"] = Decimal(session_player["good_two_field_production"]) + \
+                                                      await do_period_production_function(
                                                                 Decimal(parameter_set_type["good_two_production_1"]),
                                                                 Decimal(parameter_set_type["good_two_production_2"]),
                                                                 Decimal(parameter_set_type["good_two_production_3"]),

@@ -3,7 +3,7 @@
 /**show edit paramter set
  */
 showEditParameterset:function(){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     app.cancelModal=true;
     app.paramtersetBeforeEdit = Object.assign({}, app.session.parameter_set);
 
@@ -34,7 +34,7 @@ sendUpdateParameterset(){
         form_data[v]=app.session.parameter_set[v];
     }
 
-    app.send_message("update_parameterset", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset", {"session_id" : app.session_id,
                                             "formData" : form_data,});
 },
 
@@ -42,10 +42,10 @@ sendUpdateParameterset(){
 */
 takeUpdateParameterset(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     app.cancelModal=false;
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.status.value == "success")
     {
@@ -55,7 +55,7 @@ takeUpdateParameterset(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.status.errors);
+        app.display_errors(message_data.status.errors);
     } 
 },
 

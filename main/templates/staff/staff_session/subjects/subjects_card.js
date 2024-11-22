@@ -124,7 +124,7 @@ take_finished_instructions: function take_finished_instructions(message_data){
   * update subject earnings
   *  @param message_data {json} session day in json format
   */
- takeUpdateEarnings: function takeUpdateEarnings(message_data){
+ take_update_earnings: function take_update_earnings(message_data){
 
     if(message_data.value == "success")
     {
@@ -172,7 +172,7 @@ sendEmailList: function sendEmailList(){
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_update_email_list: function take_update_email_list(message_data){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {            
@@ -190,14 +190,14 @@ take_update_email_list: function take_update_email_list(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.errors);
+        app.display_errors(message_data.errors);
     } 
 },
 
 /** show edit subject modal
 */
 showSendEmailList: function showSendEmailList(){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     this.cancelModal=true;
 
     this.csv_email_list = "";
@@ -222,14 +222,14 @@ sendUpdateSubject: function sendUpdateSubject(){
     this.cancelModal = false;
     this.working = true;
     app.send_message("update_subject",
-                   {"formData" : this.staffEditNameEtcForm});
+                   {"formData" : this.staff_edit_name_etc_form});
 },
 
 /** take update subject response
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_update_subject: function take_update_subject(message_data){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {            
@@ -243,23 +243,23 @@ take_update_subject: function take_update_subject(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.errors);
+        app.display_errors(message_data.errors);
     } 
 },
 
 /** show edit subject modal
 */
 showEditSubject: function showEditSubject(id){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     this.cancelModal=true;
 
-    this.staffEditNameEtcForm.id = id;
+    this.staff_edit_name_etc_form.id = id;
 
     let session_player = app.findSessionPlayer(id);
 
-    this.staffEditNameEtcForm.name = session_player.name;
-    this.staffEditNameEtcForm.student_id = session_player.student_id;
-    this.staffEditNameEtcForm.email = session_player.email;
+    this.staff_edit_name_etc_form.name = session_player.name;
+    this.staff_edit_name_etc_form.student_id = session_player.student_id;
+    this.staff_edit_name_etc_form.email = session_player.email;
     
     app.edit_subject_modal.show();  
 },
@@ -340,7 +340,7 @@ sendAnonymizeData: function sendAnonymizeData(){
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_anonymize_data: function take_anonymize_data(message_data){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {            

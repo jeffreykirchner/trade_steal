@@ -15,7 +15,7 @@ let worker = null;
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     is_subject : true,
                     working : false,
@@ -199,7 +199,7 @@ var app = Vue.createApp({
         send_message: function send_message(message_type, message_text, message_target="self") {
             //send socket message to server
 
-            this.chatSocket.send(JSON.stringify({
+            this.chat_socket.send(JSON.stringify({
                     'message_type': message_type,
                     'message_text': message_text,
                     'message_target': message_target,
@@ -262,7 +262,7 @@ var app = Vue.createApp({
 
             app.current_town = parameter_set_player_local.town;
 
-            app.destroyPixiPlayers();
+            app.destroy_pixi_players();
 
             if(app.session.started)
             {
@@ -298,15 +298,15 @@ var app = Vue.createApp({
                 else
                 {
                     Vue.nextTick(() => {
-                        app.setupPixiPlayers();
+                        app.setup_pixi_players();
                     });   
                 }
                 
                 if(this.session.current_experiment_phase != 'Instructions')
                 {
-                    app.updateChatDisplay();         
+                    app.update_chat_display();         
                     Vue.nextTick(() => {
-                        app.updateNoticeDisplayScroll();
+                        app.update_notice_displayScroll();
                     });       
                 }
                 app.calcWaste();
@@ -339,7 +339,7 @@ var app = Vue.createApp({
         /**
          * handle window resize event
          */
-        handleResize: function handleResize(){                
+        handle_resize: function handle_resize(){                
 
             setTimeout(function(){
                 let canvas = document.getElementById('sd_graph_id');
@@ -348,7 +348,7 @@ var app = Vue.createApp({
                 app.canvas_scale_height = app.canvas_height / app.grid_y;
                 app.canvas_scale_width = app.canvas_width / app.grid_x;
 
-                app.setupPixiPlayers();
+                app.setup_pixi_players();
             }, 250);
         },
 
@@ -371,7 +371,7 @@ var app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_update_reset_experiment: function take_update_reset_experiment(message_data){
-            app.destroyPixiPlayers();
+            app.destroy_pixi_players();
 
             app.take_get_Session(message_data);
 
@@ -413,9 +413,9 @@ var app = Vue.createApp({
             if(notice_list.length > 0)
             {
                 this.session_player.notices.push(notice_list[0]);
-                // setTimeout(app.updateNoticeDisplayScroll, 250);
+                // setTimeout(app.update_notice_displayScroll, 250);
                 Vue.nextTick(() => {
-                    app.updateNoticeDisplayScroll();
+                    app.update_notice_displayScroll();
                 }); 
 
             }
@@ -484,12 +484,12 @@ var app = Vue.createApp({
          * update players in group
          */
         take_update_groups: function take_update_groups(message_data){
-            app.destroyPixiPlayers();
+            app.destroy_pixi_players();
 
             app.session.session_players = message_data.result.session_players;
             app.session.session_players_order = message_data.result.session_players_order;
 
-            setTimeout(app.setupPixiPlayers, 250);
+            setTimeout(app.setup_pixi_players, 250);
 
             // document.getElementById("chat_all_id").click();
            
@@ -533,18 +533,18 @@ var app = Vue.createApp({
             app.avatarChoiceGridModal.hide();
             app.endGameModal.hide();
 
-            app.destroyPixiPlayers();
+            app.destroy_pixi_players();
 
             this.session.current_experiment_phase = message_data.session.current_experiment_phase;
             this.session.session_players = message_data.session_players;
             this.session_player = message_data.session_player;
 
             Vue.nextTick(() => {
-                // setTimeout(app.setupPixiPlayers, 250);
-                app.setupPixiPlayers();
+                // setTimeout(app.setup_pixi_players, 250);
+                app.setup_pixi_players();
             });
 
-            app.updateChatDisplay();
+            app.update_chat_display();
             app.calcWaste();    
             if(app.session.current_experiment_phase == "Instructions")
             {
@@ -585,7 +585,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors: function clearMainFormErrors(){
+        clear_main_form_errors: function clear_main_form_errors(){
             
             s = this.session_player_move_two_form_ids;
             for(var i in s)
@@ -611,7 +611,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors: function displayErrors(errors){
+        display_errors: function display_errors(errors){
             for(var e in errors)
             {
                 for(let e in errors)
@@ -639,7 +639,7 @@ var app = Vue.createApp({
 
         {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
 
-        window.addEventListener('resize', this.handleResize);
+        window.addEventListener('resize', this.handle_resize);
     },
 
 }).mount('#app');

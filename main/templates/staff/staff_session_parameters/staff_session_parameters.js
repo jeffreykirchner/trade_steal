@@ -8,12 +8,12 @@ axios.defaults.xsrfCookieName = "csrftoken";
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
-                    helpText : "Loading ...",
-                    sessionID : {{session.id}},
+                    help_text : "Loading ...",
+                    session_id : {{session.id}},
                     session : {{session_json|safe}},
                        
                     valuecost_modal_label:'Edit Value or Cost',
@@ -177,7 +177,7 @@ var app = Vue.createApp({
         send_message(message_type, message_text) {
             
 
-            app.chatSocket.send(JSON.stringify({
+            app.chat_socket.send(JSON.stringify({
                     'message_type': message_type,
                     'message_text': message_text,
                 }));
@@ -234,7 +234,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         // send_get_session(){
-        //     app.send_message("get_session",{"sessionID" : app.sessionID});
+        //     app.send_message("get_session",{"session_id" : app.session_id});
         // },
 
         //do nothing on when enter pressed for post
@@ -252,7 +252,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors(){
+        clear_main_form_errors(){
             
             for(let item in app.session)
             {
@@ -305,7 +305,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors(errors){
+        display_errors(errors){
             for(let e in errors)
                 {
                     //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")

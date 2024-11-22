@@ -2,16 +2,16 @@
 doWebSockets = function()
 {
         var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-        app.chatSocket = new WebSocket(            
+        app.chat_socket = new WebSocket(            
                                ws_scheme + '://' + window.location.host +
                                '/ws/{{websocket_path}}/{{channel_key}}/{{page_key}}/{{player_key}}');        
     
-        app.chatSocket.onmessage = function(e) {
+        app.chat_socket.onmessage = function(e) {
             var data = JSON.parse(e.data);                       
             app.take_message(data);
         };
     
-        app.chatSocket.onclose = function(e) {
+        app.chat_socket.onclose = function(e) {
             console.error('Socket closed, trying to connect ... ');
             app.reconnecting=true;
 
@@ -24,7 +24,7 @@ doWebSockets = function()
             window.setTimeout(doWebSockets(), randomNumber(500,1500));            
         }; 
 
-        app.chatSocket.onopen = function(e) {
+        app.chat_socket.onopen = function(e) {
             console.log('Socket connected.');     
             app.reconnecting=false;   
             app.handle_socket_connected();                      

@@ -10,7 +10,7 @@ sendUpdateSession: function sendUpdateSession(){
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_update_session: function take_update_session(message_data){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {
@@ -20,14 +20,14 @@ take_update_session: function take_update_session(message_data){
     else
     {
         this.cancelModal=true;                           
-        app.displayErrors(message_data.errors);
+        app.display_errors(message_data.errors);
     } 
 },
 
 /** show edit session modal
 */
 showEditSession:function showEditSession(){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     this.cancelModal=true;
     this.sessionBeforeEdit = Object.assign({}, this.session);
 

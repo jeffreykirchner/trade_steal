@@ -4,7 +4,7 @@
     
     if(app.session.started) return;
     
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     app.cancelModal=true;
     app.parametersetPlayerBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_players[index]);
     app.parametersetPlayerBeforeEdit.good_one =  Object.assign({}, app.session.parameter_set.parameter_set_players[index].good_one);
@@ -43,7 +43,7 @@ sendUpdateParametersetPlayer(){
     
     app.working = true;
 
-    app.send_message("update_parameterset_player", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset_player", {"session_id" : app.session_id,
                                                    "paramterset_player_id" : app.current_parameter_set_player.id,
                                                    "formData" : app.current_parameter_set_player,});
 },
@@ -52,10 +52,10 @@ sendUpdateParametersetPlayer(){
 */
 takeUpdateParametersetPlayer(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     app.cancelModal=false;
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.status.value == "success")
     {
@@ -65,7 +65,7 @@ takeUpdateParametersetPlayer(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.status.errors);
+        app.display_errors(message_data.status.errors);
     } 
 },
 
@@ -75,7 +75,7 @@ takeUpdateParametersetPlayer(message_data){
      
     if(app.session.started) return;
 
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     app.cancelModal=true;
     app.parametersetPlayerGroupBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_players[player_id].period_groups[period_id]);
     app.parametersetPlayerBeforeEditIndex = player_id;
@@ -101,7 +101,7 @@ hideEditParametersetPlayerGroup:function(){
 sendUpdateParametersetPlayerGroup(){
     
     app.working = true;
-    app.send_message("update_parameterset_player_group", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset_player_group", {"session_id" : app.session_id,
                                                    "paramterset_player_group_id" : app.current_parameter_set_player_group.id,
                                                    "formData" : app.current_parameter_set_player_group,});
 },
@@ -110,10 +110,10 @@ sendUpdateParametersetPlayerGroup(){
 */
 takeUpdateParametersetPlayerGroup(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     app.cancelModal=false;
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.status.value == "success")
     {
@@ -123,7 +123,7 @@ takeUpdateParametersetPlayerGroup(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.status.errors);
+        app.display_errors(message_data.status.errors);
     } 
 },
 
@@ -131,7 +131,7 @@ takeUpdateParametersetPlayerGroup(message_data){
 */
 sendCopyGroupForward(period_number){
     app.working = true;
-    app.send_message("copy_group_forward", {"sessionID" : app.sessionID,
+    app.send_message("copy_group_forward", {"session_id" : app.session_id,
                                            "period_number" : period_number,});
                                                    
 },
@@ -140,7 +140,7 @@ sendCopyGroupForward(period_number){
 */
 takeCopyGroupForward(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     app.take_get_Session(message_data);   
 },
@@ -150,7 +150,7 @@ takeCopyGroupForward(message_data){
 sendRemoveParameterSetPlayer(){
 
     app.working = true;
-    app.send_message("remove_parameterset_player", {"sessionID" : app.sessionID,
+    app.send_message("remove_parameterset_player", {"session_id" : app.session_id,
                                                    "paramterset_player_id" : app.current_parameter_set_player.id,});
                                                    
 },
@@ -159,7 +159,7 @@ sendRemoveParameterSetPlayer(){
 */
 takeRemoveParameterSetPlayer(message_data){
     app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
     app.take_get_Session(message_data);   
     app.editParametersetPlayerModal.hide();
 },
@@ -168,7 +168,7 @@ takeRemoveParameterSetPlayer(message_data){
 */
 sendAddParameterSetPlayer(player_id){
     app.working = true;
-    app.send_message("add_parameterset_player", {"sessionID" : app.sessionID});
+    app.send_message("add_parameterset_player", {"session_id" : app.session_id});
                                                    
 },
 
@@ -176,6 +176,6 @@ sendAddParameterSetPlayer(player_id){
 */
 takeAddParameterSetPlayer(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
     app.take_get_Session(message_data); 
 },

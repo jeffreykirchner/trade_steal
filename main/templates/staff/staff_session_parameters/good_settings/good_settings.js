@@ -2,7 +2,7 @@
  */
  showEditParametersetGood:function(good_id, index){
 
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     app.cancelModal=true;
     app.parametersetGoodBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_goods[index]);
     app.parametersetGoodEditIndex = index;
@@ -28,7 +28,7 @@ hideEditParametersetGood:function(){
 sendUpdateParametersetGood(){
     
     app.working = true;
-    app.send_message("update_parameterset_good", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset_good", {"session_id" : app.session_id,
                                                  "parameterset_good_id" : app.current_parameter_set_good.id,
                                                  "formData" : app.current_parameter_set_good,});
 },
@@ -38,7 +38,7 @@ sendUpdateParametersetGood(){
 takeUpdateParametersetGood(message_data){
 
     app.cancelModal=false;
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.status.value == "success")
     {
@@ -49,6 +49,6 @@ takeUpdateParametersetGood(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.status.errors);
+        app.display_errors(message_data.status.errors);
     } 
 },

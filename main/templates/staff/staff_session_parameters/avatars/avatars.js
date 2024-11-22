@@ -1,7 +1,7 @@
 /**show edit paramter set avatar
  */
  showEditParametersetAvatar(index){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     this.cancelModal=true;
     this.paramtersetAvatarBeforeEdit = Object.assign({}, this.session.parameter_set.parameter_set_avatars[index]);
     this.paramtersetAvatarBeforeEditAvatar = Object.assign({}, this.session.parameter_set.parameter_set_avatars[index].avatar);
@@ -35,7 +35,7 @@ sendUpdateParametersetAvatar(){
     
     app.working = true;
 
-    app.send_message("update_parameterset_avatar", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset_avatar", {"session_id" : app.session_id,
                                                    "parameterset_avatar_id" : this.session.parameter_set.parameter_set_avatars[this.paramtersetAvatarBeforeEditIndex].id,
                                                    "formData" : {"avatar" : this.current_parameter_set_avatar.avatar.id}});
 },
@@ -44,10 +44,10 @@ sendUpdateParametersetAvatar(){
 */
 takeUpdateParametersetAvatar(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     this.cancelModal=false;
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.status.value == "success")
     {
@@ -57,6 +57,6 @@ takeUpdateParametersetAvatar(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.status.errors);
+        app.display_errors(message_data.status.errors);
     } 
 },

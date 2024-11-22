@@ -2,7 +2,7 @@
 /**show edit parameter set type
  */
  showEditParametersetType:function(index){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
     app.cancelModal=true;
     app.parametersetTypeBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_types[index]);
     app.parametersetTypeBeforeEditIndex = index;
@@ -26,7 +26,7 @@ hideEditParametersetType:function(){
 sendUpdateParametersetType(){
     
     app.working = true;
-    app.send_message("update_parameterset_type", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset_type", {"session_id" : app.session_id,
                                                  "parameterset_type_id" : app.current_parameterset_type.id,
                                                  "formData" : app.current_parameterset_type,});
 },
@@ -35,10 +35,10 @@ sendUpdateParametersetType(){
 */
 takeUpdateParametersetType(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     app.cancelModal=false;
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.status.value == "success")
     {
@@ -48,7 +48,7 @@ takeUpdateParametersetType(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.status.errors);
+        app.display_errors(message_data.status.errors);
     } 
 },
 

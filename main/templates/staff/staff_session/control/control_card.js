@@ -67,7 +67,7 @@ reset_experiment: function reset_experiment(){
 //     }
 // },
 
-resetConnections: function resetConnections(){
+reset_connections: function reset_connections(){
     if (!confirm('Reset connection status?.')) {
         return;
     }
@@ -86,7 +86,7 @@ take_update_reset_connections: function take_update_reset_connections(message_da
 /** take reset experiment response
  * @param message_data {json}
 */
-takeResetConnections: function takeResetConnections(message_data){
+takereset_connections: function takereset_connections(message_data){
     app.take_get_Session(message_data);
 },
 
@@ -108,7 +108,7 @@ next_experiment_phase: function next_experiment_phase(){
 take_next_phase: function take_next_phase(message_data){
     
     this.session.current_experiment_phase = message_data.current_experiment_phase;
-    this.updatePhaseButtonText();
+    this.update_phase_button_text();
 
 },
 
@@ -118,15 +118,15 @@ take_next_phase: function take_next_phase(message_data){
 take_update_next_phase: function take_update_next_phase(message_data){
     
     this.session.current_experiment_phase = message_data.current_experiment_phase;
-    this.updatePhaseButtonText();
+    this.update_phase_button_text();
     
-    app.takeUpdatePeriod(message_data.period_update);
+    app.take_update_period(message_data.period_update);
 },
 
 /**
  * start the period timer
 */
-startTimer: function startTimer(){
+start_timer: function start_timer(){
     app.working = true;
 
     let action = "";
@@ -173,7 +173,7 @@ take_stop_timer_pulse: function take_stop_timer_pulse(){
 
 /**reset experiment, remove all bids, asks and trades
 */
-endEarly: function endEarly(){
+end_early: function end_early(){
     if (!confirm('End the experiment after this period completes?')) {
         return;
     }
@@ -191,70 +191,70 @@ take_end_early: function take_end_early(message_data){
 
 /** send invitations
 */
-sendSendInvitations: function sendSendInvitations(){
+send_send_invitations: function send_send_invitations(){
 
-    this.send_messageModalForm.text = tinymce.get("id_invitation_text").getContent();
+    this.send_message_modal_form.text = tinymce.get("id_invitation_text").getContent();
 
-    if(this.send_messageModalForm.subject == "" || this.send_messageModalForm.text == "")
+    if(this.send_message_modal_form.subject == "" || this.send_message_modal_form.text == "")
     {
-        this.emailResult = "Error: Please enter a subject and email body.";
+        this.email_result = "Error: Please enter a subject and email body.";
         return;
     }
 
     this.cancelModal = false;
     this.working = true;
-    this.emailResult = "Sending ...";
+    this.email_result = "Sending ...";
 
     app.send_message("send_invitations",
-                   {"formData" : this.send_messageModalForm});
+                   {"formData" : this.send_message_modal_form});
 },
 
 /** take update subject response
  * @param message_data {json} result of update, either sucess or fail with errors
 */
 take_send_invitations: function take_send_invitations(message_data){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {           
-        this.emailResult = "Result: " + message_data.result.email_result.mail_count.toString() + " messages sent.";
+        this.email_result = "Result: " + message_data.result.email_result.mail_count.toString() + " messages sent.";
 
         this.session.invitation_subject = message_data.result.invitation_subject;
         this.session.invitation_text = message_data.result.invitation_text;
     } 
     else
     {
-        this.emailResult = message_data.result;
+        this.email_result = message_data.result;
     } 
 },
 
 /** show edit subject modal
 */
-showSendInvitations: function showSendInvitations(){
+show_send_invitations: function show_send_invitations(){
 
     app.cancelModal=true;
 
-    app.send_messageModalForm.subject = app.session.invitation_subject;
-    app.send_messageModalForm.text = app.session.invitation_text;
+    app.send_message_modal_form.subject = app.session.invitation_subject;
+    app.send_message_modal_form.text = app.session.invitation_text;
 
-    tinymce.get("id_invitation_text").setContent(app.send_messageModalForm.text);
+    tinymce.get("id_invitation_text").setContent(app.send_message_modal_form.text);
     
     app.send_message_modal.show();
 },
 
 /** hide edit subject modal
 */
-hideSendInvitations: function hideSendInvitations(){
-    this.emailResult = "";
+hide_send_invitations: function hide_send_invitations(){
+    this.email_result = "";
 },
 
 /**
  * fill invitation with default values
  */
-fillDefaultInvitation: function fillDefaultInvitation(){
-    this.send_messageModalForm.subject = this.emailDefaultSubject;
+fill_default_invitation: function fill_default_invitation(){
+    this.send_message_modal_form.subject = this.email_default_subject;
     
-    tinymce.get("id_invitation_text").setContent(this.emailDefaultText);
+    tinymce.get("id_invitation_text").setContent(this.email_default_text);
 },
 
 /**

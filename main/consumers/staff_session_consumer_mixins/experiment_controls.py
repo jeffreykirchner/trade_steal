@@ -175,7 +175,7 @@ def take_start_experiment(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Start Experiment: {data}")
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     with transaction.atomic():
         session = Session.objects.get(id=session_id)
 
@@ -194,7 +194,7 @@ def take_reset_experiment(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Reset Experiment: {data}")
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     session = Session.objects.get(id=session_id)
 
     if session.started:
@@ -225,7 +225,7 @@ def take_reset_connections(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Reset connection counts: {data}")
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     session = Session.objects.get(id=session_id)
 
     if not session.started:
@@ -243,7 +243,7 @@ def take_next_phase(session_id, data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Advance to Next Phase: {data}")
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     session = Session.objects.get(id=session_id)
     period_update = None
 

@@ -84,7 +84,7 @@ def take_update_subject(session_id, data):
     logger = logging.getLogger(__name__)
     logger.info(f'take_update_subject: {data}')
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     form_data = dict(data["formData"])
 
     try:        

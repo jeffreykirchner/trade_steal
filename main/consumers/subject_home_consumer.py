@@ -353,7 +353,7 @@ def take_get_session_subject(session_player_id):
     '''
     get session info for subject
     '''
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     #uuid = data["uuid"]
 
     #session = Session.objects.get(id=session_id)

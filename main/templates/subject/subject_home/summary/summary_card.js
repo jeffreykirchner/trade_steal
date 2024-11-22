@@ -11,7 +11,7 @@ sendName: function sendName(){
 */
 takeName: function takeName(message_data){
 
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {
@@ -20,7 +20,7 @@ takeName: function takeName(message_data){
     } 
     else
     {
-        app.displayErrors(message_data.errors);
+        app.display_errors(message_data.errors);
     }
 },
 

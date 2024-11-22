@@ -117,7 +117,7 @@ sendAvatar: function sendAvatar(){
 */
 takeAvatar: function takeAvatar(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     app.working = false;
 

@@ -3,7 +3,7 @@
 sendImportParameters(){
     
     app.working = true;
-    app.send_message("import_parameters", {"sessionID" : app.sessionID,
+    app.send_message("import_parameters", {"session_id" : app.session_id,
                                           "formData" : {session:app.session_import},});
 },
 
@@ -11,7 +11,7 @@ sendImportParameters(){
 */
 takeImportParameters(){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     if(message_data.status.status == "success")
     {
@@ -43,7 +43,7 @@ hideImportParameters:function(){
 sendDownloadParameters(){
     
     app.working = true;
-    app.send_message("download_parameters", {"sessionID" : app.sessionID,});
+    app.send_message("download_parameters", {"session_id" : app.session_id,});
 },
 
 /** download parameter set into a file 

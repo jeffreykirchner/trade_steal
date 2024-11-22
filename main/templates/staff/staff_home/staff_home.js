@@ -6,10 +6,10 @@ axios.defaults.xsrfCookieName = "csrftoken";
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     working : false,
-                    helpText : "Loading ...",
+                    help_text : "Loading ...",
                     sessions : [],
                     sessions_full_admin : [],
                     sessions_full_admin_visible : false,
@@ -52,7 +52,7 @@ var app = Vue.createApp({
         send_message: function send_message(message_type, message_text, message_target="self") {
             //send socket message to server
 
-            this.chatSocket.send(JSON.stringify({
+            this.chat_socket.send(JSON.stringify({
                     'message_type': message_type,
                     'message_text': message_text,
                     'message_target': message_target,

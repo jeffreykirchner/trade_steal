@@ -44,7 +44,7 @@ showTransferModal: function showTransferModal(container){
 */
 hideTransferModal:function hideTransferModal(){
     
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(app.cancelModal)
     {
@@ -63,7 +63,7 @@ sendMoveGoods: function sendMoveGoods(){
     if(!pixi_transfer_source) return;
     if(!pixi_transfer_target) return; 
 
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(pixi_transfer_source.name.type == "house" &&
        app.session.parameter_set.good_count == 3)
@@ -73,7 +73,7 @@ sendMoveGoods: function sendMoveGoods(){
            app.transfer_good_three_amount == 0)
         {
             let errors = {transfer_good_one_amount_3g:["Invalid entry."]};
-            app.displayErrors(errors);
+            app.display_errors(errors);
             return;
         }
 
@@ -92,7 +92,7 @@ sendMoveGoods: function sendMoveGoods(){
             }
 
             let errors = {transfer_good_one_amount_2g:["Invalid entry."]};
-            app.displayErrors(errors);
+            app.display_errors(errors);
             return;
          }
 
@@ -116,7 +116,7 @@ sendMoveGoods: function sendMoveGoods(){
 */
 takeMoveGoods: function takeMoveGoods(message_data){
     //app.cancelModal=false;
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {
@@ -126,7 +126,7 @@ takeMoveGoods: function takeMoveGoods(message_data){
     else
     {
         app.cancelModal=true;                           
-        app.displayErrors(message_data.errors);
+        app.display_errors(message_data.errors);
     }
 },
 
@@ -163,7 +163,7 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(message_data){
         if(parseInt(message_data.session_player_id) == app.session_player.id)
         {
             app.cancelModal=true;                           
-            app.displayErrors(message_data.errors);
+            app.display_errors(message_data.errors);
             app.working = false;
 
             if(app.test_mode)
@@ -204,7 +204,7 @@ take_update_goods: function take_update_goods(message_data){
                     //scroll to view
                     if(session_player.notices.length>0)
                     {
-                        Vue.nextTick(() => {app.updateNoticeDisplayScroll()});        
+                        Vue.nextTick(() => {app.update_notice_displayScroll()});        
                     }
                 }
             }
@@ -234,7 +234,7 @@ take_update_goods: function take_update_goods(message_data){
 /**
  * scroll notice text to the bottom
  */
-updateNoticeDisplayScroll: function updateNoticeDisplayScroll(){
+update_notice_displayScroll: function update_notice_displayScroll(){
     // if(app.session_player.notices.length==0) return;
 
     // var elmnt = document.getElementById("notice_id_" + app.session_player.notices[app.session_player.notices.length-1].id.toString());

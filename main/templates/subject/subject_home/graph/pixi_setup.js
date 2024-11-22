@@ -129,7 +129,7 @@ setupPixiSheets: function setupPixiSheets(textures){
     app.canvas_scale = (app.canvas_scale_height /  app.house_sprite.height) * (1/window.devicePixelRatio);
 
     app.pixi_loaded = true;
-    app.setupPixiPlayers();
+    app.setup_pixi_players();
 
     //layout for testing
     //app.setupGrid();
@@ -138,7 +138,7 @@ setupPixiSheets: function setupPixiSheets(textures){
 /**
  * setup pixi players
  */
-setupPixiPlayers: function setupPixiPlayers(){
+setup_pixi_players: function setup_pixi_players(){
 
     if(!app.pixi_loaded) return;
     if(!app.session.parameter_set.show_avatars=="True") return;
@@ -546,7 +546,7 @@ setupGrid: function setupGrid(){
  
 /**destroy house and field containers
  */
-destroyPixiPlayers: function destroyPixiPlayers(){
+destroy_pixi_players: function destroy_pixi_players(){
     // let session_players = app.session.session_players;
     
     for(let i=0;i<app.session.session_players_order.length;i++)

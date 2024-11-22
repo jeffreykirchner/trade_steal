@@ -272,7 +272,7 @@ simulate_do_period_production_function: function simulate_do_period_production_f
  * simulate goods transfer on page 3
  */
 simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
-    app.clearMainFormErrors();
+    app.clear_main_form_errors();
 
     if(pixi_transfer_source.name.type.toString() != "field" ||
        pixi_transfer_target.name.type.toString() != "house" ||
@@ -280,7 +280,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
        pixi_transfer_target.name.user_id != app.session_player.id) 
     {
         let errors = {transfer_good_one_amount_2g:["For the purposes of the instructions, please transfer items from your field to your house."]};
-        app.displayErrors(errors);
+        app.display_errors(errors);
         return;
     }
 
@@ -294,7 +294,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
     {
 
         let errors = {transfer_good_one_amount_2g:["Invalid entry."],};
-        app.displayErrors(errors);
+        app.display_errors(errors);
         return;
     }
 
@@ -302,7 +302,7 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
         parseInt(transfer_good_one_amount_2g) < 0)
     {
         let errors = {transfer_good_one_amount_2g:["Invalid entry."]};
-        app.displayErrors(errors);
+        app.display_errors(errors);
         return;
     }
 
@@ -310,21 +310,21 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
         parseInt(transfer_good_two_amount_2g) < 0)
     {
         let errors = {transfer_good_two_amount_2g:["Invalid entry."]};
-        app.displayErrors(errors);
+        app.display_errors(errors);
         return;
     }
 
     if(parseInt(transfer_good_one_amount_2g) > app.session_player.good_one_field)
     {
         let errors = {transfer_good_one_amount_2g:["There are not enough goods on your field."]};
-        app.displayErrors(errors);
+        app.display_errors(errors);
         return;
     }
 
     if(parseInt(transfer_good_two_amount_2g) > app.session_player.good_two_field)
     {
         let errors = {transfer_good_two_amount_2g:["There are not enough goods on your field."]};
-        app.displayErrors(errors);
+        app.display_errors(errors);
         return;
     }
 

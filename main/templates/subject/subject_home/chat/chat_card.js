@@ -23,7 +23,7 @@ sendChat: function sendChat(){
 */
 takeChat: function takeChat(message_data){
     //app.cancelModal=false;
-    //app.clearMainFormErrors();
+    //app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {
@@ -95,7 +95,7 @@ take_update_chat: function take_update_chat(message_data){
         app.working = false;           
     }
     
-    app.updateChatDisplay();
+    app.update_chat_display();
 },
 
 /** update who should receive chat
@@ -107,7 +107,7 @@ updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipi
     
     app.chat_recipients_index = chat_recipients_index;
 
-    app.updateChatDisplay();
+    app.update_chat_display();
 
     if(app.chat_recipients=="all")
     {
@@ -126,7 +126,7 @@ updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipi
 
 /** update chat displayed on the screen
  */
-updateChatDisplay: function updateChatDisplay(){
+update_chat_display: function update_chat_display(){
 
     if(app.chat_recipients=="NONE") return;
 
@@ -143,7 +143,7 @@ updateChatDisplay: function updateChatDisplay(){
 
 },
 
-updateChatDisplayScroll: function updateChatDisplayScroll(){
+update_chat_displayScroll: function update_chat_displayScroll(){
     // var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
     // elmnt.scrollIntoView(); 
 },
