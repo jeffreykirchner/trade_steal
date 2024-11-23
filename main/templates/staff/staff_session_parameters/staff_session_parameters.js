@@ -71,13 +71,13 @@ var app = Vue.createApp({
                     import_parameters_message : "",
 
                     import_parameters_modal : null,
-                    editParametersetModal : null,
-                    editParametersetTypeModal : null,
-                    editParametersetPlayerModal : null,
-                    editParametersetPlayerGroupModal : null,
-                    editParametersetGoodModal : null,
+                    edit_parameterset_modal : null,
+                    edit_tarameterset_type_modal : null,
+                    edit_parameterset_player_modal : null,
+                    edit_parameterset_player_group_modal : null,
+                    edit_parameterset_good_modal : null,
                     edit_avatars_modal : null,
-                    parameterSetModal : null,
+                    parameter_set_modal : null,
 
                     //form paramters
                     session_import : null,
@@ -119,28 +119,28 @@ var app = Vue.createApp({
                     app.take_get_session(message_data);
                     break;
                 case "update_parameterset":
-                    app.takeUpdateParameterset(message_data);
+                    app.take_update_parameterset(message_data);
                     break;         
                 case "update_parameterset_type":
-                    app.takeUpdateParametersetType(message_data);
+                    app.take_update_parameterset_type(message_data);
                     break;    
                 case "update_parameterset_good":
-                    app.takeUpdateParametersetGood(message_data);
+                    app.take_update_parameterset_good(message_data);
                     break; 
                 case "update_parameterset_player":
-                    app.takeUpdateParametersetPlayer(message_data);
+                    app.take_update_parameterset_player(message_data);
                     break;     
                 case "remove_parameterset_player":
-                    app.takeRemoveParameterSetPlayer(message_data);
+                    app.take_remove_parameterset_player(message_data);
                     break;
                 case "add_parameterset_player":
-                    app.takeAddParameterSetPlayer(message_data);
+                    app.take_add_parameterset_player(message_data);
                     break;
                 case "update_parameterset_player_group":
-                    app.takeUpdateParametersetPlayerGroup(message_data);
+                    app.take_update_parameterset_player_group(message_data);
                     break;
                 case "copy_group_forward":
-                    app.takeCopyGroupForward(message_data);
+                    app.take_copy_group_forward(message_data);
                     break;
                 case "import_parameters":
                     app.take_import_parameters(message_data);
@@ -187,22 +187,22 @@ var app = Vue.createApp({
         {
             
             app.import_parameters_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('import_parameters_modal'), {keyboard: false})
-            app.editParametersetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetModal'), {keyboard: false})
-            app.editParametersetTypeModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetTypeModal'), {keyboard: false})
-            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})
-            app.editParametersetPlayerGroupModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerGroupModal'), {keyboard: false})
-            app.editParametersetGoodModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetGoodModal'), {keyboard: false})
+            app.edit_parameterset_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_modal'), {keyboard: false})
+            app.edit_tarameterset_type_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_tarameterset_type_modal'), {keyboard: false})
+            app.edit_parameterset_player_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_player_modal'), {keyboard: false})
+            app.edit_parameterset_player_group_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_player_group_modal'), {keyboard: false})
+            app.edit_parameterset_good_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_good_modal'), {keyboard: false})
             app.edit_avatars_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_avatars_modal'), {keyboard: false})
-            app.parameterSetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('parameterSetModal'), {keyboard: false})
+            app.parameter_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('parameter_set_modal'), {keyboard: false})
 
             document.getElementById('import_parameters_modal').addEventListener('hidden.bs.modal', app.hide_import_parameters);
-            document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
-            document.getElementById('editParametersetTypeModal').addEventListener('hidden.bs.modal', app.hideEditParametersetType);
-            document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
-            document.getElementById('editParametersetPlayerGroupModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayerGroup);
-            document.getElementById('editParametersetGoodModal').addEventListener('hidden.bs.modal', app.hideEditParametersetGood);
+            document.getElementById('edit_parameterset_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset);
+            document.getElementById('edit_tarameterset_type_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_type);
+            document.getElementById('edit_parameterset_player_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_player);
+            document.getElementById('edit_parameterset_player_group_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_player_group);
+            document.getElementById('edit_parameterset_good_modal').addEventListener('hidden.bs.modal', app.hide_edit_parametersetGood);
             document.getElementById('edit_avatars_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_avatar);
-            document.getElementById('parameterSetModal').addEventListener('hidden.bs.modal', app.hideParameterSet);
+            document.getElementById('parameter_set_modal').addEventListener('hidden.bs.modal', app.hideParameterSet);
 
             app.first_load_done = true;
         },

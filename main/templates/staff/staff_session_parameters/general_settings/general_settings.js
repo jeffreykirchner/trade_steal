@@ -2,27 +2,27 @@
 
 /**show edit paramter set
  */
-showEditParameterset:function(){
+show_edit_parameterset:function show_edit_parameterset(){
     app.clear_main_form_errors();
     app.cancel_modal=true;
-    app.paramtersetBeforeEdit = Object.assign({}, app.session.parameter_set);
+    app.paramterset_before_edit = Object.assign({}, app.session.parameter_set);
 
-    app.editParametersetModal.show();
+    app.edit_parameterset_modal.show();
 },
 
 /** hide edit session modal
 */
-hideEditParameterset:function(){
+hide_edit_parameterset:function hide_edit_parameterset(){
     if(app.cancel_modal)
     {
-        Object.assign(app.session.parameter_set, app.paramtersetBeforeEdit);
-        app.paramtersetBeforeEdit=null;
+        Object.assign(app.session.parameter_set, app.paramterset_before_edit);
+        app.paramterset_before_edit=null;
     }
 },
 
 /** update parameterset settings
 */
-sendUpdateParameterset(){
+send_update_parameterset: function send_update_parameterset(){
     
     app.working = true;
 
@@ -40,7 +40,7 @@ sendUpdateParameterset(){
 
 /** handle result of updating parameter set
 */
-takeUpdateParameterset(message_data){
+take_update_parameterset: function take_update_parameterset(message_data){
     //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
@@ -50,7 +50,7 @@ takeUpdateParameterset(message_data){
     if(message_data.status.value == "success")
     {
         app.take_get_session(message_data);       
-        app.editParametersetModal.hide();           
+        app.edit_parameterset_modal.hide();           
     } 
     else
     {

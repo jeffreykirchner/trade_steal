@@ -1,9 +1,9 @@
 /** copy parameters from another period
 */
-send_import_parameters(){
+send_import_parameters: function send_import_parameters(){
     
     if(!app.session_import) return;
-    
+
     app.working = true;
     app.send_message("import_parameters", {"session_id" : app.session_id,
                                           "formData" : {session:app.session_import},});
@@ -11,7 +11,7 @@ send_import_parameters(){
 
 /** show parameters copied from another period 
 */
-take_import_parameters(){
+take_import_parameters: function take_import_parameters(){
     //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
@@ -29,20 +29,20 @@ take_import_parameters(){
 
 /** show edit session modal
 */
-show_import_parameters:function(){
+show_import_parameters:function show_import_parameters(){
     
    app.import_parameters_modal.show();
 },
 
 /** hide edit session modal
 */
-hide_import_parameters:function(){
+hide_import_parameters:function hide_import_parameters(){
     
 },
 
 /** send request to download parameters to a file 
 */
-send_download_parameters(){
+send_download_parameters: function send_download_parameters(){
     
     app.working = true;
     app.send_message("download_parameters", {"session_id" : app.session_id,});
@@ -51,7 +51,7 @@ send_download_parameters(){
 /** download parameter set into a file 
  @param message_data {json} result of file request, either sucess or fail with errors
 */
-take_download_parameters(message_data){
+take_download_parameters: function take_download_parameters(message_data){
 
     if(message_data.status == "success")
     {                  
@@ -74,7 +74,7 @@ take_download_parameters(message_data){
 
 /**upload a parameter set file
 */
-upload_parameterset:function(){  
+upload_parameterset:function upload_parameterset(){  
 
     let formData = new FormData();
     formData.append('file', app.upload_file);
@@ -101,7 +101,7 @@ upload_parameterset:function(){
 },
 
 //direct upload button click
-upload_action:function(){
+upload_action:function upload_action(){
     if(app.upload_file == null)
         return;
 
@@ -120,21 +120,21 @@ upload_action:function(){
 },
 
 //file upload
-handle_file_upload:function(){
+handle_file_upload:function handle_file_upload(){
     app.upload_file = this.$refs.file.files[0];
     app.upload_file_name = app.upload_file.name;
 },
 
 /** show upload parameters modal
 */
-show_upload_parameters:function(upload_mode){
+show_upload_parameters:function show_upload_parameters(upload_mode){
     app.upload_mode = upload_mode;
     app.upload_parameterset_messaage = "";
 
-    app.parameterSetModal.show();
+    app.parameter_set_modal.show();
 },
 
 /**hide upload parameters modal
 */
-hide_upload_parameters:function(){
+hide_upload_parameters:function hide_upload_parameters(){
 },

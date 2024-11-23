@@ -1,29 +1,29 @@
 
 /**show edit parameter set type
  */
- showEditParametersetType:function(index){
+ show_edit_parameterset_type:function show_edit_parameterset_type(index){
     app.clear_main_form_errors();
     app.cancel_modal=true;
-    app.parametersetTypeBeforeEdit = Object.assign({}, app.session.parameter_set.parameter_set_types[index]);
-    app.parametersetTypeBeforeEditIndex = index;
+    app.parameterset_type_before_edit = Object.assign({}, app.session.parameter_set.parameter_set_types[index]);
+    app.parameterset_type_before_edit_index = index;
     app.current_parameterset_type = app.session.parameter_set.parameter_set_types[index];
 
-    app.editParametersetTypeModal.show();
+    app.edit_tarameterset_type_modal.show();
 },
 
 /** hide edit parmeter set type
 */
-hideEditParametersetType:function(){
+hide_edit_parameterset_type:function hide_edit_parameterset_type(){
     if(app.cancel_modal)
     {
-        Object.assign(app.session.parameter_set.parameter_set_types[app.parametersetTypeBeforeEditIndex], app.parametersetTypeBeforeEdit);
-        app.parametersetTypeBeforeEdit=null;
+        Object.assign(app.session.parameter_set.parameter_set_types[app.parameterset_type_before_edit_index], app.parameterset_type_before_edit);
+        app.parameterset_type_before_edit=null;
     }
 },
 
 /** update parameterset type settings
 */
-sendUpdateParametersetType(){
+send_update_parameterset_type: function send_update_parameterset_type(){
     
     app.working = true;
     app.send_message("update_parameterset_type", {"session_id" : app.session_id,
@@ -33,7 +33,7 @@ sendUpdateParametersetType(){
 
 /** handle result of updating parameter set type
 */
-takeUpdateParametersetType(message_data){
+take_update_parameterset_type: function take_update_parameterset_type(message_data){
     //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
@@ -43,7 +43,7 @@ takeUpdateParametersetType(message_data){
     if(message_data.status.value == "success")
     {
         app.take_get_session(message_data);       
-        app.editParametersetTypeModal.hide();         
+        app.edit_tarameterset_type_modal.hide();         
     } 
     else
     {

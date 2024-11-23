@@ -60,32 +60,32 @@
                         <tr v-for="(p, index) in session.parameter_set.parameter_set_players_order" 
                             v-bind:key="p"
                             :set="temp_p=session.parameter_set.parameter_set_players[p]">
-                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="player_table_cell">
                                 [[temp_p.session_player_number]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="player_table_cell">
                                 [[temp_p.town]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="player_table_cell">
                                 [[temp_p.location]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="player_table_cell">
                                 [[temp_p.id_label]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="player_table_cell">
                                 [[temp_p.parameter_set_type.subject_type]]
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="player_table_cell">
                                 <span v-bind:style = "{color : temp_p.good_one.rgb_color}">[[temp_p.good_one.label]]</span>
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="player_table_cell">
                                 <span v-bind:style = "{color : temp_p.good_two.rgb_color}">[[temp_p.good_two.label]]</span>
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p)" class="player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="player_table_cell">
                                 <span v-bind:style = "[{color : temp_p.good_three.rgb_color},
                                                        (session.parameter_set.good_count==2) ? {'text-decoration': 'line-through'}:{}]">[[temp_p.good_three.label]]</span>
                             </td>
-                            <td v-on:click="showEditParametersetPlayer(p)" class="text-nowrap player_table_cell">
+                            <td v-on:click="show_edit_parameterset_player(p)" class="text-nowrap player_table_cell">
                                 [[temp_p.avatar ? temp_p.avatar.label:'None']]
                             </td>
                             <td style="background-color:rgb(240, 240, 240);">
@@ -93,7 +93,7 @@
                             </td>
                             <td v-for="(g, index2) in temp_p.period_groups_order" 
                                 :set="temp_g=temp_p.period_groups[g]"
-                                v-on:click="showEditParametersetPlayerGroup(p, g)" class="player_table_cell" v-bind:key="g">
+                                v-on:click="show_edit_parameterset_player_group(p, g)" class="player_table_cell" v-bind:key="g">
                                 G[[temp_g.group_number]]
                             </td>
                         </tr>
@@ -106,7 +106,7 @@
                                         type="button"
                                         title="Add player"
                                         v-bind:disabled="session.started || reconnecting || working || session.parameter_set.parameter_set_players.length >= 24"
-                                        v-on:click="sendAddParameterSetPlayer()">
+                                        v-on:click="send_add_parameterset_player()">
                                        Add <i class="fas fa-plus"></i>
                                 </button>
                             </td>
@@ -133,7 +133,7 @@
                                         type="button"
                                         title="Copy groups forward"
                                         v-bind:disabled="session.started || reconnecting || working"
-                                        v-on:click="sendCopyGroupForward(index)">
+                                        v-on:click="send_copy_group_forward(index)">
                                         <i class="fas fa-angle-double-right"></i>
                                 </button>
                             </td>

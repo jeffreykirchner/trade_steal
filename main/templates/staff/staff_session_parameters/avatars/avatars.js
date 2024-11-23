@@ -1,6 +1,6 @@
 /**show edit paramter set avatar
  */
- show_edit_parameterset_avatar(index){
+ show_edit_parameterset_avatar: function show_edit_parameterset_avatar(index){
     app.clear_main_form_errors();
     app.cancel_modal=true;
     app.paramterset_avatar_before_edit = Object.assign({}, app.session.parameter_set.parameter_set_avatars[index]);
@@ -18,7 +18,7 @@
 
 /** hide edit session modal
 */
-hide_edit_parameterset_avatar(){
+hide_edit_parameterset_avatar: function hide_edit_parameterset_avatar(){
     if(app.cancel_modal)
     {
        // Object.assign(app.session.parameter_set.parameter_set_avatars[app.paramterset_avatar_before_edit_index], app.paramterset_avatar_before_edit);
@@ -31,7 +31,7 @@ hide_edit_parameterset_avatar(){
 
 /** update parameterset avatar 
 */
-send_update_parameterset_avatar(){
+send_update_parameterset_avatar: function send_update_parameterset_avatar(){
     
     app.working = true;
 
@@ -42,7 +42,7 @@ send_update_parameterset_avatar(){
 
 /** handle result of updating parameter set
 */
-take_update_parameterset_avatar(message_data){
+take_update_parameterset_avatar: function take_update_parameterset_avatar(message_data){
     //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
