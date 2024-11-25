@@ -3,7 +3,7 @@
  * Given the page number return the requested instruction text
  * @param pageNumber : int
  */
-getInstructionPage: function getInstructionPage(pageNumber){
+get_instruction_page: function get_instruction_page(pageNumber){
 
     for(i=0;i<app.instructions.instruction_pages.length;i++)
     {
@@ -19,7 +19,7 @@ getInstructionPage: function getInstructionPage(pageNumber){
 /**
  * advance to next instruction page
  */
-sendNextInstruction: function sendNextInstruction(direction){
+send_next_instruction: function send_next_instruction(direction){
 
     if(app.working) return;
     
@@ -38,8 +38,8 @@ take_next_instruction: function take_next_instruction(message_data){
         app.session_player.current_instruction = result.current_instruction;
         app.session_player.current_instruction_complete = result.current_instruction_complete;
 
-        app.processInstructionPage();
-        app.instructionDisplayScroll();
+        app.process_instruction_page();
+        app.instruction_display_scroll();
     } 
     else
     {
@@ -53,7 +53,7 @@ take_next_instruction: function take_next_instruction(message_data){
 /**
  * finish instructions
  */
-sendFinishInstructions: function sendFinishInstructions(){
+send_finish_instructions: function send_finish_instructions(){
 
     if(app.working) return;
     
@@ -64,7 +64,7 @@ sendFinishInstructions: function sendFinishInstructions(){
 /**
  * finish instructions
  */
-takeFinishInstructions: function takeFinishInstructions(message_data){
+take_finish_instructions: function take_finish_instructions(message_data){
     if(message_data.value == "success")
     {
         result = message_data.result;       
@@ -78,13 +78,13 @@ takeFinishInstructions: function takeFinishInstructions(message_data){
     }
 
     app.working = false;
-    app.closeMoveModal();
+    app.close_move_modal();
 },
 
 /**
  * process instruction page
  */
-processInstructionPage: function processInstructionPage(){
+process_instruction_page: function process_instruction_page(){
 
     switch(app.session_player.current_instruction){
         case app.instructions.action_page_production:
@@ -94,7 +94,9 @@ processInstructionPage: function processInstructionPage(){
             if(app.session_player.current_instruction_complete < app.session_player.current_instruction)
             {
                 app.session.current_period_phase = 'Trade';
-                app.setup_page_3_instructions();
+                Vue.nextTick(() => {
+                    app.setup_page_3_instructions();
+                });
             }
             return;
             break;
@@ -115,7 +117,7 @@ processInstructionPage: function processInstructionPage(){
 /**
  * scroll instruction into view
  */
-instructionDisplayScroll: function instructionDisplayScroll(){
+instruction_display_scroll: function instruction_display_scroll(){
     
     document.getElementById("instructions_frame").scrollIntoView();
 
@@ -132,7 +134,7 @@ instructionDisplayScroll: function instructionDisplayScroll(){
 /**
  * simulate production on page 2
  */
-simulateProductionInstructions: function simulateProductionInstructions(){
+simulate_production_instructions: function simulate_production_instructions(){
     if(app.session.current_experiment_phase != 'Instructions') return;
     if(app.session_player.current_instruction != app.instructions.action_page_production) return;
 
@@ -271,7 +273,7 @@ simulate_do_period_production_function: function simulate_do_period_production_f
 /**
  * simulate goods transfer on page 3
  */
-simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
+simulate_good_transfer_instructions: function simulate_good_transfer_instructions(){
     app.clear_main_form_errors();
 
     if(pixi_transfer_source.name.type.toString() != "field" ||
@@ -350,19 +352,25 @@ simulateGoodTransferInstructions: function simulateGoodTransferInstructions(){
         app.session_player.current_instruction_complete=app.instructions.action_page_move;
     }
 
-    app.closeMoveModal();
+    app.close_move_modal();
 },
 
 /**
  * simulate goods transfer on page 4
  */
- simulateChatInstructions: function simulateChatInstructions(){
+ simulate_chat_instructions: function simulate_chat_instructions(){
     if(app.session_player.current_instruction != app.instructions.action_page_chat) return;
 
     if(app.chat_text.trim() == "") return;
     if(app.chat_text.trim().length > 200) return;
 
-    if(app.chat_recipients == "NONE") return;
+    if(app.chat_recipients=="NONE")
+    {
+        app.chat_error_message = "Please select a recipient.";
+        return;
+    }
+    
+    app.chat_error_message = "";
 
     let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
 

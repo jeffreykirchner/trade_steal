@@ -169,7 +169,7 @@ doTestModeRun: function doTestModeRun()
         {
             if(app.session.current_period_phase != "Trade")
             {
-                app.closeMoveModal();
+                app.close_move_modal();
                 return;
             }
 
@@ -242,7 +242,7 @@ doTestModeChat: function doTestModeChat(){
 doTestModeMove: function doTestModeMove(){
     if(app.session.current_period_phase != "Trade")
     {
-        app.closeMoveModal();
+        app.close_move_modal();
         return;
     }
 

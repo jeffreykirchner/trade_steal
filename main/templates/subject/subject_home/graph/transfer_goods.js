@@ -88,7 +88,7 @@ sendMoveGoods: function sendMoveGoods(){
          {
             if(app.test_mode)
             {
-                app.closeMoveModal();
+                app.close_move_modal();
             }
 
             let errors = {transfer_good_one_amount_2g:["Invalid entry."]};
@@ -121,7 +121,7 @@ takeMoveGoods: function takeMoveGoods(message_data){
     if(message_data.value == "success")
     {
         app.take_update_goods(message_data);    
-        app.closeMoveModal();               
+        app.close_move_modal();               
     } 
     else
     {
@@ -133,7 +133,7 @@ takeMoveGoods: function takeMoveGoods(message_data){
 /**
  * close and reset the move modals
  */
-closeMoveModal: function closeMoveModal(){
+close_move_modal: function close_move_modal(){
     app.moveTwoGoodsModal.hide();
     app.moveThreeGoodsModal.hide();
 
@@ -154,7 +154,7 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(message_data){
 
         if(parseInt(message_data.session_player_id) == app.session_player.id)
         {
-            app.closeMoveModal();    
+            app.close_move_modal();    
             app.working = false;           
         }
     } 
@@ -168,7 +168,7 @@ takeUpdateMoveGoods: function takeUpdateMoveGoods(message_data){
 
             if(app.test_mode)
             {
-                app.closeMoveModal();
+                app.close_move_modal();
             }
         }
     }

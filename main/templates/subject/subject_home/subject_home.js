@@ -174,7 +174,7 @@ var app = Vue.createApp({
                     app.take_next_instruction(message_data);
                     break;
                 case "finish_instructions":
-                    app.takeFinishInstructions(message_data);
+                    app.take_finish_instructions(message_data);
                     break;
                 
             }
@@ -329,8 +329,8 @@ var app = Vue.createApp({
             if(this.session.current_experiment_phase == 'Instructions')
             {
                 Vue.nextTick(() => {
-                    this.processInstructionPage();
-                    this.instructionDisplayScroll();
+                    this.process_instruction_page();
+                    this.instruction_display_scroll();
                 });               
                 
             }
@@ -361,9 +361,9 @@ var app = Vue.createApp({
             if(app.session.current_experiment_phase == "Instructions")
             {
                 Vue.nextTick(() => {
-                    app.instructionDisplayScroll();
+                    app.instruction_display_scroll();
                 });  
-                // setTimeout(app.instructionDisplayScroll, 250);
+                // setTimeout(app.instruction_display_scroll, 250);
             }
         },
 
@@ -382,7 +382,7 @@ var app = Vue.createApp({
             this.avatar_choice_grid_selected_col = 0;
 
             app.endGameModal.hide();
-            this.closeMoveModal();
+            this.close_move_modal();
             app.avatarChoiceGridModal.hide();
         },
 
@@ -424,14 +424,14 @@ var app = Vue.createApp({
             if(this.session.current_period_phase == "Production" &&
                this.session.time_remaining==this.session.parameter_set.period_length_production)
             {
-                this.closeMoveModal();
+                this.close_move_modal();
                 app.working = false;
             }
 
             //session complete
             if(app.session.finished)
             {
-                this.closeMoveModal();
+                this.close_move_modal();
                 this.showEndGameModal();
             }            
         },
@@ -465,7 +465,7 @@ var app = Vue.createApp({
             if(this.end_game_modal_visible) return;
 
             //hide transfer modals
-            this.closeMoveModal();
+            this.close_move_modal();
 
             //show endgame modal
             app.endGameModal.toggle();
@@ -549,7 +549,7 @@ var app = Vue.createApp({
             if(app.session.current_experiment_phase == "Instructions")
             {
                 Vue.nextTick(() => {
-                    app.instructionDisplayScroll();
+                    app.instruction_display_scroll();
                 });
             }    
             
