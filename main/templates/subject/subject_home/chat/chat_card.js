@@ -1,4 +1,4 @@
-sendChat: function sendChat(){
+send_dhat: function send_dhat(){
 
     if(app.working) return;
     if(app.chat_text.trim() == "") return;
@@ -21,19 +21,19 @@ sendChat: function sendChat(){
 
 /** take result of moving goods
 */
-takeChat: function takeChat(message_data){
-    //app.cancel_modal=false;
-    //app.clear_main_form_errors();
+// take_chat: function take_chat(message_data){
+//     //app.cancel_modal=false;
+//     //app.clear_main_form_errors();
 
-    if(message_data.value == "success")
-    {
-        app.take_update_chat(message_data);                        
-    } 
-    else
-    {
+//     if(message_data.value == "success")
+//     {
+//         app.take_update_chat(message_data);                        
+//     } 
+//     else
+//     {
         
-    }
-},
+//     }
+// },
 
 /** take updated data from goods being moved by another player
 *    @param message_data {json} session day in json format
@@ -101,7 +101,7 @@ take_update_chat: function take_update_chat(message_data){
 /** update who should receive chat
 *    @param message_data {json} session day in json format
 */
-updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipients_index){
+update_chat_recipients: function update_chat_recipients(chat_recipients, chat_recipients_index){
 
     app.chat_recipients = chat_recipients;
     
@@ -143,8 +143,8 @@ update_chat_display: function update_chat_display(){
 
 },
 
-update_chat_displayScroll: function update_chat_displayScroll(){
-    // var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
-    // elmnt.scrollIntoView(); 
-},
+// update_chat_displayScroll: function update_chat_displayScroll(){
+//     // var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
+//     // elmnt.scrollIntoView(); 
+// },
 

@@ -165,7 +165,7 @@ var app = Vue.createApp({
                     app.takeName(message_data);
                     break;
                 case "avatar":
-                    app.takeAvatar(message_data);
+                    app.take_avatar(message_data);
                     break;
                 case "update_next_phase":
                     app.take_update_next_phase(message_data);
@@ -309,7 +309,7 @@ var app = Vue.createApp({
                         app.update_notice_displayScroll();
                     });       
                 }
-                app.calcWaste();
+                app.calc_waste();
 
                 // if game is finished show modal
                 if(app.session.finished)
@@ -523,7 +523,7 @@ var app = Vue.createApp({
                 }
             }
 
-            app.calcWaste();
+            app.calc_waste();
         },
 
         /** take next period response
@@ -545,7 +545,7 @@ var app = Vue.createApp({
             });
 
             app.update_chat_display();
-            app.calcWaste();    
+            app.calc_waste();    
             if(app.session.current_experiment_phase == "Instructions")
             {
                 Vue.nextTick(() => {

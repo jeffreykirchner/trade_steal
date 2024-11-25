@@ -228,7 +228,7 @@ take_update_goods: function take_update_goods(message_data){
         }        
     }
 
-    if(app.is_subject) app.calcWaste();
+    if(app.is_subject) app.calc_waste();
 },
 
 /**

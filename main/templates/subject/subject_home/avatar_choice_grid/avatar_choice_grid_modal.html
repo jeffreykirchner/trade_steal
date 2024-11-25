@@ -44,7 +44,7 @@
                     <button type="button"
                             id="submit_avatar_choice_id"
                             class="btn btn-outline-primary"
-                            v-on:click = "sendAvatar()"
+                            v-on:click = "send_avatar()"
                             title="Submit Choice"                        
                             v-bind:disabled="reconnecting || working || session.started===false || session.finished">
                         Submit <i class="fas fa-sign-in-alt"></i>

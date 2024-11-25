@@ -98,7 +98,7 @@ take_choice_grid_click: function take_choice_grid_click(r, c){
 /**
  * send avatar choice
  */
-sendAvatar: function sendAvatar(){
+send_avatar: function send_avatar(){
 
     if(app.working) return;
 
@@ -109,13 +109,13 @@ sendAvatar: function sendAvatar(){
     
     app.working = true;
     app.send_message("avatar", {"row" : app.avatar_choice_grid_selected_row,
-                               "col" : app.avatar_choice_grid_selected_col,
+                                "col" : app.avatar_choice_grid_selected_col,
                             });             
 },
 
 /** take result of moving goods
 */
-takeAvatar: function takeAvatar(message_data){
+take_avatar: function take_avatar(message_data){
     //app.cancel_modal=false;
     //app.clear_main_form_errors();
 
