@@ -131,3 +131,32 @@ take_avatar: function take_avatar(message_data){
     }
 },
 
+/**
+ * if needed show avatar choice grid
+ */
+show_avatar_choice_grid: function show_avatar_choice_grid(){
+
+    if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
+        this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
+        this.session.current_experiment_phase == "Selection" &&
+        !this.avatar_choice_modal_visible)
+
+    {
+        app.avatar_choice_grid_modal.toggle();
+
+        this.avatar_choice_modal_visible=true;
+
+        if(this.session_player.avatar != null)
+        {
+            this.take_choice_grid_label(this.session_player.avatar.label)
+        }
+    }
+},
+
+/** hide choice grid modal modal
+*/
+hide_choice_grid_modal: function hide_choice_grid_modal(){
+    this.avatar_choice_modal_visible=false;
+},
+
+

@@ -2,7 +2,7 @@
  * send request for help doc
  * @param title : string
  */
-sendLoadHelpDoc: function sendLoadHelpDoc(title){
+send_load_help_doc: function send_load_help_doc(title){
     this.working = true;
     this.help_text = "Loading ...";
 

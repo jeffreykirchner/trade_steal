@@ -20,7 +20,7 @@ var app = Vue.createApp({
                     is_subject : true,
                     working : false,
                     first_load_done : false,                       //true after software is loaded for the first time
-                    playerKey : "{{session_player.player_key}}",
+                    player_key : "{{session_player.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
                     session_player : null, 
@@ -88,10 +88,10 @@ var app = Vue.createApp({
                     instruction_pages_show_scroll : false,
 
                     // modals
-                    moveTwoGoodsModal : null,
-                    moveThreeGoodsModal : null,
-                    avatarChoiceGridModal : null,
-                    endGameModal : null,
+                    move_two_goods_modal : null,
+                    move_three_goods_modal : null,
+                    avatar_choice_grid_modal : null,
+                    end_game_modal : null,
 
                 }},
     methods: {
@@ -159,7 +159,7 @@ var app = Vue.createApp({
                     app.take_update_groups(message_data);
                     break;
                 case "update_end_game":
-                    app.takeEndGame(message_data);
+                    app.take_end_game(message_data);
                     break;
                 case "name":
                     app.take_name(message_data);
@@ -209,18 +209,18 @@ var app = Vue.createApp({
         /**
          * do after session has loaded
         */
-        doFirstLoad: function doFirstLoad()
+        do_first_load: function do_first_load()
         {
 
-            app.moveTwoGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveTwoGoodsModal'), {keyboard: false});
-            app.moveThreeGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveThreeGoodsModal'), {keyboard: false});
-            app.avatarChoiceGridModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarChoiceGridModal'), {keyboard: false});
-            app.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false});
+            app.move_two_goods_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('move_two_goods_modal'), {keyboard: false});
+            app.move_three_goods_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('move_three_goods_modal'), {keyboard: false});
+            app.avatar_choice_grid_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatar_choice_grid_modal'), {keyboard: false});
+            app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false});
 
-            document.getElementById('moveTwoGoodsModal').addEventListener('hidden.bs.modal', app.hideTransferModal);
-            document.getElementById('moveThreeGoodsModal').addEventListener('hidden.bs.modal', app.hideTransferModal);
-            document.getElementById('avatarChoiceGridModal').addEventListener('hidden.bs.modal', app.hideChoiceGridModal);
-            document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
+            document.getElementById('move_two_goods_modal').addEventListener('hidden.bs.modal', app.hideTransferModal);
+            document.getElementById('move_three_goods_modal').addEventListener('hidden.bs.modal', app.hideTransferModal);
+            document.getElementById('avatar_choice_grid_modal').addEventListener('hidden.bs.modal', app.hide_choice_grid_modal);
+            document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
 
             //if survery required forward to it.
             if(app.session.parameter_set.survey_required=='True' && 
@@ -247,7 +247,7 @@ var app = Vue.createApp({
         /** send winsock request to get session info
         */
         send_get_session: function send_get_session(){
-            app.send_message("get_session", {"playerKey" : this.playerKey});
+            app.send_message("get_session", {"player_key" : this.player_key});
         },
         
         /** take create new session
@@ -285,7 +285,7 @@ var app = Vue.createApp({
             if(!app.first_load_done)
             {
                 Vue.nextTick(() => {
-                    app.doFirstLoad();
+                    app.do_first_load();
                 });
             }
             
@@ -315,13 +315,13 @@ var app = Vue.createApp({
                 if(app.session.finished)
                 {
                     Vue.nextTick(() => {
-                        this.showEndGameModal();
+                        this.show_end_game_modal();
                     });
                 }
 
                 //if no avavtar show choioce grid
                 Vue.nextTick(() => {
-                    app.showAvatarChoiceGrid();
+                    app.show_avatar_choice_grid();
                 });
 
             }
@@ -381,9 +381,9 @@ var app = Vue.createApp({
             this.avatar_choice_grid_selected_row = 0;
             this.avatar_choice_grid_selected_col = 0;
 
-            app.endGameModal.hide();
+            app.end_game_modal.hide();
             this.close_move_modal();
-            app.avatarChoiceGridModal.hide();
+            app.avatar_choice_grid_modal.hide();
         },
 
         /**
@@ -432,51 +432,14 @@ var app = Vue.createApp({
             if(app.session.finished)
             {
                 this.close_move_modal();
-                this.showEndGameModal();
+                this.show_end_game_modal();
             }            
-        },
-
-        /**
-         * if needed show avatar choice grid
-         */
-        showAvatarChoiceGrid: function showAvatarChoiceGrid(){
-
-            if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
-                this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
-                this.session.current_experiment_phase == "Selection" &&
-                !this.avatar_choice_modal_visible)
-
-            {
-                app.avatarChoiceGridModal.toggle();
-
-                this.avatar_choice_modal_visible=true;
-
-                if(this.session_player.avatar != null)
-                {
-                    this.take_choice_grid_label(this.session_player.avatar.label)
-                }
-            }
-        },
-
-        /**
-         * show the end game modal
-         */
-        showEndGameModal: function showEndGameModal(){
-            if(this.end_game_modal_visible) return;
-
-            //hide transfer modals
-            this.close_move_modal();
-
-            //show endgame modal
-            app.endGameModal.toggle();
-
-            this.end_game_modal_visible = true;
         },
 
          /**
          * take end of game notice
          */
-        takeEndGame: function takeEndGame(message_data){
+        take_end_game: function take_end_game(message_data){
 
         },
 
@@ -530,8 +493,8 @@ var app = Vue.createApp({
          * @param message_data {json}
         */
         take_update_next_phase: function take_update_next_phase(message_data){
-            app.avatarChoiceGridModal.hide();
-            app.endGameModal.hide();
+            app.avatar_choice_grid_modal.hide();
+            app.end_game_modal.hide();
 
             app.destroy_pixi_players();
 
@@ -553,19 +516,7 @@ var app = Vue.createApp({
                 });
             }    
             
-            app.showAvatarChoiceGrid();    
-        },
-
-        /** hide choice grid modal modal
-        */
-        hideChoiceGridModal: function hideChoiceGridModal(){
-            this.avatar_choice_modal_visible=false;
-        },
-
-        /** hide choice grid modal modal
-        */
-        hideEndGameModal: function hideEndGameModal(){
-            this.end_game_modal_visible=false;
+            app.show_avatar_choice_grid();    
         },
 
         //do nothing on when enter pressed for post

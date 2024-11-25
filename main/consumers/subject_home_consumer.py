@@ -56,7 +56,7 @@ class SubjectHomeConsumer(SocketConsumerMixin,
         logger = logging.getLogger(__name__) 
         # logger.info(f"Get Session {event}")
 
-        self.connection_uuid = event["message_text"]["playerKey"]
+        self.connection_uuid = event["message_text"]["player_key"]
         self.connection_type = "subject"
 
         #get session id for subject

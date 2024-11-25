@@ -29,14 +29,14 @@ show_transfer_modal: function show_transfer_modal(container){
 
     if(parameter_set.good_count == 2 || pixi_transfer_source.name.type == "field")
     {
-        app.moveTwoGoodsModal.toggle();
+        app.move_two_goods_modal.toggle();
     }
     else
     {
         app.transfer_modal_good_three_rgb = pixi_transfer_source.name.good_three_color;
         app.transfer_modal_good_three_name = pixi_transfer_source.name.good_c_label;
 
-        app.moveThreeGoodsModal.toggle();
+        app.move_three_goods_modal.toggle();
     }
 },
 
@@ -134,8 +134,8 @@ takeMoveGoods: function takeMoveGoods(message_data){
  * close and reset the move modals
  */
 close_move_modal: function close_move_modal(){
-    app.moveTwoGoodsModal.hide();
-    app.moveThreeGoodsModal.hide();
+    app.move_two_goods_modal.hide();
+    app.move_three_goods_modal.hide();
 
     app.transfer_good_one_amount = 0;  
     app.transfer_good_two_amount = 0;  

@@ -34,3 +34,25 @@ post_session_link: function post_session_link(){
 
     location.href = app.session_player.post_experiment_link;
 },
+
+/**
+ * show the end game modal
+ */
+show_end_game_modal: function show_end_game_modal(){
+    if(this.end_game_modal_visible) return;
+
+    //hide transfer modals
+    this.close_move_modal();
+
+    //show endgame modal
+    app.end_game_modal.toggle();
+
+    this.end_game_modal_visible = true;
+},
+
+/**
+  *  hide choice grid modal modal
+*/
+ hide_end_game_modal: function hide_end_game_modal(){
+    this.end_game_modal_visible=false;
+},

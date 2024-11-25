@@ -1,5 +1,5 @@
 //web sockets, needs should be included with companion vue.js app
-doWebSockets = function()
+do_web_sockets = function()
 {
         var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
         app.chat_socket = new WebSocket(            
@@ -21,7 +21,7 @@ doWebSockets = function()
                 return;
             } 
 
-            window.setTimeout(doWebSockets(), random_number(500,1500));            
+            window.setTimeout(do_web_sockets(), random_number(500,1500));            
         }; 
 
         app.chat_socket.onopen = function(e) {
@@ -38,4 +38,4 @@ random_number = function(min, max){
     return Math.floor(Math.random() * (max - min) + min);
 };
 
-doWebSockets();
+do_web_sockets();
