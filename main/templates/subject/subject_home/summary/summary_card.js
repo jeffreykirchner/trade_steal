@@ -1,4 +1,4 @@
-sendName: function sendName(){
+send_name: function send_name(){
 
     app.working = true;
     formData = {name:document.getElementById("id_name").value, 
@@ -9,14 +9,15 @@ sendName: function sendName(){
 
 /** take result of moving goods
 */
-takeName: function takeName(message_data){
+take_name: function take_name(message_data){
 
     app.clear_main_form_errors();
 
     if(message_data.value == "success")
     {
         app.session_player.name = message_data.result.name; 
-        app.session_player.student_id = message_data.result.student_id;                   
+        app.session_player.student_id = message_data.result.student_id;             
+        app.working = false;      
     } 
     else
     {
@@ -27,7 +28,7 @@ takeName: function takeName(message_data){
 /**
  * post study link
  */
-postSessionLink: function postSessionLink(){
+post_session_link: function post_session_link(){
 
     if(app.session_player.post_experiment_link == '') return;
 

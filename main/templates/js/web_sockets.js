@@ -21,7 +21,7 @@ doWebSockets = function()
                 return;
             } 
 
-            window.setTimeout(doWebSockets(), randomNumber(500,1500));            
+            window.setTimeout(doWebSockets(), random_number(500,1500));            
         }; 
 
         app.chat_socket.onopen = function(e) {
@@ -31,7 +31,7 @@ doWebSockets = function()
         };                
 };
 
-randomNumber = function(min, max){
+random_number = function(min, max){
     //return a random number between min and max
     min = Math.ceil(min);
     max = Math.floor(max+1);

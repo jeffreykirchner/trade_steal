@@ -381,7 +381,7 @@ simulate_good_transfer_instructions: function simulate_good_transfer_instruction
         message_data = {chat: {text : app.chat_text.trim(),
                               sender_label : parameter_set_player_local.id_label,
                               sender_id : app.session_player.id,
-                              id : randomNumber(1, 1000000)},
+                              id : random_number(1, 1000000)},
                       chat_type:chat_type,
                       status:"success"}
     }
@@ -392,7 +392,7 @@ simulate_good_transfer_instructions: function simulate_good_transfer_instruction
         message_data = {chat: {text : app.chat_text.trim(),
                                      sender_label : parameter_set_player_local.id_label,
                                      sender_id : app.session_player.id,
-                                     id : randomNumber(1, 1000000)},
+                                     id : random_number(1, 1000000)},
                        sesson_player_target : app.chat_recipients,        
                        chat_type:chat_type,
                        status:"success"}

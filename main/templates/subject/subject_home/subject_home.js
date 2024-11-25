@@ -153,7 +153,7 @@ var app = Vue.createApp({
                     app.take_update_time(message_data);
                     break;
                 case "update_production_time":
-                    app.takeProduction(message_data);
+                    app.take_production(message_data);
                     break;
                 case "update_groups":
                     app.take_update_groups(message_data);
@@ -162,7 +162,7 @@ var app = Vue.createApp({
                     app.takeEndGame(message_data);
                     break;
                 case "name":
-                    app.takeName(message_data);
+                    app.take_name(message_data);
                     break;
                 case "avatar":
                     app.take_avatar(message_data);
@@ -637,7 +637,7 @@ var app = Vue.createApp({
 
     mounted(){
 
-        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
+        {%if session.parameter_set.test_mode%} setTimeout(this.do_test_mode, this.random_number(1000 , 1500)); {%endif%}
 
         window.addEventListener('resize', this.handle_resize);
     },
