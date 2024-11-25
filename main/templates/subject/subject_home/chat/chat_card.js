@@ -73,7 +73,7 @@ take_update_chat: function take_update_chat(message_data){
             }
 
             session_player = app.session.session_players[target];
-            session_player_index = app.find_session_playerIndex(target);
+            session_player_index = app.find_session_player_index(target);
 
             if(session_player)
             {

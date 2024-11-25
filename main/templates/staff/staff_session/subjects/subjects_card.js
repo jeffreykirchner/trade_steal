@@ -77,7 +77,7 @@ take_update_avatar: function take_update_avatar(message_data){
         if(session_player)
         {
             session_player.avatar = result.avatar;
-            this.setupSingleAvatar(this.find_session_playerIndex(result.id));
+            this.setupSingleAvatar(this.find_session_player_index(result.id));
         }       
     }
  },

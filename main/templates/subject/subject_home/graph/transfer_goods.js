@@ -1,6 +1,6 @@
 /** show transfer modal when mouse up on valid target
 */
-showTransferModal: function showTransferModal(container){
+show_transfer_modal: function show_transfer_modal(container){
 
     if(app.pixi_modal_open) return;
 
@@ -9,7 +9,7 @@ showTransferModal: function showTransferModal(container){
        pixi_transfer_source == null ||
        pixi_transfer_target == null)
     {
-        app.turnOffHighlights();
+        app.turn_off_highlights();
         return;
     } 
 
@@ -54,7 +54,7 @@ hideTransferModal:function hideTransferModal(){
     }
 
     app.pixi_modal_open = false;
-    app.turnOffHighlights();
+    app.turn_off_highlights();
 },
 
 sendMoveGoods: function sendMoveGoods(){
@@ -221,7 +221,7 @@ take_update_goods: function take_update_goods(message_data){
             player.good_one_field = results[r].good_one_field;
             player.good_two_field = results[r].good_two_field;               
 
-            player_index = app.find_session_playerIndex(player_id);
+            player_index = app.find_session_player_index(player_id);
 
             app.setupSingleHouse(player_index);
             app.setupSingleField(player_index);

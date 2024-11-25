@@ -1,113 +1,109 @@
 /**
  *pointer down on field
  */
- handleFieldPointerDown: function handleFieldPointerDown(index, event){
+ handle_field_pointer_down: function handle_field_pointer_down(index, event){
     //console.log('Field ' + (index+1).toString() + ' down');
-    app.handleContainerDown(field_containers[index], event);
+    app.handle_container_down(field_containers[index], event);
 },
 
 /**
  *pointer up on field
  */
-handleFieldPointerUp: function handleFieldPointerUp(index, event){
+handle_field_pointer_up: function handle_field_pointer_up(index, event){
     //console.log('Field ' + (index+1).toString() + ' up');
     if(app.session.parameter_set.allow_stealing == "False")
     {
-        app.turnOffHighlights();
+        app.turn_off_highlights();
         return;
     }
-    app.handleContainerUp(field_containers[index], event);
+    app.handle_container_up(field_containers[index], event);
 },
 
 /**
  *pointer move over field
  */
-handleFieldPointerOver: function handleFieldPointerOver(index, event){
+handle_field_pointer_over: function handle_field_pointer_over(index, event){
     //console.log('Field ' + (index+1).toString() + ' Over');
-    app.setContainerAsTarget(field_containers[index], event);
+    app.set_container_as_target(field_containers[index], event);
 },
 
-handleFieldPointerMove: function handleFieldPointerMove(index, event){
+handle_field_pointer_move: function handle_field_pointer_move(index, event){
     //console.log('House ' + (index+1).toString() + ' move');
-    app.handleStagePointerMove(event);
+    app.handle_stage_pointer_move(event);
 },
 
 /**
  *pointer move off field
  */
-handleFieldPointerOut: function handleFieldPointerOut(index, event){
+handle_field_pointer_out: function handle_field_pointer_out(index, event){
     //console.log('Field ' + (index+1).toString() + ' Out');
-    app.removeContainerTarget(field_containers[index], event);
+    app.remove_container_target(field_containers[index], event);
 },
 
 /**
  *pointer down on house
  */
-handleHousePointerDown: function handleHousePointerDown(index, event){
+handle_house_pointer_down: function handle_house_pointer_down(index, event){
     //console.log('House ' + (index+1).toString() + ' down');
-    app.handleContainerDown(house_containers[index], event);
+    app.handle_container_down(house_containers[index], event);
 },
 
 /**
  *pointer up on house
  */
-handleHousePointerUp: function handleHousePointerUp(index, event){
+handle_house_pointer_up: function handle_house_pointer_up(index, event){
    //console.log('House ' + (index+1).toString() + ' up');
-
-   app.handleContainerUp(house_containers[index], event);
+   app.handle_container_up(house_containers[index], event);
 },
 
 /**
  *pointer over house
  */
-handleHousePointerOver: function handleHousePointerOver(index, event){
+handle_house_pointer_over: function handle_house_pointer_over(index, event){
     //console.log('House ' + (index+1).toString() + ' Over');
-
-    app.setContainerAsTarget(house_containers[index], event);
-   
+    app.set_container_as_target(house_containers[index], event);
 },
 
-handleHousePointerMove: function handleHousePointerMove(index, event){
+handle_house_pointer_move: function handle_house_pointer_move(index, event){
     //console.log('House ' + (index+1).toString() + ' move');
-    app.handleStagePointerMove(event);
+    app.handle_stage_pointer_move(event);
 },
 
 /**
  *pointer move off house
  */
-handleHousePointerOut: function handleHousePointerOut(index, event){
+handle_house_pointer_out: function handle_house_pointer_out(index, event){
     //console.log('House ' + (index+1).toString() + ' Out');
- 
-    app.removeContainerTarget(house_containers[index], event);
+    app.remove_container_target(house_containers[index], event);
 },
 
 /**
  * handle container mouse down
  */
-handleContainerDown: function handleContainerDown(container, event){
-    app.turnOffHighlights();
+handle_container_down: function handle_container_down(container, event){
+    app.turn_off_highlights();
 
     if(app.session.finished) return;
 
     container.getChildByName("highlight").visible=true;
     pixi_transfer_source = container;
-    app.updatePixiTransfer(event.data.global.x , event.data.global.y);
+    app.update_pixi_transfer(event.data.global.x , event.data.global.y);
     app.transfer_in_progress = true;
 },
 
 /**
  * handle container mouse up
  */
-handleContainerUp: function handleContainerUp(container, event){
+handle_container_up: function handle_container_up(container, event){
     if(app.session.finished) return;
         
-    app.setContainerAsTarget(container, event);
-    app.showTransferModal(container, event);
+    app.set_container_as_target(container, event);
+    app.show_transfer_modal(container, event);
 },
 
 /**set specified container as trasnfer target target
 */
-setContainerAsTarget: function setContainerAsTarget(container, event)
+set_container_as_target: function set_container_as_target(container, event)
 {
     if(pixi_transfer_line.visible && !app.pixi_modal_open)
     {
@@ -121,7 +117,7 @@ setContainerAsTarget: function setContainerAsTarget(container, event)
 
 /**remove container target when pointer moves off of it
 */
-removeContainerTarget: function removeContainerTarget(container, event){
+remove_container_target: function remove_container_target(container, event){
     if(container ==  pixi_transfer_target && !app.pixi_modal_open)
     {
         pixi_transfer_target = null;
@@ -132,26 +128,26 @@ removeContainerTarget: function removeContainerTarget(container, event){
 /**
  *pointer up on stage
  */
- handleStagePointerUp: function handleStagePointerUp(event){
+ handle_stage_pointer_up: function handle_stage_pointer_up(event){
     //console.log('Stage up: ' + event);
-    app.turnOffHighlights();
+    app.turn_off_highlights();
 },
 
 /**
  * pointer move over stage
  */
-handleStagePointerMove: function handleStagePointerMove(event){
+handle_stage_pointer_move: function handle_stage_pointer_move(event){
     if(pixi_transfer_line.visible && !app.pixi_modal_open)
     {
         //console.log('stage move over: ' + event.data.global.x + ' ' + event.data.global.y);
-        app.updatePixiTransfer(event.data.global.x, event.data.global.y);
+        app.update_pixi_transfer(event.data.global.x, event.data.global.y);
     }
 },
 
 /**
  * turn off highlights around all containers
  */
-turnOffHighlights: function turnOffHighlights(){
+turn_off_highlights: function turn_off_highlights(){
     if(app.pixi_modal_open) return;
 
     
@@ -173,7 +169,7 @@ turnOffHighlights: function turnOffHighlights(){
 /**
  * update transfer line
  */
-updatePixiTransfer: function updatePixiTransfer(target_x, target_y){
+update_pixi_transfer: function update_pixi_transfer(target_x, target_y){
     transfer_line = pixi_transfer_line;
     source = pixi_transfer_source;
 
@@ -187,6 +183,6 @@ updatePixiTransfer: function updatePixiTransfer(target_x, target_y){
       } catch (error) {
         transfer_line.clear();
         transfer_line.visible=false;
-        app.turnOffHighlights();
+        app.turn_off_highlights();
       }    
 },

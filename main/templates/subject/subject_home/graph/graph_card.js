@@ -7,7 +7,7 @@
 /**
  * set the visibility of all feilds and houses
  */
-setFieldHouseVisbility: function setFieldHouseVisbility(value){
+set_field_house_visbility: function set_field_house_visbility(value){
     
     for(let i=0;i<app.session.session_players_order.length;i++)
     {

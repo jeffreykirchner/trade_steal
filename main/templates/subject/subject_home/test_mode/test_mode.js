@@ -260,7 +260,7 @@ doTestModeMove: function doTestModeMove(){
             session_player_source = app.session.session_players[app.session_player.id];            
         }
 
-        let session_player_source_index = app.find_session_playerIndex(session_player_source.id);
+        let session_player_source_index = app.find_session_player_index(session_player_source.id);
         source_container = field_containers[session_player_source_index];        
 
         app.transfer_good_one_amount = app.randomNumber(0, session_player_source.good_one_field);
@@ -283,7 +283,7 @@ doTestModeMove: function doTestModeMove(){
             session_player_source = app.session.session_players[app.session_player.id];     
         }            
 
-        let session_player_source_index = app.find_session_playerIndex(session_player_source.id);
+        let session_player_source_index = app.find_session_player_index(session_player_source.id);
         source_container = house_containers[session_player_source_index];
 
         app.transfer_good_one_amount = app.randomNumber(0, session_player_source.good_one_house);
@@ -312,13 +312,13 @@ doTestModeMove: function doTestModeMove(){
         session_player_target = app.session.session_players[session_player_id]; 
     }
 
-    let session_player_target_index = app.find_session_playerIndex(session_player_target.id);
+    let session_player_target_index = app.find_session_player_index(session_player_target.id);
     let target_container = house_containers[session_player_target_index];
 
-    app.handleContainerDown(source_container,
+    app.handle_container_down(source_container,
                                 {data: {global: {x:source_container.x, y:source_container.y}}})
     
-    app.handleContainerUp(target_container,
+    app.handle_container_up(target_container,
                             {data: {global: {x:target_container.x, y:target_container.y}}})
 },
 

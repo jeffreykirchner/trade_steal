@@ -30,7 +30,7 @@ get_parameter_set_player_from_player_id: function get_parameter_set_player_from_
 /**
  * return session player index that has specified id
  */
-find_session_playerIndex: function find_session_playerIndex(id){
+find_session_player_index: function find_session_player_index(id){
 
     
     for(let i=0; i<app.session.session_players_order.length; i++)
