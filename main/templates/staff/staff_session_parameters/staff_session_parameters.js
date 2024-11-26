@@ -8,12 +8,12 @@ axios.defaults.xsrfCookieName = "csrftoken";
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
-                    helpText : "Loading ...",
-                    sessionID : {{session.id}},
+                    help_text : "Loading ...",
+                    session_id : {{session.id}},
                     session : {{session_json|safe}},
                        
                     valuecost_modal_label:'Edit Value or Cost',
@@ -65,19 +65,19 @@ var app = Vue.createApp({
 
                     upload_file: null,
                     upload_file_name:'Choose File',
-                    uploadParametersetButtonText:'Upload  <i class="fas fa-upload"></i>',
-                    uploadParametersetMessaage:'',
+                    upload_parameterset_button_text:'Upload  <i class="fas fa-upload"></i>',
+                    upload_parameterset_messaage:'',
                     // show_parameters:false,
                     import_parameters_message : "",
 
-                    importParametersModal : null,
-                    editParametersetModal : null,
-                    editParametersetTypeModal : null,
-                    editParametersetPlayerModal : null,
-                    editParametersetPlayerGroupModal : null,
-                    editParametersetGoodModal : null,
-                    editAvatarsModal : null,
-                    parameterSetModal : null,
+                    import_parameters_modal : null,
+                    edit_parameterset_modal : null,
+                    edit_tarameterset_type_modal : null,
+                    edit_parameterset_player_modal : null,
+                    edit_parameterset_player_group_modal : null,
+                    edit_parameterset_good_modal : null,
+                    edit_avatars_modal : null,
+                    parameter_set_modal : null,
 
                     //form paramters
                     session_import : null,
@@ -87,8 +87,8 @@ var app = Vue.createApp({
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected(){            
-            // app.sendGetSession();
+        handle_socket_connected(){            
+            // app.send_get_session();
             if(!app.first_load_done)
             {
                 Vue.nextTick(() => {
@@ -105,54 +105,54 @@ var app = Vue.createApp({
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage(data) {
+        take_message(data) {
 
             {%if DEBUG%}
             console.log(data);
             {%endif%}
 
-            messageType = data.message.messageType;
-            messageData = data.message.messageData;
+            message_type = data.message.message_type;
+            message_data = data.message.message_data;
 
-            switch(messageType) {                
+            switch(message_type) {                
                 case "get_session":
-                    app.takeGetSession(messageData);
+                    app.take_get_session(message_data);
                     break;
                 case "update_parameterset":
-                    app.takeUpdateParameterset(messageData);
+                    app.take_update_parameterset(message_data);
                     break;         
                 case "update_parameterset_type":
-                    app.takeUpdateParametersetType(messageData);
+                    app.take_update_parameterset_type(message_data);
                     break;    
                 case "update_parameterset_good":
-                    app.takeUpdateParametersetGood(messageData);
+                    app.take_update_parameterset_good(message_data);
                     break; 
                 case "update_parameterset_player":
-                    app.takeUpdateParametersetPlayer(messageData);
+                    app.take_update_parameterset_player(message_data);
                     break;     
                 case "remove_parameterset_player":
-                    app.takeRemoveParameterSetPlayer(messageData);
+                    app.take_remove_parameterset_player(message_data);
                     break;
                 case "add_parameterset_player":
-                    app.takeAddParameterSetPlayer(messageData);
+                    app.take_add_parameterset_player(message_data);
                     break;
                 case "update_parameterset_player_group":
-                    app.takeUpdateParametersetPlayerGroup(messageData);
+                    app.take_update_parameterset_player_group(message_data);
                     break;
                 case "copy_group_forward":
-                    app.takeCopyGroupForward(messageData);
+                    app.take_copy_group_forward(message_data);
                     break;
                 case "import_parameters":
-                    app.takeImportParameters(messageData);
+                    app.take_import_parameters(message_data);
                     break;
                 case "download_parameters":
-                    app.takeDownloadParameters(messageData);
+                    app.take_download_parameters(message_data);
                     break;
                 case "update_parameterset_avatar":
-                    app.takeUpdateParametersetAvatar(messageData);
+                    app.take_update_parameterset_avatar(message_data);
                     break;
                 case "help_doc":
-                    app.takeLoadHelpDoc(messageData);
+                    app.take_load_help_doc(message_data);
                     break;
             }
 
@@ -171,48 +171,48 @@ var app = Vue.createApp({
         },
 
         /** send websocket message to server
-        *    @param messageType {string} type of message sent to server
-        *    @param messageText {json} body of message being sent to server
+        *    @param message_type {string} type of message sent to server
+        *    @param message_text {json} body of message being sent to server
         */
-        sendMessage(messageType, messageText) {
+        send_message(message_type, message_text) {
             
 
-            app.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+            app.chat_socket.send(JSON.stringify({
+                    'message_type': message_type,
+                    'message_text': message_text,
                 }));
         },
 
         do_first_load: function do_first_load()
         {
             
-            app.importParametersModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('importParametersModal'), {keyboard: false})
-            app.editParametersetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetModal'), {keyboard: false})
-            app.editParametersetTypeModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetTypeModal'), {keyboard: false})
-            app.editParametersetPlayerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerModal'), {keyboard: false})
-            app.editParametersetPlayerGroupModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetPlayerGroupModal'), {keyboard: false})
-            app.editParametersetGoodModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editParametersetGoodModal'), {keyboard: false})
-            app.editAvatarsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editAvatarsModal'), {keyboard: false})
-            app.parameterSetModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('parameterSetModal'), {keyboard: false})
+            app.import_parameters_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('import_parameters_modal'), {keyboard: false})
+            app.edit_parameterset_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_modal'), {keyboard: false})
+            app.edit_tarameterset_type_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_tarameterset_type_modal'), {keyboard: false})
+            app.edit_parameterset_player_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_player_modal'), {keyboard: false})
+            app.edit_parameterset_player_group_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_player_group_modal'), {keyboard: false})
+            app.edit_parameterset_good_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_good_modal'), {keyboard: false})
+            app.edit_avatars_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_avatars_modal'), {keyboard: false})
+            app.parameter_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('parameter_set_modal'), {keyboard: false})
 
-            document.getElementById('importParametersModal').addEventListener('hidden.bs.modal', app.hideImportParameters);
-            document.getElementById('editParametersetModal').addEventListener('hidden.bs.modal', app.hideEditParameterset);
-            document.getElementById('editParametersetTypeModal').addEventListener('hidden.bs.modal', app.hideEditParametersetType);
-            document.getElementById('editParametersetPlayerModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayer);
-            document.getElementById('editParametersetPlayerGroupModal').addEventListener('hidden.bs.modal', app.hideEditParametersetPlayerGroup);
-            document.getElementById('editParametersetGoodModal').addEventListener('hidden.bs.modal', app.hideEditParametersetGood);
-            document.getElementById('editAvatarsModal').addEventListener('hidden.bs.modal', app.hideEditParametersetAvatar);
-            document.getElementById('parameterSetModal').addEventListener('hidden.bs.modal', app.hideParameterSet);
+            document.getElementById('import_parameters_modal').addEventListener('hidden.bs.modal', app.hide_import_parameters);
+            document.getElementById('edit_parameterset_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset);
+            document.getElementById('edit_tarameterset_type_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_type);
+            document.getElementById('edit_parameterset_player_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_player);
+            document.getElementById('edit_parameterset_player_group_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_player_group);
+            document.getElementById('edit_parameterset_good_modal').addEventListener('hidden.bs.modal', app.hide_edit_parametersetGood);
+            document.getElementById('edit_avatars_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameterset_avatar);
+            document.getElementById('parameter_set_modal').addEventListener('hidden.bs.modal', app.hideParameterSet);
 
             app.first_load_done = true;
         },
 
         /** take create new session
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeGetSession(messageData){
+        take_get_session(message_data){
             
-            app.session = messageData.session;
+            app.session = message_data.session;
 
             if(!app.first_load_done)
             {
@@ -233,8 +233,8 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        // sendGetSession(){
-        //     app.sendMessage("get_session",{"sessionID" : app.sessionID});
+        // send_get_session(){
+        //     app.send_message("get_session",{"session_id" : app.session_id});
         // },
 
         //do nothing on when enter pressed for post
@@ -252,7 +252,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors(){
+        clear_main_form_errors(){
             
             for(let item in app.session)
             {
@@ -305,7 +305,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors(errors){
+        display_errors(errors){
             for(let e in errors)
                 {
                     //e = document.getElementById("id_" + e).getAttribute("class", "form-control is-invalid")

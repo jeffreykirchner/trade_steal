@@ -45,7 +45,7 @@ class StaffSessionConsumer(SocketConsumerMixin,
         # logger = logging.getLogger(__name__) 
         # logger.info(f"Get Session {event}")
 
-        self.connection_uuid = event["message_text"]["sessionKey"]
+        self.connection_uuid = event["message_text"]["session_key"]
         self.connection_type = "staff"
 
         #build response
@@ -86,8 +86,8 @@ class StaffSessionConsumer(SocketConsumerMixin,
         message_data["status"] = event["data"]
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         await self.send(text_data=json.dumps({'message': message}, 
                         cls=DjangoJSONEncoder))
@@ -149,7 +149,7 @@ def take_update_session_form(session_id, data):
     logger = logging.getLogger(__name__)
     logger.info(f'take_update_session_form: {data}')
 
-    #session_id = data["sessionID"]
+    #session_id = data["session_id"]
     form_data = data["formData"]
 
     try:        

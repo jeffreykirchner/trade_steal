@@ -1,4 +1,4 @@
-sendChat: function sendChat(){
+send_dhat: function send_dhat(){
 
     if(app.working) return;
     if(app.chat_text.trim() == "") return;
@@ -12,7 +12,7 @@ sendChat: function sendChat(){
     app.chat_error_message = "";
     app.working = true;
 
-    app.sendMessage("chat", 
+    app.send_message("chat", 
                     {"recipients" : app.chat_recipients, "text" : app.chat_text.trim(),},
                     "group");
 
@@ -21,26 +21,26 @@ sendChat: function sendChat(){
 
 /** take result of moving goods
 */
-takeChat: function takeChat(messageData){
-    //app.cancelModal=false;
-    //app.clearMainFormErrors();
+// take_chat: function take_chat(message_data){
+//     //app.cancel_modal=false;
+//     //app.clear_main_form_errors();
 
-    if(messageData.value == "success")
-    {
-        app.takeUpdateChat(messageData);                        
-    } 
-    else
-    {
+//     if(message_data.value == "success")
+//     {
+//         app.take_update_chat(message_data);                        
+//     } 
+//     else
+//     {
         
-    }
-},
+//     }
+// },
 
 /** take updated data from goods being moved by another player
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-takeUpdateChat: function takeUpdateChat(messageData){
+take_update_chat: function take_update_chat(message_data){
     
-    let result = messageData;
+    let result = message_data;
     let chat = result.chat;
     let session_player = app.session_player;
 
@@ -73,7 +73,7 @@ takeUpdateChat: function takeUpdateChat(messageData){
             }
 
             session_player = app.session.session_players[target];
-            session_player_index = app.findSessionPlayerIndex(target);
+            session_player_index = app.find_session_player_index(target);
 
             if(session_player)
             {
@@ -90,24 +90,24 @@ takeUpdateChat: function takeUpdateChat(messageData){
         }
     }
 
-    if(parseInt(messageData.session_player_id) == app.session_player.id)
+    if(parseInt(message_data.session_player_id) == app.session_player.id)
     { 
         app.working = false;           
     }
     
-    app.updateChatDisplay();
+    app.update_chat_display();
 },
 
 /** update who should receive chat
-*    @param messageData {json} session day in json format
+*    @param message_data {json} session day in json format
 */
-updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipients_index){
+update_chat_recipients: function update_chat_recipients(chat_recipients, chat_recipients_index){
 
     app.chat_recipients = chat_recipients;
     
     app.chat_recipients_index = chat_recipients_index;
 
-    app.updateChatDisplay();
+    app.update_chat_display();
 
     if(app.chat_recipients=="all")
     {
@@ -126,7 +126,7 @@ updateChatRecipients: function updateChatRecipients(chat_recipients, chat_recipi
 
 /** update chat displayed on the screen
  */
-updateChatDisplay: function updateChatDisplay(){
+update_chat_display: function update_chat_display(){
 
     if(app.chat_recipients=="NONE") return;
 
@@ -143,8 +143,8 @@ updateChatDisplay: function updateChatDisplay(){
 
 },
 
-updateChatDisplayScroll: function updateChatDisplayScroll(){
-    // var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
-    // elmnt.scrollIntoView(); 
-},
+// update_chat_displayScroll: function update_chat_displayScroll(){
+//     // var elmnt = document.getElementById("chat_id_" + app.chat_list_to_display[app.chat_list_to_display.length-1].id.toString());
+//     // elmnt.scrollIntoView(); 
+// },
 

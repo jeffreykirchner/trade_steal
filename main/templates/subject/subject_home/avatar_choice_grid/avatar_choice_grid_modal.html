@@ -1,12 +1,11 @@
 {% load crispy_forms_tags %}
 <!--Edit Period Modal -->
 <div class="modal fade " 
-     id="avatarChoiceGridModal" 
+     id="avatar_choice_grid_modal" 
      data-bs-backdrop="static" 
      data-bs-keyboard="false" 
      tabindex="-1" 
-     aria-labelledby="endGameModal" 
-     aria-hidden="true">
+     aria-labelledby="end_game_modal" >
 
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
@@ -44,7 +43,7 @@
                     <button type="button"
                             id="submit_avatar_choice_id"
                             class="btn btn-outline-primary"
-                            v-on:click = "sendAvatar()"
+                            v-on:click = "send_avatar()"
                             title="Submit Choice"                        
                             v-bind:disabled="reconnecting || working || session.started===false || session.finished">
                         Submit <i class="fas fa-sign-in-alt"></i>

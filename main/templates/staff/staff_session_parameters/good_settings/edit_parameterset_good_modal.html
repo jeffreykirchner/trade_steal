@@ -1,12 +1,11 @@
 {% load crispy_forms_tags %}
 <!--Edit Period Modal -->
 <div class="modal fade"
-     id="editParametersetGoodModal"
+     id="edit_parameterset_good_modal"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
      tabindex="-1"
-     aria-labelledby="editParametersetGoodModal"
-     aria-hidden="true">
+     aria-labelledby="edit_parameterset_good_modal">
 
     <div class="modal-dialog">
         <div class="modal-content">
@@ -29,7 +28,7 @@
                 
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "sendUpdateParametersetGood()"
+                        v-on:click = "send_update_parameterset_good()"
                         v-bind:disabled="reconnecting || working">
                     Update <i class="fas fa-sign-in-alt"></i>
                 </button>

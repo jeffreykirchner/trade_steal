@@ -190,7 +190,7 @@ draw_efficiency_line:function draw_efficiency_line(chartID, marginY, marginX, ma
     //autarky line
     let a_x1 = 0;
     let a_x2 = w-marginTopAndRight-marginY;
-    let a_y = app.convertToY(parseFloat(session.autarky_efficiency), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
+    let a_y = app.convert_to_y(parseFloat(session.autarky_efficiency), yMax, yMin, h-marginX-marginTopAndRight, lineWidth);
 
     ctx.beginPath(); 
     ctx.moveTo(a_x1, a_y);
@@ -216,8 +216,8 @@ draw_efficiency_line:function draw_efficiency_line(chartID, marginY, marginX, ma
     //efficiency line
     let session_period = session.session_periods[0];
 
-    let x1 = app.convertToX(1, xMax, xMin, w-marginY-marginTopAndRight, 0);
-    let y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
+    let x1 = app.convert_to_x(1, xMax, xMin, w-marginY-marginTopAndRight, 0);
+    let y1 = app.convert_to_y(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
 
     ctx.moveTo(x1, y1);
 
@@ -226,8 +226,8 @@ draw_efficiency_line:function draw_efficiency_line(chartID, marginY, marginX, ma
 
         session_period = session.session_periods[i];
 
-        x1 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, 0);
-        y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
+        x1 = app.convert_to_x(i+1, xMax, xMin, w-marginY-marginTopAndRight, 0);
+        y1 = app.convert_to_y(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
        
         if((i+1)%7==0)
         {
@@ -247,8 +247,8 @@ draw_efficiency_line:function draw_efficiency_line(chartID, marginY, marginX, ma
     {
         session_period = session.session_periods[i];
 
-        x1 = app.convertToX(i+1, xMax, xMin, w-marginY-marginTopAndRight, 0);
-        y1 = app.convertToY(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
+        x1 = app.convert_to_x(i+1, xMax, xMin, w-marginY-marginTopAndRight, 0);
+        y1 = app.convert_to_y(parseFloat(session_period.efficiency_mean), yMax, yMin, h-marginX-marginTopAndRight, 0);
        
         if((i+1)%7!=0)        
         {
@@ -271,7 +271,7 @@ draw_efficiency_line:function draw_efficiency_line(chartID, marginY, marginX, ma
  * @param canvasWidth {int} width of the canvas in pixels
  * @param markerWidth {int} width of the marker or line in pixels
  */
-convertToX:function convertToX(value, maxValue, minValue, canvasWidth, markerWidth){
+convert_to_x:function convert_to_x(value, maxValue, minValue, canvasWidth, markerWidth){
     
     let tempT = parseFloat(canvasWidth) / parseFloat(maxValue-minValue);
 
@@ -291,7 +291,7 @@ convertToX:function convertToX(value, maxValue, minValue, canvasWidth, markerWid
  * @param canvasHeight {int} height of the canvas in pixels
  * @param markerHeight {int} height of the marker or line in pixels
  */
-convertToY:function convertToY(value, maxValue, minValue, canvasHeight, markerHeight){
+convert_to_y:function convert_to_y(value, maxValue, minValue, canvasHeight, markerHeight){
     markerHeight=0;
     
     tempT = canvasHeight / (maxValue-minValue);

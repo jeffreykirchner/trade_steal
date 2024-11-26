@@ -5,7 +5,7 @@
         </span>   
         
         <span class="float-end">
-            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Parameters Goods')">
+            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Parameters Goods')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>
@@ -30,7 +30,7 @@
                             type="button"
                             title = "Edit good settings."
                             v-bind:disabled="session.started || reconnecting || working"
-                            v-on:click="showEditParametersetGood(g.id, index)">
+                            v-on:click="show_edit_parameterset_good(g.id, index)">
                         Edit <i class="far fa-edit"></i>
                     </button>
                 </div>

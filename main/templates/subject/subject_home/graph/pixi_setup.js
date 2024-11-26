@@ -96,8 +96,8 @@ resetPixiApp: function resetPixiApp(){
     container2.eventMode = 'passive';
     background2.eventMode = 'static';
     //background2.buttonMode = true;
-    background2.on("pointerup", app.handleStagePointerUp.bind(this))
-               .on("pointermove", app.handleStagePointerMove.bind(this));
+    background2.on("pointerup", app.handle_stage_pointer_up.bind(this))
+               .on("pointermove", app.handle_stage_pointer_move.bind(this));
 
     pixi_app.stage.addChild(container1);
     pixi_app.stage.addChild(container2);
@@ -129,7 +129,7 @@ setupPixiSheets: function setupPixiSheets(textures){
     app.canvas_scale = (app.canvas_scale_height /  app.house_sprite.height) * (1/window.devicePixelRatio);
 
     app.pixi_loaded = true;
-    app.setupPixiPlayers();
+    app.setup_pixi_players();
 
     //layout for testing
     //app.setupGrid();
@@ -138,7 +138,7 @@ setupPixiSheets: function setupPixiSheets(textures){
 /**
  * setup pixi players
  */
-setupPixiPlayers: function setupPixiPlayers(){
+setup_pixi_players: function setup_pixi_players(){
 
     if(!app.pixi_loaded) return;
     if(!app.session.parameter_set.show_avatars=="True") return;
@@ -169,7 +169,7 @@ setupPixiPlayers: function setupPixiPlayers(){
     }
 
     if(app.is_subject)
-        app.setFieldHouseVisbility(app.session.started);
+        app.set_field_house_visbility(app.session.started);
 },
 
 /**setup house container for player
@@ -293,12 +293,12 @@ setupSingleHouse: function setupSingleHouse(index){
 
     if(app.is_subject)  //only subject screen can move items
         if(app.session.parameter_set.allow_stealing == "True" || session_player.id == app.session_player.id)
-            container.on('pointerdown', app.handleHousePointerDown.bind(this, index));
+            container.on('pointerdown', app.handle_house_pointer_down.bind(this, index));
 
-    container.on('pointerup', app.handleHousePointerUp.bind(this, index))
-             .on('pointerover', app.handleHousePointerOver.bind(this, index))
-             .on('pointerout', app.handleHousePointerOut.bind(this, index))
-             .on('pointermove', app.handleHousePointerMove.bind(this, index));
+    container.on('pointerup', app.handle_house_pointer_up.bind(this, index))
+             .on('pointerover', app.handle_house_pointer_over.bind(this, index))
+             .on('pointerout', app.handle_house_pointer_out.bind(this, index))
+             .on('pointermove', app.handle_house_pointer_move.bind(this, index));
 
     container.scale.set(app.canvas_scale, app.canvas_scale);
 
@@ -439,12 +439,12 @@ setupSingleField: function setupSingleField(index){
     //prevent stealing    
     if(app.is_subject)  //only subject screen can move items
         if(app.session.parameter_set.allow_stealing == "True" || session_player.id == app.session_player.id)
-            container.on('pointerdown', app.handleFieldPointerDown.bind(this, index));
+            container.on('pointerdown', app.handle_field_pointer_down.bind(this, index));
 
-    container.on('pointerup', app.handleFieldPointerUp.bind(this, index))
-             .on('pointerover', app.handleFieldPointerOver.bind(this, index))
-             .on('pointerout', app.handleFieldPointerOut.bind(this, index))
-             .on('pointermove', app.handleFieldPointerMove.bind(this, index));
+    container.on('pointerup', app.handle_field_pointer_up.bind(this, index))
+             .on('pointerover', app.handle_field_pointer_over.bind(this, index))
+             .on('pointerout', app.handle_field_pointer_out.bind(this, index))
+             .on('pointermove', app.handle_field_pointer_move.bind(this, index));
     
     container.scale.set(app.canvas_scale, app.canvas_scale);
 
@@ -546,7 +546,7 @@ setupGrid: function setupGrid(){
  
 /**destroy house and field containers
  */
-destroyPixiPlayers: function destroyPixiPlayers(){
+destroy_pixi_players: function destroy_pixi_players(){
     // let session_players = app.session.session_players;
     
     for(let i=0;i<app.session.session_players_order.length;i++)

@@ -13,15 +13,15 @@
                 [[session.started ? 'View': 'Edit']] Parameters                
             </a>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Remove Names and Student IDs" v-on:click="sendAnonymizeData()">
+            <button type="button" class="btn btn-outline-primary ms-4" title="Remove Names and Student IDs" v-on:click="send_anonymize_data()">
                 Anonymize Data <i class="far fa-address-card"></i>
             </button>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Copy Earnings to Clipboard" v-on:click="copyEarnings()">
+            <button type="button" class="btn btn-outline-primary ms-4" title="Copy Earnings to Clipboard" v-on:click="copy_earnings()">
                 Copy Earnings <span v-if="earnings_copied"><i class="fas fa-check"></i></span><span v-else><i class="fas fa-copy"></i></span>
             </button>
 
-            <button type="button" class="btn btn-outline-primary ms-4" title="Upload List" v-on:click="showSendEmailList()">
+            <button type="button" class="btn btn-outline-primary ms-4" title="Upload List" v-on:click="show_send_email_list()">
                 <span v-if="session.parameter_set.prolific_mode=='False'">
                     Upload Email List <i class="fas fa-upload"></i>
                 </span>
@@ -31,7 +31,7 @@
                 
             </button>
 
-            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="sendLoadHelpDoc('Staff Subject List')">
+            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Subject List')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>          
@@ -127,16 +127,16 @@
                             :set="v={temp_parameter_set_player:get_parameter_set_player_from_player_id(p),
                                      temp_p:session.session_players[p]}"
                             v-bind:key="p">
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
                                 [[v.temp_p.player_number]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
                                 [[v.temp_p.name=="" ? "---" : v.temp_p.name]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
                                 [[v.temp_p.student_id=="" ? "---" : v.temp_p.student_id]]
                             </td>
-                            <td class="player_table_cell text-nowrap" v-on:click="showEditSubject(p)">
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
                                 <span v-if="session.parameter_set.prolific_mode=='False'">
                                     [[(!v.temp_p.email || v.temp_p.email=="") ? "---" : v.temp_p.email]]
                                 </span>

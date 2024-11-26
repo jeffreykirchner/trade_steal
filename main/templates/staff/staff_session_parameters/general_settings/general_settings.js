@@ -2,27 +2,27 @@
 
 /**show edit paramter set
  */
-showEditParameterset:function(){
-    app.clearMainFormErrors();
-    app.cancelModal=true;
-    app.paramtersetBeforeEdit = Object.assign({}, app.session.parameter_set);
+show_edit_parameterset:function show_edit_parameterset(){
+    app.clear_main_form_errors();
+    app.cancel_modal=true;
+    app.paramterset_before_edit = Object.assign({}, app.session.parameter_set);
 
-    app.editParametersetModal.show();
+    app.edit_parameterset_modal.show();
 },
 
 /** hide edit session modal
 */
-hideEditParameterset:function(){
-    if(app.cancelModal)
+hide_edit_parameterset:function hide_edit_parameterset(){
+    if(app.cancel_modal)
     {
-        Object.assign(app.session.parameter_set, app.paramtersetBeforeEdit);
-        app.paramtersetBeforeEdit=null;
+        Object.assign(app.session.parameter_set, app.paramterset_before_edit);
+        app.paramterset_before_edit=null;
     }
 },
 
 /** update parameterset settings
 */
-sendUpdateParameterset(){
+send_update_parameterset: function send_update_parameterset(){
     
     app.working = true;
 
@@ -34,28 +34,28 @@ sendUpdateParameterset(){
         form_data[v]=app.session.parameter_set[v];
     }
 
-    app.sendMessage("update_parameterset", {"sessionID" : app.sessionID,
+    app.send_message("update_parameterset", {"session_id" : app.session_id,
                                             "formData" : form_data,});
 },
 
 /** handle result of updating parameter set
 */
-takeUpdateParameterset(messageData){
-    //app.cancelModal=false;
-    //app.clearMainFormErrors();
+take_update_parameterset: function take_update_parameterset(message_data){
+    //app.cancel_modal=false;
+    //app.clear_main_form_errors();
 
-    app.cancelModal=false;
-    app.clearMainFormErrors();
+    app.cancel_modal=false;
+    app.clear_main_form_errors();
 
-    if(messageData.status.value == "success")
+    if(message_data.status.value == "success")
     {
-        app.takeGetSession(messageData);       
-        app.editParametersetModal.hide();           
+        app.take_get_session(message_data);       
+        app.edit_parameterset_modal.hide();           
     } 
     else
     {
-        app.cancelModal=true;                           
-        app.displayErrors(messageData.status.errors);
+        app.cancel_modal=true;                           
+        app.display_errors(message_data.status.errors);
     } 
 },
 

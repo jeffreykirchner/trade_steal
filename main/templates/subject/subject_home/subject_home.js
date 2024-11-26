@@ -15,12 +15,12 @@ let worker = null;
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     is_subject : true,
                     working : false,
                     first_load_done : false,                       //true after software is loaded for the first time
-                    playerKey : "{{session_player.player_key}}",
+                    player_key : "{{session_player.player_key}}",
                     owner_color : 0xA9DFBF,
                     other_color : 0xD3D3D3,
                     session_player : null, 
@@ -88,18 +88,18 @@ var app = Vue.createApp({
                     instruction_pages_show_scroll : false,
 
                     // modals
-                    moveTwoGoodsModal : null,
-                    moveThreeGoodsModal : null,
-                    avatarChoiceGridModal : null,
-                    endGameModal : null,
+                    move_two_goods_modal : null,
+                    move_three_goods_modal : null,
+                    avatar_choice_grid_modal : null,
+                    end_game_modal : null,
 
                 }},
     methods: {
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected: function handleSocketConnected(){            
-            app.sendGetSession();
+        handle_socket_connected: function handle_socket_connected(){            
+            app.send_get_session();
             app.working = false;
         },
 
@@ -124,57 +124,57 @@ var app = Vue.createApp({
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage: function takeMessage(data) {
+        take_message: function take_message(data) {
 
             {%if DEBUG%}
             console.log(data);
             {%endif%}
 
-            messageType = data.message.message_type;
-            messageData = data.message.message_data;
+            message_type = data.message.message_type;
+            message_data = data.message.message_data;
 
-            switch(messageType) {                
+            switch(message_type) {                
                 case "get_session":
-                    app.takeGetSession(messageData);
+                    app.take_get_session(message_data);
                     break; 
                 case "update_move_goods":
-                    app.takeUpdateMoveGoods(messageData);
+                    app.takeUpdateMoveGoods(message_data);
                     break;
                 case "update_start_experiment":
-                    app.takeUpdateStartExperiment(messageData);
+                    app.take_update_start_experiment(message_data);
                     break;
                 case "update_reset_experiment":
-                    app.takeUpdateResetExperiment(messageData);
+                    app.take_update_reset_experiment(message_data);
                     break;
                 case "update_chat":
-                    app.takeUpdateChat(messageData);
+                    app.take_update_chat(message_data);
                     break;
                 case "update_time":
-                    app.takeUpdateTime(messageData);
+                    app.take_update_time(message_data);
                     break;
                 case "update_production_time":
-                    app.takeProduction(messageData);
+                    app.take_production(message_data);
                     break;
                 case "update_groups":
-                    app.takeUpdateGroups(messageData);
+                    app.take_update_groups(message_data);
                     break;
                 case "update_end_game":
-                    app.takeEndGame(messageData);
+                    app.take_end_game(message_data);
                     break;
                 case "name":
-                    app.takeName(messageData);
+                    app.take_name(message_data);
                     break;
                 case "avatar":
-                    app.takeAvatar(messageData);
+                    app.take_avatar(message_data);
                     break;
                 case "update_next_phase":
-                    app.takeUpdateNextPhase(messageData);
+                    app.take_update_next_phase(message_data);
                     break;
                 case "next_instruction":
-                    app.takeNextInstruction(messageData);
+                    app.take_next_instruction(message_data);
                     break;
                 case "finish_instructions":
-                    app.takeFinishInstructions(messageData);
+                    app.take_finish_instructions(message_data);
                     break;
                 
             }
@@ -192,16 +192,16 @@ var app = Vue.createApp({
         },
 
         /** send websocket message to server
-        *    @param messageType {string} type of message sent to server
-        *    @param messageText {json} body of message being sent to server
+        *    @param message_type {string} type of message sent to server
+        *    @param message_text {json} body of message being sent to server
         *    @param message_target {string} who message is being sent to
         */
-        sendMessage: function sendMessage(messageType, messageText, message_target="self") {
+        send_message: function send_message(message_type, message_text, message_target="self") {
             //send socket message to server
 
-            this.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+            this.chat_socket.send(JSON.stringify({
+                    'message_type': message_type,
+                    'message_text': message_text,
                     'message_target': message_target,
                 }));
         },
@@ -209,18 +209,18 @@ var app = Vue.createApp({
         /**
          * do after session has loaded
         */
-        doFirstLoad: function doFirstLoad()
+        do_first_load: function do_first_load()
         {
 
-            app.moveTwoGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveTwoGoodsModal'), {keyboard: false});
-            app.moveThreeGoodsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('moveThreeGoodsModal'), {keyboard: false});
-            app.avatarChoiceGridModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarChoiceGridModal'), {keyboard: false});
-            app.endGameModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('endGameModal'), {keyboard: false});
+            app.move_two_goods_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('move_two_goods_modal'), {keyboard: false});
+            app.move_three_goods_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('move_three_goods_modal'), {keyboard: false});
+            app.avatar_choice_grid_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('avatar_choice_grid_modal'), {keyboard: false});
+            app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false});
 
-            document.getElementById('moveTwoGoodsModal').addEventListener('hidden.bs.modal', app.hideTransferModal);
-            document.getElementById('moveThreeGoodsModal').addEventListener('hidden.bs.modal', app.hideTransferModal);
-            document.getElementById('avatarChoiceGridModal').addEventListener('hidden.bs.modal', app.hideChoiceGridModal);
-            document.getElementById('endGameModal').addEventListener('hidden.bs.modal', app.hideEndGameModal);
+            document.getElementById('move_two_goods_modal').addEventListener('hidden.bs.modal', app.hideTransferModal);
+            document.getElementById('move_three_goods_modal').addEventListener('hidden.bs.modal', app.hideTransferModal);
+            document.getElementById('avatar_choice_grid_modal').addEventListener('hidden.bs.modal', app.hide_choice_grid_modal);
+            document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
 
             //if survery required forward to it.
             if(app.session.parameter_set.survey_required=='True' && 
@@ -246,23 +246,23 @@ var app = Vue.createApp({
 
         /** send winsock request to get session info
         */
-        sendGetSession: function sendGetSession(){
-            app.sendMessage("get_session", {"playerKey" : this.playerKey});
+        send_get_session: function send_get_session(){
+            app.send_message("get_session", {"player_key" : this.player_key});
         },
         
         /** take create new session
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeGetSession: function takeGetSession(messageData){
+        take_get_session: function take_get_session(message_data){
             
-            app.session = messageData.session;
-            app.session_player = messageData.session_player;
+            app.session = message_data.session;
+            app.session_player = message_data.session_player;
 
             let parameter_set_player_local = app.get_parameter_set_player_from_player_id(app.session_player.id);
 
             app.current_town = parameter_set_player_local.town;
 
-            app.destroyPixiPlayers();
+            app.destroy_pixi_players();
 
             if(app.session.started)
             {
@@ -285,7 +285,7 @@ var app = Vue.createApp({
             if(!app.first_load_done)
             {
                 Vue.nextTick(() => {
-                    app.doFirstLoad();
+                    app.do_first_load();
                 });
             }
             
@@ -298,30 +298,30 @@ var app = Vue.createApp({
                 else
                 {
                     Vue.nextTick(() => {
-                        app.setupPixiPlayers();
+                        app.setup_pixi_players();
                     });   
                 }
                 
                 if(this.session.current_experiment_phase != 'Instructions')
                 {
-                    app.updateChatDisplay();         
+                    app.update_chat_display();         
                     Vue.nextTick(() => {
-                        app.updateNoticeDisplayScroll();
+                        app.update_notice_displayScroll();
                     });       
                 }
-                app.calcWaste();
+                app.calc_waste();
 
                 // if game is finished show modal
                 if(app.session.finished)
                 {
                     Vue.nextTick(() => {
-                        this.showEndGameModal();
+                        this.show_end_game_modal();
                     });
                 }
 
                 //if no avavtar show choioce grid
                 Vue.nextTick(() => {
-                    app.showAvatarChoiceGrid();
+                    app.show_avatar_choice_grid();
                 });
 
             }
@@ -329,8 +329,8 @@ var app = Vue.createApp({
             if(this.session.current_experiment_phase == 'Instructions')
             {
                 Vue.nextTick(() => {
-                    this.processInstructionPage();
-                    this.instructionDisplayScroll();
+                    this.process_instruction_page();
+                    this.instruction_display_scroll();
                 });               
                 
             }
@@ -339,7 +339,7 @@ var app = Vue.createApp({
         /**
          * handle window resize event
          */
-        handleResize: function handleResize(){                
+        handle_resize: function handle_resize(){                
 
             setTimeout(function(){
                 let canvas = document.getElementById('sd_graph_id');
@@ -348,32 +348,32 @@ var app = Vue.createApp({
                 app.canvas_scale_height = app.canvas_height / app.grid_y;
                 app.canvas_scale_width = app.canvas_width / app.grid_x;
 
-                app.setupPixiPlayers();
+                app.setup_pixi_players();
             }, 250);
         },
 
         /** update start status
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeUpdateStartExperiment: function takeUpdateStartExperiment(messageData){
-            app.takeGetSession(messageData);
+        take_update_start_experiment: function take_update_start_experiment(message_data){
+            app.take_get_session(message_data);
 
             if(app.session.current_experiment_phase == "Instructions")
             {
                 Vue.nextTick(() => {
-                    app.instructionDisplayScroll();
+                    app.instruction_display_scroll();
                 });  
-                // setTimeout(app.instructionDisplayScroll, 250);
+                // setTimeout(app.instruction_display_scroll, 250);
             }
         },
 
         /** update reset status
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeUpdateResetExperiment: function takeUpdateResetExperiment(messageData){
-            app.destroyPixiPlayers();
+        take_update_reset_experiment: function take_update_reset_experiment(message_data){
+            app.destroy_pixi_players();
 
-            app.takeGetSession(messageData);
+            app.take_get_session(message_data);
 
             this.production_slider_one = 50;
             this.production_slider_two = 50;
@@ -381,17 +381,18 @@ var app = Vue.createApp({
             this.avatar_choice_grid_selected_row = 0;
             this.avatar_choice_grid_selected_col = 0;
 
-            app.endGameModal.hide();
-            this.closeMoveModal();
+            app.end_game_modal.hide();
+            this.close_move_modal();
+            app.avatar_choice_grid_modal.hide();
         },
 
         /**
         * update time and start status
         */
-        takeUpdateTime: function takeUpdateTime(messageData){
-            let result = messageData.result;
-            let status = messageData.value;
-            let notice_list = messageData.notice_list;
+        take_update_time: function take_update_time(message_data){
+            let result = message_data.result;
+            let status = message_data.value;
+            let notice_list = message_data.notice_list;
 
             if(status == "fail") return;
 
@@ -404,7 +405,7 @@ var app = Vue.createApp({
 
             this.tick_tock = this.session.time_remaining % 2;
 
-            app.takeUpdateGoods({result : result.session_players});
+            app.take_update_goods({result : result.session_players});
 
             //update subject earnings
             this.session_player.earnings = result.session_player_earnings.earnings;
@@ -412,9 +413,9 @@ var app = Vue.createApp({
             if(notice_list.length > 0)
             {
                 this.session_player.notices.push(notice_list[0]);
-                // setTimeout(app.updateNoticeDisplayScroll, 250);
+                // setTimeout(app.update_notice_displayScroll, 250);
                 Vue.nextTick(() => {
-                    app.updateNoticeDisplayScroll();
+                    app.update_notice_displayScroll();
                 }); 
 
             }
@@ -423,72 +424,35 @@ var app = Vue.createApp({
             if(this.session.current_period_phase == "Production" &&
                this.session.time_remaining==this.session.parameter_set.period_length_production)
             {
-                this.closeMoveModal();
+                this.close_move_modal();
                 app.working = false;
             }
 
             //session complete
             if(app.session.finished)
             {
-                this.closeMoveModal();
-                this.showEndGameModal();
+                this.close_move_modal();
+                this.show_end_game_modal();
             }            
-        },
-
-        /**
-         * if needed show avatar choice grid
-         */
-        showAvatarChoiceGrid: function showAvatarChoiceGrid(){
-
-            if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
-                this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
-                this.session.current_experiment_phase == "Selection" &&
-                !this.avatar_choice_modal_visible)
-
-            {
-                app.avatarChoiceGridModal.toggle();
-
-                this.avatar_choice_modal_visible=true;
-
-                if(this.session_player.avatar != null)
-                {
-                    this.take_choice_grid_label(this.session_player.avatar.label)
-                }
-            }
-        },
-
-        /**
-         * show the end game modal
-         */
-        showEndGameModal: function showEndGameModal(){
-            if(this.end_game_modal_visible) return;
-
-            //hide transfer modals
-            this.closeMoveModal();
-
-            //show endgame modal
-            app.endGameModal.toggle();
-
-            this.end_game_modal_visible = true;
         },
 
          /**
          * take end of game notice
          */
-        takeEndGame: function takeEndGame(messageData){
+        take_end_game: function take_end_game(message_data){
 
         },
 
         /**
          * update players in group
          */
-        takeUpdateGroups: function takeUpdateGroups(messageData){
-            app.destroyPixiPlayers();
+        take_update_groups: function take_update_groups(message_data){
+            app.destroy_pixi_players();
 
-            app.session.session_players = messageData.result.session_players;
-            app.session.session_players_order = messageData.result.session_players_order;
+            app.session.session_players = message_data.result.session_players;
+            app.session.session_players_order = message_data.result.session_players_order;
 
-            setTimeout(app.setupPixiPlayers, 250);
+            setTimeout(app.setup_pixi_players, 250);
 
             // document.getElementById("chat_all_id").click();
            
@@ -522,49 +486,37 @@ var app = Vue.createApp({
                 }
             }
 
-            app.calcWaste();
+            app.calc_waste();
         },
 
         /** take next period response
-         * @param messageData {json}
+         * @param message_data {json}
         */
-        takeUpdateNextPhase: function takeUpdateNextPhase(messageData){
-            app.avatarChoiceGridModal.hide();
-            app.endGameModal.hide();
+        take_update_next_phase: function take_update_next_phase(message_data){
+            app.avatar_choice_grid_modal.hide();
+            app.end_game_modal.hide();
 
-            app.destroyPixiPlayers();
+            app.destroy_pixi_players();
 
-            this.session.current_experiment_phase = messageData.session.current_experiment_phase;
-            this.session.session_players = messageData.session_players;
-            this.session_player = messageData.session_player;
+            this.session.current_experiment_phase = message_data.session.current_experiment_phase;
+            this.session.session_players = message_data.session_players;
+            this.session_player = message_data.session_player;
 
             Vue.nextTick(() => {
-                // setTimeout(app.setupPixiPlayers, 250);
-                app.setupPixiPlayers();
+                // setTimeout(app.setup_pixi_players, 250);
+                app.setup_pixi_players();
             });
 
-            app.updateChatDisplay();
-            app.calcWaste();    
+            app.update_chat_display();
+            app.calc_waste();    
             if(app.session.current_experiment_phase == "Instructions")
             {
                 Vue.nextTick(() => {
-                    app.instructionDisplayScroll();
+                    app.instruction_display_scroll();
                 });
             }    
             
-            app.showAvatarChoiceGrid();    
-        },
-
-        /** hide choice grid modal modal
-        */
-        hideChoiceGridModal: function hideChoiceGridModal(){
-            this.avatar_choice_modal_visible=false;
-        },
-
-        /** hide choice grid modal modal
-        */
-        hideEndGameModal: function hideEndGameModal(){
-            this.end_game_modal_visible=false;
+            app.show_avatar_choice_grid();    
         },
 
         //do nothing on when enter pressed for post
@@ -584,7 +536,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors: function clearMainFormErrors(){
+        clear_main_form_errors: function clear_main_form_errors(){
             
             s = this.session_player_move_two_form_ids;
             for(var i in s)
@@ -610,7 +562,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors: function displayErrors(errors){
+        display_errors: function display_errors(errors){
             for(var e in errors)
             {
                 for(let e in errors)
@@ -636,9 +588,9 @@ var app = Vue.createApp({
 
     mounted(){
 
-        {%if session.parameter_set.test_mode%} setTimeout(this.doTestMode, this.randomNumber(1000 , 1500)); {%endif%}
+        {%if session.parameter_set.test_mode%} setTimeout(this.do_test_mode, this.random_number(1000 , 1500)); {%endif%}
 
-        window.addEventListener('resize', this.handleResize);
+        window.addEventListener('resize', this.handle_resize);
     },
 
 }).mount('#app');

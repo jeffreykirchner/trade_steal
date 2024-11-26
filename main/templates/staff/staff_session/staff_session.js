@@ -12,14 +12,14 @@ let worker = null;
 var app = Vue.createApp({
     delimiters: ["[[", "]]"],
 
-    data() {return {chatSocket : "",
+    data() {return {chat_socket : "",
                     reconnecting : true,
                     working : false,
                     is_subject : false,
                     first_load_done : false,          //true after software is loaded for the first time
-                    helpText : "Loading ...",
-                    sessionID : {{session.id}},
-                    sessionKey : "{{session.session_key}}",
+                    help_text : "Loading ...",
+                    session_id : {{session.id}},
+                    session_key : "{{session.session_key}}",
                     other_color : 0xD3D3D3,
                     session : null,
 
@@ -28,9 +28,6 @@ var app = Vue.createApp({
                     move_to_next_phase_text : 'Start Next Experiment Phase',
 
                     pixi_loaded : false,             //true when pixi is loaded
-                    // pixi_transfer_line : null,       //transfer line between two pixi containers  
-                    //pixi_transfer_source : null,     //source of transfer
-                    //pixi_transfer_target : null,     //target of transfer
                     pixi_modal_open : false,         //true whe pixi modal is open
                     pixi_transfer_source_modal_string : "",   //source string shown on transfer modal
                     pixi_transfer_target_modal_string : "" ,  //target string shown on transfer modal
@@ -58,12 +55,12 @@ var app = Vue.createApp({
                     data_downloading : false,                   //show spinner when data downloading
                     earnings_copied : false,                    //if true show earnings copied   
 
-                    staffEditNameEtcForm : {name : "", student_id : "", email : "", id : -1},
-                    sendMessageModalForm : {subject : "", text : ""},
+                    staff_edit_name_etc_form : {name : "", student_id : "", email : "", id : -1},
+                    send_message_modal_form : {subject : "", text : ""},
 
-                    emailResult : "",                          //result of sending invitation emails
-                    emailDefaultSubject : "{{parameters.invitation_subject}}",
-                    emailDefaultText : `{{parameters.invitation_text|safe}}`,
+                    email_result : "",                          //result of sending invitation emails
+                    email_default_subject : "{{parameters.invitation_subject}}",
+                    email_default_text : `{{parameters.invitation_text|safe}}`,
 
                     csv_email_list : "",           //csv email list
 
@@ -80,8 +77,8 @@ var app = Vue.createApp({
 
         /** fire when websocket connects to server
         */
-        handleSocketConnected: function handleSocketConnected(){            
-            app.sendGetSession();
+        handle_socket_connected: function handle_socket_connected(){            
+            app.send_get_session();
         },
 
         /** fire trys to connect to server
@@ -96,118 +93,118 @@ var app = Vue.createApp({
         /** take websocket message from server
         *    @param data {json} incoming data from server, contains message and message type
         */
-        takeMessage: function takeMessage(data){
+        take_message: function take_message(data){
 
             {%if DEBUG%}
             console.log(data);
             {%endif%}
 
-            messageType = data.message.message_type;
-            messageData = data.message.message_data;
+            message_type = data.message.message_type;
+            message_data = data.message.message_data;
 
-            switch(messageType) {                
+            switch(message_type) {                
                 case "get_session":
-                    app.takeGetSession(messageData);
+                    app.take_get_session(message_data);
                     break;
                 case "update_session":
-                    app.takeUpdateSession(messageData);
+                    app.take_update_session(message_data);
                     break;
-                case "start_experiment":
-                    app.takeStartExperiment(messageData);
-                    break;
+                // case "start_experiment":
+                //     app.take_start_experiment(message_data);
+                //     break;
                 case "update_start_experiment":
-                    app.takeUpdateStartExperiment(messageData);
+                    app.take_update_start_experiment(message_data);
                     break;
                 // case "reset_experiment":
-                //     app.takeResetExperiment(messageData);
+                //     app.takeResetExperiment(message_data);
                 //     break;
-                case "next_phase":
-                    app.takeNextPhase(messageData);
-                    break; 
+                // case "next_phase":
+                //     app.take_next_phase(message_data);
+                //     break; 
                 case "update_next_phase":
-                    app.takeUpdateNextPhase(messageData);
+                    app.take_update_next_phase(message_data);
                     break; 
                 case "update_move_goods":
-                    app.takeUpdateGoods(messageData);
-                    app.takeUpdateNotice(messageData);
+                    app.take_update_goods(message_data);
+                    app.take_update_notice(message_data);
                     break;  
                 case "update_reset_experiment":
-                    app.takeUpdateResetExperiment(messageData);
+                    app.take_update_reset_experiment(message_data);
                     break;
                 case "update_chat":
-                    app.takeUpdateChat(messageData);
+                    app.take_update_chat(message_data);
                     break;
                 case "update_time":
-                    app.takeUpdateTime(messageData);
+                    app.take_update_time(message_data);
                     break;
                 case "start_timer":
-                    app.takeStartTimer(messageData);
+                    app.take_start_timer(message_data);
                     break;   
                 case "update_groups":
-                    app.takeUpdateGroups(messageData);
+                    app.take_update_groups(message_data);
                     break;  
                 case "update_connection_status":
-                    app.takeUpdateConnectionStatus(messageData);
+                    app.take_update_connection_status(message_data);
                     break;   
-                case "reset_connections":
-                    app.takeResetConnections(messageData);
-                    break; 
+                // case "reset_connections":
+                //     app.takereset_connections(message_data);
+                //     break; 
                 case "update_reset_connections":
-                    app.takeUpdateResetConnections(messageData);
+                    app.take_update_reset_connections(message_data);
                     break; 
                 case "update_name":
-                    app.takeUpdateName(messageData);
+                    app.take_update_name(message_data);
                     break;         
                 case "download_summary_data":
-                    app.takeDownloadSummaryData(messageData);
+                    app.take_download_summary_data(message_data);
                     break;
                 case "download_action_data":
-                    app.takeDownloadActionData(messageData);
+                    app.take_download_action_data(message_data);
                     break;
                 case "download_recruiter_data":
-                    app.takeDownloadRecruiterData(messageData);
+                    app.take_download_recruiter_data(message_data);
                     break;
                 case "download_payment_data":
-                    app.takeDownloadPaymentData(messageData);
+                    app.take_download_payment_data(message_data);
                     break;
                 case "update_avatar":
-                    app.takeUpdateAvatar(messageData);
+                    app.take_update_avatar(message_data);
                     break;
                 case "update_next_instruction":
-                    app.takeNextInstruction(messageData);
+                    app.take_next_instruction(message_data);
                     break;
                 case "update_finish_instructions":
-                    app.takeFinishedInstructions(messageData);
+                    app.take_finished_instructions(message_data);
                     break;
                 case "help_doc":
-                    app.takeLoadHelpDoc(messageData);
+                    app.take_load_help_doc(message_data);
                     break;
                 case "end_early":
-                    app.takeEndEarly(messageData);
+                    app.take_end_early(message_data);
                     break;
                 case "update_production_time":
-                    app.takeUpdateProductionTime(messageData);
+                    app.take_update_production_time(message_data);
                     break;
                 case "update_update_subject":
-                    app.takeUpdateSubject(messageData);
+                    app.take_update_subject(message_data);
                     break;
                 case "send_invitations":
-                    app.takeSendInvitations(messageData);
+                    app.take_send_invitations(message_data);
                     break;
                 case "email_list":
-                    app.takeUpdateEmailList(messageData);
+                    app.take_update_email_list(message_data);
                     break;
                 case "update_anonymize_data":
-                    app.takeAnonymizeData(messageData);
+                    app.take_anonymize_data(message_data);
                     break;
                 case "update_survey_complete":
-                    app.take_update_survey_complete(messageData);
+                    app.take_update_survey_complete(message_data);
                     break;
                 case "refresh_screens":
-                    app.take_refresh_screens(messageData);
+                    app.take_refresh_screens(message_data);
                     break;
                 case "stop_timer_pulse":
-                    app.take_stop_timer_pulse(messageData);
+                    app.take_stop_timer_pulse(message_data);
             }
 
             app.working = false;
@@ -249,32 +246,32 @@ var app = Vue.createApp({
         },
 
         /** send websocket message to server
-        *    @param messageType {string} type of message sent to server
-        *    @param messageText {json} body of message being sent to server
+        *    @param message_type {string} type of message sent to server
+        *    @param message_text {json} body of message being sent to server
         */
-        sendMessage: function sendMessage(messageType, messageText, message_target="self") {
+        send_message: function send_message(message_type, message_text, message_target="self") {
             //send socket message to server
 
-            this.chatSocket.send(JSON.stringify({
-                    'messageType': messageType,
-                    'messageText': messageText,
+            this.chat_socket.send(JSON.stringify({
+                    'message_type': message_type,
+                    'message_text': message_text,
                     'message_target': message_target,
                 }));
         },
 
         /** send winsock request to get session info
         */
-        sendGetSession: function sendGetSession(){
-            app.sendMessage("get_session",{"sessionKey" : app.sessionKey});
+        send_get_session: function send_get_session(){
+            app.send_message("get_session",{"session_key" : app.session_key});
         },
 
         /** take create new session
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeGetSession: function takeGetSession(messageData){
+        take_get_session: function take_get_session(message_data){
             
-            app.session = messageData.session;
-            app.destroyPixiPlayers();
+            app.session = message_data.session;
+            app.destroy_pixi_players();
             
             if(app.session.started)
             {
@@ -295,14 +292,14 @@ var app = Vue.createApp({
             else
             {
                 Vue.nextTick(() => {
-                    app.setupPixiPlayers();
+                    app.setup_pixi_players();
                 });
-                // setTimeout(app.setupPixiPlayers, 250);
+                // setTimeout(app.setup_pixi_players, 250);
             }
             
-            app.updateChatDisplay(true);
-            app.updatePhaseButtonText();
-            app.updateNoticeDisplay(true);        
+            app.update_chat_display(true);
+            app.update_phase_button_text();
+            app.update_notice_display(true);        
 
             if(!app.first_load_done)
             {
@@ -320,14 +317,14 @@ var app = Vue.createApp({
             {
                 let v = {};
                 v.timer_running = app.session.timer_running;
-                app.takeStartTimer(v);
+                app.take_start_timer(v);
             }
         },
 
         /**
          * handle window resize event
         */
-        handleResize: function handleResize(){
+        handle_resize: function handle_resize(){
 
             setTimeout(function(){
                 let canvas = document.getElementById('sd_graph_id');
@@ -336,13 +333,13 @@ var app = Vue.createApp({
                 app.canvas_scale_height = app.canvas_height / app.grid_y;
                 app.canvas_scale_width = app.canvas_width / app.grid_x;
 
-                app.setupPixiPlayers();
+                app.setup_pixi_players();
             }, 250);
         },
 
         /**update text of move on button based on current state
          */
-        updatePhaseButtonText: function updatePhaseButtonText(){
+        update_phase_button_text: function update_phase_button_text(){
             if(this.session.finished && this.session.current_experiment_phase == "Done")
             {
                 this.move_to_next_phase_text = '** Session complete **';
@@ -377,11 +374,11 @@ var app = Vue.createApp({
         },
 
         /** take updated data from goods being moved by another player
-        *    @param messageData {json} session day in json format
+        *    @param message_data {json} session day in json format
         */
-        takeUpdateChat: function takeUpdateChat(messageData){
+        take_update_chat: function take_update_chat(message_data){
             
-            let result = messageData;
+            let result = message_data;
             let chat = result.chat;
             let town = result.town;
 
@@ -391,13 +388,13 @@ var app = Vue.createApp({
                 chat_all[town].shift();
             
             chat_all[town].push(chat);
-            app.updateChatDisplay(false);
+            app.update_chat_display(false);
         },
 
         /**
          * update chat displayed based on town chosen
          */
-        updateChatDisplay: function updateChatDisplay(force_scroll){
+        update_chat_display: function update_chat_display(force_scroll){
             if(!app.session.world_state) return;
 
             if(!("chat_all" in app.session.world_state))
@@ -414,7 +411,7 @@ var app = Vue.createApp({
         /**
          * update chat displayed based on town chosen
          */
-        updateNoticeDisplay: function updateNoticeDisplay(forceScroll){    
+        update_notice_display: function update_notice_display(forceScroll){    
             if(!app.session.world_state) return;
               
             if(!("notices" in app.session.world_state))
@@ -424,22 +421,22 @@ var app = Vue.createApp({
             }
             let notices =  app.session.world_state.notices;    
             app.notice_list_to_display=Array.from(notices[parseInt(app.current_town)]);
-            // setTimeout(function() {  app.updateNoticeDisplayScrollStaff(forceScroll); }, 250);
+            // setTimeout(function() {  app.update_notice_displayScrollStaff(forceScroll); }, 250);
         },
 
         /**
          * show applicable notices.
          */
-        takeUpdateNotice: function takeUpdateNotice(messageData){
+        take_update_notice: function take_update_notice(message_data){
 
-            let result = messageData.result;
+            let result = message_data.result;
             let notices = app.session.world_state.notices;
 
             for(i=0;i<result.length;i++)
             {
                 if(result[i].notice)
                 {
-                    let session_player = app.findSessionPlayer(result[0].id);
+                    let session_player = app.find_session_player(result[0].id);
                     let notice_parameter_set_player = app.get_parameter_set_player_from_player_id(session_player.id);
                     let town = notice_parameter_set_player.town; 
                     let notice = result[i].notice;
@@ -449,7 +446,7 @@ var app = Vue.createApp({
                             notices[town].shift();
                         
                         notices[town].push(notice);
-                        this.updateNoticeDisplay(false);
+                        this.update_notice_display(false);
                          //scroll to view
                        
                     }
@@ -459,7 +456,7 @@ var app = Vue.createApp({
             
         },
 
-        updateNoticeDisplayScrollStaff: function updateNoticeDisplayScrollStaff(force_scroll){
+        update_notice_displayScrollStaff: function update_notice_displayScrollStaff(force_scroll){
             if(!app.session.timer_running) return;
 
             if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight || force_scroll)
@@ -475,10 +472,10 @@ var app = Vue.createApp({
         /**
          * update time and start status
          */
-        takeUpdateTime: function takeUpdateTime(messageData){
+        take_update_time: function take_update_time(message_data){
 
-            let result = messageData.result;
-            let status = messageData.value;
+            let result = message_data.result;
+            let status = message_data.value;
 
             if(status == "fail") return;
 
@@ -489,11 +486,11 @@ var app = Vue.createApp({
             app.session.timer_running = result.timer_running;
             app.session.finished = result.finished;
 
-            app.takeUpdateGoods({result : result.session_players});
-            app.takeUpdateEarnings(messageData);
-            app.takeUpdatePeriod(messageData.period_update);
+            app.take_update_goods({result : result.session_players});
+            app.take_update_earnings(message_data);
+            app.take_update_period(message_data.period_update);
 
-            app.updatePhaseButtonText();
+            app.update_phase_button_text();
 
             if(app.timer_warning_timeout)
             {
@@ -501,13 +498,13 @@ var app = Vue.createApp({
                 app.timer_warning = false;
             }
 
-            app.timer_warning_timeout = setTimeout(app.timerWarning, 5000);
+            app.timer_warning_timeout = setTimeout(app.show_timer_warning, 5000);
         },
 
         /**
          * update single session period
          */
-        takeUpdatePeriod: function takeUpdatePeriod(period_update){
+        take_update_period: function take_update_period(period_update){
             if(!period_update) return;
 
             app.session.session_periods[period_update.period_number-1] = period_update;
@@ -517,7 +514,7 @@ var app = Vue.createApp({
         /**
          * take update end game
          */
-        takeUpdateEndGame: function takeUpdateEndGame(messageData){
+        takeUpdateEndGame: function takeUpdateEndGame(message_data){
 
         },
 
@@ -525,10 +522,10 @@ var app = Vue.createApp({
          * change the town shown
          */
         change_town_view: function change_town_view(){
-            app.destroyPixiPlayers();
-            app.setupPixiPlayers();
-            app.updateChatDisplay(true);
-            app.updateNoticeDisplay(true);
+            app.destroy_pixi_players();
+            app.setup_pixi_players();
+            app.update_chat_display(true);
+            app.update_notice_display(true);
         },
 
         //do nothing on when enter pressed for post
@@ -548,7 +545,7 @@ var app = Vue.createApp({
     
         /** clear form error messages
         */
-        clearMainFormErrors: function clearMainFormErrors(){
+        clear_main_form_errors: function clear_main_form_errors(){
             
             for(var item in app.session)
             {
@@ -566,7 +563,7 @@ var app = Vue.createApp({
 
         /** display form error messages
         */
-        displayErrors: function displayErrors(errors){
+        display_errors: function display_errors(errors){
             for(let e in errors)
                 {
                     let str='<span id=id_errors_'+ e +' class="text-danger">';
@@ -585,7 +582,7 @@ var app = Vue.createApp({
     },
 
     mounted(){
-        window.addEventListener('resize', this.handleResize);
+        window.addEventListener('resize', this.handle_resize);
     },
 
 }).mount('#app');

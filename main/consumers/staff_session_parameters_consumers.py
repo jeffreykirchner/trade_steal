@@ -45,11 +45,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         #build response
         message_data = {}
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = event["type"]
-        message["messageData"] = message_data
+        message["message_type"] = event["type"]
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message,}, cls=DjangoJSONEncoder))
@@ -61,11 +61,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         #build response
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "update_parameterset"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -77,11 +77,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_type)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "update_parameterset_type"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_type"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -93,11 +93,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_good)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "update_parameterset_good"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_good"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -109,11 +109,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_player)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "update_parameterset_player"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_player"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
@@ -125,11 +125,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_remove_parameterset_player)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "remove_parameterset_player"
-        message["messageData"] = message_data
+        message["message_type"] = "remove_parameterset_player"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))   
@@ -141,11 +141,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_add_paramterset_player)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "add_parameterset_player"
-        message["messageData"] = message_data
+        message["message_type"] = "add_parameterset_player"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -157,11 +157,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_player_group)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "update_parameterset_player_group"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_player_group"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
@@ -172,11 +172,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         '''
         message_data = {}
         message_data["status"] = await sync_to_async(take_copy_groups_forward)(event["message_text"])
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "copy_group_forward"
-        message["messageData"] = message_data
+        message["message_type"] = "copy_group_forward"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder)) 
@@ -189,11 +189,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         message_data = {}
         message_data["status"] = await sync_to_async(take_import_parameters)(event["message_text"])
 
-        message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "import_parameters"
-        message["messageData"] = message_data
+        message["message_type"] = "import_parameters"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -204,8 +204,8 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
         '''
         #download parameters to a file
         message = {}
-        message["messageType"] = "download_parameters"
-        message["messageData"] = await sync_to_async(take_download_parameters)(event["message_text"])
+        message["message_type"] = "download_parameters"
+        message["message_data"] = await sync_to_async(take_download_parameters)(event["message_text"])
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -217,11 +217,11 @@ class StaffSessionParametersConsumer(SocketConsumerMixin, StaffSubjectUpdateMixi
 
         message_data = {}
         message_data["status"] = await sync_to_async(take_update_parameterset_avatar)(event["message_text"])
-        #message_data["session"] = await get_session(event["message_text"]["sessionID"])
+        #message_data["session"] = await get_session(event["message_text"]["session_id"])
 
         message = {}
-        message["messageType"] = "update_parameterset_avatar"
-        message["messageData"] = message_data
+        message["message_type"] = "update_parameterset_avatar"
+        message["message_data"] = message_data
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({'message': message}, cls=DjangoJSONEncoder))
@@ -259,7 +259,7 @@ def take_update_parameterset(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Update parameters: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     form_data = data["formData"]
 
     try:        
@@ -297,7 +297,7 @@ def take_update_parameterset_type(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Update parameterset type: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     paramterset_type_id = data["parameterset_type_id"]
     form_data = data["formData"]
 
@@ -330,7 +330,7 @@ def take_update_parameterset_good(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Update parameterset good: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     parameterset_good_id = data["parameterset_good_id"]
     form_data = data["formData"]
 
@@ -361,7 +361,7 @@ def take_update_parameterset_player(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Update parameterset player: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     paramterset_player_id = data["paramterset_player_id"]
     form_data = data["formData"]
 
@@ -405,7 +405,7 @@ def take_update_parameterset_player_group(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Update parameterset player group: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     paramterset_player_group_id = data["paramterset_player_group_id"]
     form_data = data["formData"]
 
@@ -439,7 +439,7 @@ def take_remove_parameterset_player(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Remove parameterset player: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     paramterset_player_id = data["paramterset_player_id"]
 
     try:        
@@ -461,7 +461,7 @@ def take_add_paramterset_player(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Add parameterset player: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
 
     try:        
         session = Session.objects.get(id=session_id)
@@ -498,7 +498,7 @@ def take_copy_groups_forward(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Copy groups forward: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     period_number = data["period_number"]
 
     try:        
@@ -516,7 +516,7 @@ def take_import_parameters(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Import parameters: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     form_data = data["formData"]
     
     form_data_dict = form_data
@@ -539,7 +539,7 @@ def take_download_parameters(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Download parameters: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
 
     session = Session.objects.get(id=session_id)
    
@@ -553,7 +553,7 @@ def take_update_parameterset_avatar(data):
     logger = logging.getLogger(__name__) 
     logger.info(f"Update parameterset avatar: {data}")
 
-    session_id = data["sessionID"]
+    session_id = data["session_id"]
     parameterset_avatar_id = data["parameterset_avatar_id"]
     form_data = data["formData"]
 

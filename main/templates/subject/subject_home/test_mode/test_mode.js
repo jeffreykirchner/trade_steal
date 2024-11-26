@@ -3,28 +3,28 @@
 /**
  * do random self test actions
  */
-randomNumber: function randomNumber(min, max){
+random_number: function random_number(min, max){
     //return a random number between min and max
     min = Math.ceil(min);
     max = Math.floor(max+1);
     return Math.floor(Math.random() * (max - min) + min);
 },
 
-randomString: function randomString(min_length, max_length){
+random_string: function random_string(min_length, max_length){
 
     s = "";
-    r = app.randomNumber(min_length, max_length);
+    r = app.random_number(min_length, max_length);
 
     for(let i=0;i<r;i++)
     {
-        v = app.randomNumber(48, 122);
+        v = app.random_number(48, 122);
         s += String.fromCharCode(v);
     }
 
     return s;
 },
 
-doTestMode: function doTestMode(){
+do_test_mode: function do_test_mode(){
     {%if DEBUG%}
     console.log("Do Test Mode");
     {%endif%}
@@ -35,10 +35,10 @@ doTestMode: function doTestMode(){
     {
         if(app.session_player.name == "")
         {
-            document.getElementById("id_name").value =  app.randomString(5, 20);
-            document.getElementById("id_student_id").value =  app.randomNumber(1000, 10000);
+            document.getElementById("id_name").value =  app.random_string(5, 20);
+            document.getElementById("id_student_id").value =  app.random_number(1000, 10000);
 
-            app.sendName();
+            app.send_name();
         }
 
         return;
@@ -49,24 +49,24 @@ doTestMode: function doTestMode(){
         switch (app.session.current_experiment_phase)
         {
             case "Selection":
-                app.doTestModeSelection();
+                app.do_test_mode_selection();
                 break;
             case "Instructions":
-                app.doTestModeInstructions();
+                app.do_test_mode_instructions();
                 break;
             case "Run":
-                app.doTestModeRun();
+                app.do_test_mode_run();
                 break;
             
         }        
        
     }
 
-    // setTimeout(app.doTestMode, app.randomNumber(1000 , 1500));
+    // setTimeout(app.do_test_mode, app.random_number(1000 , 1500));
     worker = new Worker("/static/js/worker_test_mode.js");
 
     worker.onmessage = function (evt) {   
-        app.doTestMode();
+        app.do_test_mode();
     };
 
     worker.postMessage(0);
@@ -75,13 +75,13 @@ doTestMode: function doTestMode(){
 /**
  * test during selection phase
  */
- doTestModeSelection: function doTestModeSelection()
+ do_test_mode_selection: function do_test_mode_selection()
  {
 
     if(app.avatar_choice_grid_selected_row == 0 && app.avatar_choice_grid_selected_col == 0)
     {
-        let r = app.randomNumber(1, app.session.parameter_set.avatar_grid_row_count);
-        let c = app.randomNumber(1, app.session.parameter_set.avatar_grid_col_count);
+        let r = app.random_number(1, app.session.parameter_set.avatar_grid_row_count);
+        let c = app.random_number(1, app.session.parameter_set.avatar_grid_col_count);
 
         let parameter_set_avatar = app.get_grid_avatar(r, c);
 
@@ -99,7 +99,7 @@ doTestMode: function doTestMode(){
 /**
  * test during instruction phase
  */
- doTestModeInstructions: function doTestModeInstructions()
+ do_test_mode_instructions: function do_test_mode_instructions()
  {
     if(app.session_player.instructions_finished) return;
     if(app.working) return;
@@ -129,7 +129,7 @@ doTestMode: function doTestMode(){
                 }
                 else
                 {
-                    app.doTestModeMove();
+                    app.do_test_mode_move();
                 }
                 break;
             case app.instructions.action_page_chat:
@@ -139,7 +139,7 @@ doTestMode: function doTestMode(){
                 }
                 else
                 {
-                    app.doTestModeChat();
+                    app.do_test_mode_chat();
                 }
                 break;
         }
@@ -151,7 +151,7 @@ doTestMode: function doTestMode(){
 /**
  * test during run phase
  */
-doTestModeRun: function doTestModeRun()
+do_test_mode_run: function do_test_mode_run()
 {
     //do chat
     let go = true;
@@ -169,7 +169,7 @@ doTestModeRun: function doTestModeRun()
         {
             if(app.session.current_period_phase != "Trade")
             {
-                app.closeMoveModal();
+                app.close_move_modal();
                 return;
             }
 
@@ -186,24 +186,24 @@ doTestModeRun: function doTestModeRun()
                 return;
             }
 
-            app.sendProdution();
+            app.send_prodution();
             go=false;
         }
     
     if(app.session.finished) return;
         
     if(go)
-        switch (app.randomNumber(1, 3)){
+        switch (app.random_number(1, 3)){
             case 1:
-                app.doTestModeChat();
+                app.do_test_mode_chat();
                 break;
             
             case 2:
-                app.doTestModeMove();
+                app.do_test_mode_move();
                 break;
             
             case 3:
-                app.doTestModeProductionUpdate();
+                app.do_test_mode_production_update();
                 break;
         }
 },
@@ -211,9 +211,9 @@ doTestModeRun: function doTestModeRun()
 /**
  * test mode chat
  */
-doTestModeChat: function doTestModeChat(){
+do_test_mode_chat: function do_test_mode_chat(){
 
-    let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+    let session_player_id = app.session.session_players_order[app.random_number(0, app.session.session_players_order.length-1)];
     let session_player_local = app.session.session_players[session_player_id];
 
     if(session_player_local.id == app.session_player.id)
@@ -221,7 +221,7 @@ doTestModeChat: function doTestModeChat(){
         if(app.session.parameter_set.group_chat=='True')
         {
             document.getElementById("chat_all_id").click();
-            app.chat_text = app.randomString(5, 20);
+            app.chat_text = app.random_string(5, 20);
         }
     }
     else
@@ -229,7 +229,7 @@ doTestModeChat: function doTestModeChat(){
         if(app.session.parameter_set.private_chat=='True')
         {
             document.getElementById('chat_invididual_' + session_player_local.id + '_id').click();
-            app.chat_text = app.randomString(5, 20);
+            app.chat_text = app.random_string(5, 20);
         }
     }
 
@@ -239,32 +239,32 @@ doTestModeChat: function doTestModeChat(){
 /**
  * test mode move
  */
-doTestModeMove: function doTestModeMove(){
+do_test_mode_move: function do_test_mode_move(){
     if(app.session.current_period_phase != "Trade")
     {
-        app.closeMoveModal();
+        app.close_move_modal();
         return;
     }
 
     let session_player_source = null;
     let source_container = null;
 
-    if(app.randomNumber(1, 2) == 1 || app.session.current_experiment_phase == "Instructions")
+    if(app.random_number(1, 2) == 1 || app.session.current_experiment_phase == "Instructions")
     {
         if(app.session.parameter_set.allow_stealing == "True" && app.session.current_experiment_phase != "Instructions")
         {
-            let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+            let session_player_id = app.session.session_players_order[app.random_number(0, app.session.session_players_order.length-1)];
             session_player_source = app.session.session_players[session_player_id];        }
         else
         {
             session_player_source = app.session.session_players[app.session_player.id];            
         }
 
-        let session_player_source_index = app.findSessionPlayerIndex(session_player_source.id);
+        let session_player_source_index = app.find_session_player_index(session_player_source.id);
         source_container = field_containers[session_player_source_index];        
 
-        app.transfer_good_one_amount = app.randomNumber(0, session_player_source.good_one_field);
-        app.transfer_good_two_amount = app.randomNumber(0, session_player_source.good_two_field);
+        app.transfer_good_one_amount = app.random_number(0, session_player_source.good_one_field);
+        app.transfer_good_two_amount = app.random_number(0, session_player_source.good_two_field);
 
         if(app.transfer_good_one_amount == 0 && app.transfer_good_two_amount == 0)
         {
@@ -275,7 +275,7 @@ doTestModeMove: function doTestModeMove(){
     {
         if(app.session.parameter_set.allow_stealing == "True")
         {
-            let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+            let session_player_id = app.session.session_players_order[app.random_number(0, app.session.session_players_order.length-1)];
             session_player_source = app.session.session_players[session_player_id];  
         }
         else
@@ -283,15 +283,15 @@ doTestModeMove: function doTestModeMove(){
             session_player_source = app.session.session_players[app.session_player.id];     
         }            
 
-        let session_player_source_index = app.findSessionPlayerIndex(session_player_source.id);
+        let session_player_source_index = app.find_session_player_index(session_player_source.id);
         source_container = house_containers[session_player_source_index];
 
-        app.transfer_good_one_amount = app.randomNumber(0, session_player_source.good_one_house);
-        app.transfer_good_two_amount = app.randomNumber(0, session_player_source.good_two_house);
+        app.transfer_good_one_amount = app.random_number(0, session_player_source.good_one_house);
+        app.transfer_good_two_amount = app.random_number(0, session_player_source.good_two_house);
 
         if(app.session.parameter_set.good_count==3)
         {
-            app.transfer_good_three_amount = app.randomNumber(0, session_player_source.good_three_house);
+            app.transfer_good_three_amount = app.random_number(0, session_player_source.good_three_house);
         }
 
         if(app.transfer_good_one_amount == 0 && app.transfer_good_two_amount == 0)
@@ -308,27 +308,27 @@ doTestModeMove: function doTestModeMove(){
     }
     else
     {
-        let session_player_id = app.session.session_players_order[app.randomNumber(0, app.session.session_players_order.length-1)];
+        let session_player_id = app.session.session_players_order[app.random_number(0, app.session.session_players_order.length-1)];
         session_player_target = app.session.session_players[session_player_id]; 
     }
 
-    let session_player_target_index = app.findSessionPlayerIndex(session_player_target.id);
+    let session_player_target_index = app.find_session_player_index(session_player_target.id);
     let target_container = house_containers[session_player_target_index];
 
-    app.handleContainerDown(source_container,
+    app.handle_container_down(source_container,
                                 {data: {global: {x:source_container.x, y:source_container.y}}})
     
-    app.handleContainerUp(target_container,
+    app.handle_container_up(target_container,
                             {data: {global: {x:target_container.x, y:target_container.y}}})
 },
 
 /**
  * test mode update production percentages
  */
-doTestModeProductionUpdate: function doTestModeProductionUpdate(){
+do_test_mode_production_update: function do_test_mode_production_update(){
     if(app.session.current_period_phase != "Trade") return;
 
-    app.production_slider = app.randomNumber(-50, 50)
+    app.production_slider = app.random_number(-50, 50)
     app.update_production_slider();
 },
 {%endif%}

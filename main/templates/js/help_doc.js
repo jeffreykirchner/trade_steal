@@ -2,9 +2,9 @@
  * send request for help doc
  * @param title : string
  */
-sendLoadHelpDoc: function sendLoadHelpDoc(title){
+send_load_help_doc: function send_load_help_doc(title){
     this.working = true;
-    this.helpText = "Loading ...";
+    this.help_text = "Loading ...";
 
     var myModal = new bootstrap.Modal(document.getElementById('helpModal'), {
         keyboard: false
@@ -12,22 +12,22 @@ sendLoadHelpDoc: function sendLoadHelpDoc(title){
 
     myModal.toggle();
 
-    app.sendMessage("help_doc", {title : title});
+    app.send_message("help_doc", {title : title});
 },
 
 /**
  * take help text load request
- * @param messageData : json
+ * @param message_data : json
  */
-takeLoadHelpDoc: function takeLoadHelpDoc(messageData){
+take_load_help_doc: function take_load_help_doc(message_data){
 
-    if(messageData.status.value == "success")
+    if(message_data.status.value == "success")
     {
-        this.helpText = messageData.status.result.help_doc.text;
+        this.help_text = message_data.status.result.help_doc.text;
     }
     else
     {
-        this.helpText = messageData.status.message;
+        this.help_text = message_data.status.message;
     }
 },
 

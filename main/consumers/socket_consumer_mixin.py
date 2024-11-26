@@ -93,8 +93,8 @@ class SocketConsumerMixin(AsyncWebsocketConsumer):
         '''
         text_data_json = json.loads(text_data)
 
-        message_type = text_data_json['messageType']   #name of child method to be called
-        message_text = text_data_json['messageText']   #data passed to above method
+        message_type = text_data_json['message_type']   #name of child method to be called
+        message_text = text_data_json['message_text']   #data passed to above method
         message_target = text_data_json.get('message_target', None)  #group or individual channel
 
         # Check if staff users are logged in

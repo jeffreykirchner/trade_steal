@@ -3,16 +3,16 @@
 downloadSummaryData: function downloadSummaryData(){
     app.working = true;
     this.data_downloading = true;
-    app.sendMessage("download_summary_data", {});
+    app.send_message("download_summary_data", {});
 },
 
 /** take download summary data
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeDownloadSummaryData: function takeDownloadSummaryData(messageData){
+take_download_summary_data: function take_download_summary_data(message_data){
 
     var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.result]);
+    var blob = new Blob(["\ufeff", message_data.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
     downloadLink.download = "Exchange_Specialization_Summary_Data_Session_" + app.session.id +".csv";
@@ -29,16 +29,16 @@ takeDownloadSummaryData: function takeDownloadSummaryData(messageData){
 downloadActionsData: function downloadActionsData(){
     app.working = true;
     this.data_downloading = true;
-    app.sendMessage("download_action_data", {});
+    app.send_message("download_action_data", {});
 },
 
 /** take download summary data
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeDownloadActionData: function takeDownloadActionData(messageData){
+take_download_action_data: function take_download_action_data(message_data){
 
     var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.result]);
+    var blob = new Blob(["\ufeff", message_data.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
     downloadLink.download = "Exchange_Specialization_Action_Data_Session_" + app.session.id +".csv";
@@ -55,16 +55,16 @@ takeDownloadActionData: function takeDownloadActionData(messageData){
 downloadRecruiterData: function downloadRecruiterData(){
     app.working = true;
     this.data_downloading = true;
-    app.sendMessage("download_recruiter_data", {});
+    app.send_message("download_recruiter_data", {});
 },
 
 /** take download recruiter data
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeDownloadRecruiterData: function takeDownloadRecruiterData(messageData){
+take_download_recruiter_data: function take_download_recruiter_data(message_data){
 
     var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.result]);
+    var blob = new Blob(["\ufeff", message_data.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
 
@@ -85,16 +85,16 @@ takeDownloadRecruiterData: function takeDownloadRecruiterData(messageData){
 downloadPaymentData: function downloadPaymentData(){
     app.working = true;
     this.data_downloading = true;
-    app.sendMessage("download_payment_data", {});
+    app.send_message("download_payment_data", {});
 },
 
 /** take download payment data
- * @param messageData {json}
+ * @param message_data {json}
 */
-takeDownloadPaymentData: function takeDownloadPaymentData(messageData){
+take_download_payment_data: function take_download_payment_data(message_data){
 
     var downloadLink = document.createElement("a");
-    var blob = new Blob(["\ufeff", messageData.result]);
+    var blob = new Blob(["\ufeff", message_data.result]);
     var url = URL.createObjectURL(blob);
     downloadLink.href = url;
     downloadLink.download = "Exchange_Specialization_Payment_Data_Session_" + app.session.id +".csv";

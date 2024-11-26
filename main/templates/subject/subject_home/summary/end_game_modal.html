@@ -1,12 +1,11 @@
 {% load crispy_forms_tags %}
 <!--Edit Period Modal -->
 <div class="modal fade " 
-     id="endGameModal" 
+     id="end_game_modal" 
      data-bs-backdrop="static" 
      data-bs-keyboard="false" 
      tabindex="-1" 
-     aria-labelledby="endGameModal" 
-     aria-hidden="true">
+     aria-labelledby="end_game_modal">
 
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
@@ -40,7 +39,7 @@
                 
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "sendName()"
+                        v-on:click = "send_name()"
                         title="Submit Name"
                         v-if="session_player.name=='' && session.parameter_set.prolific_mode == 'False' "
                         v-bind:disabled="reconnecting || working">
@@ -49,7 +48,7 @@
 
                 <button type="button"
                         class="btn btn-outline-primary"
-                        v-on:click = "postSessionLink()"
+                        v-on:click = "post_session_link()"
                         title="Press to continue"
                         v-else-if="session_player.post_experiment_link != ''"
                         v-bind:disabled="reconnecting || working">

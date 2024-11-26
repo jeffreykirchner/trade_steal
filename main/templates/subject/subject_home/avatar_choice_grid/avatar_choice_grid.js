@@ -98,7 +98,7 @@ take_choice_grid_click: function take_choice_grid_click(r, c){
 /**
  * send avatar choice
  */
-sendAvatar: function sendAvatar(){
+send_avatar: function send_avatar(){
 
     if(app.working) return;
 
@@ -108,26 +108,55 @@ sendAvatar: function sendAvatar(){
     if(app.session_player.avatar != null) return;
     
     app.working = true;
-    app.sendMessage("avatar", {"row" : app.avatar_choice_grid_selected_row,
-                               "col" : app.avatar_choice_grid_selected_col,
+    app.send_message("avatar", {"row" : app.avatar_choice_grid_selected_row,
+                                "col" : app.avatar_choice_grid_selected_col,
                             });             
 },
 
 /** take result of moving goods
 */
-takeAvatar: function takeAvatar(messageData){
-    //app.cancelModal=false;
-    //app.clearMainFormErrors();
+take_avatar: function take_avatar(message_data){
+    //app.cancel_modal=false;
+    //app.clear_main_form_errors();
 
     app.working = false;
 
-    if(messageData.value == "success")
+    if(message_data.value == "success")
     {
-        app.session_player.avatar = messageData.result.avatar;         
+        app.session_player.avatar = message_data.result.avatar;         
     } 
     else
     {
         
     }
 },
+
+/**
+ * if needed show avatar choice grid
+ */
+show_avatar_choice_grid: function show_avatar_choice_grid(){
+
+    if((this.session.parameter_set.avatar_assignment_mode == 'Subject Select' || 
+        this.session.parameter_set.avatar_assignment_mode == 'Best Match') &&
+        this.session.current_experiment_phase == "Selection" &&
+        !this.avatar_choice_modal_visible)
+
+    {
+        app.avatar_choice_grid_modal.toggle();
+
+        this.avatar_choice_modal_visible=true;
+
+        if(this.session_player.avatar != null)
+        {
+            this.take_choice_grid_label(this.session_player.avatar.label)
+        }
+    }
+},
+
+/** hide choice grid modal modal
+*/
+hide_choice_grid_modal: function hide_choice_grid_modal(){
+    this.avatar_choice_modal_visible=false;
+},
+
 
