@@ -1,4 +1,5 @@
 echo "*** Startup.sh ***"
+app-get update
 echo "Run Migrations:"
 python manage.py migrate
 echo "Install htop:"
