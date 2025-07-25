@@ -226,19 +226,21 @@ var app = Vue.createApp({
             document.getElementById('send_message_modal').addEventListener('hidden.bs.modal', app.hide_send_invitations);
             document.getElementById('upload_email_modal').addEventListener('hidden.bs.modal', app.hide_send_email_list);
 
-            tinyMCE.init({
+             tinyMCE.init({
                 target: document.getElementById('id_invitation_text'),
                 height : "400",
                 theme: "silver",
-                plugins: "directionality,paste,searchreplace,code",
-                directionality: "{{ directionality }}",
+                convert_urls: false,
+                promotion: false,
+                plugins: "searchreplace,code,link",
+                toolbar: "undo redo | styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link | code",
             });
     
             // Prevent Bootstrap dialog from blocking focusin
             document.addEventListener('focusin', (e) => {
-            if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
-                e.stopImmediatePropagation();
-            }
+                if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                    e.stopImmediatePropagation();
+                }
             });
 
             app.first_load_done = true;
