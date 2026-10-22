@@ -1,5 +1,8 @@
 # Specialization_and_Trade
-Web version of the Exchange and Specialization experiment.  https://papers.ssrn.com/sol3/papers.cfm?abstract_id=930078
+Web version of:
+Exchange and Specialization experiment - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=930078
+Linguistic intervention unlocks the economic gains of diversity - https://www.pnas.org/doi/10.1073/pnas.2534825123
+
 
 Setup Guide:
 https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-18-04
@@ -8,7 +11,7 @@ local_settings.py:<br>
 Copy local_settings_sample.py to local_settings.py<br>
 local_settings.py is used for local development and will be excluded from the repo.<br>
 Update the DATABASES section of this file with the info from your locally run instance of Postgresql.<br>
-Update the CHANNEL_LAYERS layers section of this file with the info from your locally run instance of Redis.<br>
+Update the CHANNEL_LAYERS section of this file with the info from your locally running Redis instance.<br>
 
 Update Python installers:<br>
 	sudo add-apt-repository ppa:deadsnakes/ppa<br>
@@ -16,12 +19,12 @@ Update Python installers:<br>
 	sudo apt install python3.11<br>
 	sudo apt-get install python3.11-distutils<br>
 
-Activate virtual environment and install requirments:<br>
+Activate virtual environment and install requirements:<br>
     virtualenv --python=python3.11 _trade_steal_env<br>
     source _trade_steal_env/bin/activate<br>
     pip install -U -r requirements.txt<br>
 
-Setup Environment:<br>
+Set up Environment:<br>
 sh setup.sh<br>
 
 Run Environment:<br>
