@@ -1,7 +1,7 @@
 # Specialization_and_Trade
-Web version of:
-Exchange and Specialization experiment - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=930078
-Linguistic intervention unlocks the economic gains of diversity - https://www.pnas.org/doi/10.1073/pnas.2534825123
+Web version of:<br>
+Exchange and Specialization experiment - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=930078<br>
+Linguistic intervention unlocks the economic gains of diversity - https://www.pnas.org/doi/10.1073/pnas.2534825123<br>
 
 
 Setup Guide:
