@@ -1,10 +1,16 @@
-# Specialization_and_Trade
-Web version of:<br>
-Exchange and Specialization experiment - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=930078<br>
-Linguistic intervention unlocks the economic gains of diversity - https://www.pnas.org/doi/10.1073/pnas.2534825123<br>
+<b>Web version of the following experiments</b><br>
+<p align="center">
+Crockett, Sean and Smith, Vernon L. and Wilson, Bart J., Exchange and Specialization as a Discovery Process (May 1, 2006). The Economic Journal, Vol. 119, pp. 1162-1188, 2009, Available at SSRN: https://ssrn.com/abstract=930078 or http://dx.doi.org/10.2139/ssrn.930078
+</p>
+<p align="center">
+Kimbrough, E. O., Smith, V. L., & Wilson, B. J. (2010). Exchange, theft, and the social formation of property. Journal of Economic Behavior & Organization, 74(3), 206–229. https://doi.org/10.1016/j.jebo.2010.03.017
+</p>
+<p align="center">
+Levine, S. S., Siegenthaler, S., & Wilson, B. J. (2026). Linguistic intervention unlocks the economic gains of diversity. Proceedings of the National Academy of Sciences, 123(43), e2534825123. https://doi.org/10.1073/pnas.2534825123
+</p>
 
 
-Setup Guide:
+<b>Setup Guide</b><br>
 https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-18-04
 
 local_settings.py:<br>
